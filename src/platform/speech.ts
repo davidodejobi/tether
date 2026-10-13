@@ -68,8 +68,10 @@ export function useCanSpeak(): boolean {
 export const autoLine = (on: boolean, hidden: boolean, text: string, last: string | null) =>
   on && !hidden && text && text !== last ? text : null;
 
-/** False inside a closed dialog or any display:none ancestor: hidden text is never spoken. */
-const rendered = (el: HTMLElement | null) => !!el && !el.closest("dialog:not([open])") && (el.checkVisibility?.() ?? true);
+/** False inside a closed dialog or any display:none ancestor: hidden text is never spoken. Without checkVisibility(),
+ *  layout decides: an element with no boxes is not rendered. */
+const rendered = (el: HTMLElement | null) =>
+  !!el && !el.closest("dialog:not([open])") && (el.checkVisibility ? el.checkVisibility() : el.getClientRects().length > 0);
 
 /** Speaks the coach line in `ref` once when read-aloud is on (spec sections 10, 13); stops it when the bubble goes away.
  *  `on` is learner.readAloud and useCanSpeak() together. Runs after every render; the last spoken text prevents repeats.

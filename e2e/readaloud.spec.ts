@@ -9,6 +9,7 @@ test.beforeEach(async ({ page }) => {
     const w = window as any;
     w.__spoken = [];
     w.__cancels = 0;
+    w.__log = []; // speak and cancel in order: the utterance still playing is the last speak after the last cancel
     const voice = { lang: "en-NG", name: "Test NG", default: true, localService: true, voiceURI: "ng" };
     w.SpeechSynthesisUtterance = class { text: string; lang = ""; voice: unknown = null; constructor(t: string) { this.text = t; } };
     Object.defineProperty(window, "speechSynthesis", {
@@ -16,14 +17,16 @@ test.beforeEach(async ({ page }) => {
       value: {
         speaking: false, pending: false,
         getVoices: () => w.__voices ?? [voice],
-        speak: (u: { text: string; lang: string }) => w.__spoken.push({ text: u.text, lang: u.lang }),
-        cancel: () => { w.__cancels++; },
+        speak: (u: { text: string; lang: string }) => (w.__spoken.push({ text: u.text, lang: u.lang }), w.__log.push(u.text)),
+        cancel: () => { w.__cancels++; w.__log.push(null); },
         addEventListener() {}, removeEventListener() {},
       },
     });
   });
 });
 
+/** The utterance still playing: the last one spoken and not cancelled since (null when nothing is). */
+const surviving = (page: Page) => page.evaluate(() => { const log = (window as any).__log as (string | null)[]; return log.length ? log[log.length - 1] : null; });
 const spoken = (page: Page) => page.evaluate(() => (window as any).__spoken as { text: string; lang: string }[]);
 const home = (page: Page, learner: object) => seedRecords(page, [], "/").then(() => page.evaluate((l) => new Promise<void>((res) => {
   const open = indexedDB.open("tether");
@@ -87,11 +90,21 @@ for (const reduced of [false, true]) {
       await expect(dialog).toBeVisible({ timeout: 500 });
     }).toPass();
     const caps = () => spoken(page).then((l) => l.map((s) => s.text).filter((t) => /^(Cover the side phrase: |What's left: )|→/.test(t)));
+    // Each beat's caption is the utterance that survives; the bubble's generic line never replaces it.
+    const settled = async (pattern: RegExp) => {
+      await expect.poll(() => surviving(page)).toMatch(pattern);
+      await page.waitForTimeout(300);
+      expect(await surviving(page)).toMatch(pattern);
+    };
+    await settled(/^Cover the side phrase: /);
     await expect.poll(caps).toHaveLength(1);
     await dialog.getByRole("button", { name: "Next" }).click();
+    await settled(/^What's left: /);
     await expect.poll(caps).toHaveLength(2);
     await dialog.getByRole("button", { name: "Next" }).click();
+    await settled(/→/);
     await expect.poll(caps).toHaveLength(3);
+    expect((await spoken(page)).map((s) => s.text)).not.toContain("Watch your own sentence.");
     const texts = await caps();
     expect(texts[0]).toMatch(/^Cover the side phrase: /);
     expect(texts[1]).toMatch(/^What's left: /);
@@ -112,4 +125,16 @@ test("a practice question does not speak the closed sheet's line; opening the sh
   expect((await spoken(page)).map((s) => s.text)).not.toContain(pack.coach.en.rule);
   await page.getByRole("button", { name: /The move: Strip the Disguise/ }).click();
   await expect.poll(async () => (await spoken(page)).map((s) => s.text)).toContain(pack.coach.en.rule);
+});
+
+test("without checkVisibility(), a phone screen never reads coaching that is not laid out", async ({ page }) => {
+  await page.addInitScript(() => { delete (Element.prototype as any).checkVisibility; });
+  // Text only puts a coach bubble in the laptop help panel, which a phone does not lay out.
+  await seed(page, { ...LEARNER, readAloud: true, coach: "text" });
+  await expect(page.getByRole("radio").first()).toBeVisible();
+  await page.waitForTimeout(800);
+  const unseen = await page.evaluate(() =>
+    ((window as any).__spoken as { text: string }[]).map((s) => s.text).filter((t) =>
+      ![...document.querySelectorAll<HTMLElement>("body *")].some((el) => el.childElementCount === 0 && el.textContent?.trim() === t && el.getClientRects().length > 0)));
+  expect(unseen).toEqual([]);
 });
