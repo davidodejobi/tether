@@ -36,7 +36,8 @@ test("laptop: key 2 picks It sounded right", async ({ page }) => {
   await seed(page);
   await tile(page, (await current(page)).answer).click();
   await page.getByRole("button", { name: "Check" }).click();
-  await expect(page.getByRole("radio", { name: "It sounded right" })).toBeVisible();
+  // The reasons stay locked until the checked answer has saved; a key press before that is rightly ignored.
+  await expect(page.getByRole("radio", { name: "It sounded right" })).toBeEnabled();
   await page.keyboard.press("2");
   await expect(page.getByText("Thanks for telling us.")).toBeVisible();
 });

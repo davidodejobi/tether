@@ -240,3 +240,15 @@ test("screenshots: running, time almost up, welcome back at 360 and 1366", async
     await page.screenshot({ path: `screenshots/step11-time-almost-up-${w}.png` });
   }
 });
+
+test("journey: a passed solo shows its result, then Home shows the proof and its next check", async ({ page }) => {
+  await start(page);
+  for (let n = 1; n <= 10; n++) await answer(page, n <= 9, n);
+  await expect(page).toHaveURL(/\/result\/run-/);
+  await expect(page.getByText("Passed. You are Proved.")).toBeVisible();
+  await page.getByRole("button", { name: "Back to Home" }).or(page.getByRole("link", { name: "Back to Home" })).first().click();
+  await expect(page).toHaveURL(/\/$/);
+  const proof = page.getByRole("region", { name: "Your proof" });
+  await expect(proof.getByRole("img", { name: "Proved" })).toBeVisible();
+  await expect(proof.getByText(/First recheck:/)).toBeVisible();
+});
