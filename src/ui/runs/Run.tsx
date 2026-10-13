@@ -2,7 +2,7 @@
 // Lifecycle: recover an active run (resume / timeout / convert) or plan a fresh one -> save it -> play ->
 // each answer is saved before the screen advances -> the finished run is saved with completeRunBatch ->
 // only then setProofMode(false), celebrate on a pass, and go to /result/<runId>.
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { sentence, type Question } from "../../content/generate.ts";
 import { clockWentBack, finish, lowTime, RUN_RULES, seen, submit, type Run as RunState, type RunKind } from "../../rules/runs.ts";
@@ -377,7 +377,8 @@ function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of
       if (to !== null && !busy) setSel(to);
     }
   };
-  useEffect(() => {
+  // Layout effect: the shortcuts are live in the same commit that shows the question, so "visible" implies "keys work".
+  useLayoutEffect(() => {
     const h = (e: KeyboardEvent) => key.current(e);
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
