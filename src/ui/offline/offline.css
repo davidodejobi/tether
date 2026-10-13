@@ -1,0 +1,6 @@
+.oc { display: flex; flex-direction: column; gap: var(--spacing-md); }
+.oc-line { margin: 0; font: var(--type-body-l); }
+.oc-ready { display: flex; align-items: center; gap: var(--spacing-xs); color: var(--text-brand); font-weight: 600; }
+.oc-row { display: flex; align-items: center; gap: var(--spacing-md); flex-wrap: wrap; }
+.oc-install { display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-md); background: var(--bg-surface); border-radius: var(--radius-lg, 16px); }
+.oc-title { display: flex; align-items: center; gap: var(--spacing-xs); margin: 0; font-weight: 600; }

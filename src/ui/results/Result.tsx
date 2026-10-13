@@ -7,6 +7,7 @@ import { startAttempt } from "../../rules/practice.ts";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
 import { Stamp } from "../components/Stamp";
+import { AddToCalendar } from "../offline/AddToCalendar";
 import { ShowMe } from "../help/ShowMe";
 import { useProgress } from "../progress";
 import { day, when } from "./dates.ts";
@@ -113,6 +114,7 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
             {k === "proof" ? "Share proof" : "Share progress"}
           </Button>
         ))}
+        {p && <AddToCalendar />}
         {v.misses.length > 0 && <Button variant="secondary" onClick={onMisses}>See your misses</Button>}
         {v.passed ? (
           <Button onClick={() => route("/")}>Back to Home</Button>

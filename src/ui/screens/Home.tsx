@@ -7,6 +7,7 @@ import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { HomeMap } from "../home/HomeMap";
 import { latestGap, moveOne } from "../home/view.ts";
+import { OfflineCues } from "../offline/OfflineCues";
 import { ProofCard } from "../proof/ProofCard";
 import { appNow } from "../proof/simulate";
 import { useProgress } from "../progress";
@@ -29,7 +30,7 @@ export function Home() {
           <a class="hm-settings" href="/settings"><Icon name="settings" /> Settings</a>
         </header>
         {p.learner && <Identity learner={p.learner} />}
-        <div class="hm-status" />
+        <div class="hm-status"><OfflineCues /></div>
         <CoachBubble mode={coach}>{state === "fading" ? "Your proof needs a quick restore." : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone."}</CoachBubble>
         <ProofCard />
         <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>

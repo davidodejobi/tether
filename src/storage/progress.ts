@@ -91,6 +91,7 @@ const KEY = {
   cycle: (moveId: string) => `cycle:${moveId}`,
   schema: "meta:schema",
   lastMoment: "meta:lastMoment",
+  calendarUses: "meta:calendarUses",
 };
 
 function highestMoment(p: Progress, stored: Moment | null): Moment | null {
@@ -122,6 +123,7 @@ export class ProgressStore {
     private readonly kv: KV,
     private state: Progress,
     lastMoment: Moment | null,
+    private calendarUses: number[],
     /** False when progress lives only in memory and disappears on reload. */
     readonly durable: boolean,
     /** Set when this tab must not write: another tab owns the session, or the data is from a newer app. */
@@ -143,11 +145,25 @@ export class ProgressStore {
     // Schema migrations go here when SCHEMA_VERSION rises. Data from a newer app is never rewritten.
     const readOnly: ReadOnlyReason | null = schema > SCHEMA_VERSION ? "newerSchema" : opts.writer ? null : "otherTab";
     const last = highestMoment(p, (records.get(KEY.lastMoment) as Moment | undefined) ?? null);
-    return new ProgressStore(kv, p, last, opts.durable, readOnly);
+    const uses = records.get(KEY.calendarUses);
+    return new ProgressStore(kv, p, last, Array.isArray(uses) ? (uses as number[]) : [], opts.durable, readOnly);
   }
 
   get progress(): Readonly<Progress> {
     return this.state;
+  }
+
+  /** Timestamps of Add to calendar uses: a local pilot metric, learner-independent, never uploaded (spec section 11). */
+  get calendarUseTimes(): readonly number[] {
+    return this.calendarUses;
+  }
+
+  /** Records one calendar export. Best effort: a failure never blocks the download. */
+  async recordCalendarUse(at: number): Promise<void> {
+    if (this.readOnly) return;
+    const next = [...this.calendarUses, at];
+    await this.kv.setMany([[KEY.calendarUses, next]]);
+    this.calendarUses = next;
   }
 
   /** The next moment in this learner's timeline. Saved with the next batch; never repeats, even after a failed save. */

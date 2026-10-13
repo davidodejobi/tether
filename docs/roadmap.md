@@ -80,7 +80,7 @@ contract. Bring supporting files into this repository only when needed.
   source line and plain-language message. Add learner-controlled mobile sharing
   and image download on laptops; cover no-partner and offline states.
   Done: eligible wins can be shared/downloaded; failures never trigger sharing.
-- [ ] **16. Complete offline installation and return cues.** Cache the shell,
+- [x] **16. Complete offline installation and return cues.** Cache the shell,
   local font, assets and pack; add app icons, safe update behaviour, Ready offline,
   install guidance and Add to calendar. Record calendar use locally for pilot metrics.
   Done: after initial loading, the full learning loop runs with the network disabled.
