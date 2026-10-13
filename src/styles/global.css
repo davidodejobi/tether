@@ -11,3 +11,4 @@ body {
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 button, input, select, textarea { font: inherit; }
 input, select, textarea { font-size: 16px; } /* inputs stay at 16 px (spec 14) */
+:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; } /* fallback; component rules refine it */

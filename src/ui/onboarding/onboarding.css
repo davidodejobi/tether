@@ -88,7 +88,7 @@
 .ls-subject, .ls-covered, .ls-blank { position: relative; display: inline-block; }
 .ls-subject.on { padding: 0 var(--spacing-xs); border: 2px solid var(--border-selected); background: var(--bg-primary-container); border-radius: var(--radius-sm); line-height: 40px; }
 .ls-badge { position: absolute; top: -10px; right: -10px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: var(--radius-full); background: var(--bg-primary); color: var(--text-on-primary); font: var(--type-label-s); }
-.ls-covered.on { opacity: 0.35; }
+.ls-covered.on { color: var(--text-secondary); } /* dimmed by colour, not opacity, so the covered words keep 4.5:1 */
 .ls-covered.on::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px solid var(--text-primary); transform-origin: left; }
 .ls-blank { min-width: 64px; height: 44px; line-height: 40px; text-align: center; vertical-align: middle; border: 2px dashed var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-sunken); }
 .ls-blank.on { border: 2px solid var(--border-proof); background: var(--bg-proof-container); color: var(--text-on-proof-container); font-weight: 700; }
@@ -100,7 +100,7 @@
 .ls-covered.new::after { animation: ls-strike 300ms var(--ease-standard) both; }
 .ls-subject.new { animation: ls-pop 300ms var(--ease-emphasized) both; }
 .ls-blank.new { animation: ls-drop 350ms var(--ease-emphasized) both; }
-@keyframes ls-fade { from { opacity: 1; } }
+@keyframes ls-fade { from { color: var(--text-primary); } }
 @keyframes ls-strike { from { transform: scaleX(0); } }
 @keyframes ls-pop { from { transform: scale(0.9); opacity: 0; } }
 @keyframes ls-drop { from { transform: translateY(-24px); opacity: 0; } }
