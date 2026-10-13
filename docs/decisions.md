@@ -72,6 +72,8 @@ These decisions override conflicting text in `requirements.txt`.
 - Interrupted runs: judge with `recoverRun` before marking the run seen, then save its batch once. Converted answers keep deterministic IDs and proof applies once per run ID.
 - If IndexedDB is missing or fails its probe, progress lives in memory and `durable` is false; step 7 must say progress is temporary before learning starts. If the probe only times out, `openProgress` throws `timedOut`: show "Couldn't open your saved progress" with Retry, and use memory only if the learner chooses to continue.
 - One save at a time: wait for each save before advancing and build no newer batch until a failed one has been retried successfully (`save` refuses with `busy` while one is in flight).
+- Each storage open probes its own key, so tabs opening together never see each other's probe and fall back to memory.
+- A page keeps its writer claim: Retry after a timeout reuses it instead of queueing behind its own lock. A refused claim is retried.
 - A reloading page waits up to 1.5 s for the writer lock released by the page it replaces. Checked in Chromium (reload regains the lock; a second tab cannot take it); WebKit is untested.
 - Private or incognito windows pass the storage probe but are cleared when closed, so copy must say progress is saved "on this device", never more.
 - Data from a newer app version, or a second tab without the writer lock, opens read-only. Without the Web Locks API every tab may write (a known gap on browsers lacking it).
