@@ -68,13 +68,27 @@ export function useCanSpeak(): boolean {
 export const autoLine = (on: boolean, hidden: boolean, text: string, last: string | null) =>
   on && !hidden && text && text !== last ? text : null;
 
+/** False inside a closed dialog or any display:none ancestor: hidden text is never spoken. */
+const rendered = (el: HTMLElement | null) => !!el && !el.closest("dialog:not([open])") && (el.checkVisibility?.() ?? true);
+
 /** Speaks the coach line in `ref` once when read-aloud is on (spec sections 10, 13); stops it when the bubble goes away.
- *  `on` is learner.readAloud and useCanSpeak() together. Runs after every render; the last spoken text prevents repeats. */
+ *  `on` is learner.readAloud and useCanSpeak() together. Runs after every render; the last spoken text prevents repeats.
+ *  A bubble that is not rendered (closed sheet) stays silent and speaks when it appears, e.g. when the sheet opens. */
 export function useAutoSpeak(ref: { current: HTMLElement | null }, lang: Lang, on: boolean) {
   const last = useRef<string | null>(null);
+  const [, tick] = useState(0);
+  // Re-run the effect when the bubble enters or leaves view (a dialog opening does not re-render it).
   useEffect(() => {
-    const text = autoLine(on, document.visibilityState === "hidden", ref.current?.textContent?.trim() ?? "", last.current);
+    if (!ref.current || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(() => tick((n) => n + 1));
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    const shown = rendered(ref.current);
+    const text = autoLine(on, document.visibilityState === "hidden" || !shown, ref.current?.textContent?.trim() ?? "", last.current);
     if (!on) last.current = null;
+    else if (!shown && last.current !== null) (last.current = null, speechOk() && window.speechSynthesis.cancel());
     if (text === null) return;
     last.current = text;
     speak(text, lang);

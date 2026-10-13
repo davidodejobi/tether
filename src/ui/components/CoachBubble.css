@@ -10,6 +10,7 @@
 }
 .coach-character .coach-body::before { content: ""; position: absolute; left: -8px; bottom: var(--spacing-md); border: 8px solid transparent; border-left: 0; border-right-color: var(--bg-coach-container); }
 .coach-body p { margin: 0; }
+.coach-body .coach-note { margin-top: var(--spacing-xxs); font: var(--type-label-s); color: var(--text-secondary); }
 .coach-character .coach-body { animation: bubble-rise var(--dur-medium) var(--ease-emphasized); }
 .coach-text { align-items: flex-start; padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-sunken); border-radius: var(--radius-lg); color: var(--icon-brand); }
 .coach-text .coach-body { padding: 0; background: none; color: var(--text-primary); }
