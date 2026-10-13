@@ -159,7 +159,7 @@ function Misses({ v, onBack }: { v: ResultView; onBack(): void }) {
             <p class="rs-sentence">{sentence(q, q.answer)}</p>
             <Button variant="secondary" icon="play" disabled={busy} onClick={() => look(i)}>Show me</Button>
             {playing === i && (
-              <ShowMe question={q} lang={learner.lang} coach={learner.coach} doneLabel="Done" note="Free look: nothing lost" onDone={() => setPlaying(null)} />
+              <ShowMe question={q} lang={learner.lang} coach="text" doneLabel="Done" note="Free look: nothing lost" onDone={() => setPlaying(null)} />
             )}
           </li>
         ))}
