@@ -2,6 +2,7 @@ import { readiness } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
 import { Identity } from "../components/Avatar";
 import { Dots } from "../components/Dots";
+import { OfflineCues } from "../offline/OfflineCues";
 import { ProofCard } from "../proof/ProofCard";
 import { useProgress } from "../progress";
 
@@ -15,6 +16,7 @@ export function Home() {
       <p>JAMB English concord. Move 1: Strip the Disguise.</p>
       <Dots filled={dots as 0 | 1 | 2 | 3} />
       <ProofCard />
+      <OfflineCues />
       <p>
         <a href="/practice">Practice</a> <a href="/solo-entry">Solo check</a> <a href="/settings">Settings</a>
       </p>
