@@ -9,6 +9,10 @@ import type { KV, Opened } from "./kv.ts";
 
 export const SCHEMA_VERSION = 1;
 const NICKNAME_MAX = 30;
+/** Blobatar 2 draws one frozen generation; a seed saved for another is not drawn (initials show). */
+export const AVATAR_GEN = 2;
+
+const newSeed = () => [...crypto.getRandomValues(new Uint8Array(12))].map((b) => b.toString(16).padStart(2, "0")).join("");
 
 export interface Learner {
   nickname: string;
@@ -20,6 +24,12 @@ export interface Learner {
   partner: { name?: string; phone?: string } | null;
   /** The honesty rule was shown once in regular practice (spec section 4). Absent on older records, so no migration. */
   honestyIntroSeen?: boolean;
+  /** Interaction sounds (spec section 14a). Absent on older records, read as off. */
+  sounds?: boolean;
+  /** Random avatar identity, independent of nickname, phone, email or device. Absent on older records until the first successful save backfills it. */
+  avatarSeed?: string;
+  /** Blobatar generation the seed was made for; an unsupported one shows initials instead. */
+  avatarGen?: number;
   schemaVersion: number;
 }
 
@@ -70,7 +80,7 @@ export function cleanNickname(input: string): string | null {
 
 /** The defaults used when setup is skipped. */
 export function newLearner(nickname: string): Learner {
-  return { nickname, lessonDone: false, onboarded: false, coach: "character", lang: "en", readAloud: false, partner: null, schemaVersion: SCHEMA_VERSION };
+  return { nickname, lessonDone: false, onboarded: false, coach: "character", lang: "en", readAloud: false, partner: null, sounds: false, avatarSeed: newSeed(), avatarGen: AVATAR_GEN, schemaVersion: SCHEMA_VERSION };
 }
 
 // Key prefixes are part of the stored format. Never rename them; add a migration instead.
@@ -105,6 +115,8 @@ function highestMoment(p: Progress, stored: Moment | null): Moment | null {
 export class ProgressStore {
   private issued: Moment | null;
   private saving = false;
+  /** Used if a record has no avatar yet; kept so a retried backfill reuses the same seed. */
+  private readonly seed = newSeed();
 
   private constructor(
     private readonly kv: KV,
@@ -160,7 +172,20 @@ export class ProgressStore {
     }
   }
 
-  private async write(batch: Batch): Promise<void> {
+  /** Gives an older learner record its sounds default and avatar once. Every learner save does this too, with the same seed. */
+  async backfill(): Promise<void> {
+    const l = this.state.learner;
+    if (l && !this.readOnly && !(l.avatarSeed && l.avatarGen)) await this.save({ learner: l });
+  }
+
+  private fill(l: Learner): Learner {
+    if (l.avatarSeed && l.avatarGen) return l;
+    const old = this.state.learner;
+    return { ...l, sounds: l.sounds ?? false, avatarSeed: l.avatarSeed ?? old?.avatarSeed ?? this.seed, avatarGen: l.avatarGen ?? old?.avatarGen ?? AVATAR_GEN };
+  }
+
+  private async write(raw: Batch): Promise<void> {
+    const batch = raw.learner ? { ...raw, learner: this.fill(raw.learner) } : raw;
     const items: [string, unknown][] = [
       [KEY.schema, SCHEMA_VERSION],
       [KEY.lastMoment, this.issued],

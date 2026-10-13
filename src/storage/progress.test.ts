@@ -7,6 +7,7 @@ import { seen, startRun, submit } from "../rules/runs.ts";
 import { idbKV, memoryKV, openKV, type KV } from "./kv.ts";
 import {
   attemptsOf,
+  AVATAR_GEN,
   cleanNickname,
   completeRunBatch,
   newLearner,
@@ -66,6 +67,77 @@ describe("settings and nickname", () => {
     expect(learner).toMatchObject({ coach: "character", lang: "en", readAloud: false, partner: null, schemaVersion: SCHEMA_VERSION });
     await store.save({ learner: { ...learner, lang: "pcm", readAloud: true } });
     expect((await reopen(kv)).progress.learner).toMatchObject({ nickname: "Amaka", lang: "pcm", readAloud: true });
+  });
+});
+
+describe("sounds and avatar fields", () => {
+  // An older record has neither field: build one by removing them.
+  const old = () => {
+    const { sounds, avatarSeed, avatarGen, ...rest } = newLearner("Amaka");
+    return { ...rest, lang: "pcm" as const, readAloud: true, coach: "text" as const, partner: { name: "Ife" }, honestyIntroSeen: true };
+  };
+
+  test("a new learner has sounds off and a random seed unrelated to the nickname", () => {
+    const a = newLearner("Amaka");
+    const b = newLearner("Amaka");
+    expect(a).toMatchObject({ sounds: false, avatarGen: AVATAR_GEN });
+    expect(a.avatarSeed).toMatch(/^[0-9a-f]{24}$/);
+    expect(a.avatarSeed).not.toBe(b.avatarSeed);
+  });
+
+  test("an older record is backfilled once, keeping every setting and record", async () => {
+    const kv = memoryKV();
+    const q = practiceQuestion();
+    const attempt = startAttempt("a1", q.id, "practice", { seq: 1, at: T0 });
+    await kv.setMany([["learner", old()], ["attempt:a1", { attempt, question: q }]]);
+    const store = await reopen(kv);
+    expect(store.progress.learner!.avatarSeed).toBeUndefined();
+    await store.backfill();
+    const filled = store.progress.learner!;
+    expect(filled).toMatchObject({ nickname: "Amaka", lang: "pcm", readAloud: true, coach: "text", partner: { name: "Ife" }, honestyIntroSeen: true, sounds: false, avatarGen: AVATAR_GEN });
+    expect(filled.avatarSeed).toBeTruthy();
+    expect(store.progress.attempts.size).toBe(1);
+    const again = await reopen(kv);
+    expect(again.progress.learner).toEqual(filled);
+    const writes = vi.spyOn(kv, "setMany");
+    await again.backfill();
+    expect(writes).not.toHaveBeenCalled(); // already filled: no second write
+  });
+
+  test("a failed backfill is retried with the same seed, and a stale copy or nickname change keeps the avatar", async () => {
+    const kv = memoryKV();
+    await kv.setMany([["learner", old()]]);
+    const real = kv.setMany.bind(kv);
+    let fail = true;
+    kv.setMany = async (items) => (fail ? Promise.reject(new Error("full")) : real(items));
+    const store = await reopen(kv);
+    await expect(store.backfill()).rejects.toMatchObject({ reason: "failed" });
+    expect(store.progress.learner!.avatarSeed).toBeUndefined();
+    fail = false;
+    await store.backfill();
+    const seed = store.progress.learner!.avatarSeed;
+    expect(seed).toBeTruthy();
+    // A copy made before the backfill (no seed) and a renamed copy both keep the saved avatar.
+    await store.save({ learner: { ...old(), nickname: "Ada" } });
+    expect(store.progress.learner).toMatchObject({ nickname: "Ada", avatarSeed: seed });
+  });
+
+  test("retry of a failed first save reuses one seed", async () => {
+    const kv = memoryKV();
+    await kv.setMany([["learner", old()]]);
+    const real = kv.setMany.bind(kv);
+    const seen: unknown[] = [];
+    let fail = true;
+    kv.setMany = async (items) => {
+      seen.push((items.find(([k]) => k === "learner")![1] as { avatarSeed: string }).avatarSeed);
+      return fail ? Promise.reject(new Error("full")) : real(items);
+    };
+    const store = await reopen(kv);
+    await expect(store.save({ learner: old() })).rejects.toBeInstanceOf(StorageError);
+    fail = false;
+    await store.save({ learner: old() });
+    expect(seen[0]).toBe(seen[1]);
+    expect(store.progress.learner!.avatarSeed).toBe(seen[0]);
   });
 });
 

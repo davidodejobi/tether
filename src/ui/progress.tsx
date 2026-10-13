@@ -2,6 +2,7 @@
 import { createContext, type ComponentChildren } from "preact";
 import { useCallback, useContext, useEffect, useState } from "preact/hooks";
 import { claimWriter } from "../platform/storage.ts";
+import { setSoundsOn } from "../platform/sound.ts";
 import { memoryKV, openKV } from "../storage/kv.ts";
 import { openProgress, type Batch, type ProgressStore } from "../storage/progress.ts";
 
@@ -29,7 +30,10 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
     setState({ status: "opening" });
     const opener = memory ? async () => ({ kv: memoryKV(), durable: false as const, reason: "unavailable" as const }) : () => openKV();
     openProgress(opener, () => claimWriter()).then(
-      (store) => {
+      async (store) => {
+        // Older records get their sounds default and avatar once, before any screen can save. A failure is
+        // retried with the same seed by the next learner save.
+        await store.backfill().catch(() => {});
         // Saving swaps the store's state; a new context value makes screens re-read it.
         let inFlight: Promise<unknown> = Promise.resolve();
         const save = async (batch: Batch) => {
@@ -47,6 +51,8 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
   }, []);
 
   useEffect(() => open(), [open]);
+  // Sounds follow the saved setting (default off); every save re-renders this, so a change applies at once.
+  useEffect(() => setSoundsOn(state.status === "ready" && state.store.progress.learner?.sounds === true), [state]);
   return <ProgressContext.Provider value={state}>{children}</ProgressContext.Provider>;
 }
 

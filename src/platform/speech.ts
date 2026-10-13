@@ -18,6 +18,9 @@ function pick(lang: Lang): { voice?: SpeechSynthesisVoice; exact: boolean; label
   return { voice, exact: lang === "en", label: lang === "pcm" ? (ng ? "Read in a Nigerian English voice" : "Read in an English voice") : "" };
 }
 
+/** True while the device is reading aloud (or about to); interaction sounds stay quiet meanwhile. */
+export const readingAloud = () => speechOk() && (window.speechSynthesis.speaking || window.speechSynthesis.pending);
+
 export function speak(text: string, lang: Lang = "en") {
   if (!speechOk()) return;
   const synth = window.speechSynthesis;

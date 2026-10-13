@@ -1,6 +1,7 @@
 // The five-question practice round at /practice (spec section 5).
 import { useEffect, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
+import { cue } from "../../platform/sound.ts";
 import { stripDisguise as pack } from "../../content/strip-disguise.ts";
 import { nextPracticeQuestion, type Question } from "../../content/generate.ts";
 import { inOrder } from "../../rules/moment.ts";
@@ -61,7 +62,12 @@ function Round() {
   }, [hasLearner]);
   if (!step || !hasLearner) return null;
 
-  const after = () => setStep(doneInRound(attemptsOf(store.progress)) === 0 ? { kind: "summary" } : begin(store));
+  // The round's last answer is already saved when this runs from Next; the celebration belongs to that action.
+  const after = () => {
+    const roundDone = doneInRound(attemptsOf(store.progress)) === 0;
+    if (roundDone) cue("celebrate");
+    setStep(roundDone ? { kind: "summary" } : begin(store));
+  };
   // The third dot earned by this answer shows the Solo-ready card before the next step; "Keep practising" carries on.
   const earnedThird = (a: PracticeAttempt) => {
     const dotsNow = (all: readonly PracticeAttempt[]) => readiness(all, runStartsOf(store.progress)).dots;

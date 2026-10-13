@@ -19,6 +19,7 @@
 // for Retry (the same batch), every mutating or advancing control is disabled. Close stays enabled.
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { cue } from "../../platform/sound.ts";
 import { speak, speechOk, useVoiceNote } from "../../platform/speech.ts";
 import { stripDisguise } from "../../content/strip-disguise.ts";
 import type { Pack } from "../../content/types.ts";
@@ -112,6 +113,9 @@ export function QuestionView(props: QuestionViewProps) {
   const [busy, setBusy] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const root = useRef<HTMLDivElement>(null);
+  // A save that lands after the learner left this screen plays no cue; the restored question is silent too.
+  const mounted = useRef(true);
+  useEffect(() => () => void (mounted.current = false), []);
 
   const done = attempt.completedAt !== undefined;
   const misses = attempt.checks - (attempt.correctOnCheck ? 1 : 0);
@@ -147,6 +151,12 @@ export function QuestionView(props: QuestionViewProps) {
     if (!store.progress.attempts.has(attempt.id)) void commit(attemptBatch(attempt, struck));
   }, []);
 
+  // Choosing a tile only fills the blank: a quiet selection cue, no grading.
+  const choose = (i: number) => {
+    if (i !== selected) cue("select");
+    setSelected(i);
+  };
+
   const doCheck = () => {
     if (selected === null || done || blocked) return;
     const word = q.options[selected]!;
@@ -157,6 +167,7 @@ export function QuestionView(props: QuestionViewProps) {
       setAttempt(next);
       setStruck(nextStruck);
       if (!ok) setSelected(null);
+      if (mounted.current) cue(ok ? "correct" : "tryAgain"); // only after the save landed; Retry runs this once on success
     });
   };
 
@@ -207,7 +218,7 @@ export function QuestionView(props: QuestionViewProps) {
       const to = targetTile(e.key, selected ?? 0, tiles.map((x) => !!x.struck));
       if (to !== null) {
         e.preventDefault();
-        setSelected(to);
+        choose(to);
         root.current?.querySelectorAll<HTMLElement>('[role="radio"]')[to]?.focus(); // so Enter then checks
       }
     }
@@ -277,12 +288,12 @@ export function QuestionView(props: QuestionViewProps) {
         {failed && (
           <div class="qv-fail" role="alert">
             <span>Couldn't save this answer. Your progress may not be kept.</span>
-            <Button variant="secondary" disabled={busy} onClick={failed}>Retry</Button>
+            <Button variant="secondary" silent disabled={busy} onClick={failed}>Retry</Button>
           </div>
         )}
 
         {!hidden && (
-          <AnswerTiles tiles={tiles} value={done ? q.options.indexOf(q.answer) : selected} correct={done ? q.options.indexOf(q.answer) : null} disabled={blocked} onSelect={setSelected} />
+          <AnswerTiles tiles={tiles} value={done ? q.options.indexOf(q.answer) : selected} correct={done ? q.options.indexOf(q.answer) : null} disabled={blocked} onSelect={choose} />
         )}
         <p class="qv-keys" aria-hidden="true">
           <Key k="1–4">Pick</Key><Key k="Enter">Check</Key><Key k="R">Read aloud</Key>{origin === "practice" && <Key k="S">Show me</Key>}
@@ -303,7 +314,7 @@ export function QuestionView(props: QuestionViewProps) {
         <footer class="qv-bar">
           {learner.coach === "character" && <Bo pose={misses > 1 ? "concerned" : "idle"} size={48} />}
           <Button variant="secondary" disabled={blocked} onClick={showMe}>Show me</Button>
-          <Button disabled={selected === null || blocked} onClick={doCheck}>Check</Button>
+          <Button silent disabled={selected === null || blocked} onClick={doCheck}>Check</Button>
         </footer>
       )}
 
