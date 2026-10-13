@@ -185,7 +185,8 @@ function Runner({ kind }: { kind: RunKind }) {
       const t = Date.now();
       setNow(t);
       const cur = live.current;
-      if (!cur || ended.current || cur.run.status !== "active") return;
+      // While hidden nothing is decided: coming back judges the absence first, then the deadline (as recoverRun does).
+      if (!cur || ended.current || cur.run.status !== "active" || hiddenAt.current !== null || document.visibilityState === "hidden") return;
       if (clockWentBack(cur.run, t)) return convertRun("converted", "clock");
       if (t >= cur.run.deadline && pending === 0) finishRun(t);
     }, TICK_MS);

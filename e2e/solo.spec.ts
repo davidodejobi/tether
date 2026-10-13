@@ -270,3 +270,18 @@ test("hiding right after an answer does not erase it: the visibility save is bui
   await expect(heading(page, 3)).toBeVisible();
   await expect.poll(async () => (await activeRun(page)).run.submissions.length, { timeout: 3000 }).toBe(2);
 });
+
+test("a run hidden past its deadline converts on return instead of finishing while away", async ({ page }) => {
+  await page.clock.install();
+  await start(page);
+  await answer(page, true, 1);
+  await expect(heading(page, 2)).toBeVisible();
+  await hide(page, true);
+  await page.clock.fastForward("10:30");
+  await hide(page, false);
+  await expect(page.getByRole("heading", { name: "You were away too long" })).toBeVisible();
+  const [r] = await runs(page);
+  expect(r.run.status).toBe("converted");
+  expect(r.run.result).toBeUndefined();
+  expect(await idb(page, (rows) => rows.filter(([k]) => String(k).startsWith("cycle:")))).toHaveLength(0);
+});
