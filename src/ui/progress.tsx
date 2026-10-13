@@ -2,6 +2,7 @@
 import { createContext, type ComponentChildren } from "preact";
 import { useCallback, useContext, useEffect, useState } from "preact/hooks";
 import { claimWriter } from "../platform/storage.ts";
+import { setSoundsOn } from "../platform/sound.ts";
 import { memoryKV, openKV } from "../storage/kv.ts";
 import { openProgress, type Batch, type ProgressStore } from "../storage/progress.ts";
 
@@ -50,6 +51,8 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
   }, []);
 
   useEffect(() => open(), [open]);
+  // Sounds follow the saved setting (default off); every save re-renders this, so a change applies at once.
+  useEffect(() => setSoundsOn(state.status === "ready" && state.store.progress.learner?.sounds === true), [state]);
   return <ProgressContext.Provider value={state}>{children}</ProgressContext.Provider>;
 }
 
