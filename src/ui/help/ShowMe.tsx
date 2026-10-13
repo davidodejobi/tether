@@ -15,11 +15,13 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Question } from "../../content/generate.ts";
 import type { Lang } from "../../content/types.ts";
+import { autoLine, speak, speechOk, useCanSpeak } from "../../platform/speech.ts";
 import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
 import { Icon } from "../components/Icon";
 import { Key } from "../components/Key";
 import { useReducedMotion } from "../onboarding/parts";
+import { useProgressState } from "../progress";
 import { fill, pack } from "./steps.ts";
 import "../onboarding/onboarding.css";
 import "./help.css";
@@ -76,6 +78,9 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
   const [playing, setPlaying] = useState(!reduced);
   const [run, setRun] = useState(0);
   const captions = pack.coach[lang].showMe.map((t, i) => fill(pack, t, q, lang, i === 2));
+  const progress = useProgressState();
+  const canSpeak = useCanSpeak();
+  const on = canSpeak && progress.status === "ready" && progress.store.progress.learner?.readAloud === true;
   const auto = playing && !reduced && beat < 3;
 
   useEffect(() => {
@@ -94,6 +99,14 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
   useEffect(() => {
     if (reduced) caption.current?.focus();
   }, [beat, reduced]);
+
+  // Read-aloud: each beat's caption (the teaching instruction) is spoken once as the beat appears, also with reduced motion.
+  const line = captions[beat - 1] ?? "";
+  useEffect(() => {
+    const text = autoLine(on, document.visibilityState === "hidden", line, null);
+    if (text !== null) speak(text, lang);
+  }, [beat, run, on]);
+  useEffect(() => () => { if (speechOk()) window.speechSynthesis.cancel(); }, []);
 
   const next = () => setBeat((b) => (b < 3 ? ((b + 1) as Beat) : b));
   const replay = () => {
