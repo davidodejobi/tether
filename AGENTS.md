@@ -9,5 +9,6 @@ Move 1: Strip the Disguise. Deliver the full learning loop within 24 hours.
 - Keep this repository self-contained. Bring in planning documents, tokens and
   assets only when needed, and keep their paths local.
 - Keep changes focused on the working learner loop; verify affected behaviour.
+- Commit small, focused chunks; group changes only when they are closely related.
 - Human-reviewed rules generate and grade answers. AI never grades.
 - Never add AI attribution anywhere.
