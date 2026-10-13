@@ -7,6 +7,7 @@ import { startAttempt } from "../../rules/practice.ts";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
 import { Stamp } from "../components/Stamp";
+import { AddToCalendar } from "../offline/AddToCalendar";
 import { ShowMe } from "../help/ShowMe";
 import { useProgress } from "../progress";
 import { resultView, type ResultView } from "./view.ts";
@@ -109,6 +110,7 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
         <GapNote v={v} />
       </div>
       <div class="rs-actions">
+        {p && <AddToCalendar />}
         {v.misses.length > 0 && <Button variant="secondary" onClick={onMisses}>See your misses</Button>}
         {v.passed ? (
           <Button onClick={() => route("/")}>Back to Home</Button>

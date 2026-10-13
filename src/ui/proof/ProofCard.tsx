@@ -4,6 +4,7 @@ import { homeAction, proofStatus } from "../../rules/proof.ts";
 import { resumePoint } from "../../storage/progress.ts";
 import "../components/Button.css";
 import { Stamp } from "../components/Stamp";
+import { AddToCalendar } from "../offline/AddToCalendar";
 import { useProgress } from "../progress";
 import { appNow, demoOn, demoQuery, simulatedDate } from "./simulate";
 import "./proof.css";
@@ -35,6 +36,7 @@ export function ProofCard() {
           </div>
         </div>
       )}
+      <AddToCalendar />
       <div class="pc-actions">
         {sim && (action === "recheck" || action === "recover") ? (
           // Read-only preview: nothing here starts a run, so a simulated day cannot change saved progress.

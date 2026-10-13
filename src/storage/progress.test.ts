@@ -347,3 +347,16 @@ describe("storage failures and versions", () => {
     await expect(other.save({ learner: newLearner("Amaka") })).rejects.toMatchObject({ reason: "otherTab" });
   });
 });
+
+describe("calendar uses (spec section 11)", () => {
+  test("are kept locally across reopen, learner-independent, and not written by a read-only tab", async () => {
+    const kv = idbKV(freshDb());
+    const store = await reopen(kv);
+    await store.recordCalendarUse(T0);
+    await store.recordCalendarUse(T0 + 5);
+    expect((await reopen(kv)).calendarUseTimes).toEqual([T0, T0 + 5]);
+    const other = await reopen(kv, false);
+    await other.recordCalendarUse(T0 + 9);
+    expect((await reopen(kv)).calendarUseTimes).toEqual([T0, T0 + 5]);
+  });
+});
