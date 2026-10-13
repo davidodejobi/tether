@@ -49,6 +49,7 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish }: { ques
         ))}
         <li class="ls-steps-text">Step {step} of 3</li>
       </ol>
+      {unreviewed && <span class="coach-tag">Unreviewed</span>}
       <h2 class="hp-prompt" ref={heading} tabIndex={-1} key={step}>{step === 1 ? c.subject : step === 2 ? c.count : c.verb}</h2>
       {step === 1 && (
         <div class="hp-chips" role="group" aria-label="Words in the sentence">

@@ -107,6 +107,7 @@ export function ShowMe({ question: q, lang, coach, onDone, doneLabel = "Put it i
             <section class="ls-card sm-card" key={n}>
               <Sentence q={q} beat={n as Beat} />
               <p class="sr-only">{plain(q, n as Beat)}</p>
+              {unreviewed && <span class="coach-tag">Unreviewed</span>}
               {n === beat ? <h3 class="sm-caption" ref={caption} tabIndex={-1}>{captions[n - 1]}</h3> : <p class="sm-caption">{captions[n - 1]}</p>}
             </section>
           ))
@@ -116,10 +117,16 @@ export function ShowMe({ question: q, lang, coach, onDone, doneLabel = "Put it i
             <p class="sr-only">{plain(q, beat)}</p>
           </div>
         )}
-        {!reduced && <p class="sm-caption" role="status" aria-live="polite">{captions[beat - 1]}</p>}
+        {!reduced && (
+          <div>
+            {unreviewed && <span class="coach-tag">Unreviewed</span>}
+            <p class="sm-caption" role="status" aria-live="polite">{captions[beat - 1]}</p>
+          </div>
+        )}
         {note && <p class="sm-chip">{note}</p>}
         <aside class="ls-rule">
           <Icon name="lightbulb" size={20} /> <strong>{pack.title}</strong>
+          {unreviewed && <span class="coach-tag">Unreviewed</span>}
           <p>{pack.coach[lang].rule}</p>
         </aside>
       </div>
