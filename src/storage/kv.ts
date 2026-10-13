@@ -26,29 +26,38 @@ export function memoryKV(): KV {
   };
 }
 
-const withTimeout = <T>(p: Promise<T>, ms: number) =>
-  Promise.race([p, new Promise<never>((_, reject) => setTimeout(() => reject(new Error("storage timed out")), ms))]);
+export type Opened =
+  | { kv: KV; durable: true }
+  /** Storage is missing or failing: progress lives in memory and the app must say so before learning starts. */
+  | { kv: KV; durable: false; reason: "unavailable" }
+  /** Storage did not answer in time and may already hold progress: offer retry, or memory only if the learner chooses. */
+  | { kv: null; durable: false; reason: "timedOut" };
 
-/**
- * Opens IndexedDB and proves it works with a write, read and delete. Missing, blocked or failing storage
- * falls back to memory with `durable: false`, so the app can say progress is temporary before learning starts.
- */
-export async function openKV(dbName = "tether", timeoutMs = 3000): Promise<{ kv: KV; durable: boolean }> {
+const TIMED_OUT = Symbol("timedOut");
+
+async function probeIdb(dbName: string): Promise<void> {
+  const store = createStore(dbName, "records");
+  const key = "meta:probe";
+  const value = Date.now();
+  await set(key, value, store);
+  if ((await get(key, store)) !== value) throw new Error("storage probe mismatch");
+  await del(key, store);
+}
+
+/** Opens IndexedDB and proves it works with a write, read and delete before any progress is trusted to it. */
+export async function openKV(dbName = "tether", timeoutMs = 3000, probe = probeIdb): Promise<Opened> {
+  if (typeof indexedDB === "undefined") return { kv: memoryKV(), durable: false, reason: "unavailable" };
+  let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    if (typeof indexedDB === "undefined") throw new Error("IndexedDB unavailable");
-    const store = createStore(dbName, "records");
-    const probe = `meta:probe`;
-    await withTimeout(
-      (async () => {
-        const value = Date.now();
-        await set(probe, value, store);
-        if ((await get(probe, store)) !== value) throw new Error("storage probe mismatch");
-        await del(probe, store);
-      })(),
-      timeoutMs,
-    );
+    const outcome = await Promise.race([
+      probe(dbName),
+      new Promise<typeof TIMED_OUT>((resolve) => (timer = setTimeout(() => resolve(TIMED_OUT), timeoutMs))),
+    ]);
+    if (outcome === TIMED_OUT) return { kv: null, durable: false, reason: "timedOut" };
     return { kv: idbKV(dbName), durable: true };
   } catch {
-    return { kv: memoryKV(), durable: false };
+    return { kv: memoryKV(), durable: false, reason: "unavailable" };
+  } finally {
+    clearTimeout(timer);
   }
 }

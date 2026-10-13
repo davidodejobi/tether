@@ -10,6 +10,7 @@ import {
   cleanNickname,
   completeRunBatch,
   newLearner,
+  openProgress,
   ProgressStore,
   recoverRun,
   resumePoint,
@@ -203,9 +204,9 @@ describe("storage failures and versions", () => {
     // @ts-expect-error simulating a browser without IndexedDB
     delete globalThis.indexedDB;
     try {
-      const { kv, durable } = await openKV(freshDb());
-      expect(durable).toBe(false);
-      const store = await ProgressStore.open(kv, { durable, writer: true });
+      const opened = await openKV(freshDb());
+      expect(opened).toMatchObject({ durable: false, reason: "unavailable" });
+      const store = await openProgress(async () => opened, async () => "owner");
       expect(store.durable).toBe(false);
     } finally {
       globalThis.indexedDB = original;
@@ -214,6 +215,31 @@ describe("storage failures and versions", () => {
 
   test("working IndexedDB is reported as durable", async () => {
     expect((await openKV(freshDb())).durable).toBe(true);
+  });
+
+  test("storage that fails its probe falls back to temporary memory", async () => {
+    const opened = await openKV(freshDb(), 1000, async () => {
+      throw new Error("blocked");
+    });
+    expect(opened).toMatchObject({ durable: false, reason: "unavailable" });
+  });
+
+  test("storage that does not answer in time is not replaced by an empty store", async () => {
+    const opened = await openKV(freshDb(), 20, () => new Promise(() => {}));
+    expect(opened).toEqual({ kv: null, durable: false, reason: "timedOut" });
+    await expect(openProgress(async () => opened, async () => "owner")).rejects.toMatchObject({ reason: "timedOut" });
+  });
+
+  test("one save at a time: a second save while one is in flight is refused", async () => {
+    let release!: () => void;
+    let calls = 0;
+    const slow: KV = { entries: async () => [], setMany: () => (++calls === 1 ? new Promise<void>((r) => (release = r)) : Promise.resolve()) };
+    const store = await reopen(slow);
+    const first = store.save({ learner: newLearner("Amaka") });
+    await expect(store.save({ learner: newLearner("Amaka") })).rejects.toMatchObject({ reason: "busy" });
+    release();
+    await first;
+    await expect(store.save({ learner: newLearner("Amaka") })).resolves.toBeUndefined();
   });
 
   test("data from a newer app version opens read-only and is never rewritten", async () => {

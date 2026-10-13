@@ -5,7 +5,7 @@ import { inOrder, nextMoment, type Moment } from "../rules/moment.ts";
 import { asksReason, type PracticeAttempt } from "../rules/practice.ts";
 import { applyRun, type ProofCycle } from "../rules/proof.ts";
 import { convert, finish, onReturn, type Run } from "../rules/runs.ts";
-import type { KV } from "./kv.ts";
+import type { KV, Opened } from "./kv.ts";
 
 export const SCHEMA_VERSION = 1;
 const NICKNAME_MAX = 30;
@@ -51,7 +51,7 @@ export type ReadOnlyReason = "newerSchema" | "otherTab";
 
 export class StorageError extends Error {
   constructor(
-    readonly reason: "failed" | ReadOnlyReason,
+    readonly reason: "failed" | "busy" | "timedOut" | ReadOnlyReason,
     cause?: unknown,
   ) {
     super(`Progress was not saved (${reason})`, { cause });
@@ -100,6 +100,7 @@ function highestMoment(p: Progress, stored: Moment | null): Moment | null {
 
 export class ProgressStore {
   private issued: Moment | null;
+  private saving = false;
 
   private constructor(
     private readonly kv: KV,
@@ -142,9 +143,20 @@ export class ProgressStore {
   /**
    * Saves the batch in one transaction, then updates what the app shows. On failure nothing changes:
    * keep the current screen, offer retry with the same batch and never say the result was saved.
+   * One save at a time: wait for each to finish before advancing, so an older batch can never land after a newer one.
    */
   async save(batch: Batch): Promise<void> {
     if (this.readOnly) throw new StorageError(this.readOnly);
+    if (this.saving) throw new StorageError("busy");
+    this.saving = true;
+    try {
+      await this.write(batch);
+    } finally {
+      this.saving = false;
+    }
+  }
+
+  private async write(batch: Batch): Promise<void> {
     const items: [string, unknown][] = [
       [KEY.schema, SCHEMA_VERSION],
       [KEY.lastMoment, this.issued],
@@ -226,10 +238,12 @@ export const attemptsOf = (p: Progress) => [...p.attempts.values()].map((s) => s
 export const runStartsOf = (p: Progress) => [...p.runs.values()].map((s) => s.run.started);
 
 /** Opens this device's progress: IndexedDB if it works, the single-writer lock, then the saved records. */
+/** Throws StorageError("timedOut") when storage did not answer: offer retry rather than starting empty. */
 export async function openProgress(
-  open: () => Promise<{ kv: KV; durable: boolean }>,
+  open: () => Promise<Opened>,
   claim: () => Promise<"owner" | "taken" | "unsupported">,
 ): Promise<ProgressStore> {
-  const [{ kv, durable }, writer] = await Promise.all([open(), claim()]);
-  return ProgressStore.open(kv, { durable, writer: writer !== "taken" });
+  const [opened, writer] = await Promise.all([open(), claim()]);
+  if (!opened.kv) throw new StorageError("timedOut");
+  return ProgressStore.open(opened.kv, { durable: opened.durable, writer: writer !== "taken" });
 }
