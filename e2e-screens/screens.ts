@@ -333,3 +333,16 @@ const resultScreens: [string, (page: Page) => Promise<void>][] = [
 ];
 for (const [name, actions] of resultScreens)
   for (const [suffix, width, height] of [["", 360, 800], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions });
+// Step 14: Home (new learner, held and due, fading with a gap) and Settings, at phone, tablet and laptop widths.
+const step14Cycle = (state: string) => ({
+  key: "cycle:strip-disguise",
+  value: { moveId: "strip-disguise", timeZone: "UTC", state, earnedOn: "2026-10-01", anchor: "2026-10-01", entries: [{ id: "2026-10-01+3", day: 3, due: "2026-10-04", status: state === "fading" ? "paused" : "scheduled" }], history: [{ runId: "g1", kind: "solo", on: "2026-10-01", passed: true, entryIds: [] }] },
+});
+const step14: [string, (page: Page) => Promise<void>][] = [
+  ["step14-home-new", (p) => seedRecords(p, [], "/")],
+  ["step14-home-due", (p) => seedRecords(p, [finishedRun("g1", "solo", 8, { n: 1, practice: 10 }), step14Cycle("held")], "/")],
+  ["step14-home-fading", (p) => seedRecords(p, [finishedRun("g1", "solo", 8, { n: 1, practice: 10 }), step14Cycle("fading")], "/")],
+  ["step14-settings", (p) => seedRecords(p, [], "/settings")],
+];
+for (const [name, actions] of step14)
+  for (const [suffix, width, height] of [["-360", 360, 800], ["-768", 768, 1024], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions });

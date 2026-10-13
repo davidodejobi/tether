@@ -13,6 +13,10 @@
 @media (min-width: 1280px) {
   .page.hm { max-width: none; grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); column-gap: var(--spacing-xxxl); }
   .hm-main { display: grid; gap: var(--spacing-md); align-content: start; }
-  .hm .hm-settings { display: none; } /* the rail has Settings from here */
+  .page.hm a.hm-settings { display: none; } /* the rail has Settings from here */
   .hm .hm-scroll { height: calc(100dvh - var(--spacing-xxxl) * 2 - var(--spacing-xxl)); }
 }
+/* Phone: shell.css pads pages from 768 px; below that the page needs its own gutter. */
+@media (max-width: 767px) { .page.hm, .page.st { padding: var(--spacing-md); } }
+.page a.hm-settings { color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
+.page a.btn.hm-solo { text-decoration: none; }

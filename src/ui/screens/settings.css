@@ -12,3 +12,4 @@
 .st-tag { padding: 0 var(--spacing-xs); border: 2px solid var(--border-gap); border-radius: var(--radius-full); background: var(--bg-gap-container); color: var(--text-on-gap-container); font: var(--type-label-m); }
 .st-alert { margin: 0; padding: var(--spacing-sm); background: var(--bg-wrong-container); color: var(--text-on-wrong-container); border: 2px solid var(--border-wrong); border-radius: var(--radius-md); }
 @media (min-width: 1280px) { .page.st { max-width: 40rem; } }
+@media (max-width: 767px) { .page.st { padding-bottom: var(--spacing-xxl); } }

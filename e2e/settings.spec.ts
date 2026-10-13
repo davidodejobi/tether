@@ -1,0 +1,85 @@
+import { expect, test, type Page } from "@playwright/test";
+import { seedRecords } from "./results-helpers";
+
+// IndexedDB writes fail while window.__failWrites is true (see save-failure.spec.ts).
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    const put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...args: [any, any?]) {
+      if ((window as any).__failWrites) throw new DOMException("simulated write failure", "QuotaExceededError");
+      return put.apply(this, args);
+    };
+  });
+});
+const failWrites = (page: Page, on: boolean) => page.evaluate((v) => ((window as any).__failWrites = v), on);
+const learner = (page: Page) =>
+  page.evaluate(() => new Promise<any>((resolve) => {
+    const open = indexedDB.open("tether");
+    open.onsuccess = () => { const r = open.result.transaction("records").objectStore("records").get("learner"); r.onsuccess = () => resolve(r.result); };
+  }));
+const alert = (page: Page) => page.getByRole("alert").filter({ hasText: "Couldn't save this change" });
+
+test("every change saves at once and survives a reload; the avatar seed stays", async ({ page }) => {
+  await seedRecords(page, [], "/settings");
+  await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
+  const seed = (await learner(page)).avatarSeed;
+  expect(seed).toBeTruthy();
+
+  await page.getByLabel("Nickname").fill("Chidi");
+  await page.getByRole("button", { name: "Save nickname" }).click();
+  await expect(page.getByRole("button", { name: "Save nickname" })).toBeDisabled(); // saved: nothing left to save
+  await page.getByRole("radio", { name: "Text only" }).click();
+  await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
+  await page.getByRole("radio", { name: /Pidgin/ }).click();
+  await expect(page.getByRole("radio", { name: /Pidgin/ })).toBeChecked();
+  await page.getByRole("checkbox", { name: "Read-aloud" }).click();
+  await expect(page.getByRole("checkbox", { name: "Read-aloud" })).toBeChecked();
+  await page.getByLabel("Partner name").fill("Ife");
+  await page.getByLabel("Partner phone").fill("0801 234 5678");
+  await page.getByRole("button", { name: "Save partner" }).click();
+  await expect.poll(async () => (await learner(page)).partner).toEqual({ name: "Ife", phone: "0801 234 5678" });
+  await expect(page.getByRole("button", { name: "Save partner" })).toBeDisabled(); // saved, nothing left to save
+
+  await page.reload();
+  await expect(page.getByLabel("Nickname")).toHaveValue("Chidi");
+  await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
+  await expect(page.getByRole("radio", { name: /Pidgin/ })).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Read-aloud" })).toBeChecked();
+  await expect(page.getByLabel("Partner name")).toHaveValue("Ife");
+  await expect(page.getByLabel("Partner phone")).toHaveValue("0801 234 5678");
+  expect(await learner(page)).toMatchObject({ nickname: "Chidi", coach: "text", lang: "pcm", readAloud: true, partner: { name: "Ife", phone: "0801 234 5678" }, avatarSeed: seed });
+
+  // Clearing both partner fields removes the partner.
+  await page.getByLabel("Partner name").fill("");
+  await page.getByLabel("Partner phone").fill("");
+  await page.getByRole("button", { name: "Save partner" }).click();
+  await expect.poll(async () => (await learner(page)).partner).toBeNull();
+});
+
+test("language labels Pidgin unreviewed and lists Français as not selectable", async ({ page }) => {
+  await seedRecords(page, [], "/settings");
+  await expect(page.getByText("Unreviewed")).toBeVisible();
+  await expect(page.getByText("Coming next: Français. More languages later.")).toBeVisible();
+  await expect(page.getByRole("radio", { name: /Fran/ })).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "Read-aloud" })).not.toBeChecked();
+});
+
+test("a failed save keeps the old value and Retry repeats the same change", async ({ page }) => {
+  await seedRecords(page, [], "/settings");
+  await expect(page.getByRole("radio", { name: "Character" })).toBeChecked();
+  await failWrites(page, true);
+  await page.getByRole("radio", { name: "Text only" }).click();
+  await expect(alert(page)).toBeVisible();
+  await expect(page.getByRole("radio", { name: "Character" })).toBeChecked(); // old value stays
+  await expect(page.getByRole("radio", { name: "Text only" })).not.toBeChecked();
+
+  await page.getByLabel("Nickname").fill("Nneka");
+  await page.getByRole("button", { name: "Save nickname" }).click();
+  await expect(alert(page)).toBeVisible();
+  expect((await learner(page)).nickname).toBe("Amaka");
+
+  await failWrites(page, false);
+  await page.getByRole("button", { name: "Retry" }).click(); // repeats the nickname change, the latest one
+  await expect(alert(page)).toHaveCount(0);
+  expect((await learner(page)).nickname).toBe("Nneka");
+});

@@ -70,7 +70,7 @@ contract. Bring supporting files into this repository only when needed.
   timer, 4/5 pass, due/overdue entry, Held/Fading states and recovery scheduling.
   Include labelled simulated dates for demonstration without altering real records.
   Done: day-3/7/14, late checks and recovery behave according to the spec.
-- [ ] **14. Complete Home and Settings.** Import only needed map assets; use
+- [x] **14. Complete Home and Settings.** Import only needed map assets; use
   accessible HTML nodes, correct proof states and Coming soon labels. Provide one
   primary action, solo entry, reachable Settings, partner preferences, coach style,
   language and read-aloud. Preserve exam content in English; label unreviewed Pidgin.
