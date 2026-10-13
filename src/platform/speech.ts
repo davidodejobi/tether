@@ -1,6 +1,6 @@
 // Read-aloud through the device's own speech (spec section 13). Exam sentences stay English; coach text uses
 // the selected language. Never promised: callers check speechOk() and keep text controls usable without it.
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { Lang } from "../content/types.ts";
 
 export const speechOk = () => typeof window !== "undefined" && "speechSynthesis" in window;
@@ -62,4 +62,23 @@ export function useCanSpeak(): boolean {
     return () => (synth.removeEventListener("voiceschanged", on), clearTimeout(t));
   }, []);
   return speechOk() && (!waited || window.speechSynthesis.getVoices().length > 0);
+}
+
+/** The line to speak now, or null: only a new, non-empty line, only when read-aloud is on, speech works and the tab is visible. */
+export const autoLine = (on: boolean, hidden: boolean, text: string, last: string | null) =>
+  on && !hidden && text && text !== last ? text : null;
+
+/** Speaks the coach line in `ref` once when read-aloud is on (spec sections 10, 13); stops it when the bubble goes away.
+ *  `on` is learner.readAloud and useCanSpeak() together. Runs after every render; the last spoken text prevents repeats. */
+export function useAutoSpeak(ref: { current: HTMLElement | null }, lang: Lang, on: boolean) {
+  const last = useRef<string | null>(null);
+  useEffect(() => {
+    const text = autoLine(on, document.visibilityState === "hidden", ref.current?.textContent?.trim() ?? "", last.current);
+    if (!on) last.current = null;
+    if (text === null) return;
+    last.current = text;
+    speak(text, lang);
+  });
+  // ponytail: cancels on any unmount of a bubble that spoke; a sibling bubble's speech is replaced by its own speak() anyway.
+  useEffect(() => () => { if (last.current !== null && speechOk()) window.speechSynthesis.cancel(); }, []);
 }
