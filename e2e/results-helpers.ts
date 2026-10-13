@@ -3,7 +3,7 @@ import { LEARNER } from "./practice-helpers";
 
 const DAY = 86_400_000;
 const NOW = Date.now();
-const q = (i: number) => ({ id: `q${i}`, moveId: "strip-the-disguise", contentVersion: 1, subject: "The teacher", covered: "as well as the pupils", predicate: "the room", number: "sg", pairing: "x", options: ["enters", "enter", "entering", "entered"], answer: "enters" });
+const q = (i: number) => ({ id: `q${i}`, moveId: "strip-disguise", contentVersion: 1, subject: "The teacher", covered: "as well as the pupils", predicate: "the room", number: "sg", pairing: "x", options: ["enters", "enter", "entering", "entered"], answer: "enters" });
 
 /** A finished run as the app saves it: `{run, questions}` under key `run:<id>`. `daysAgo` orders it; seq makes the true order. */
 export function finishedRun(id: string, kind: "solo" | "recheck", score: number, opts: { n: number; practice?: number | null; daysAgo?: number; purpose?: "scheduled" | "recovery" }) {
@@ -23,9 +23,9 @@ export function finishedRun(id: string, kind: "solo" | "recheck", score: number,
 
 export function cycle(state: "proved" | "held" | "fading", firstRunId: string, anchor: string, due: string) {
   return {
-    key: "cycle:strip-the-disguise",
+    key: "cycle:strip-disguise",
     value: {
-      moveId: "strip-the-disguise", timeZone: "UTC", state, earnedOn: anchor, anchor,
+      moveId: "strip-disguise", timeZone: "UTC", state, earnedOn: anchor, anchor,
       entries: [{ id: `${anchor}+3`, day: 3, due, status: "scheduled" }],
       history: [{ runId: firstRunId, kind: "solo", on: anchor, passed: true, entryIds: [] }],
     },
