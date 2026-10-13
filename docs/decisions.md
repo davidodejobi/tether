@@ -60,3 +60,5 @@ These decisions override conflicting text in `requirements.txt`.
 - Dots are derived from the attempt timeline plus run start times, so an unfinished question with a miss still resets them.
 - An unknown absence on reopen is passed as `null` and converts the run.
 - Open question for the owner: as written, §8 counts a shrinking gap as improvement when practice falls and alone stays the same (pinned by a test). Requiring alone to rise would stop a falling practice score reading as progress.
+- For step 5: store attempts and runs keyed by ID. `practiceScore` and `readiness` assume each attempt appears once, so keyed storage is what keeps a duplicate save from inflating scores.
+- For step 11: save `lastSeenAt` on `visibilitychange` (hidden), on `pagehide` and on a short heartbeat. `onReturn` judges a reopen from it, so a stale value would convert a run that should resume.
