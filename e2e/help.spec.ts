@@ -5,8 +5,10 @@ import { stripDisguise as pack } from "../src/content/strip-disguise.ts";
 const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, coach: "character", lang: "en", readAloud: false, partner: null, schemaVersion: 1 };
 type Saved = { attempt: PracticeAttempt; question: { answer: string; options: string[]; covered: string; number: "sg" | "pl" }; struck?: string[] };
 
-async function seed(page: Page) {
+async function seed(page: Page, learner: object = LEARNER) {
   await page.goto("/");
+  // The app creates the database on startup; seeding before that would race it (a bare open() makes an empty one).
+  await page.getByRole("button", { name: "Start" }).waitFor();
   await page.evaluate(
     (learner) =>
       new Promise<void>((resolve, reject) => {
@@ -18,7 +20,7 @@ async function seed(page: Page) {
           tx.oncomplete = () => resolve();
         };
       }),
-    LEARNER,
+    learner,
   );
   await page.goto("/practice");
 }

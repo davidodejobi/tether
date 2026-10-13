@@ -5,6 +5,8 @@ export const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, c
 // Writes the learner straight into the app's IndexedDB (db "tether", store "records"), then opens practice.
 export async function seed(page: Page, learner: object = LEARNER) {
   await page.goto("/");
+  // The app creates the database on startup; seeding before that would race it (a bare open() makes an empty one).
+  await page.getByRole("button", { name: "Start" }).waitFor();
   await page.evaluate(
     (learner) =>
       new Promise<void>((resolve, reject) => {

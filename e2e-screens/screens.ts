@@ -10,6 +10,8 @@ const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, coach: "
 /** Writes a learner into the app's IndexedDB, then opens `path`. */
 export async function seedLearner(page: Page, path: string, patch: Record<string, unknown> = {}) {
   await page.goto("/");
+  // The app creates the database on startup; seeding before that would race it (a bare open() makes an empty one).
+  await page.getByRole("button", { name: "Start" }).waitFor();
   await page.evaluate(
     (learner) =>
       new Promise<void>((resolve) => {
