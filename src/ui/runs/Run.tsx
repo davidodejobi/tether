@@ -391,6 +391,7 @@ function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of
             <Icon name="speaker" size={20} /> Read aloud
           </button>
         )}
+        {!speechOk() && <p class="qv-source">Read aloud isn't available on this device.</p>}
       </section>
       <AnswerTiles tiles={q.options.map((label) => ({ label }))} value={sel} disabled={busy} onSelect={(i) => setSel(i)} />
       <div class="run-bar">

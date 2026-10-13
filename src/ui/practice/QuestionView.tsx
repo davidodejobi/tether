@@ -112,6 +112,7 @@ export function QuestionView(props: QuestionViewProps) {
   const [failed, setFailed] = useState<(() => Promise<boolean>) | null>(null);
   const [busy, setBusy] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
+  const moveBtn = useRef<HTMLButtonElement>(null); // the opener is disabled while the open is saved, so the browser cannot restore focus to it
   const root = useRef<HTMLDivElement>(null);
   // A save that lands after the learner left this screen plays no cue; the restored question is silent too.
   const mounted = useRef(true);
@@ -271,7 +272,7 @@ export function QuestionView(props: QuestionViewProps) {
       </header>
 
       <main class="qv-main">
-        <button type="button" class="qv-move" disabled={blocked} onClick={openSheet}>
+        <button ref={moveBtn} type="button" class="qv-move" disabled={blocked} onClick={openSheet}>
           <Icon name="lightbulb" size={20} />
           <span>The move: {pack.title}</span>
           <Icon name="chevron-right" size={20} />
@@ -286,6 +287,7 @@ export function QuestionView(props: QuestionViewProps) {
             <Icon name="speaker" size={20} /> Read aloud
           </button>
         )}
+        {!speechOk() && <p class="qv-source">Read aloud isn't available on this device. The text is all here.</p>}
 
         <div class="qv-status" role="status" aria-live="polite">
           {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, blocked, finish: exit })}
@@ -352,7 +354,7 @@ export function QuestionView(props: QuestionViewProps) {
 
       {props.overlay}
 
-      <dialog ref={dialog} class="qv-sheet" aria-labelledby="qv-sheet-title">
+      <dialog ref={dialog} class="qv-sheet" aria-labelledby="qv-sheet-title" onClose={() => moveBtn.current?.focus()}>
         <Icon name="lightbulb" size={32} />
         <h2 id="qv-sheet-title">The move: {pack.title}</h2>
         <CoachBubble mode={learner.coach} pose="idle" unreviewed={lang === "pcm" && pack.review.pcm.status !== "approved"}>
