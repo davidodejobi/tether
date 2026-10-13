@@ -97,7 +97,7 @@ test("leaving and returning mid-save, then Retry, never brings back an older val
   await page.getByRole("link", { name: "Settings" }).click();
   await page.evaluate(() => ((window as any).__slowWrites = 0));
   await failWrites(page, true);
-  await page.getByRole("radio", { name: /Pidgin/ }).click(); // waits until the earlier save has landed
+  await page.getByRole("radio", { name: /Pidgin/ }).click(); // applied once the earlier save has landed
   await expect(alert(page)).toBeVisible();
   await failWrites(page, false);
   await page.getByRole("button", { name: "Retry" }).click();
