@@ -1,0 +1,409 @@
+TETHER: PRODUCT REQUIREMENTS
+Version: 1.1, 12 Oct 2026
+Owner: David
+
+==================================================
+VERSION 1.1: 12 Oct 2026. WHAT CHANGED SINCE 1.0 AND WHY
+==================================================
+
+- One-liner and MVP scope: the MVP is a demo of the full loop on JAMB Use of English concord; other subjects, WAEC/NECO and other countries come later and show only as "Coming soon". Why: keeps the build honest and small.
+- Onboarding is now learn first, set up later (Welcome, Nickname, Learn the move, 3 questions, first win, "Make Tether yours"). Why: the old setup put five questions before the learner had seen any value. The subjects step is gone because only one subject exists.
+- Diagnostic is 5 questions, skippable, and only suggests a starting level. The first "alone" score and the gap come from the first 10-question solo checkpoint. Why: one meaning of "alone", and one baseline out of 10.
+- Practice runs in rounds of 5 with a summary; "Another 5" is the main action and nothing is walled. Why: spaced practice, a finish line for short attention spans, a moment to reflect. The success metric is return, not minutes.
+- "How did you know?" now follows an honesty rule: "I used the move" gives a dot (checked on a random 1 in 3); "It sounded right" and "I guessed" pause the streak without penalty. Why: the old rule punished honesty (research/honesty-rule.md).
+- "With help" and "alone" now have written definitions, and the gap shows only when both scores exist. Why: learners could not tell what the two numbers meant.
+- A nudge counts as help, with no label on the nudge itself. Why: the miss already says it; a label adds shame, not information.
+- Solo has a grace period (under 10 s away continues; 10 s or more becomes practice) and a wake lock. Solo is never locked: solo-ready is a recommendation with "Try anyway". Why: calls and screen locks are normal on shared phones, and "never locks anything" must hold everywhere.
+- A recheck miss fades the stamp (one word, no lock icon) with a stated win-back rule, and the level stays open. Why: a fade should feel fixable, not like punishment.
+- Partner sharing is wins only (Proved/Held stamps, gap improvements), always started by the learner, in plain language. On shared laptops: "Download card" or QR, not WhatsApp Web. Why: teenagers hide the app if a miss goes to a parent; shared laptops leak accounts.
+- Coach has a name (Bo) and a setting: Character / Text only / Auto. Coach words always stay; Bo is absent in solo, recheck, gap card and share. Why: some learners ignore or dislike a mascot, but the words are the teaching.
+- Answers use tap-to-fill (the blank in the sentence is the stage; still 4 options, accessible as a radio group). Why: faster, clearer, and FR2 is unchanged.
+- Breakpoints are defined: phone 360 (base), tablet 768, laptop 1366x768. Why: many learners use budget laptops.
+- Moves 2 to 5 show as "Coming soon" in the pilot; every built level is open. Why: the map must not show features that do not work.
+- Return cues added (Add to calendar, install prompt, "Ready offline"). The "returns without a reminder" metric is now measured separately for learners who used Add to calendar. Why: those cues are reminders.
+- Profiles on a shared device and export/restore are designed but stay "Could" for build. Why: they add scope.
+- Parental consent for under-18 testers is now a hard condition before any pilot session (NDPA 2023). Why: it blocks testing if missed.
+- Open questions are updated: five answered, the rest listed with what the pilot must check. Why: the design work answered most of them.
+
+- 13 Oct 2026: target score removed (owner decision). Everyone wants a high score, so asking changed nothing in the app. Home has no Target tag, and onboarding and Settings no longer ask for a target.
+- 13 Oct 2026 additions for the capstone brief: FR28 rule source line, FR29 language list with French next, FR30 "What a JAMB score opens" card; target score removed. Why: the brief asks for traceable sources (5.1), multilingual access (5.6) and a link to opportunity (Track 3).
+
+Original 1.0 text follows, updated.
+
+
+Name: Tether (working name). Knowledge tied down so it doesn't drift away: learning that holds without help and stays over time. Tagline: Learning that doesn't drift.
+
+One line: Tether is an offline study app for JAMB candidates that shows the gap between what a learner can do with help and what they can do alone, then closes that gap by teaching one simple thinking move per topic and proving it holds over time.
+
+MVP scope: a demo of the full loop on JAMB Use of English concord. Other subjects, WAEC/NECO and other countries come later; in the pilot they appear only as "Coming soon" and never as working features.
+
+Positioning: Other apps give you the answer. Tether gives you one move that works on any question, and proves you can use it alone.
+
+
+==================================================
+1. PROBLEM
+==================================================
+
+Most JAMB candidates practise a lot but cannot tell what they have actually learned. Help is always on hand (answer keys, explanations, AI tutors), so practice feels like progress even when nothing sticks. The truth shows up only on exam day.
+
+- Scale: JAMB reported 2,243,816 UTME registrations for 2026. About three in four 2024 candidates scored below 200 out of 400.
+- AI makes it worse: a 2025 PNAS study found students who practised with unrestricted AI help scored 17% lower than a control group once the help was removed (Bastani et al., 2025).
+- Data is expensive: 1 GB of mobile data in Nigeria rose from about N288 (2023) to N638 (2025), so heavy apps and constant connectivity exclude many learners.
+
+
+==================================================
+2. USERS
+==================================================
+
+Primary: a Nigerian SS3 student or UTME re-sitter aiming for 200+, studying mostly on a low-cost Android phone with limited data. Some also share a family phone or a budget laptop.
+
+Secondary:
+- Accountability partners (parent, guardian, sponsor, older sibling, tutor) who support the learner and want proof of real progress.
+- Tutorial centres that need students to keep practising properly between classes.
+
+
+==================================================
+3. HOW TETHER IS DIFFERENT
+==================================================
+
+Existing JAMB apps compete on volume and help. Tether competes on proof that learning holds without help.
+
+Existing apps -> Tether
+- Huge past-question banks (Class54 lists 107,000+) -> A few thinking moves; questions generated fresh, nothing to memorise.
+- AI tutor available during practice (TestDriller, DTW, Class54) -> Help and proof are separated; a run with help never counts as "alone".
+- AI-written explanations (ExamGenius) -> Answers come from a human-checked rule; AI never writes keys or grades.
+- One score per test -> Two scores: with help and alone, plus the gap.
+- Explanations tell you the answer -> The learner rebuilds the answer with one move; help steps up only when needed.
+- Any correct answer counts -> "How did you know?" after correct answers; guesses don't count toward solo-ready, and are never punished.
+- Points, badges, leaderboards -> A stamp that fades if the skill isn't held on a recheck.
+- Progress visible only to the student -> A proof card the learner can send to a parent or sponsor.
+- Large downloads (TestDriller about 92 MB) -> Installable web app, content packs of a few KB, works offline.
+
+
+==================================================
+4. CORE CONCEPTS
+==================================================
+
+4.1 The gap
+Every learner has two scores per topic: "with help" (practice) and "alone" (solo checkpoint). The difference is the gap. Example: with help 9/10, alone 4/10, gap 5. The goal is to close it.
+
+Definitions:
+- "With help": how many of the last 10 practice questions were right on the 1st or 2nd try. Answers reached through Show me or Go deeper do not count as right. (Default; to validate in the pilot.)
+- "Alone": the solo checkpoint score only. Practice copy never uses the word "alone".
+- The gap is shown only when both scores exist. A new learner sees "Do 10 practice questions to see your gap." The diagnostic does not produce an "alone" score.
+- One plain sentence explains the gap wherever it appears.
+
+4.2 One move per topic
+Each topic is taught as one thinking move the learner can do in their head on any question of that type.
+Example (concord): "Cover the side phrase. Read what's left. Match the verb."
+JAMB concord is covered by five moves (only move 1 is built for the pilot; moves 2 to 5 show as "Coming soon"):
+  1. Strip the Disguise: "as well as / along with / together with / in addition to" never change the subject.
+     Example: The boy, as well as his friends, IS in the hall.
+  2. Nearest Subject: with either...or / neither...nor, the verb agrees with the closer subject.
+     Example: Neither the teacher nor the students ARE ready.
+  3. Each Means One: each, every, everyone, either, neither, one of take a singular verb.
+     Example: Each of the boys HAS a book.
+  4. Group Words: a group acting as one unit is singular; members acting separately are plural.
+     Example: The committee HAS approved the plan. The committee ARE divided in their opinions.
+  5. Plural-Looking Singulars: news, mathematics, physics, measles, amounts of money or time take a singular verb.
+     Example: Fifty naira IS too much for a pen.
+(Draft content: check every rule and example against the JAMB syllabus.)
+
+Learn the move: the first visit to every level opens with a short 3-beat lesson on an example sentence, ending with "Got it". It may show the answer on its own example sentence, because it is teaching; it never uses a practice sentence. A "The move" chip stays on the practice screen on every device, and opening it is not help.
+
+4.3 Help ladder (per question)
+  1. First try: just the question.
+  2. After 1 miss: one-line nudge ("Cover the side phrase and read it again."), then retry.
+  3. After 2 misses: "Show me" - a short animation of the learner's OWN sentence: the side phrase fades, the subject is highlighted and counted, the correct verb drops in. Then "Put it in yourself".
+  4. After 3 misses: "Go deeper" - the learner taps through it: find the subject, say one or many, pick the verb. Nothing is revealed until the learner builds it.
+  5. Online only: "Still stuck?" - AI rewords the approved explanation.
+"Show me" is available at any time. A nudge, a miss, or a Show me the learner chooses counts as help, and resets the solo-ready streak. A nudge carries no "counts as help" label; the miss already says it.
+The learner never sees the right answer stated before producing it. Only Show me (beat 3), the post-run reviews, and Learn the move on its own example may show it.
+
+4.4 How did you know? (honesty rule)
+After every unaided correct answer the learner picks: "I used the move", "It sounded right" or "I guessed". Buttons look the same, with no colour or order bias.
+- "I used the move": +1 solo-ready dot. On a random 1 in 3 of these, the app asks "Tap the part you covered." A correct tap fills the dot. A wrong tap gives no dot, no penalty and a free Show me; it never says the learner lied.
+- "It sounded right" or "I guessed": the streak stays as it is (no dot, no reset). A Show me is offered once; it is optional, is not counted as help, and is logged with its own tag.
+- Misses, nudges and any Show me the learner chooses on their own still reset the streak and count as help.
+- Learners are told up front: "Sometimes we'll ask you to show it." Onboarding line, once: "Tell us the truth and nothing is lost. Dots only come from using the move. The solo check is what proves it."
+- Escape: after 3 honest non-move answers in a row, a hint offers the "The move" card. Honesty never blocks progress, because solo is never locked.
+- An answer reached with help does not ask "How did you know?" and earns no dot.
+Dots are a pacing signal, not proof. The solo checkpoint and the rechecks are the proof, and dots are not shown as proof on the partner card.
+
+4.5 Proof that lasts
+Passing a solo checkpoint earns a stamp. The topic returns on day 3, 7 and 14 with fresh questions and no help.
+- Pass: the stamp turns solid ("Held").
+- Miss: the stamp fades (one word, no lock icon) and the level stays open. The rule to win it back is stated on screen: fill 3 dots, then pass a 5-question recheck.
+- A late recheck never fades a stamp. A due recheck shows the stamp with a "Due" badge.
+After a pass the learner can choose to send a proof card to an accountability partner (see 5, step 8).
+
+
+==================================================
+5. LEARNER JOURNEY
+==================================================
+
+  1. Welcome and nickname. No account or email.
+  2. Learn the move: a 3-beat lesson on an example sentence, with Bo.
+  3. Three practice questions, then the first win (about 2 minutes).
+  4. Make Tether yours: one short, skippable step covering coach style, coach language (English or Pidgin) and an optional accountability partner. There is no subjects step in the MVP.
+  5. Diagnostic (optional): offered after the first win as "Want your 'alone' score? 5 quick questions, no help." It is skippable, sets nothing but a suggested starting level, and never locks anything.
+  6. Map: each subject is a map of levels, one level per move. Every built level is open; moves 2 to 5 show "Coming soon" in the pilot. A sticky "Continue" button is the main action.
+  7. Practise in rounds of 5: fresh questions one at a time; help ladder on misses; "How did you know?" on unaided correct answers. Each round ends with a summary; "Another 5" is the main button and "Done for today" is always there. The learner is never stopped at the end of a round.
+  8. Solo-ready: three dots (see 4.4). This is a recommendation. Without it, the solo entry says "You're not solo-ready yet. We recommend 3 dots first." with a secondary "Try anyway". The retry after a failed checkpoint works the same way: it recommends, it never blocks.
+  9. Solo checkpoint: 10 fresh questions, timed, no help. The screen stays awake. 8/10 earns a stamp.
+  10. Gap card: with help vs alone, the gap, and how it moved since last time. First "alone" score and first gap come from the first solo checkpoint. After a checkpoint, the learner can review their misses.
+  11. Share proof (optional, learner-initiated): see Sharing below.
+  12. Keep it: "Due today" rechecks on day 3, 7, 14.
+
+Why rounds of 5: spaced practice beats one long block, a visible finish line suits short attention spans, and the summary is a moment to reflect. The success metric is that the learner comes back, not minutes spent.
+
+Sharing:
+- Share appears only on Proved or Held stamps and on gap improvements. A "not yet" result whose gap improved may offer a secondary "Share progress" with real scores and no stamp. There is no Share on a recheck miss, on a fading stamp, or on a "not yet" with no improvement.
+- Nothing is ever sent automatically, and failures or fades are never shared.
+- The partner card uses plain language, shows the gap closing as progress, and gives the partner one action (e.g. "Ask Amaka how it went").
+- On a shared laptop: "Download card" or a QR code instead of WhatsApp Web. No-partner and offline states are covered.
+
+Return cues: "Add to calendar" where the next date is set, an install prompt, and "Ready offline" on Home. "Remind me on WhatsApp" is not in this version.
+
+
+==================================================
+6. MODES
+==================================================
+
+                          Practice           Solo checkpoint       Recheck
+Help ladder               Yes                No                    No
+"Still stuck?" AI         Yes (online)       No                    No
+"How did you know?"       Yes                No                    No
+Timer                     Optional           Yes                   Yes
+Leaving the screen        Allowed            Under 10 s: run       Under 10 s: run
+                                             continues; 10 s or    continues; 10 s or
+                                             more: becomes         more: becomes
+                                             practice              practice
+Screen stays awake        No                 Yes (wake lock)       Yes (wake lock)
+Questions                 Generated fresh    Generated fresh       Generated fresh, on the move
+Length                    Rounds of 5        10 questions          5 questions
+Feeds                     "With help" score  "Alone" score, stamp  Stamp solid or faded
+Pass mark                 None               8/10                  4/5
+Coach (Bo)                Yes                No                    No
+
+Solo and recheck details:
+- Away under 10 s (a call, the screen locking): the run continues, with the toast "Welcome back. Your solo run is still on."
+- Away 10 s or more: the run becomes practice, its answers still count as practice, and the default button is "Start a fresh solo run".
+- States to cover: time almost up, time up, and exit confirm.
+- On laptop, solo and recheck run in focus mode: no nav rail, no help panel.
+
+
+==================================================
+7. CONTENT AND AI
+==================================================
+
+Questions are built on the phone from short, human-checked word lists, so every question has a correct answer by construction. No question bank is written or vetted one by one.
+
+How a question is generated:
+- Each move has a template, e.g. "{subject}, {side phrase}, ___ {predicate}".
+- Each word-list entry carries the fact the rule needs (e.g. subject is singular or plural).
+- Code fills the template and computes the correct option from the rule. Wrong options: the other number plus fixed distractors.
+- About 33 checked lines for one move produce around 480 different sentences.
+- Coach text (move, nudge, "Show me" captions) is written once per move and reused, in English and Pidgin.
+- The position of the correct answer is randomised on every question; it must never always be the same option.
+
+Example generator pack (one file per move):
+{
+  "tool": "strip-disguise",
+  "syllabusObjective": "Concord: subject-verb agreement",
+  "reviewer": "David",
+  "template": "{subject}, {sidePhrase}, ___ {predicate}",
+  "answerRule": "verb.number === subject.number",
+  "subjects": [
+    { "text": "The boy", "number": "sg" },
+    { "text": "The girls", "number": "pl" }
+  ],
+  "sidePhrases": {
+    "sg": ["as well as the other pupils", "together with the teachers"],
+    "pl": ["as well as the coach", "together with the principal"]
+  },
+  "verbs": [
+    { "sg": "is", "pl": "are", "distractors": ["am", "be"],
+      "predicates": ["in the hall.", "ready for the exam."] }
+  ],
+  "coach": {
+    "move":  { "en": "Cover the side phrase. Read what's left.", "pcm": "Cover the side talk. Read wetin remain." },
+    "nudge": { "en": "Cover the side phrase and read it again.", "pcm": "Cover the side talk, read am again." },
+    "showMe": {
+      "en":  ["Cover the side phrase.", "Count what's left: {count}.", "{count} -> \"{answer}\"."],
+      "pcm": ["Cover the side talk.", "Count wetin remain: {count}.", "{count} -> \"{answer}\"."]
+    }
+  },
+  "pcmReviewed": false
+}
+
+Generation works for rule-based topics: concord, tenses, maths with numbers computed by code. Comprehension and literature still need written, checked questions and are not in this version.
+
+Where AI is used:
+- Building word lists and templates: suggests entries; a person approves every line.
+- Pidgin coach text: drafts it; labelled "Unreviewed" until a native speaker checks it.
+- "Still stuck?" in practice: rewords the approved explanation, grounded on it, labelled as AI (online only).
+- Building the app: coding agents.
+- Generating questions, marking answers, scoring: NEVER.
+- Coach style "Auto" uses simple on-device rules, not AI.
+
+Rule: AI helps the learner understand. The rule decides the answer. AI never marks you.
+
+Coach (Bo):
+- Bo is a green balloon anchored by a blue book: knowledge is what stops you drifting. Poses: Idle, Thinking, Nudge, Pleased, Concerned (always kind, never angry), Wave.
+- Coach style setting: Character / Text only / Auto (default Auto). Text only shows the same words in a quiet card with a small tether icon. The coach's words (the move, the nudge, the Show me captions) always stay in every mode; only the animated character can be turned off.
+- Auto starts as Character and may suggest a switch, never switching silently:
+  - Suggest Text only if, in the last 2 sessions, 70% or more of coach bubbles were dismissed within 1.5 s, or the learner muted coach read-aloud 3 times.
+  - Suggest Character (from Text only) if 3 of the last 5 sessions ended within 2 minutes, or the learner returned after 3 or more days away.
+  - The suggestion is a bottom sheet ("Switch", "Keep as is", "Don't ask again"), at most once every 7 days, only on Home, never mid-question.
+- Bo appears where help is allowed: setup, home, practice, nudge, Show me, Go deeper, How did you know. Bo is absent in solo, recheck, gap card, share preview and the partner card, in every mode.
+- With reduced motion, the character stays but stops moving.
+- Each session records its coach mode on the device only. If a learner shares their export code, the pilot can compare return rate and gap change by coach mode. Testers can force a mode with a URL parameter.
+
+
+==================================================
+8. FUNCTIONAL REQUIREMENTS
+==================================================
+
+FR1  [Must]   Generate a question from a move's template and word lists; compute the correct option by rule; shuffle four options (the correct answer's position is random); don't repeat the last question.
+FR2  [Must]   Practice screen: the sentence with a blank, four answer tiles, "Show me" always available. The learner taps a tile and it fills the blank (tap-to-fill). Tiles are real buttons in a radio group with labels like "Option B: are"; the blank announces its fill. Still one of four options.
+FR3  [Must]   Help ladder per question: nudge after 1 miss, "Show me" after 2, "Go deeper" after 3; wrong options stay struck out. The tiles are hidden after the 3rd miss, so the answer is not left showing by elimination.
+FR4  [Must]   "Show me" animates the learner's own sentence in three beats, with replay, "Put it in yourself", and a reduced-motion version.
+FR5  [Must]   "How did you know?" after every unaided correct answer, following the honesty rule in 4.4: "I used the move" adds a dot (verified on a random 1 in 3 with "Tap the part you covered"); the other two leave the streak unchanged and offer a free Show me that is not counted as help.
+FR6  [Must]   Misses, nudges and learner-chosen Show me or Go deeper mark the question "with help" and reset the streak. A question answered with help earns no dot and does not ask "How did you know?".
+FR7  [Must]   Solo checkpoint: 10 fresh questions, timer, no help, screen kept awake; away under 10 s continues, 10 s or more converts it to practice (default button "Start a fresh solo run"); time-up and exit-confirm states; 8/10 earns a stamp. Solo is never locked: without 3 dots it recommends and offers "Try anyway".
+FR8  [Must]   Gap card: with help vs alone, gap number, change since last time, one plain-language explanation. Shown only when both scores exist. Review of misses after the run.
+FR9  [Must]   Works offline after first visit; progress stored on the device, using persistent storage where the browser allows.
+FR10 [Must]   Learn the move: a first-visit 3-beat lesson per level, and a "The move" chip on the practice screen on every device.
+FR11 [Must]   Onboarding: Welcome, Nickname, Learn the move, 3 questions, first win, then one skippable "Make Tether yours" step.
+FR12 [Must]   Settings reachable on phone: coach style, language, read-aloud, partner, export and restore, profiles.
+FR13 [Must]   Home has one primary action ("Continue" or "Start recheck"). Moves 2 to 5 show as "Coming soon".
+FR14 [Should] Subject map: one level per move, stamp state per level; built levels all open.
+FR15 [Should] Rechecks on day 3, 7, 14 with a "Due today" list; 5 questions on the move; stamp turns solid or fades; win-back rule stated; being late never fades a stamp.
+FR16 [Should] Coach in English or Pidgin, switchable any time; Pidgin labelled "Unreviewed" until checked.
+FR17 [Should] Read-aloud for questions and coach text using the phone's built-in speech.
+FR18 [Should] Share a proof card (learner-initiated, wins only): image and short plain-language message; no-partner and offline states; "Download card" or QR on shared laptops.
+FR19 [Should] Diagnostic run (5 questions, skippable) that suggests a starting level only.
+FR20 [Should] Practice in rounds of 5 with a summary; "Another 5" primary, "Done for today" secondary.
+FR21 [Should] Return cues: "Add to calendar", install prompt, "Ready offline".
+FR22 [Should] Coach style Character / Text only / Auto, with the Auto suggestion sheet (see 7).
+FR23 [Should] Responsive layouts: phone 360, tablet 768, laptop 1366x768 (see 9).
+FR24 [Could]  "Still stuck?" online AI rewording, grounded on the approved explanation.
+FR25 [Could]  Several nickname profiles on one shared phone or laptop, with a "Who's studying?" picker. (Designed; build is optional.)
+FR26 [Could]  Export and restore progress with a short code. (Designed; build is optional.)
+FR27 [Must, content tooling] Validator that checks word lists, tags and sample sentences before content ships.
+
+FR28 [Must]   Rule source line: the move explanation sheet and every partner card name where the rule comes from ("JAMB UTME Use of English syllabus"). Before pilot, open the official e-syllabus (jamb.gov.ng, IBASS) and add the exact section name. Why: capstone constraint 5.1, traceable sources.
+FR29 [Should] Language list: the coach-language picker lists English and Pidgin (Unreviewed), plus "Coming next: Français. More languages later." No French copy ships until it is written and reviewed. Why: constraint 5.6, multilingual access, without promising what is not built.
+FR30 [Should] "What a JAMB score opens" card, opened from Settings (JAMB English pack only; each exam pack brings its own). It shows only verified national minimum UTME marks with the year (2026: universities 150, colleges of nursing 150, polytechnics 100), says each school sets its own mark and some add a post-UTME score, and points to the school's latest notice. It never says a course is out of reach. Course-by-course marks show as "coming later" until each one is sourced. Why: Track 3, guidance and opportunity; constraint 5.4.
+
+(FR numbers changed from 1.0: new items are FR10 to FR13 and FR20 to FR23; old FR10 to FR19 are now FR14 to FR27.)
+
+
+==================================================
+9. SCREENS
+==================================================
+
+Phone-first (360 base), one task per screen. Targets are at least 48 px. Colour is never the only signal.
+
+- Welcome and nickname: Bo greets; one question per screen with a step bar.
+- Learn the move: 3 beats on an example sentence, reduced-motion version, "Got it".
+- First questions and first win.
+- Make Tether yours: coach style (Character / Just text previews), language (Pidgin shows a sample and the "Unreviewed" tag), optional partner. Skippable.
+- Diagnostic: intro, 5-question run, result ("Start with Move 1"). Skippable.
+- Home map: header, gap summary (only when both scores exist), sticky primary action, "Due today" recheck, levels with stamps and solo-ready dots, Settings gear. States: new learner; mid-progress; recheck due; recheck overdue; offline.
+- Practice question: sentence with blank, four tap-to-fill tiles, "Show me", "The move" chip, language switch, read-aloud, solo-ready dots, round progress ("2 of 5").
+- Round summary: "Another 5" and "Done for today".
+- Nudge: missed tile struck out, one-line nudge, Try again, Show me.
+- Show me: the learner's own sentence in three beats, captions, move card, Replay, Put it in yourself. States: playing; finished; reduced motion. Free Show me (after honest answers, in misses review) says "Free look. Doesn't count against you."
+- Go deeper: sentence as tappable chips; prompts for subject, one or many, verb. States: each step; wrong tap with hint; done.
+- Correct moment and How did you know?: reasons appear on the correct moment; verify state ("Tap the part you covered"); honest-answer state.
+- Solo-ready: three dots, start solo checkpoint or keep practising. Not-ready entry with "Try anyway".
+- Solo checkpoint: "No help" badge, timer, progress 1 to 10. States: running; time almost up; time up; left the screen (under 10 s toast; 10 s or more sheet); exit confirm.
+- Gap card: with help vs alone, gap, change, stamp, next recheck date with "Add to calendar", share where allowed. States: passed; not yet ("7/10, one away") with a review of misses.
+- Share preview and partner card: plain-language card, share paths, no-partner and offline states.
+- Recheck: 5 questions on the move. States: pass (stamp solid); miss (stamp fades, win-back rule shown, level stays open); overdue entry.
+- Settings: coach style, language, read-aloud, partner, export and restore, profiles.
+- Auto-suggest sheet, in both directions.
+
+Tablet (768x1024): centred question column up to 600; Bo beside the sentence; Home has a top summary row above a full-width map; bottom nav stays.
+
+Laptop (1366x768): left nav rail (Home, Practice, Proof, Settings); practice has a 640 question column plus a 320 help panel (Bo, the move card, the help ladder); keyboard shortcuts (1 to 4 picks a tile, Enter checks, R reads aloud, S plays Show me); solo and recheck in focus mode; two-column gap card, share preview and settings; "Not you? Switch" on the rail.
+
+Design notes:
+- The gap number and the stamp are the hero elements; other UI stays quiet.
+- Stamp states must look clearly different by shape, icon and word, not colour alone: none, fresh ("PROVED"), solid ("HELD"), fading ("FADING"), plus the "Due" badge.
+- The learner never sees the right answer stated before producing it.
+- Partner-facing cards look serious, not game-like, and show the gap closing in proof green, not warning amber.
+- Type: nothing below 12 px; form inputs 16 px so mobile browsers do not zoom.
+
+
+==================================================
+10. CONSTRAINTS
+==================================================
+
+- Connectivity: everything except "Still stuck?" and sharing works offline after first visit.
+- Devices: low-cost Android phones, tablets and budget laptops in a modern browser; installable web app; small download.
+- Credibility: every answer decided by a human-checked rule; AI never writes keys or grades; Pidgin labelled until reviewed.
+- Accessibility: read-aloud on all coach text, large text, 48 px minimum touch targets, strong contrast, screen-reader labels, reduced-motion version of every animation, short sessions.
+- Personalisation without exclusion: the diagnostic suggests a start but never locks a level, and solo is never locked.
+- Privacy: nickname only, no accounts, progress stays on the device, nothing sent unless the learner shares a card. Shared devices: profile picker, optional PIN, no WhatsApp Web path. Under-18 testers need parental consent (Nigeria Data Protection Act 2023) before any pilot session.
+- Languages: exam content stays in English as JAMB sets it; coach text in English and Pidgin, more later.
+- Local relevance: JAMB UTME subjects and scoring, Nigerian names and places, WhatsApp for sharing.
+
+
+==================================================
+11. SCOPE, SUCCESS, OPEN QUESTIONS
+==================================================
+
+In scope: JAMB Use of English concord, with Strip the Disguise fully built. Moves 2 to 5, other subjects, WAEC/NECO and other countries appear only as "Coming soon".
+
+Out of scope: accounts and login, payments, comprehension and literature, full mock exams, multiplayer and leaderboards, voice conversation, on-device AI models, teacher or tutorial-centre dashboards, "Remind me on WhatsApp".
+
+Success measures:
+- A learner's "alone" score rises between their first solo checkpoint and later ones. (The diagnostic is not the baseline.)
+- The gap shrinks between a learner's first and later solo checkpoints.
+- At least half of test learners return for a recheck without a reminder. Measure this separately for learners who used "Add to calendar", since that is a reminder.
+- No generated question in review has a wrong answer key.
+
+Pilot measures for the honesty rule (from research/honesty-rule.md):
+- Claim rate: share of correct answers tagged "I used the move", by session number.
+- Honest-answer rate over time.
+- Verification pass rate, split by whether the learner opened "The move" card.
+- Validity: checkpoint pass rate for high claimers vs mixed answerers. If claimers fail more, tighten the rule (verify always, or 4 dots).
+- Time-to-solo-ready and drop-off at one and two dots.
+- Friction: seconds from "Correct" to the next question; session length; quits within 2 minutes.
+- Qualitative: 5 to 8 learners and 3 parents ("did the check feel fair?").
+
+Answered open questions:
+- Is 8/10 the right pass mark? Keep 8/10. A lower bar on four options lets luck through and weakens the partner card. Make it humane instead: show "one away", review the misses, recommend (not require) 3 dots before a retry. (Suggestion, not yet decided: show 6 or 7 out of 10 as "Getting close" on the map.)
+- Are three in-a-row "I used the move" answers enough for solo-ready? Yes, if the claim is cheap to verify (1 in 3 checks) and honest answers do not reset the streak.
+- Should a nudge count as help? Yes, with no label on the nudge itself.
+- What do partners want to receive? Only learner-initiated wins (Proved, Held, gap improvements), with an optional next-check date. Never failures or fades automatically.
+- Who reviews the Pidgin? A paid native Pidgin speaker who teaches at a JAMB tutorial centre, ideally two from different regions (for example Lagos and Warri or Port Harcourt).
+
+Still open:
+- Which language comes next (Yoruba, Hausa or Igbo)? Choose by the pilot's region, and first check that Android's built-in text-to-speech has a usable voice for it. Also check how the English voice reads Pidgin today.
+- Who is the named Pidgin reviewer? Not yet chosen.
+- Is a 1 in 3 verify rate right? It is a design default with no evidence behind the number. Validate in the pilot.
+- Is the "with help" definition right (right on the 1st or 2nd try in the last 10 practice questions)? Default; validate in the pilot.
+- Are "Getting close" and the claim-rate predictions right? To be checked against pilot data.
+- Do partners respond to the "one action" on the card? Test with 3 to 5 parents.
+- Build scope for profiles and export/restore: designed, still "Could".
+
+
+==================================================
+12. SOURCES
+==================================================
+
+- Bastani, H., et al. (2025). Generative AI without guardrails can harm learning. Proceedings of the National Academy of Sciences.
+- JAMB 2024 UTME results (77% of 1.8 million candidates below 200), as reported by Kola King.
+- JAMB 2026 UTME registration figure (2,243,816).
+- Techloy, "Who really benefits from Nigeria's N721 billion monthly spend on data".
+- Class54 App Store listing: https://apps.apple.com/app/id1622971742
+- TestDriller JAMB CBT listing: https://apkcombo.com/testdriller-jamb-cbt-2027/com.iafsawii.testdriller/
+- DTW Tutorials UTME App: https://apps.apple.com/qa/app/dtw-tutorials-utme-app/id6742785306?l=ar
+- ExamGenius: https://examgenius.run.place/
+- Nigeria Data Protection Act 2023, section 31.
+- Tether honesty-rule research note (research/honesty-rule.md), 12 Oct 2026. It cites Moodle certainty-based marking, Baker on gaming the system, Roll et al. (2011), ASSISTments Skill Builders, and Aleven and Koedinger (2002).
+- Tether usability review and review-3 (12 Oct 2026).
