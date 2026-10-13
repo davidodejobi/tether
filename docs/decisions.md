@@ -98,3 +98,11 @@ These decisions override conflicting text in `requirements.txt`.
 - Resume derives from saved fields only: no learner → Welcome; `lessonDone` false → lesson; `lessonDone` true and not `onboarded` → tutorial questions. First win and Make Tether yours are reached from the questions in one visit, so no extra stored field exists. Reloading there repeats the tutorial questions, which earn nothing.
 - Preferences are saved together with `onboarded` when the learner presses Done or either Skip; nothing is stored earlier.
 - The lesson uses the pack's own `lessonExample` (Chidi), not Figma's Tunde sentence. Reduced motion renders static step cards revealed by Next.
+
+## Practice round (roadmap step 8)
+
+- `QuestionView` (`src/ui/practice/`) is the one question screen for practice and, later, the tutorial. Slots for steps 9 and 10, all documented at the top of the file: `afterMiss({attempt, misses, retry, help, finish})`, `hideTiles(attempt, misses)`, `onShowMe({attempt, help})`, `afterCorrect({attempt, next})`. Every checked answer is saved before a slot runs; `help(kind)` goes through `useHelp` and saves.
+- A started question is saved at once (checks 0), so a reload or the close button brings back the same question through `resumePoint`. `SavedAttempt` gained optional `struck` (options checked wrong) so struck tiles survive a reload; old records stay valid.
+- Rounds are derived, not stored: position is completed practice questions modulo 5 (`src/rules/round.ts`). The summary is in-memory, so a reload on it opens a fresh question; nothing is blocked.
+- Practice ignores a pending How did you know or verification (`resumePoint` kinds "reason" and "verify") until step 10 handles them.
+- The move sheet is a native modal `<dialog>`: it blocks input underneath, traps focus and returns it on close.
