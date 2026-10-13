@@ -1,0 +1,34 @@
+/* The map: a scrollable box holding a canvas with the art's 360 x 1100 proportions. Nodes sit at percentages of it. */
+.hm-map-h { margin: 0 0 var(--spacing-xs); font: var(--type-title-l); }
+.hm-scroll {
+  height: min(70dvh, 30rem); overflow-y: auto; overscroll-behavior: contain;
+  border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-primary-container);
+}
+.hm-scroll:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+.hm-canvas {
+  --art-day: none; --art-night: none;
+  position: relative; width: 100%; max-width: 30rem; margin: 0 auto; padding: 0; list-style: none; aspect-ratio: 360 / 1100;
+  background: var(--art-day) center / 100% 100% no-repeat, linear-gradient(var(--bg-primary-container), var(--bg-sunken));
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hm-canvas { background-image: var(--art-night), linear-gradient(var(--bg-primary-container), var(--bg-sunken)); } }
+[data-theme="dark"] .hm-canvas { background-image: var(--art-night), linear-gradient(var(--bg-primary-container), var(--bg-sunken)); }
+
+.hm-pos { position: absolute; transform: translate(-50%, -50%); }
+.hm-node { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-xxs); color: var(--text-primary); text-decoration: none; }
+.page a.hm-node { display: flex; margin: 0; padding: 0; }
+.hm-node:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 4px; border-radius: var(--radius-lg); }
+.hm-disc {
+  display: grid; place-items: center; width: calc(var(--size-touch-target) * 1.25); height: calc(var(--size-touch-target) * 1.25);
+  border: 3px solid var(--bg-surface); border-radius: var(--radius-full); box-shadow: 0 var(--size-edge) 0 var(--border-edge);
+  font: var(--type-headline-m); background: var(--bg-primary); color: var(--text-on-primary);
+}
+.hm-proved .hm-disc, .hm-held .hm-disc { background: var(--bg-proof); color: var(--text-on-proof); }
+.hm-fading .hm-disc { background: var(--bg-gap); color: var(--text-on-gap); }
+.hm-soon .hm-disc { background: var(--bg-sunken); color: var(--text-secondary); }
+.hm-exam { padding-top: var(--spacing-xxxl); }
+.hm-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--spacing-xxs); }
+.hm-tag {
+  display: inline-flex; align-items: center; gap: var(--spacing-xxs); padding: 0 var(--spacing-xs); white-space: nowrap;
+  background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--border-strong); border-radius: var(--radius-full); font: var(--type-label-m);
+}
+.hm-due { background: var(--bg-gap-container); color: var(--text-on-gap-container); border-color: var(--border-gap); }

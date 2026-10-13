@@ -9,11 +9,10 @@ import { Score } from "../components/Score";
 import { Stamp } from "../components/Stamp";
 import { ShowMe } from "../help/ShowMe";
 import { useProgress } from "../progress";
+import { day, when } from "./dates.ts";
 import { resultView, type ResultView } from "./view.ts";
 import "./Result.css";
 
-const day = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-const when = (at: number) => new Date(at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 export function Result() {
   const { params } = useRoute();

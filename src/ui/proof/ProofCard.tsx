@@ -4,6 +4,7 @@ import { homeAction, proofStatus } from "../../rules/proof.ts";
 import { resumePoint } from "../../storage/progress.ts";
 import "../components/Button.css";
 import { Stamp } from "../components/Stamp";
+import { day } from "../results/dates.ts";
 import { useProgress } from "../progress";
 import { appNow, demoOn, demoQuery, simulatedDate } from "./simulate";
 import "./proof.css";
@@ -23,15 +24,15 @@ export function ProofCard() {
 
   return (
     <section class="pc" aria-label="Your proof">
-      {sim && <p class="pc-sim" role="status">Simulated date: {sim}. Demo only; your saved progress is not changed.</p>}
+      {sim && <p class="pc-sim" role="status">Simulated date: {day(sim)}. Demo only; your saved progress is not changed.</p>}
       {status && (
         <div class="pc-stamp">
           <Stamp state={status.state} due={status.due} size={72} />
           <div>
             {status.due && <p class="pc-line"><strong>{status.overdue ? "Your recheck is waiting." : "Recheck due today."}</strong></p>}
             {status.state === "fading" && <p class="pc-line">It slipped a bit. Practise the move, then pass 4 of 5 to restore it.</p>}
-            {status.state === "held" && !status.due && (status.nextDue ? <p class="pc-line">Next recheck: {status.nextDue}</p> : <p class="pc-line">Every scheduled recheck passed.</p>)}
-            {status.state === "proved" && !status.due && status.nextDue && <p class="pc-line">First recheck: {status.nextDue}</p>}
+            {status.state === "held" && !status.due && (status.nextDue ? <p class="pc-line">Next recheck: {day(status.nextDue)}</p> : <p class="pc-line">Every scheduled recheck passed.</p>)}
+            {status.state === "proved" && !status.due && status.nextDue && <p class="pc-line">First recheck: {day(status.nextDue)}</p>}
           </div>
         </div>
       )}
@@ -54,6 +55,7 @@ export function ProofCard() {
             )}
           </>
         )}
+        {action === "practice" && <a class="btn btn-primary" href="/practice">Practise Move 1</a>}
         {action === "continue" && <a class="btn btn-primary" href="/practice">Continue where you stopped</a>}
       </div>
       {demoOn() && (
