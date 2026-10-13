@@ -7,7 +7,7 @@ export const speechOk = () => typeof window !== "undefined" && "speechSynthesis"
 
 const norm = (l: string) => l.replace("_", "-").toLowerCase();
 
-/** Pidgin: a pcm voice, then en-NG. English: en-NG, then any English. `exact` is false when Pidgin falls back to an English voice. */
+/** Pidgin: a pcm voice, then en-NG. English: en-NG, then any English. With no pcm voice (including none loaded yet), Pidgin is read in English and labelled so. */
 function pick(lang: Lang): { voice?: SpeechSynthesisVoice; exact: boolean; label: string } {
   const voices = speechOk() ? window.speechSynthesis.getVoices() : [];
   const by = (p: (l: string) => boolean) => voices.find((v) => p(norm(v.lang)));
@@ -25,7 +25,8 @@ export function speak(text: string, lang: Lang = "en") {
   const u = new SpeechSynthesisUtterance(text);
   const { voice } = pick(lang);
   if (voice) u.voice = voice;
-  u.lang = voice?.lang ?? (lang === "pcm" ? "pcm" : "en-NG");
+  // No matching voice (or voices not loaded yet): ask for Nigerian English explicitly, as the label says.
+  u.lang = voice?.lang ?? "en-NG";
   synth.speak(u);
 }
 

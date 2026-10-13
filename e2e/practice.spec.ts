@@ -94,7 +94,7 @@ const stubSpeech = (page: import("@playwright/test").Page, voices: { lang: strin
     (window as any).spoken = [];
     (window as any).SpeechSynthesisUtterance = class { text: string; voice: any; lang = ""; constructor(t: string) { this.text = t; } };
     Object.defineProperty(window, "speechSynthesis", {
-      value: { getVoices: () => voices, cancel() {}, speak: (u: any) => (window as any).spoken.push({ text: u.text, voice: u.voice?.lang ?? null }), addEventListener() {}, removeEventListener() {} },
+      value: { getVoices: () => voices, cancel() {}, speak: (u: any) => (window as any).spoken.push({ text: u.text, voice: u.voice?.lang ?? null, lang: u.lang }), addEventListener() {}, removeEventListener() {} },
     });
   }, voices);
 
@@ -114,4 +114,13 @@ test("Pidgin falls back to a labelled English voice when no pcm or en-NG voice e
   await expect(page.getByText("Read in an English voice")).toBeVisible();
   await page.getByRole("button", { name: "Read it to me" }).click();
   expect(await page.evaluate(() => (window as any).spoken.at(-1).voice)).toBe("en-US");
+});
+
+test("with no voices loaded, Pidgin asks for Nigerian English, as its label says", async ({ page }) => {
+  await stubSpeech(page, []);
+  await seed(page, { ...LEARNER, lang: "pcm" });
+  await page.getByRole("button", { name: /The move: Strip the Disguise/ }).click();
+  await expect(page.getByText("Read in an English voice")).toBeVisible();
+  await page.getByRole("button", { name: "Read it to me" }).click();
+  expect(await page.evaluate(() => (window as any).spoken.at(-1))).toMatchObject({ voice: null, lang: "en-NG" });
 });
