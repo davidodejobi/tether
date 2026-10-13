@@ -116,6 +116,12 @@ export function QuestionView(props: QuestionViewProps) {
   // A save that lands after the learner left this screen plays no cue; the restored question is silent too.
   const mounted = useRef(true);
   useEffect(() => () => void (mounted.current = false), []);
+  // Leaving counts at once: the route changes now but this screen unmounts on the next render, and a save
+  // landing in between must stay silent too.
+  const exit = () => {
+    mounted.current = false;
+    props.onExit();
+  };
 
   const done = attempt.completedAt !== undefined;
   const misses = attempt.checks - (attempt.correctOnCheck ? 1 : 0);
@@ -245,7 +251,7 @@ export function QuestionView(props: QuestionViewProps) {
   return (
     <div class={`qv${panel ? " qv-has-panel" : ""}${props.suspended ? " qv-suspended" : ""}`} ref={root}>
       <header class="qv-top">
-        <button type="button" class="qv-close" aria-label="Close and come back later" onClick={props.onExit}>
+        <button type="button" class="qv-close" aria-label="Close and come back later" onClick={exit}>
           <Icon name="close" size={24} />
         </button>
         {round && (
@@ -282,7 +288,7 @@ export function QuestionView(props: QuestionViewProps) {
         )}
 
         <div class="qv-status" role="status" aria-live="polite">
-          {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, blocked, finish: props.onExit })}
+          {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, blocked, finish: exit })}
         </div>
 
         {failed && (
