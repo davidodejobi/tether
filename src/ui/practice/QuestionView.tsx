@@ -80,6 +80,10 @@ export interface QuestionViewProps {
 }
 
 const pack: Pack = stripDisguise;
+// The move sheet's own example (spec section 5). Its sentence is outside the question space (validatePack rejects a repeat),
+// so it is never the current sentence. Its verb is hidden when this question uses the same verb, so it cannot hint at the answer.
+const ex = pack.lessonExample;
+const exVerb = pack.verbs.find((v) => v.id === ex.verbId)!;
 // Not crypto.randomUUID: it needs a secure context, and plain-http LAN testing must work.
 const newId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 const speechOk = () => typeof window !== "undefined" && "speechSynthesis" in window;
@@ -302,6 +306,9 @@ export function QuestionView(props: QuestionViewProps) {
           {coach.rule}
         </CoachBubble>
         <p>{coach.explanation} Opening this is not help.</p>
+        <p class="qv-example">
+          <strong>Example:</strong> {ex.subject}, {ex.sidePhrase}, {q.options.some((o) => o === exVerb.sg || o === exVerb.pl) ? "___" : exVerb[ex.number]} {ex.predicate}
+        </p>
         <p class="qv-source">Rule source: {pack.source.line}</p>
         <Button onClick={closeSheet}>Got it</Button>
         {speechOk() && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`)}>Read it to me</Button>}

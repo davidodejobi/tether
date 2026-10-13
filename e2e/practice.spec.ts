@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { current, leave, seed, tile } from "./practice-helpers";
+import { current, lastAttempt, leave, seed, tile } from "./practice-helpers";
 
 test("five questions with a miss, summary, Another 5, reload and Done", async ({ page }) => {
   await seed(page);
@@ -66,9 +66,17 @@ test("the move sheet opens without counting as help, and keys select and check",
   await seed(page);
   await page.getByRole("button", { name: /The move: Strip the Disguise/ }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
+  // The lesson example is its own sentence, never this question's. Its verb is hidden when this question uses the same verb.
+  const q = await current(page);
+  const sheet = await page.getByRole("dialog").innerText();
+  expect(sheet).toContain("Example: Chidi, as well as his friends,");
+  expect(sheet).toContain("in the hall.");
+  if (q.options.some((o: string) => o === "is" || o === "are")) expect(sheet).toContain("___");
+  else expect(sheet).toContain("is in the hall.");
   await page.getByRole("button", { name: "Got it" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  const q = await current(page);
+  const { attempt } = await lastAttempt(page, (a) => a.moveSheetOpened === true);
+  expect(attempt).toMatchObject({ help: [], resets: [] });
   await page.keyboard.press(String(q.options.indexOf(q.answer) + 1));
   await expect(page.getByRole("radio", { checked: true })).toHaveCount(1);
   await page.keyboard.press("Enter");
