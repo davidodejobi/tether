@@ -193,7 +193,9 @@ const sizes = (page: Page) =>
     const name = (e: Element) => `${e.tagName.toLowerCase()}.${(e as HTMLElement).className} "${(e.textContent ?? "").trim().slice(0, 20)}"`;
     for (const e of document.querySelectorAll("button, a[href], [role=radio], input, select, textarea, summary")) {
       if (!vis(e) || (e as HTMLInputElement).type === "hidden") continue;
-      const r = e.getBoundingClientRect();
+      // A radio or checkbox is operated through its whole label row, so that row is the target.
+      const box = /^(radio|checkbox)$/.test((e as HTMLInputElement).type) ? (e.closest("label") ?? e) : e;
+      const r = box.getBoundingClientRect();
       if (r.width < 47.5 || r.height < 47.5) out.push(`target ${Math.round(r.width)}x${Math.round(r.height)} ${name(e)}`);
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName) && parseFloat(getComputedStyle(e).fontSize) < 16) out.push(`input font ${name(e)}`);
     }
@@ -254,4 +256,101 @@ test("shortcuts are ignored while typing", async ({ page }) => {
   await page.getByLabel("Nickname").click();
   await page.getByLabel("Nickname").pressSequentially("Srsr", { delay: 60 });
   await expect(page.getByLabel("Nickname")).toHaveValue("Srsr");
+});
+
+// ---- Step 17: the same screens, checked for size, overflow, focus, order, map semantics and motion ----
+
+for (const [name, open] of SCREENS) {
+  for (const [w, h] of SIZES)
+    test(`${name} meets size minimums at ${w}px`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: h });
+      await open(page);
+      expect(await sizes(page)).toEqual([]);
+    });
+
+  test(`${name} does not scroll sideways at phone, tablet and laptop, nor at 200% text`, async ({ page }) => {
+    await open(page);
+    for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      for (const size of ["16px", "32px"]) {
+        await page.addStyleTag({ content: `html{font-size:${size} !important}` });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${w}px @${size}`).toBe(true);
+      }
+    }
+  });
+}
+
+/** Tabs through the page; returns each stop's label, outline, and whether it follows the previous stop in the DOM. */
+async function tabStops(page: Page, max = 40) {
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  const stops: { label: string; ring: boolean; inOrder: boolean; positive: boolean }[] = [];
+  let prev = "";
+  for (let i = 0; i < max; i++) {
+    await page.keyboard.press("Tab");
+    const stop = await page.evaluate((previous) => {
+      const el = document.activeElement as HTMLElement;
+      if (!el || el === document.body) return null;
+      const id = el.getAttribute("data-tab") ?? String(Math.random());
+      el.setAttribute("data-tab", id);
+      const cs = getComputedStyle(el);
+      const ring = (cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) >= 2) || cs.boxShadow !== "none";
+      const before = previous ? document.querySelector(`[data-tab="${previous}"]`) : null;
+      const label = `${el.tagName.toLowerCase()} "${(el.getAttribute("aria-label") ?? el.textContent ?? "").trim().slice(0, 24)}"`;
+      return { id, label, ring, positive: el.tabIndex > 0, inOrder: !before || !!(before.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) };
+    }, prev);
+    if (!stop) break;
+    if (stop.id === prev) break;
+    prev = stop.id;
+    stops.push(stop);
+  }
+  return stops;
+}
+
+for (const [name, open] of SCREENS)
+  for (const [w, h] of SIZES)
+    test(`${name}: every tab stop has a visible focus ring and the order follows the page at ${w}px`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: h });
+      await open(page);
+      const stops = await tabStops(page);
+      expect(stops.length, "tab stops").toBeGreaterThan(0);
+      expect(stops.filter((s) => !s.ring).map((s) => s.label), "focus ring").toEqual([]);
+      expect(stops.filter((s) => !s.inOrder || s.positive).map((s) => s.label), "tab order").toEqual([]);
+    });
+
+test("Home map: Move 1 is the only link, Coming soon nodes cannot be focused, and the art is decorative", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  await homeReady(page);
+  const map = page.getByRole("region", { name: "Journey map, scrollable" });
+  await expect(map.getByRole("link")).toHaveCount(1);
+  await expect(map.getByRole("link")).toHaveAttribute("href", "/practice");
+  await expect(map.getByRole("button")).toHaveCount(0);
+  const soon = await map.locator(".hm-soon").evaluateAll((els) => els.map((e) => ({ tag: e.tagName, tabindex: e.getAttribute("tabindex"), role: e.getAttribute("role"), focusable: !!e.querySelector("a, button, [tabindex]") })));
+  expect(soon).toHaveLength(5);
+  for (const n of soon) expect(n).toEqual({ tag: "DIV", tabindex: null, role: null, focusable: false });
+  // Tabbing through the map never lands on a Coming soon node.
+  const stops = await tabStops(page);
+  expect(stops.filter((s) => /Coming soon|Move [2-5]|Exam/.test(s.label))).toEqual([]);
+  // Disc numbers and icons are decoration; no unlabelled image or svg is exposed.
+  const exposed = await map.evaluate((m) => [...m.querySelectorAll(".hm-disc, .icon, img, svg")].filter((e) => !e.closest("[aria-hidden=true]") && !e.getAttribute("aria-label")).map((e) => e.className || e.tagName));
+  expect(exposed).toEqual([]);
+});
+
+for (const [name, open] of SCREENS)
+  test(`${name}: reduced motion leaves no running animations`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page);
+    const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running" && (a.effect?.getComputedTiming().duration as number) > 1).map((a) => (a as CSSAnimation).animationName ?? a.constructor.name));
+    expect(running).toEqual([]);
+  });
+
+test("a device with speechSynthesis but no voices says read-aloud is unavailable", async ({ page }) => {
+  await page.addInitScript(() => {
+    const synth = Object.assign(new EventTarget(), { getVoices: () => [], speak() {}, cancel() {}, speaking: false, pending: false });
+    Object.defineProperty(window, "speechSynthesis", { value: synth, configurable: true });
+  });
+  await seed(page, { ...LEARNER, readAloud: true });
+  await current(page);
+  await expect(page.getByText(/Read aloud isn.t available/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Read aloud" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Check" })).toBeVisible();
 });

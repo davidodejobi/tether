@@ -62,3 +62,18 @@ for (const [name, width, height] of [["phone", 360, 800], ["tablet", 768, 1024],
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
+
+test("Home names the move beside the primary action", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  await expect(page.getByText("JAMB English concord. Move 1: Strip the Disguise.")).toBeVisible();
+});
+
+for (const [name, width, height] of [["phone", 360, 800], ["tablet", 768, 1024], ["laptop", 1366, 768]] as const)
+  test(`Settings has a way back to Home on ${name}`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await seedRecords(page, [], "/settings");
+    // From 1280 px the rail's Home link is the way back; below that, the page's own back link.
+    const home = page.getByRole("link", { name: "Home" });
+    await home.first().click();
+    await expect(page).toHaveURL(/\/$/);
+  });
