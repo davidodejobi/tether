@@ -1,0 +1,113 @@
+// Solo checks and rechecks: deadlines, submissions, absences, timeouts and conversion to practice (spec section 7).
+import type { PracticeAttempt } from "./practice.ts";
+
+export type RunKind = "solo" | "recheck";
+export type RunStatus = "active" | "completed" | "converted" | "exited";
+
+export interface Run {
+  id: string;
+  kind: RunKind;
+  /** Rechecks only: fixed at entry. A recovery recheck runs while proof is Fading. */
+  purpose?: "scheduled" | "recovery";
+  questionIds: string[];
+  /** One entry per submitted question, in order; no backtracking. */
+  submissions: { questionId: string; correct: boolean; at: number }[];
+  startedAt: number;
+  deadline: number;
+  /** Last moment the run was known to be visible; used on return and on reopen. */
+  lastSeenAt: number;
+  status: RunStatus;
+  endedAt?: number;
+  result?: { score: number; total: number; passed: boolean; timedOut: boolean };
+  /** Solo only: the "with help" score at entry, or null if fewer than ten practice questions existed. */
+  practiceSnapshot?: number | null;
+  /** Recheck only: the schedule entries due at entry. Crossing midnight does not change them. */
+  coveredEntryIds?: string[];
+}
+
+export const RUN_RULES = {
+  solo: { questions: 10, minutes: 10, pass: 8 },
+  recheck: { questions: 5, minutes: 5, pass: 4 },
+} as const;
+export const ABSENCE_LIMIT_MS = 10_000;
+export const LOW_TIME_MS = 20_000;
+
+export function startRun(
+  r: Pick<Run, "id" | "kind" | "purpose" | "questionIds" | "practiceSnapshot" | "coveredEntryIds">,
+  now: number,
+): Run {
+  const rules = RUN_RULES[r.kind];
+  if (r.questionIds.length !== rules.questions) throw new Error(`A ${r.kind} run has ${rules.questions} questions`);
+  return { ...r, submissions: [], startedAt: now, deadline: now + rules.minutes * 60_000, lastSeenAt: now, status: "active" };
+}
+
+export const lowTime = (run: Run, now: number) => run.status === "active" && run.deadline - now <= LOW_TIME_MS;
+
+/** Submits the answer to the next question. Ignored if the run is over or the question is not next. */
+export function submit(run: Run, questionId: string, correct: boolean, now: number): Run {
+  if (run.status !== "active" || now >= run.deadline) return run;
+  if (run.questionIds[run.submissions.length] !== questionId) return run;
+  const next = { ...run, submissions: [...run.submissions, { questionId, correct, at: now }], lastSeenAt: now };
+  return next.submissions.length === run.questionIds.length ? finish(next, now) : next;
+}
+
+/** Scores the run. Unsubmitted questions count as wrong. */
+export function finish(run: Run, now: number): Run {
+  if (run.status !== "active") return run;
+  const rules = RUN_RULES[run.kind];
+  const score = run.submissions.filter((s) => s.correct).length;
+  const timedOut = run.submissions.length < run.questionIds.length;
+  return {
+    ...run,
+    status: "completed",
+    endedAt: now,
+    result: { score, total: rules.questions, passed: score >= rules.pass, timedOut },
+  };
+}
+
+/** Marks the run as visible now (called while the learner is on the run screen). */
+export const seen = (run: Run, now: number): Run => (run.status === "active" ? { ...run, lastSeenAt: now } : run);
+
+/**
+ * What happens when the learner comes back, after hiding the page or reopening the app.
+ * `hiddenSince` is when the page was hidden, or `run.lastSeenAt` on reopen; null when unknown. Unknown
+ * absences, absences of ten seconds or more, and clocks that went backwards convert to practice,
+ * even if the deadline passed while away.
+ */
+export function onReturn(run: Run, now: number, hiddenSince: number | null): "continue" | "timeout" | "convert" {
+  if (run.status !== "active") return "continue";
+  if (hiddenSince === null || now < hiddenSince || now < run.startedAt) return "convert";
+  if (now - hiddenSince >= ABSENCE_LIMIT_MS) return "convert";
+  return now >= run.deadline ? "timeout" : "continue";
+}
+
+/**
+ * Leave (explicit exit) or a long absence. Recorded once: submitted answers become completed practice
+ * attempts with their one-check correctness; the unsubmitted questions continue as ordinary practice.
+ */
+export function convert(
+  run: Run,
+  now: number,
+  status: "converted" | "exited",
+): { run: Run; attempts: PracticeAttempt[]; unsubmitted: string[] } {
+  if (run.status !== "active") return { run, attempts: [], unsubmitted: [] };
+  const attempts = run.submissions.map(
+    (s, i): PracticeAttempt => ({
+      id: `${run.id}:${i}`,
+      questionId: s.questionId,
+      origin: "converted",
+      startedAt: s.at,
+      completedAt: s.at,
+      checks: 1,
+      correctOnCheck: s.correct ? 1 : undefined,
+      help: [],
+      freeLook: false,
+      moveSheetOpened: false,
+    }),
+  );
+  return {
+    run: { ...run, status, endedAt: now },
+    attempts,
+    unsubmitted: run.questionIds.slice(run.submissions.length),
+  };
+}
