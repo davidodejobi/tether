@@ -1,4 +1,4 @@
-# Move 1 content review: Strip the Disguise (v1)
+# Move 1 content review: Strip the Disguise (v2)
 
 Status: **English pending review. Pidgin unreviewed.** Nothing here is approved until a named person signs below.
 
@@ -23,21 +23,24 @@ The Figma partner-card footer ("Marked by fixed rules from the JAMB Use of Engli
 
 Words like *as well as*, *along with*, *together with* and *in addition to* add extra people but do not change the subject. The verb agrees with the subject before the side phrase.
 
-- Every question pairs a subject with a side phrase of the **opposite** number, so the side phrase is always the trap.
+- Most questions pair a subject with a side phrase of the **opposite** number, so the side phrase is the trap.
+- Some pair a subject with a side phrase of the **same** number. Without these, "pick the verb that disagrees with the side phrase" would answer every question correctly without the move (section 6).
 - Options are the singular form, the plural form, and two forms that are never correct in the blank (for example *am*/*be*, *having*/*to have*, *walking*/*to walk*). Exactly one option is correct.
 - Note for the pilot: learners will rarely pick the two filler forms, so the real guess rate is nearer 1 in 2 than 1 in 4. Keep that in mind when reading "8/10 alone".
 
 ## 3. Word lists (the review unit)
 
-Review rule: **every subject must read sensibly with every opposite-number side phrase and every predicate.** If one line fails that, change or remove the line.
+Review rule: **every subject must read sensibly with every side phrase it is paired with, and every predicate.** Each subject pairs with every opposite-number side phrase, and with the same-number side phrases marked ★. If one line fails that, change or remove the line.
 
 **Singular subjects (paired with the plural side phrases):** Tunde · Amina · Emeka · Ngozi · The head boy · The head girl
 
 **Plural subjects (paired with the singular side phrases):** The students · The prefects · The players · The twins · My classmates · The new pupils
 
-**Plural side phrases:** as well as two classmates · as well as the other players · along with three friends · along with the new pupils · together with the prefects · together with some teachers · in addition to two other students · in addition to the class captains
+**Plural side phrases (★ also with plural subjects):** as well as two classmates · as well as some parents ★ · as well as the other players · along with three friends ★ · along with the new pupils · together with the prefects · together with some teachers ★ · in addition to two other students · in addition to the class captains ★
 
-**Singular side phrases:** as well as their teacher · as well as the class captain · along with their coach · along with the head teacher · together with their form teacher · together with the librarian · in addition to the principal · in addition to the vice principal
+**Singular side phrases (★ also with singular subjects):** as well as their teacher · as well as the class captain ★ · along with their coach · along with the head teacher ★ · together with their form teacher · together with the librarian ★ · in addition to the principal ★ · in addition to the vice principal ★
+
+Side phrases that repeat or contain *their* stay opposite-number only (for example "The prefects, together with the prefects" or "Tunde, as well as their teacher" would not make sense). "as well as some parents" is new in v2.
 
 **Verbs and predicates (present tense):**
 
@@ -53,46 +56,46 @@ Review rule: **every subject must read sensibly with every opposite-number side 
 
 Avoided on purpose: collective nouns (team, class, choir, family, staff), because Standard British English allows "the team are"; and *his*/*her* after names, because some names are used for both genders.
 
-**Size:** 960 questions (480 singular, 480 plural). Three are reserved for the tutorial, leaving 957 for practice and proof. The full list is in `move-1-questions.txt` (`npm run content:list` regenerates it).
+**Size:** 1,560 questions: singular subjects 540 opposite + 300 same, plural subjects 480 opposite + 240 same. Three are reserved for the tutorial, leaving 1,557 for practice and proof. The full list is in `move-1-questions.txt` (`npm run content:list` regenerates it).
 
 **Lesson example (outside the question space, matches the Figma lesson):** "Chidi, as well as his friends, ___ in the hall." → *is*. Check you are happy with *his*.
 
 **Tutorial questions:** `amina.two-classmates.in-hall`, `students.their-teacher.at-gate`, `head-boy.three-friends.walk-school`.
 
-## 4. Thirty random sentences
+## 4. Thirty random sentences (18 opposite-number, 12 same-number)
 
-| Sentence | Answer | Options |
+| Sentence | Answer | Pairing |
 |---|---|---|
-| The twins, as well as the class captain, ___ to school every morning. | walk | walks, walk, walking, to walk |
-| The head boy, as well as two classmates, ___ lunch in the canteen. | eats | eats, eat, eating, to eat |
-| Ngozi, as well as two classmates, ___ in the hall. | is | is, are, am, be |
-| The head boy, as well as two classmates, ___ ready for the trip. | is | is, are, am, be |
-| The prefects, as well as the class captain, ___ in the front row. | sit | sits, sit, sitting, to sit |
-| Amina, as well as the other players, ___ finished the project. | has | has, have, having, to have |
-| The twins, in addition to the principal, ___ in the hall. | are | is, are, am, be |
-| My classmates, in addition to the principal, ___ lunch in the canteen. | eat | eats, eat, eating, to eat |
-| The players, in addition to the principal, ___ near the market. | live | lives, live, living, to live |
-| The players, together with their form teacher, ___ finished the project. | have | has, have, having, to have |
-| The prefects, along with their coach, ___ waiting at the school gate. | are | is, are, am, be |
-| Amina, in addition to two other students, ___ seen the new timetable. | has | has, have, having, to have |
-| The head boy, in addition to the class captains, ___ to school every morning. | walks | walks, walk, walking, to walk |
-| Tunde, in addition to two other students, ___ in the hall. | is | is, are, am, be |
-| My classmates, in addition to the vice principal, ___ waiting at the school gate. | are | is, are, am, be |
-| The new pupils, together with their form teacher, ___ to school every morning. | walk | walks, walk, walking, to walk |
-| Amina, along with three friends, ___ near the market. | lives | lives, live, living, to live |
-| The prefects, together with the librarian, ___ near the market. | live | lives, live, living, to live |
-| The prefects, together with the librarian, ___ ready for the trip. | are | is, are, am, be |
-| Tunde, along with the new pupils, ___ near the market. | lives | lives, live, living, to live |
-| Ngozi, along with three friends, ___ seen the new timetable. | has | has, have, having, to have |
-| The students, as well as the class captain, ___ early on Mondays. | arrive | arrives, arrive, arriving, to arrive |
-| My classmates, in addition to the vice principal, ___ finished the project. | have | has, have, having, to have |
-| The players, as well as the class captain, ___ in the front row. | sit | sits, sit, sitting, to sit |
-| Tunde, in addition to the class captains, ___ to school every morning. | walks | walks, walk, walking, to walk |
-| Ngozi, as well as the other players, ___ to school every morning. | walks | walks, walk, walking, to walk |
-| Tunde, along with three friends, ___ seen the new timetable. | has | has, have, having, to have |
-| The twins, in addition to the vice principal, ___ ready for the trip. | are | is, are, am, be |
-| The head boy, in addition to two other students, ___ early on Mondays. | arrives | arrives, arrive, arriving, to arrive |
-| The head boy, along with the new pupils, ___ early on Mondays. | arrives | arrives, arrive, arriving, to arrive |
+| The head boy, together with the librarian, ___ in the front row. | sits | same |
+| Tunde, in addition to the principal, ___ early on Mondays. | arrives | same |
+| The head boy, in addition to two other students, ___ ready for the trip. | is | opposite |
+| The head girl, as well as two classmates, ___ in the hall. | is | opposite |
+| The prefects, along with three friends, ___ near the market. | live | same |
+| The new pupils, as well as their teacher, ___ ready for the trip. | are | opposite |
+| Emeka, along with the head teacher, ___ finished the project. | has | same |
+| The prefects, along with their coach, ___ finished the project. | have | opposite |
+| The twins, in addition to the class captains, ___ early on Mondays. | arrive | same |
+| Emeka, together with the prefects, ___ in the hall. | is | opposite |
+| Amina, along with the head teacher, ___ near the market. | lives | same |
+| Amina, as well as some parents, ___ in the front row. | sits | opposite |
+| Amina, in addition to the principal, ___ in the front row. | sits | same |
+| The players, as well as their teacher, ___ near the market. | live | opposite |
+| Tunde, in addition to the principal, ___ near the market. | lives | same |
+| Amina, together with the prefects, ___ waiting at the school gate. | is | opposite |
+| The head girl, along with the head teacher, ___ early on Mondays. | arrives | same |
+| The new pupils, along with three friends, ___ ready for the trip. | are | same |
+| Ngozi, as well as the other players, ___ in the hall. | is | opposite |
+| The twins, in addition to the principal, ___ in the hall. | are | opposite |
+| The prefects, together with their form teacher, ___ finished the project. | have | opposite |
+| Amina, in addition to two other students, ___ near the market. | lives | opposite |
+| Amina, in addition to the class captains, ___ ready for the trip. | is | opposite |
+| Ngozi, as well as two classmates, ___ in the hall. | is | opposite |
+| Tunde, in addition to the class captains, ___ in the front row. | sits | opposite |
+| The new pupils, along with the head teacher, ___ near the market. | live | opposite |
+| The head boy, together with the librarian, ___ finished the project. | has | same |
+| The students, as well as some parents, ___ seen the new timetable. | have | same |
+| Amina, as well as some parents, ___ near the market. | lives | opposite |
+| The new pupils, as well as their teacher, ___ lunch in the canteen. | eat | opposite |
 
 ## 5. Coach copy
 
@@ -115,11 +118,17 @@ Avoided on purpose: collective nouns (team, class, choir, family, staff), becaus
 
 Only the third Show me beat may name the answer; the validator enforces this.
 
-## 6. Decision needed: the "disagree with the nearest noun" shortcut
+## 6. Why same-number pairings, and how many
 
-Today every question pairs a subject with a side phrase of the opposite number. That means a learner can score 10/10 without the move by always picking the verb that disagrees with the noun just before the blank. On a real JAMB item where the side phrase has the same number as the subject ("Tunde, along with his brother, ___ …"), that shortcut gives the wrong answer. Solo has no "tap what you covered" check, so 8/10 alone cannot tell the move from the shortcut.
+If every question paired opposite numbers, a learner could score 10/10 by always choosing the verb that disagrees with the side phrase, without stripping anything. That shortcut fails on real JAMB items such as "Tunde, along with his brother, ___ …".
 
-**Recommendation:** make about 1 in 5 questions same-number pairings (singular subject with a singular side phrase, plural with plural). The shortcut then fails, while the move still works and the Show me copy stays true. It is a small change to the generator and draw rules, plus new same-number side phrases to review. It changes what proof means, so it is your call.
+A share of the pool is not enough, because any one run could still be mostly opposite-number. So each run has fixed counts:
+
+- **Solo:** 5 singular + 5 plural subjects, of which 4 are same-number (2 of each). The shortcut scores 6/10; passing needs 8/10.
+- **Recheck:** 3 + 2 or 2 + 3, with 2 same-number items (1 of each). The shortcut scores 3/5; passing needs 4/5.
+- **Practice:** about 40% same-number, so learners meet both kinds before they are checked.
+
+A test runs the shortcut against 50 solo runs and 100 rechecks and confirms it fails every one.
 
 ## 7. Sign-off
 
@@ -127,7 +136,7 @@ Today every question pairs a subject with a side phrase of the opposite number. 
 - [ ] Every word-list line in section 3 reads sensibly in every pairing.
 - [ ] The 30 samples in section 4 read as natural exam-style English.
 - [ ] The English coach copy in section 5 is correct and does not give answers away.
-- [ ] Decide section 6: keep opposite-number pairings only, or add same-number pairings (recommended).
+- [ ] The same-number pairings (★ in section 3, and the same-number samples in section 4) read sensibly.
 
 When all five are ticked, set `review.en` in `src/content/strip-disguise.ts` to
 `{ status: "approved", reviewer: "<name>", date: "<YYYY-MM-DD>" }` and bump `version` if anything changed.

@@ -1,5 +1,5 @@
-import { allCombos, buildQuestion, lessonCombo, practicePool, sentence } from "./generate.ts";
-import type { CoachCopy, Linker, Pack } from "./types.ts";
+import { allCombos, buildQuestion, lessonCombo, practicePool, sentence, SOLO_SHAPE } from "./generate.ts";
+import type { CoachCopy, Lang, Linker, Pack } from "./types.ts";
 
 export interface ValidationResult {
   /** Structural problems. Any error fails the build. */
@@ -11,7 +11,23 @@ export interface ValidationResult {
 const LINKERS: Linker[] = ["as well as", "along with", "together with", "in addition to"];
 const SHOW_ME_PLACEHOLDERS = new Set(["{covered}", "{subject}", "{count}", "{answer}"]);
 const MIN_SENTENCES = 50;
-const SOLO_PER_NUMBER = 5;
+const LANGS: Lang[] = ["en", "pcm"];
+// Every language must have exactly these coach keys (CoachCopy, flattened).
+const COACH_KEYS = [
+  "rule",
+  "explanation",
+  "nudge",
+  "showMe.0",
+  "showMe.1",
+  "showMe.2",
+  "goDeeper.subject",
+  "goDeeper.subjectHint",
+  "goDeeper.count",
+  "goDeeper.countHint",
+  "goDeeper.verb",
+  "goDeeper.verbHint",
+  "verify",
+];
 
 const placeholders = (s: string) => (s.match(/\{[^}]*\}/g) ?? []).sort();
 
@@ -40,6 +56,7 @@ export function validatePack(pack: Pack): ValidationResult {
 
   // Word-list hygiene
   const clean = (where: string, t: string) => {
+    if (typeof t !== "string" || !t.trim()) return err(`${where}: empty text`);
     if (/[{}]/.test(t)) err(`${where}: unfilled placeholder in "${t}"`);
     if (t !== t.trim() || /\s{2,}/.test(t)) err(`${where}: stray whitespace in "${t}"`);
   };
@@ -53,8 +70,11 @@ export function validatePack(pack: Pack): ValidationResult {
   }
   for (const n of ["sg", "pl"] as const) {
     if (!pack.subjects.some((s) => s.number === n)) err(`No ${n} subjects`);
-    for (const l of LINKERS)
+    for (const l of LINKERS) {
       if (!pack.sidePhrases.some((p) => p.number === n && p.linker === l)) err(`No ${n} side phrase for "${l}"`);
+      if (!pack.sidePhrases.some((p) => p.number === n && p.linker === l && p.sameNumber))
+        err(`No same-number ${n} side phrase for "${l}"`);
+    }
   }
   for (const v of pack.verbs) {
     const forms = [v.sg, v.pl, ...v.distractors];
@@ -90,21 +110,28 @@ export function validatePack(pack: Pack): ValidationResult {
 
   const pool = practicePool(pack);
   if (pool.length < MIN_SENTENCES) err(`Only ${pool.length} practice sentences; at least ${MIN_SENTENCES} required`);
-  for (const n of ["sg", "pl"] as const) {
-    const count = pool.filter((c) => c.number === n).length;
-    // Two back-to-back solo runs must be able to use different questions.
-    if (count < 2 * SOLO_PER_NUMBER) err(`Only ${count} ${n} practice sentences; ${2 * SOLO_PER_NUMBER} needed`);
-  }
+  // Two back-to-back solo runs must be able to use different questions in every cell of the run shape.
+  for (const n of ["sg", "pl"] as const)
+    for (const pairing of ["same", "opposite"] as const) {
+      const count = pool.filter((c) => c.number === n && c.pairing === pairing).length;
+      const need = 2 * SOLO_SHAPE[n][pairing];
+      if (count < need) err(`Only ${count} ${n} ${pairing}-number practice sentences; ${need} needed`);
+    }
 
-  // Coach copy: same keys and placeholders in every language; only the last Show me beat may state the answer
-  const en = flatten(pack.coach.en);
-  for (const lang of Object.keys(pack.coach) as (keyof Pack["coach"])[]) {
+  // Coach copy: the required keys in every language, same placeholders as English; only the last Show me beat may state the answer
+  const en = pack.coach.en ? flatten(pack.coach.en) : {};
+  for (const lang of LANGS) {
+    if (!pack.coach[lang]) {
+      err(`coach.${lang} is missing`);
+      continue;
+    }
     const copy = flatten(pack.coach[lang]);
-    for (const k of new Set([...Object.keys(en), ...Object.keys(copy)])) {
+    for (const k of COACH_KEYS) {
       if (!copy[k]?.trim()) err(`coach.${lang}.${k} is missing`);
       else if (en[k] !== undefined && placeholders(copy[k]).join() !== placeholders(en[k]).join())
         err(`coach.${lang}.${k}: placeholders differ from English`);
     }
+    for (const k of Object.keys(copy)) if (!COACH_KEYS.includes(k)) err(`coach.${lang}.${k} is not a known key`);
     for (const [k, v] of Object.entries(copy)) {
       if (v.includes("{answer}") && k !== "showMe.2") err(`coach.${lang}.${k} must not state the answer`);
       for (const ph of placeholders(v)) if (!SHOW_ME_PLACEHOLDERS.has(ph)) err(`coach.${lang}.${k}: unknown placeholder ${ph}`);
@@ -120,8 +147,16 @@ export function validatePack(pack: Pack): ValidationResult {
   for (const k of ["portalUrl", "pdfUrl"] as const)
     if (!pack.source[k].startsWith("https://")) err(`source.${k} must be an https URL`);
 
+  // Review: an approval must name who approved it and when. Unreviewed Pidgin is allowed (shown as Unreviewed).
+  for (const lang of LANGS) {
+    const r = pack.review[lang];
+    if (!r) err(`review.${lang} is missing`);
+    else if (r.status === "approved" && (!r.reviewer?.trim() || !r.date?.trim()))
+      err(`review.${lang} is approved without a reviewer and date`);
+  }
+
   const releaseBlockers: string[] = [];
-  if (pack.review.en.status !== "approved" || !pack.review.en.reviewer)
+  if (pack.review.en?.status !== "approved")
     releaseBlockers.push("English word lists, sentences and coach copy need a named reviewer's approval");
 
   return { errors, releaseBlockers };

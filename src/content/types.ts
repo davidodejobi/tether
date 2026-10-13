@@ -57,8 +57,12 @@ export interface Pack {
   };
   review: Record<Lang, Review>;
   subjects: { id: string; text: string; number: NumberTag }[];
-  /** A side phrase is only paired with subjects of the opposite number, so every question carries the trap. */
-  sidePhrases: { id: string; text: string; number: NumberTag; linker: Linker }[];
+  /**
+   * Every side phrase pairs with subjects of the opposite number (the trap). Those marked
+   * `sameNumber` also pair with subjects of their own number, so "pick the verb that disagrees
+   * with the side phrase" cannot pass a proof run.
+   */
+  sidePhrases: { id: string; text: string; number: NumberTag; linker: Linker; sameNumber?: boolean }[];
   verbs: Verb[];
   /** The lesson's own example. It sits outside the question space so it never appears in practice or proof. */
   lessonExample: { subject: string; number: NumberTag; sidePhrase: string; verbId: string; predicate: string };

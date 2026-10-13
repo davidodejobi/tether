@@ -4,7 +4,7 @@ import type { Pack } from "./types.ts";
 // The rule decides the answer: the verb matches the number of the subject before the side phrase.
 export const stripDisguise = {
   moveId: "strip-disguise",
-  version: 1,
+  version: 2,
   ruleId: "verb-matches-subject-before-side-phrase",
   title: "Strip the Disguise",
   source: {
@@ -41,24 +41,25 @@ export const stripDisguise = {
     { id: "new-pupils", text: "The new pupils", number: "pl" },
   ],
   sidePhrases: [
-    // Plural side phrases, used with singular subjects.
+    // Plural side phrases: with singular subjects, and (sameNumber) with plural subjects.
     { id: "two-classmates", text: "as well as two classmates", number: "pl", linker: "as well as" },
+    { id: "some-parents", text: "as well as some parents", number: "pl", linker: "as well as", sameNumber: true },
     { id: "other-players", text: "as well as the other players", number: "pl", linker: "as well as" },
-    { id: "three-friends", text: "along with three friends", number: "pl", linker: "along with" },
+    { id: "three-friends", text: "along with three friends", number: "pl", linker: "along with", sameNumber: true },
     { id: "the-new-pupils", text: "along with the new pupils", number: "pl", linker: "along with" },
     { id: "the-prefects", text: "together with the prefects", number: "pl", linker: "together with" },
-    { id: "some-teachers", text: "together with some teachers", number: "pl", linker: "together with" },
+    { id: "some-teachers", text: "together with some teachers", number: "pl", linker: "together with", sameNumber: true },
     { id: "two-students", text: "in addition to two other students", number: "pl", linker: "in addition to" },
-    { id: "class-captains", text: "in addition to the class captains", number: "pl", linker: "in addition to" },
-    // Singular side phrases, used with plural subjects.
+    { id: "class-captains", text: "in addition to the class captains", number: "pl", linker: "in addition to", sameNumber: true },
+    // Singular side phrases: with plural subjects, and (sameNumber) with singular subjects.
     { id: "their-teacher", text: "as well as their teacher", number: "sg", linker: "as well as" },
-    { id: "class-captain", text: "as well as the class captain", number: "sg", linker: "as well as" },
+    { id: "class-captain", text: "as well as the class captain", number: "sg", linker: "as well as", sameNumber: true },
     { id: "their-coach", text: "along with their coach", number: "sg", linker: "along with" },
-    { id: "head-teacher", text: "along with the head teacher", number: "sg", linker: "along with" },
+    { id: "head-teacher", text: "along with the head teacher", number: "sg", linker: "along with", sameNumber: true },
     { id: "form-teacher", text: "together with their form teacher", number: "sg", linker: "together with" },
-    { id: "the-librarian", text: "together with the librarian", number: "sg", linker: "together with" },
-    { id: "the-principal", text: "in addition to the principal", number: "sg", linker: "in addition to" },
-    { id: "vice-principal", text: "in addition to the vice principal", number: "sg", linker: "in addition to" },
+    { id: "the-librarian", text: "together with the librarian", number: "sg", linker: "together with", sameNumber: true },
+    { id: "the-principal", text: "in addition to the principal", number: "sg", linker: "in addition to", sameNumber: true },
+    { id: "vice-principal", text: "in addition to the vice principal", number: "sg", linker: "in addition to", sameNumber: true },
   ],
   verbs: [
     {

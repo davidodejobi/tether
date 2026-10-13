@@ -46,6 +46,7 @@ These decisions override conflicting text in `requirements.txt`.
 ## Move 1 content (roadmap step 3)
 
 - Syllabus source verified on 13 Oct 2026 from JAMB's own PDF (IBASS portal): Use of English, Section B Lexis and Structure, item (e) "...number, agreement/concord...". Details and hash in `src/content/strip-disguise.ts` and `docs/content/move-1-review.md`. The syllabus names the topic, not the "as well as" rule, so learner-facing lines name the topic only.
-- Each question pairs a subject with an opposite-number side phrase. Options: singular form, plural form and two never-correct fillers. 960 questions; three reserved for the tutorial.
+- Questions pair a subject with an opposite-number side phrase, or with a same-number side phrase marked `sameNumber`. Options: singular form, plural form and two never-correct fillers. 1,560 questions; three reserved for the tutorial.
+- Proof runs have fixed counts so "pick the verb that disagrees with the side phrase" cannot pass: solo 5 + 5 with four same-number items (shortcut scores 6/10), rechecks 3 + 2 or 2 + 3 with two (3/5). Practice is about 40% same-number. See `SOLO_SHAPE` and `RECHECK_SHAPES`.
 - Content changes bump the pack `version`; stored questions keep the version they were built with.
 - `validatePack` separates errors (fail tests) from release blockers (English review pending). Pidgin ships labelled Unreviewed rather than blocking release.
