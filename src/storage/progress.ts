@@ -237,13 +237,18 @@ export function recoverRun(
     const done = { ...saved, run: finish(saved.run, now) };
     return { outcome, saved: done, batch: completeRunBatch(p, done, timeZone), unsubmitted: [] };
   }
-  const { run, attempts } = convert(saved.run, now, "converted");
+  const c = convertBatch(saved, now, "converted");
+  return { outcome, saved: c.saved, batch: c.batch, unsubmitted: c.unsubmitted };
+}
+
+/** Converts an active run to practice (long absence, clock anomaly, or Leave): submitted answers become completed attempts. */
+export function convertBatch(saved: SavedRun, now: number, status: "converted" | "exited") {
+  const { run, attempts } = convert(saved.run, now, status);
   const byId = new Map(saved.questions.map((q) => [q.id, q]));
   const done = { ...saved, run };
   return {
-    outcome,
     saved: done,
-    batch: { runs: [done], attempts: attempts.map((attempt) => ({ attempt, question: byId.get(attempt.questionId)! })) },
+    batch: { runs: [done], attempts: attempts.map((attempt) => ({ attempt, question: byId.get(attempt.questionId)! })) } as Batch,
     unsubmitted: saved.questions.slice(run.submissions.length),
   };
 }

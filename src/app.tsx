@@ -2,7 +2,8 @@ import { LocationProvider, Router, Route, lazy } from "preact-iso";
 import { Home } from "./ui/screens/Home";
 import { Settings } from "./ui/screens/Settings";
 import { Practice } from "./ui/practice/Practice";
-import { Solo, SoloEntryScreen } from "./ui/solo/SoloScreens";
+import { SoloEntryScreen } from "./ui/solo/SoloScreens";
+import { RunScreen } from "./ui/runs/Run";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 import { Gate } from "./ui/onboarding/Gate";
@@ -24,7 +25,8 @@ const GatedHome = gated(Home, true);
 const GatedSettings = gated(Settings, true);
 const GatedPractice = gated(Practice, true);
 const GatedSoloEntry = gated(SoloEntryScreen);
-const GatedSolo = gated(Solo);
+// /run/solo and /run/recheck: focus layout, no shell (step 13 links to /run/recheck).
+const GatedRun = ({ kind }: { kind?: string }) => <Gate><RunScreen kind={kind} /></Gate>;
 
 export function App() {
   return (
@@ -34,7 +36,7 @@ export function App() {
           <Route path="/" component={GatedHome} />
           <Route path="/practice" component={GatedPractice} />
           <Route path="/solo-entry" component={GatedSoloEntry} />
-          <Route path="/solo" component={GatedSolo} />
+          <Route path="/run/:kind" component={GatedRun} />
           <Route path="/settings" component={GatedSettings} />
           {kitRoute}
           <Route default component={NotFound} />

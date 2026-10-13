@@ -216,7 +216,6 @@ SCREENS.push(
   { name: "honesty-third-dot", path: "/", actions: thirdDot },
   { name: "solo-ready", path: "/", actions: async (p) => (await thirdDot(p), await next(p)) },
   { name: "solo-not-ready", path: "/", actions: async (p) => { await oneDot(p); await p.goto("/solo-entry", { waitUntil: "networkidle" }); } },
-  { name: "solo-placeholder", path: "/", actions: async (p) => (await seedLearner(p, "/solo")) },
 );
 
 // Onboarding steps, each reached from a fresh browser by pressing through the earlier ones.
@@ -284,7 +283,6 @@ const wide: [string, (page: Page) => Promise<void>][] = [
   ["practice-summary", summary],
   ["solo-ready", async (p) => (await thirdDot(p), await next(p))],
   ["solo-not-ready", async (p) => { await oneDot(p); await p.goto("/solo-entry", { waitUntil: "networkidle" }); }],
-  ["solo-placeholder", (p) => seedLearner(p, "/solo")],
 ];
 for (const [name, actions] of wide)
   for (const w of WIDE) {

@@ -76,7 +76,7 @@ function Round() {
   };
 
   if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => route("/")} />;
-  if (step.kind === "ready") return <SoloEntry dots={3} onStart={() => route("/solo")} onPractise={after} />;
+  if (step.kind === "ready") return <SoloEntry dots={3} onStart={() => route("/run/solo")} onPractise={after} />;
   return (
     <HelpedQuestion
       key={step.key}
