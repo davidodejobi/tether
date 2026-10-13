@@ -12,7 +12,8 @@
     "test:e2e": "playwright test",
     "content:check": "vitest run src/content",
     "content:list": "node tools/list-questions.ts",
-    "tokens": "python3 tools/tokens/tokens.py && python3 tools/tokens/gen_css.py"
+    "tokens": "python3 tools/tokens/tokens.py && python3 tools/tokens/gen_css.py",
+    "screens": "playwright test -c playwright.screens.config.ts"
   },
   "dependencies": {
     "idb-keyval": "^6.3.0",
