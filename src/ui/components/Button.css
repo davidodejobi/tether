@@ -1,0 +1,28 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-width: var(--size-touch-target);
+  min-height: var(--size-button);
+  padding: 0 var(--spacing-xl);
+  border: 0;
+  border-radius: var(--radius-lg);
+  font: var(--type-label-l);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard);
+}
+.btn-primary { background: var(--bg-primary); color: var(--text-on-primary); box-shadow: 0 var(--size-edge) 0 var(--bg-primary-edge); }
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 2px solid var(--border-strong);
+  box-shadow: 0 var(--size-edge) 0 var(--border-edge);
+}
+.btn-tertiary { background: transparent; color: var(--text-brand); }
+.btn:not(:disabled):active { transform: translateY(var(--size-edge)); box-shadow: none; }
+.btn-tertiary:not(:disabled):active { transform: none; background: var(--bg-primary-container); }
+.btn:disabled { background: var(--bg-disabled); color: var(--text-disabled); border-color: transparent; box-shadow: none; cursor: not-allowed; }
+.btn-tertiary:disabled { background: transparent; border-color: transparent; }
+.btn:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }

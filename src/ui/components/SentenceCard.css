@@ -1,0 +1,24 @@
+.sentence {
+  margin: 0;
+  padding: var(--spacing-xl) var(--spacing-md);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  font: var(--type-question);
+  color: var(--text-primary);
+}
+.blank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  min-height: 44px;
+  padding: 0 var(--spacing-sm);
+  vertical-align: middle;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  font-weight: 700;
+}
+.blank-filled { border-style: solid; border-color: var(--border-selected); color: var(--text-brand); }
+.blank-correct { border-style: solid; border-color: var(--border-proof); background: var(--bg-proof-container); color: var(--text-on-proof-container); }

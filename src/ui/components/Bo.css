@@ -1,0 +1,4 @@
+.bo { display: block; flex: none; }
+.bo-idle { animation: bo-bob 2.4s ease-in-out infinite; }
+@keyframes bo-bob { 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .bo-idle { animation: none; } }

@@ -1,0 +1,46 @@
+.stamp-wrap { position: relative; display: inline-block; }
+.stamp {
+  width: var(--stamp-size);
+  height: var(--stamp-size);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxs);
+  border-radius: var(--radius-full);
+  text-align: center;
+}
+.stamp-word { font: var(--type-label-s); letter-spacing: 0.06em; text-transform: uppercase; }
+.stamp-none { border: 3px dashed var(--border-strong); color: var(--text-secondary); }
+.stamp-proved {
+  border: 3px solid var(--border-proof);
+  box-shadow: inset 0 0 0 5px var(--bg-proof-container), inset 0 0 0 7px var(--border-proof);
+  background: var(--bg-proof-container);
+  color: var(--text-on-proof-container);
+  animation: stamp-drop var(--dur-long) var(--ease-emphasized);
+}
+.stamp-held {
+  border: 6px solid var(--bg-proof-edge);
+  box-shadow: inset 0 0 0 4px var(--bg-proof), inset 0 0 0 6px var(--text-on-proof);
+  background: var(--bg-proof);
+  color: var(--text-on-proof);
+  animation: stamp-drop var(--dur-long) var(--ease-emphasized);
+}
+.stamp-fading { border: 3px dashed var(--border-gap); background: var(--bg-gap-container); color: var(--text-on-gap-container); }
+.stamp-fading .icon { opacity: 0.6; }
+.stamp-due {
+  position: absolute;
+  right: calc(-1 * var(--spacing-xs));
+  bottom: calc(-1 * var(--spacing-xs));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--radius-full);
+  background: var(--bg-gap-container);
+  color: var(--text-on-gap-container);
+  border: 2px solid var(--border-gap);
+  font: var(--type-label-s);
+}
+@keyframes stamp-drop { from { transform: scale(1.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .stamp-proved, .stamp-held { animation: none; } }

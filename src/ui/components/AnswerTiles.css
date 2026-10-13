@@ -1,0 +1,46 @@
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm); }
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-width: 64px;
+  min-height: 64px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 2px solid var(--border-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 var(--size-edge) 0 var(--border-edge);
+  font: var(--type-title-l);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard);
+}
+.tile:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+.tile:active:not([aria-disabled]) { transform: translateY(var(--size-edge)); box-shadow: none; }
+.tile-selected {
+  background: var(--bg-surface);
+  color: var(--text-on-primary-container);
+  border-color: var(--border-selected);
+  box-shadow: 0 var(--size-edge) 0 var(--border-selected);
+  animation: tile-lift var(--dur-short) var(--ease-emphasized);
+}
+.tile-struck {
+  background: var(--bg-wrong-container);
+  color: var(--text-on-wrong-container);
+  border: 2px dashed var(--border-wrong);
+  box-shadow: none;
+  cursor: not-allowed;
+  animation: tile-shake var(--dur-medium) var(--ease-standard);
+}
+.tile-struck .tile-word { text-decoration: line-through 2px; }
+.tile-correct { background: var(--bg-proof-container); color: var(--text-on-proof-container); border-color: var(--border-proof); box-shadow: 0 var(--size-edge) 0 var(--border-proof); }
+.tile-correct .icon { animation: pop var(--dur-medium) var(--ease-emphasized); }
+.tile[aria-disabled]:not(.tile-struck):not(.tile-correct) { cursor: default; }
+
+@keyframes tile-lift { from { transform: scale(1.04); } to { transform: scale(1); } }
+@keyframes tile-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-6px); } }
+@keyframes pop { from { transform: scale(0); } 70% { transform: scale(1.15); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .tile, .tile-selected, .tile-struck, .tile-correct .icon { animation: none; transition: none; }
+}

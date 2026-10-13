@@ -1,0 +1,12 @@
+.dots { display: inline-flex; align-items: center; gap: var(--spacing-xs); }
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-sunken);
+  border: 2px solid var(--border-strong);
+}
+.dot-on { background: var(--bg-proof); border-color: var(--border-proof); animation: dot-pop var(--dur-short) var(--ease-emphasized); }
+.dots-label { margin-left: var(--spacing-xxs); font: var(--type-label-m); color: var(--text-secondary); }
+@keyframes dot-pop { from { transform: scale(0.4); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .dot-on { animation: none; } }
