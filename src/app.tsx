@@ -1,6 +1,7 @@
 import { LocationProvider, Router, Route, lazy } from "preact-iso";
 import { Home } from "./ui/screens/Home";
 import { Settings } from "./ui/screens/Settings";
+import { Practice } from "./ui/practice/Practice";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 
@@ -16,6 +17,7 @@ export function App() {
       <LocationProvider>
         <Router>
           <Route path="/" component={Home} />
+          <Route path="/practice" component={Practice} />
           <Route path="/settings" component={Settings} />
           {kitRoute}
           <Route default component={NotFound} />
