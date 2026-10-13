@@ -37,7 +37,7 @@
   .page { max-width: 720px; margin: 0 auto; padding: var(--spacing-xxxl) var(--spacing-xxl); }
   .page h1 { margin: 0 0 var(--spacing-md); font: var(--type-display-m); }
   .page p { font: var(--type-body-l); }
-  .page a { display: inline-block; padding: var(--spacing-xs) 0; margin-right: var(--spacing-md); color: var(--text-brand); font: var(--type-label-l); }
+  .page a:not(.btn) { display: inline-block; padding: var(--spacing-xs) 0; margin-right: var(--spacing-md); color: var(--text-brand); font: var(--type-label-l); }
   .page a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
 }
 @media (min-width: 1280px) { .page { margin: 0; padding: var(--spacing-xxl) var(--spacing-xxxl); } }
