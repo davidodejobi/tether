@@ -3,7 +3,7 @@ import { recheckAvailable } from "../../rules/proof.ts";
 import { Dots } from "../components/Dots";
 import { Icon, type IconName } from "../components/Icon";
 import { useProgress } from "../progress";
-import { appNow, demoQuery, simulatedDate } from "./simulate";
+import { appNow, simulatedDate } from "./simulate";
 import "../components/Button.css";
 import "../solo/Solo.css";
 import "./proof.css";
@@ -36,7 +36,12 @@ export function RecheckEntry() {
         )}
       </section>
       <div class="so-actions">
-        {avail && <a class="btn btn-primary" href={`/run/recheck${demoQuery()}`}>Start recheck</a>}
+        {avail && (sim ? (
+          // Read-only preview: the runner always uses the real date and real records.
+          <><button class="btn btn-primary" type="button" disabled>Start recheck (demo preview)</button><p class="so-lead">Return to the real date to start.</p></>
+        ) : (
+          <a class="btn btn-primary" href="/run/recheck">Start recheck</a>
+        ))}
         <a class="btn btn-tertiary" href={avail ? "/practice" : "/"}>{avail ? "Keep practising" : "Back to Home"}</a>
       </div>
     </main>

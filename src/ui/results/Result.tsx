@@ -103,7 +103,7 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
             <Score kind="alone" value={s.alone} />
           </div>
         ) : (
-          <div class="rs-scores"><Score kind="alone" value={v.score} /></div>
+          <div class="rs-scores"><Score kind="alone" value={v.score} total={v.total} label={v.kind === "recheck" ? "Recheck" : undefined} note={v.kind === "recheck" ? "Recheck. No help." : undefined} /></div>
         )}
         {v.kind === "recheck" && <p class="rs-note">Today's five-question check. It does not change your alone score or gap.</p>}
         <GapNote v={v} />
@@ -159,7 +159,7 @@ function Misses({ v, onBack }: { v: ResultView; onBack(): void }) {
             <p class="rs-sentence">{sentence(q, q.answer)}</p>
             <Button variant="secondary" icon="play" disabled={busy} onClick={() => look(i)}>Show me</Button>
             {playing === i && (
-              <ShowMe question={q} lang={learner.lang} coach={learner.coach} doneLabel="Done" note="Free look: nothing lost" onDone={() => setPlaying(null)} />
+              <ShowMe question={q} lang={learner.lang} coach="text" doneLabel="Done" note="Free look: nothing lost" onDone={() => setPlaying(null)} />
             )}
           </li>
         ))}

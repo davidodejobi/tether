@@ -57,10 +57,24 @@ test("a failed recheck shows Fading and the recovery line", async ({ page }) => 
   await expect(page.getByRole("img", { name: /Fading/ })).toBeVisible();
 });
 
+test("a passed recheck shows 4/5, not the solo alone score", async ({ page }) => {
+  await seedRecords(page, [finishedRun("a", "solo", 9, { n: 1, practice: 9, daysAgo: 5 }), cycle("held", "a", iso(-5), iso(-2)), finishedRun("r", "recheck", 4, { n: 2 })], "/result/r");
+  const score = page.getByRole("group", { name: "Recheck score" });
+  await expect(score.getByLabel("4 out of 5")).toBeVisible();
+  await expect(score).toContainText("/5");
+  await expect(score).toContainText("Recheck. No help.");
+  await expect(page.getByText("latest solo check")).toHaveCount(0);
+});
+
 test("the misses review records a free look and changes no result", async ({ page }) => {
   await seedRecords(page, [finishedRun("a", "solo", 8, { n: 1, practice: 9 }), cycle("proved", "a", iso(0), iso(3))], "/result/a");
   await page.getByRole("button", { name: "See your misses" }).click();
   await expect(page.getByRole("listitem")).toHaveCount(2);
+  // The learner prefers Bo (coach: "character"), but results never show Bo.
+  await page.getByRole("button", { name: "Show me" }).first().click();
+  await expect(page.getByText("Free look: nothing lost")).toBeVisible();
+  await expect(page.locator("img.bo")).toHaveCount(0);
+  await page.getByRole("button", { name: "Done" }).click();
   await page.getByRole("button", { name: "Show me" }).first().click();
   await expect(page.getByText("Free look: nothing lost")).toBeVisible();
   const saved = () =>
