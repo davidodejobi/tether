@@ -285,3 +285,26 @@ test("a run hidden past its deadline converts on return instead of finishing whi
   expect(r.run.result).toBeUndefined();
   expect(await idb(page, (rows) => rows.filter(([k]) => String(k).startsWith("cycle:")))).toHaveLength(0);
 });
+
+test("a deadline passing while an answer awaits Retry waits; Retry then finishes the run with that answer", async ({ page }) => {
+  await page.clock.install();
+  await start(page);
+  await expect(heading(page, 1)).toBeVisible();
+  const q = (await activeRun(page)).questions[0];
+  await page.getByRole("radio", { name: new RegExp(`: ${q.answer}$`) }).click();
+  await page.evaluate(() => ((window as any).__failWrites = true));
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByRole("alert")).toContainText("Couldn't save");
+  await page.evaluate(() => ((window as any).__failWrites = false));
+  await page.clock.fastForward("10:30");
+  await page.clock.fastForward(1000);
+  await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();
+  await expect(page).toHaveURL(/\/run\/solo/);
+  expect((await activeRun(page)).run.submissions).toHaveLength(0);
+  await page.getByRole("button", { name: "Retry" }).click();
+  await page.clock.fastForward(1000);
+  await expect(page).toHaveURL(/\/result\/run-/);
+  const [r] = await runs(page);
+  expect(r.run.submissions).toHaveLength(1);
+  expect(r.run.result).toMatchObject({ score: 1, timedOut: true });
+});

@@ -55,6 +55,7 @@ function Runner({ kind }: { kind: RunKind }) {
   const [awake, setAwake] = useState(true);
   const [toast, setToast] = useState(false);
   const live = useRef<SavedRun | null>(null); // the latest run, readable from timers
+  const blocked = useRef({ pending: 0, failed: false }); // saves in flight / awaiting Retry, readable from timers
   const chain = useRef<Promise<void>>(Promise.resolve());
   const hiddenAt = useRef<number | null>(null);
   const ended = useRef(false); // finishing or converting has begun: timers stop
@@ -72,6 +73,8 @@ function Runner({ kind }: { kind: RunKind }) {
   // The batch is built when its turn comes, from the latest committed run, never from a snapshot taken at click time.
   const commit = (build: () => Batch, then: () => void) => {
     const go = () => {
+      blocked.current.failed = false;
+      blocked.current.pending++;
       setFailed(null);
       setPending((n) => n + 1);
       chain.current = chain.current.then(async () => {
@@ -79,8 +82,10 @@ function Runner({ kind }: { kind: RunKind }) {
           await save(build());
           if (mounted.current) then();
         } catch {
+          blocked.current.failed = true;
           if (mounted.current) setFailed(() => go);
         } finally {
+          blocked.current.pending--;
           if (mounted.current) setPending((n) => n - 1);
         }
       });
@@ -188,7 +193,8 @@ function Runner({ kind }: { kind: RunKind }) {
       // While hidden nothing is decided: coming back judges the absence first, then the deadline (as recoverRun does).
       if (!cur || ended.current || cur.run.status !== "active" || hiddenAt.current !== null || document.visibilityState === "hidden") return;
       if (clockWentBack(cur.run, t)) return convertRun("converted", "clock");
-      if (t >= cur.run.deadline && pending === 0) finishRun(t);
+      // A saving or failed answer is never finalised over: the deadline waits for it, and Retry then finishes the run with it.
+      if (t >= cur.run.deadline && !blocked.current.pending && !blocked.current.failed) finishRun(t);
     }, TICK_MS);
     const beat = setInterval(() => {
       const cur = live.current;
@@ -217,7 +223,7 @@ function Runner({ kind }: { kind: RunKind }) {
       void acquireWake().then(setAwake);
       const out = onReturn(cur.run, t, since);
       if (out === "convert") return convertRun("converted", since !== null && t < since ? "clock" : clockWentBack(cur.run, t) ? "clock" : "away");
-      if (out === "timeout") return finishRun(t);
+      if (out === "timeout") return blocked.current.failed ? setToast(false) : finishRun(t); // failed: the tick finishes it after Retry
       beatSave(t);
       setToast(true);
     };
