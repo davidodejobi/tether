@@ -207,3 +207,8 @@ These decisions override conflicting text in `requirements.txt`.
 - Race fixed: the solo run's shortcut listener was attached in a post-paint effect, so "question visible" did not imply "R works" (failed once in a full run). It is now a layout effect.
 - Verified in the build: first-load JS is 57.7 kB gzipped (index chunk 178.8 kB raw; the day and night map chunks are 0.05 kB, the art SVGs load lazily).
 - Still needs real devices: VoiceOver and TalkBack passes over Home, the map, practice and results; a real PWA install (Android Chrome prompt, iOS Add to Home Screen) and an offline launch from the installed app; real voices, including a device with no voices and a Pidgin/en-NG voice; physical large-text and display-zoom settings; a physical-keyboard run on a laptop.
+
+## Read-aloud speaks coach lines (fix)
+- `learner.readAloud` was saved but nothing used it. `CoachBubble` now calls `useAutoSpeak`: with read-aloud on, speech usable (`useCanSpeak`) and the tab visible, each new coach line is spoken once in `learner.lang` through `speak()` (Pidgin follows the existing pcm, then en-NG, fallback). The last spoken text stops repeats on re-render; turning read-aloud off and on again allows the line once more.
+- A bubble that spoke cancels speech when it unmounts, so a route change never leaves a line talking over the next screen. Off (the default), no speech API or a hidden tab: silent. Exam sentences are never auto-read; the manual R / Read aloud control is unchanged and works with read-aloud off.
+- Coach bubbles never render in proof runs, results or share, so nothing speaks there (`e2e/readaloud.spec.ts`, solo case).
