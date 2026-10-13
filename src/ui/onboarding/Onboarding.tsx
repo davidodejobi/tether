@@ -16,7 +16,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
     <>
       <div class="ob-body ob-center">
         <p class="ob-brand"><Icon name="tether" size={24} /> Tether</p>
-        <Bo pose="wave" size={160} />
+        <div class="ob-art"><Bo pose="wave" size={160} /></div>
         <StepHeading>Learning that doesn't drift</StepHeading>
         <p class="ob-lead">Fix one JAMB English mistake for good, in 5 minutes a day. Works without data.</p>
       </div>
@@ -182,12 +182,12 @@ export function Onboarding() {
   const finish = (next: Learner) => saveLearner({ ...next, onboarded: true }); // the gate then shows Home
 
   // The learner exists from the nickname step on.
-  if (step === "welcome") return <Screen><Welcome onStart={() => setStep("nickname")} /></Screen>;
+  if (step === "welcome") return <Screen kind="welcome"><Welcome onStart={() => setStep("nickname")} /></Screen>;
   if (step === "nickname" || !learner)
     return <Screen><Nickname onBack={() => setStep("welcome")} onSaved={() => setStep("lesson")} /></Screen>;
   if (step === "lesson")
     return (
-      <Screen>
+      <Screen kind="lesson">
         <Lesson coach={learner.coach} lang={learner.lang} onDone={async () => (await saveLearner({ ...learner, lessonDone: true }), setStep("questions"))} />
       </Screen>
     );
