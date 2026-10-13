@@ -252,3 +252,21 @@ test("journey: a passed solo shows its result, then Home shows the proof and its
   await expect(proof.getByRole("img", { name: "Proved" })).toBeVisible();
   await expect(proof.getByText(/First recheck:/)).toBeVisible();
 });
+
+test("hiding right after an answer does not erase it: the visibility save is built from the committed run", async ({ page }) => {
+  await start(page);
+  await answer(page, true, 1);
+  await expect(heading(page, 2)).toBeVisible();
+  await expect.poll(async () => (await activeRun(page)).run.submissions.length).toBe(1);
+  const q = (await activeRun(page)).questions[1];
+  await page.getByRole("radio", { name: new RegExp(`: ${q.answer}$`) }).click();
+  // Click Next and hide in the same task, while the answer's save is still in flight.
+  await page.evaluate(() => {
+    const next = [...document.querySelectorAll("button")].find((b) => b.textContent === "Next")!;
+    next.click();
+    Object.defineProperty(document, "visibilityState", { value: "hidden", configurable: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(heading(page, 3)).toBeVisible();
+  await expect.poll(async () => (await activeRun(page)).run.submissions.length, { timeout: 3000 }).toBe(2);
+});

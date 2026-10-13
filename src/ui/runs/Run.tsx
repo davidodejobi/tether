@@ -69,13 +69,14 @@ function Runner({ kind }: { kind: RunKind }) {
   const busy = pending > 0 || !!failed;
 
   // One save at a time, in order. `then` runs only after the save landed; on failure the screen stays and Retry repeats it.
-  const commit = (batch: Batch, then: () => void) => {
+  // The batch is built when its turn comes, from the latest committed run, never from a snapshot taken at click time.
+  const commit = (build: () => Batch, then: () => void) => {
     const go = () => {
       setFailed(null);
       setPending((n) => n + 1);
       chain.current = chain.current.then(async () => {
         try {
-          await save(batch);
+          await save(build());
           if (mounted.current) then();
         } catch {
           if (mounted.current) setFailed(() => go);
@@ -87,25 +88,43 @@ function Runner({ kind }: { kind: RunKind }) {
     go();
   };
 
-  const finishRun = (done: SavedRun) => {
+  const finishRun = (t: number) => {
     ended.current = true;
-    setView({ t: "closing", timedOut: !!done.run.result?.timedOut });
-    commit(completeRunBatch(store.progress, done, zone()), () => {
+    let done = live.current!;
+    setView({ t: "closing", timedOut: !!finish(done.run, t).result?.timedOut });
+    commit(() => {
+      done = { ...live.current!, run: finish(live.current!.run, t) };
+      return completeRunBatch(store.progress, done, zone());
+    }, () => {
       setProofMode(false);
       if (done.run.result?.passed) cue("celebrate");
       route(`/result/${done.run.id}`);
     });
   };
-  const convertRun = (cur: SavedRun, status: "converted" | "exited", why: "away" | "clock" = "away") => {
+  const convertRun = (status: "converted" | "exited", why: "away" | "clock" = "away") => {
     ended.current = true;
-    const c = convertBatch(cur, Date.now(), status);
-    commit(c.batch, () => {
+    const t = Date.now();
+    let c!: ReturnType<typeof convertBatch>;
+    commit(() => (c = convertBatch(live.current!, t, status)).batch, () => {
       setProofMode(false);
       if (status === "exited") route("/");
       else {
         setSaved(c.saved);
         setView({ t: "converted", why });
       }
+    });
+  };
+
+  // Marks the run seen at `t`, in the save order, on top of whatever has committed by then. A missed beat only shortens what a reload can resume.
+  const beatSave = (t: number) => {
+    chain.current = chain.current.then(() => {
+      const cur = live.current;
+      if (!cur || ended.current) return;
+      const next = seen(cur.run, t);
+      if (next === cur.run) return;
+      const upd = { ...cur, run: next };
+      setSaved(upd);
+      return save({ runs: [upd] }).catch(() => {});
     });
   };
 
@@ -118,7 +137,7 @@ function Runner({ kind }: { kind: RunKind }) {
     if (!plan) return setView({ t: "refused" });
     setView({ t: "starting" });
     const first: SavedRun = plan;
-    commit({ runs: [first] }, () => {
+    commit(() => ({ runs: [first] }), () => {
       setSaved(first);
       setView({ t: "play" });
     });
@@ -141,8 +160,8 @@ function Runner({ kind }: { kind: RunKind }) {
       }
       ended.current = true;
       setSaved(r.saved);
-      if (r.outcome === "timeout") return finishRun(r.saved);
-      commit(r.batch, () => setView({ t: "converted", why: clockWentBack(r.saved.run, t) ? "clock" : "away" }));
+      if (r.outcome === "timeout") return finishRun(t);
+      commit(() => r.batch, () => setView({ t: "converted", why: clockWentBack(r.saved.run, t) ? "clock" : "away" }));
     });
     return () => void (alive = false);
   }, [hasLearner]);
@@ -167,21 +186,15 @@ function Runner({ kind }: { kind: RunKind }) {
       setNow(t);
       const cur = live.current;
       if (!cur || ended.current || cur.run.status !== "active") return;
-      if (clockWentBack(cur.run, t)) return convertRun(cur, "converted", "clock");
-      if (t >= cur.run.deadline && pending === 0) {
-        const done = { ...cur, run: finish(cur.run, t) };
-        setSaved(done);
-        finishRun(done);
-      }
+      if (clockWentBack(cur.run, t)) return convertRun("converted", "clock");
+      if (t >= cur.run.deadline && pending === 0) finishRun(t);
     }, TICK_MS);
     const beat = setInterval(() => {
       const cur = live.current;
       if (!cur || ended.current || document.visibilityState !== "visible" || pending > 0 || failed) return;
       const next = seen(cur.run, Date.now());
       if (next === cur.run) return;
-      const upd = { ...cur, run: next };
-      setSaved(upd);
-      chain.current = chain.current.then(() => save({ runs: [upd] }).catch(() => {})); // a missed beat only shortens what a reload can resume
+      beatSave(Date.now());
     }, HEARTBEAT_MS);
     return () => (clearInterval(tick), clearInterval(beat));
   }, [playing, pending, failed]);
@@ -195,22 +208,16 @@ function Runner({ kind }: { kind: RunKind }) {
       const t = Date.now();
       if (document.visibilityState === "hidden") {
         hiddenAt.current = t;
-        const upd = { ...cur, run: seen(cur.run, t) };
-        setSaved(upd);
-        chain.current = chain.current.then(() => save({ runs: [upd] }).catch(() => {}));
+        beatSave(t);
         return;
       }
       const since = hiddenAt.current;
       hiddenAt.current = null;
       void acquireWake().then(setAwake);
       const out = onReturn(cur.run, t, since);
-      if (out === "convert") return convertRun(cur, "converted", since !== null && t < since ? "clock" : clockWentBack(cur.run, t) ? "clock" : "away");
-      if (out === "timeout") {
-        const done = { ...cur, run: finish(cur.run, t) };
-        setSaved(done);
-        return finishRun(done);
-      }
-      setSaved({ ...cur, run: seen(cur.run, t) });
+      if (out === "convert") return convertRun("converted", since !== null && t < since ? "clock" : clockWentBack(cur.run, t) ? "clock" : "away");
+      if (out === "timeout") return finishRun(t);
+      beatSave(t);
       setToast(true);
     };
     document.addEventListener("visibilitychange", onVis);
@@ -226,15 +233,15 @@ function Runner({ kind }: { kind: RunKind }) {
     const cur = live.current;
     if (!cur || busy || ended.current) return;
     const t = Date.now();
-    if (clockWentBack(cur.run, t)) return convertRun(cur, "converted", "clock");
+    if (clockWentBack(cur.run, t)) return convertRun("converted", "clock");
     const next = submit(cur.run, q.id, word === q.answer, store.moment(t));
     if (next === cur.run) return; // past the deadline: the tick finishes it
     const upd = { ...cur, run: next };
     if (next.status === "completed") {
       setSaved(upd);
-      return finishRun(upd);
+      return finishRun(t);
     }
-    commit({ runs: [upd] }, () => setSaved(upd));
+    commit(() => ({ runs: [upd] }), () => setSaved(upd));
   };
 
   const retryBar = failed && (
@@ -326,7 +333,7 @@ function Runner({ kind }: { kind: RunKind }) {
         <h2 id="run-leave">Leave this run?</h2>
         <p>Your answers so far become practice. No score or stamp comes from a run you leave.</p>
         <Button onClick={() => dialog.current?.close()}>Keep going</Button>
-        <Button variant="secondary" disabled={busy} onClick={() => (dialog.current?.close(), live.current && convertRun(live.current, "exited"))}>Leave</Button>
+        <Button variant="secondary" disabled={busy} onClick={() => (dialog.current?.close(), live.current && convertRun("exited"))}>Leave</Button>
       </dialog>
     </div>
   );
