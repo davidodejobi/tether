@@ -18,8 +18,23 @@ export async function requestPersistentStorage(): Promise<"persisted" | "notGran
  * Only one tab may write learning progress. The first tab holds this lock until it closes; others open
  * read-only and offer to return to that tab. A reloading page waits briefly, because the page it replaces
  * releases the lock as it closes. Without the Locks API every tab may write.
+ * Claiming again from the same page (a retry after storage timed out) reuses the claim instead of
+ * queueing behind its own lock. A "taken" claim is not kept, so a retry can win once the other tab closes.
  */
-export function claimWriter(name = "tether-writer", waitMs = 1500): Promise<"owner" | "taken" | "unsupported"> {
+export function claimWriter(name = "tether-writer", waitMs = 1500): Promise<Claim> {
+  let claim = claims.get(name);
+  if (!claim) {
+    claim = requestWriter(name, waitMs);
+    claims.set(name, claim);
+    void claim.then((r) => r === "taken" && claims.delete(name));
+  }
+  return claim;
+}
+
+type Claim = "owner" | "taken" | "unsupported";
+const claims = new Map<string, Promise<Claim>>();
+
+function requestWriter(name: string, waitMs: number): Promise<Claim> {
   const locks = typeof navigator === "undefined" ? undefined : navigator.locks;
   if (!locks) return Promise.resolve("unsupported");
   const hold = (resolve: (r: "owner") => void) => () => {
