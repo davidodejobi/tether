@@ -4,10 +4,10 @@ import { Icon, type IconName } from "../components/Icon";
 import { useProgress } from "../progress";
 import "./shell.css";
 
-// Proof is left out until a Proof screen exists (docs/spec.md section 10: no empty Proof tab).
+// docs/spec.md section 10: navigation is Home and Settings; practice, solo and results are reached through
+// their actions, and there is no empty Proof tab. Figma's rail also lists Practice and Proof; the spec wins.
 const ITEMS: { href: string; label: string; icon: IconName }[] = [
   { href: "/", label: "Home", icon: "map" },
-  { href: "/practice", label: "Practice", icon: "target" },
   { href: "/settings", label: "Settings", icon: "settings" },
 ];
 
