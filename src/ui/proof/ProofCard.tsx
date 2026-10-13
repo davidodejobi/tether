@@ -36,11 +36,22 @@ export function ProofCard() {
         </div>
       )}
       <div class="pc-actions">
-        {action === "recheck" && <a class="btn btn-primary" href={`/recheck-entry${q}`}>Start recheck</a>}
-        {action === "recover" && (
+        {sim && (action === "recheck" || action === "recover") ? (
+          // Read-only preview: nothing here starts a run, so a simulated day cannot change saved progress.
           <>
-            <a class="btn btn-primary" href="/practice">Practise to recover</a>
-            <a class="btn btn-secondary" href={`/recheck-entry${q}`}>Try anyway</a>
+            <button class="btn btn-primary" type="button" disabled>{action === "recheck" ? "Start recheck (demo preview)" : "Practise to recover (demo preview)"}</button>
+            {action === "recover" && <button class="btn btn-secondary" type="button" disabled>Try anyway (demo preview)</button>}
+            <p class="pc-line">Return to the real date to start.</p>
+          </>
+        ) : (
+          <>
+            {action === "recheck" && <a class="btn btn-primary" href={`/recheck-entry${q}`}>Start recheck</a>}
+            {action === "recover" && (
+              <>
+                <a class="btn btn-primary" href="/practice">Practise to recover</a>
+                <a class="btn btn-secondary" href={`/recheck-entry${q}`}>Try anyway</a>
+              </>
+            )}
           </>
         )}
         {action === "continue" && <a class="btn btn-primary" href="/practice">Continue where you stopped</a>}

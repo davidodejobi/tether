@@ -49,13 +49,14 @@ test("before day 3 there is no recheck on Home", async ({ page }) => {
   await expect(page.getByText("First recheck: 2026-10-16")).toBeVisible();
 });
 
-test("due today shows Start recheck, and the entry links to /run/recheck", async ({ page }) => {
+test("due today previews Start recheck under a demo date, then the entry shows the same preview", async ({ page }) => {
   await seedCycle(page, proved());
   await page.goto("/?demo=2026-10-16");
   await expect(page.getByText("Recheck due today.")).toBeVisible();
-  await page.getByRole("link", { name: "Start recheck" }).click();
+  await expect(page.getByRole("button", { name: "Start recheck (demo preview)" })).toBeDisabled();
+  await page.goto("/recheck-entry?demo=2026-10-16");
   await expect(page.getByRole("heading", { name: "Time for your recheck" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Start recheck" })).toHaveAttribute("href", /^\/run\/recheck/);
+  await expect(page.getByRole("button", { name: "Start recheck (demo preview)" })).toBeDisabled();
 });
 
 test("overdue is neutral and keeps the proof state", async ({ page }) => {
@@ -91,9 +92,32 @@ test("a simulated date is labelled and never changes stored progress", async ({ 
   await page.getByRole("button", { name: "Apply" }).click();
   await expect(page.getByRole("status")).toContainText("Simulated date: 2026-10-30");
   await expect(page.getByText("Your recheck is waiting.")).toBeVisible();
-  await page.getByRole("link", { name: "Start recheck" }).click();
-  await expect(page.getByRole("status")).toContainText("Simulated date");
+  await expect(page.getByRole("button", { name: "Start recheck (demo preview)" })).toBeDisabled();
   expect(await dump(page)).toBe(before);
+});
+
+test("a demo date is a read-only preview: nothing reaches /run/recheck and the cycle is unchanged", async ({ page }) => {
+  await seedCycle(page, cycle("fading", ["missed", "paused", "paused"]));
+  const before = await dump(page);
+  const noRun = async () => {
+    await expect(page.locator('a[href*="/run/"]')).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /demo preview/ }).first()).toBeDisabled();
+  };
+  await page.goto("/?demo=2026-10-20");
+  await expect(page.getByRole("status")).toContainText("Simulated date: 2026-10-20");
+  await expect(page.getByRole("link", { name: "Practise to recover" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Try anyway" })).toHaveCount(0);
+  await noRun();
+  await page.goto("/recheck-entry?demo=2026-10-20");
+  await expect(page.getByRole("heading", { name: "Restore your proof" })).toBeVisible();
+  await expect(page.getByRole("status")).toContainText("Simulated date");
+  await noRun();
+  expect(await dump(page)).toBe(before);
+  // The real date still offers the actions.
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: "Practise to recover" })).toBeVisible();
+  await page.getByRole("link", { name: "Try anyway" }).click();
+  await expect(page.getByRole("link", { name: "Start recheck" })).toHaveAttribute("href", "/run/recheck");
 });
 
 for (const [name, width, height] of [["phone", 360, 800], ["laptop", 1366, 768]] as const)
