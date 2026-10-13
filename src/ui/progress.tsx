@@ -9,7 +9,16 @@ export type ProgressState =
   | { status: "opening" }
   /** Storage did not answer or failed to read: show "Couldn't open your saved progress" with Retry, never an empty store. */
   | { status: "couldNotOpen"; retry: () => void; /** Only on the learner's explicit choice: progress then lives in memory and is lost on reload. */ continueWithoutSaving: () => void }
-  | { status: "ready"; store: ProgressStore; save: (batch: Batch) => Promise<void>; /** Opens again, e.g. after the other tab was closed. */ reopen: () => void };
+  | {
+      status: "ready";
+      store: ProgressStore;
+      save: (batch: Batch) => Promise<void>;
+      /** Resolves once no save is in flight. Screens that resume from saved progress wait for it, so a save
+       *  started on a screen the learner just left lands before the resume point is read. */
+      idle: () => Promise<void>;
+      /** Opens again, e.g. after the other tab was closed. */
+      reopen: () => void;
+    };
 
 const ProgressContext = createContext<ProgressState>({ status: "opening" });
 
@@ -22,11 +31,15 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
     openProgress(opener, () => claimWriter()).then(
       (store) => {
         // Saving swaps the store's state; a new context value makes screens re-read it.
+        let inFlight: Promise<unknown> = Promise.resolve();
         const save = async (batch: Batch) => {
-          await store.save(batch);
+          const saving = store.save(batch);
+          inFlight = saving.catch(() => {});
+          await saving;
           setState((s) => ({ ...s }));
         };
-        setState({ status: "ready", store, save, reopen: () => open() });
+        const idle = () => inFlight.then(() => {});
+        setState({ status: "ready", store, save, idle, reopen: () => open() });
       },
       // ponytail: every open failure (timeout or unreadable records) offers the same Retry.
       () => setState({ status: "couldNotOpen", retry: () => open(), continueWithoutSaving: () => open(true) }),

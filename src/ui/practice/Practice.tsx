@@ -48,12 +48,16 @@ export function Practice() {
 }
 
 function Round() {
-  const { store } = useProgress();
+  const { store, idle } = useProgress();
   const { route } = useLocation();
   const hasLearner = !!store.progress.learner;
-  const [step, setStep] = useState<Step | null>(() => (hasLearner ? begin(store) : null));
+  const [step, setStep] = useState<Step | null>(null);
   useEffect(() => {
-    if (!hasLearner) route("/", true);
+    if (!hasLearner) return route("/", true);
+    // A save from the screen the learner just closed may still be landing; resume from what it saved.
+    let live = true;
+    idle().then(() => live && setStep(begin(store)));
+    return () => void (live = false);
   }, [hasLearner]);
   if (!step || !hasLearner) return null;
 

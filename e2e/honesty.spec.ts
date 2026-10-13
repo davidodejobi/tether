@@ -230,3 +230,31 @@ test("Text only shows no Bo on the nudge, correct moment, verify and summary", a
   await expect(page.getByRole("heading", { name: "Round done" })).toBeVisible();
   await noBo();
 });
+
+test("closing while a claim is still saving never lets it be answered again on return", async ({ page }) => {
+  // Saves still commit at once, but the app hears about it 1.5 s later: a slow but successful write.
+  await page.addInitScript(() => {
+    const d = Object.getOwnPropertyDescriptor(IDBTransaction.prototype, "oncomplete")!;
+    Object.defineProperty(IDBTransaction.prototype, "oncomplete", {
+      configurable: true,
+      get() {
+        return d.get!.call(this);
+      },
+      set(fn) {
+        const delay = (window as any).__slowSave;
+        d.set!.call(this, fn && delay ? (e: Event) => setTimeout(() => fn.call(this, e), delay) : fn);
+      },
+    });
+  });
+  await seed(page);
+  await correct(page);
+  await page.evaluate(() => ((window as any).__slowSave = 1500));
+  await claim(page, "I used the move", 0.1); // sampled: a verification must follow
+  await page.getByRole("button", { name: "Close and come back later" }).click();
+  await page.getByRole("link", { name: "Practice" }).click(); // back in, same page, while the save is landing
+  await expect(page.getByText("Show us. Tap the part you covered.")).toBeVisible();
+  await expect(page.getByRole("radio", { name: "I used the move" })).toHaveCount(0);
+  const { attempt } = await lastAttempt(page, (a) => a.reason === "move");
+  expect(attempt).toMatchObject({ reason: "move", verifySampled: true });
+  await dots(page, 0);
+});
