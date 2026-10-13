@@ -23,6 +23,14 @@ test("gives up and opens read-only when another tab keeps the lock past the wait
   expect(request.mock.calls[0]![1]).toHaveProperty("signal");
 });
 
+test("a refused claim is not kept, so a retry asks again and can win once the other tab closes", async () => {
+  const request = vi.fn((_n: string, opts: { signal: AbortSignal }) => new Promise((_, reject) => opts.signal.addEventListener("abort", () => reject(opts.signal.reason))));
+  vi.stubGlobal("navigator", { locks: { request } });
+  expect(await claimWriter("refused", 20)).toBe("taken");
+  expect(await claimWriter("refused", 20)).toBe("taken");
+  expect(request).toHaveBeenCalledTimes(2);
+});
+
 test("without the Locks API every tab may write", async () => {
   vi.stubGlobal("navigator", {});
   expect(await claimWriter("none")).toBe("unsupported");
