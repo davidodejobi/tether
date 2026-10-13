@@ -79,3 +79,13 @@ These decisions override conflicting text in `requirements.txt`.
 - Data from a newer app version, or a second tab without the writer lock, opens read-only. Without the Web Locks API every tab may write (a known gap on browsers lacking it).
 - Call `requestPersistentStorage` after the nickname is saved, not on load.
 - For step 16: WebKit can clear script-written storage after seven days without a visit unless the app is installed, which puts the day-14 recheck at risk on iOS Safari. Check whether persistent storage exempts it, and say so in the install guidance.
+
+## Design foundation (roadmap step 6)
+
+- Tokens live in `tools/tokens/` (`tokens.py` is the source and runs the WCAG contrast check, `gen_css.py` writes `src/styles/tokens.css`). Run `npm run tokens`; never edit the generated CSS. Light = Naija Green, Dark = Adire Night; the OS setting decides unless `data-theme="light|dark"` is set on `<html>` or any element. `.pin-light` keeps proof cards light.
+- Gap colour fix (review-4): gap was the same colour as wrong red (1.00:1 apart). The gap ramp is now orange (seed `#F07A1A`, hue about 52 against red's 27): Light `#AB5200` (text `#894101`), Dark `#FEAA76` (text `#FED0B4`). Luminance contrast to red stays near 1.0 by design, so the generator now also fails if gap and wrong hues are under 20 degrees apart, and gap is never shown without a word or icon. Contrast check: 0 FAIL in both themes.
+- Font: Atkinson Hyperlegible Next, variable woff2 (latin plus latin-ext, from Fontsource), in `src/styles/fonts/` with its SIL OFL licence (`OFL.txt`). No runtime font fetch.
+- Icons are drawn as CSS masks so they follow `currentColor`. Bo art keeps its own colours.
+- Stamp states follow spec.md section 9: none, proved, held, fading, plus a Due badge. Figma's "Reopened" stamp and gold Button variant are not built. Readiness label reads "Readiness n/3" instead of Figma's "Solo-ready".
+- `/kit` shows every component in light and dark and exists only under `vite dev` (guarded by `import.meta.env.DEV` plus a dynamic import); the production build contains no kit code.
+- `npm run screens` runs `playwright.screens.config.ts` against the Vite dev server on port 5174. It visits each `{name, path}` in `e2e-screens/screens.ts` at 360x800 in light, dark and reduced motion and writes `screenshots/` (gitignored). Add each new screen to that list.
