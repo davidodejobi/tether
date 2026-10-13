@@ -46,7 +46,7 @@ test("before day 3 there is no recheck on Home", async ({ page }) => {
   await seedCycle(page, proved());
   await page.goto("/?demo=2026-10-15");
   await expect(page.getByRole("link", { name: "Start recheck" })).toHaveCount(0);
-  await expect(page.getByText("First recheck: 2026-10-16")).toBeVisible();
+  await expect(page.getByText("First recheck: 16 Oct 2026")).toBeVisible();
 });
 
 test("due today previews Start recheck under a demo date, then the entry shows the same preview", async ({ page }) => {
@@ -90,7 +90,7 @@ test("a simulated date is labelled and never changes stored progress", async ({ 
   await page.goto("/?demo");
   await page.getByLabel("Demo: simulate date").fill("2026-10-30");
   await page.getByRole("button", { name: "Apply" }).click();
-  await expect(page.getByRole("status")).toContainText("Simulated date: 2026-10-30");
+  await expect(page.getByRole("status")).toContainText("Simulated date: 30 Oct 2026");
   await expect(page.getByText("Your recheck is waiting.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Start recheck (demo preview)" })).toBeDisabled();
   expect(await dump(page)).toBe(before);
@@ -104,7 +104,7 @@ test("a demo date is a read-only preview: nothing reaches /run/recheck and the c
     await expect(page.getByRole("button", { name: /demo preview/ }).first()).toBeDisabled();
   };
   await page.goto("/?demo=2026-10-20");
-  await expect(page.getByRole("status")).toContainText("Simulated date: 2026-10-20");
+  await expect(page.getByRole("status")).toContainText("Simulated date: 20 Oct 2026");
   await expect(page.getByRole("link", { name: "Practise to recover" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Try anyway" })).toHaveCount(0);
   await noRun();
