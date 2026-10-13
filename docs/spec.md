@@ -283,8 +283,9 @@ result. Later practice cannot modify this snapshot or fill an absent old score.
 Raw difference = practice − alone. Displayed gap = max(0, raw difference).
 Compare to the immediately previous completed solo snapshot only when both
 snapshots have practice scores; do not skip missing snapshots to invent continuity.
-Celebrate shrinking gaps only if alone has not fallen. If it has, show the scores
-neutrally and recommend practice without improvement copy or improvement sharing.
+Celebrate a shrinking gap only if alone has risen. If alone stayed the same or fell,
+show the scores neutrally and recommend practice without improvement copy or
+improvement sharing; a gap that shrinks only because practice fell is not progress.
 
 Home’s gap hero shows the saved checkpoint comparison, with its date. A live
 practice score, if shown elsewhere, must not silently replace its practice value.

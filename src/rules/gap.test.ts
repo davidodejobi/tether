@@ -35,7 +35,7 @@ describe("§8 results, alone score and gap (release check 4)", () => {
     expect(c.kind).toBe("first");
   });
 
-  test("later comparison: a shrinking gap with alone not falling is an improvement", () => {
+  test("later comparison: a shrinking gap with alone rising is an improvement", () => {
     const c = compare([snap(9, 5), snap(9, 8)]);
     expect(c).toMatchObject({ kind: "later", improved: true, aloneFell: false, latest: { gap: 1 }, previous: { gap: 4 } });
   });
@@ -50,10 +50,9 @@ describe("§8 results, alone score and gap (release check 4)", () => {
     expect(s).toMatchObject({ practice: 7, alone: 9, raw: -2, gap: 0 });
   });
 
-  test("declining practice with flat alone counts as improvement, as the spec is written", () => {
-    // Pinned on purpose: the gap shrinks only because practice fell. Flagged for the owner.
+  test("a gap that shrinks only because practice fell is not an improvement", () => {
     const c = compare([snap(9, 6), snap(7, 6)]);
-    expect(c).toMatchObject({ kind: "later", improved: true, aloneFell: false });
+    expect(c).toMatchObject({ kind: "later", improved: false, aloneFell: false, latest: { gap: 1 }, previous: { gap: 3 } });
   });
 
   test("the saved snapshot uses the practice score captured at entry, not later practice", () => {

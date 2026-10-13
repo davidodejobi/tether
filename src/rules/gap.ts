@@ -29,7 +29,7 @@ export type Comparison =
 
 /**
  * Compares the latest solo with the one immediately before it, only when both have practice scores.
- * A shrinking gap counts as improvement only if alone has not fallen.
+ * A shrinking gap counts as improvement only if alone rose; a gap that shrinks because practice fell is not progress.
  */
 export function compare(snapshots: readonly Snapshot[]): Comparison {
   const ordered = [...snapshots].sort((x, y) => x.at - y.at);
@@ -39,5 +39,5 @@ export function compare(snapshots: readonly Snapshot[]): Comparison {
   const previous = ordered.at(-2);
   if (!previous || previous.gap === null) return { kind: "first", latest };
   const aloneFell = latest.alone < previous.alone;
-  return { kind: "later", latest, previous, aloneFell, improved: latest.gap < previous.gap && !aloneFell };
+  return { kind: "later", latest, previous, aloneFell, improved: latest.gap < previous.gap && latest.alone > previous.alone };
 }
