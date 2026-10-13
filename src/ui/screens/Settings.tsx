@@ -1,6 +1,6 @@
 // Settings (spec sections 10 and 14a). Every change is saved first and shows only once the save lands; a failed
 // save keeps the old value and offers Retry, which repeats the same change. Controls stay disabled while saving.
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { cue, setSoundsOn, unlockSound } from "../../platform/sound.ts";
 import { cleanNickname, type Learner } from "../../storage/progress.ts";
 import { Identity } from "../components/Avatar";
@@ -12,9 +12,17 @@ import "./settings.css";
 const PARTNER_MAX = 40;
 
 export function Settings() {
-  const { store, save } = useProgress();
+  const { store, save, idle } = useProgress();
   const learner = store.progress.learner;
-  const [busy, setBusy] = useState(false);
+  const [saving, setBusy] = useState(false);
+  // A save started before this screen opened (e.g. the learner left and came back mid-save) lands first.
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    let live = true;
+    idle().then(() => live && setSettled(true));
+    return () => void (live = false);
+  }, []);
+  const busy = saving || !settled;
   const [failed, setFailed] = useState<(() => void) | null>(null);
   const [name, setName] = useState<string | null>(null); // unsaved nickname edit
   const [partner, setPartner] = useState<{ name: string; phone: string } | null>(null); // unsaved partner edit
@@ -27,7 +35,8 @@ export function Settings() {
     const go = async () => {
       setBusy(true);
       try {
-        await save({ learner: { ...learner, ...patch } });
+        // The latest saved learner, read now: a Retry must not bring back values from when it was first tried.
+        await save({ learner: { ...store.progress.learner!, ...patch } });
         setFailed(null);
         hooks.onSaved?.();
         hooks.onOk?.();

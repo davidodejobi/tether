@@ -7,6 +7,10 @@ test.beforeEach(async ({ page }) => {
     const put = IDBObjectStore.prototype.put;
     IDBObjectStore.prototype.put = function (...args: [any, any?]) {
       if ((window as any).__failWrites) throw new DOMException("simulated write failure", "QuotaExceededError");
+      // __slowWrites (ms): keep the transaction busy so the save resolves late.
+      const until = Date.now() + ((window as any).__slowWrites ?? 0);
+      const spin = () => { if (Date.now() < until) this.count().onsuccess = spin; };
+      spin();
       return put.apply(this, args);
     };
   });
@@ -82,4 +86,22 @@ test("a failed save keeps the old value and Retry repeats the same change", asyn
   await page.getByRole("button", { name: "Retry" }).click(); // repeats the nickname change, the latest one
   await expect(alert(page)).toHaveCount(0);
   expect((await learner(page)).nickname).toBe("Nneka");
+});
+
+test("leaving and returning mid-save, then Retry, never brings back an older value", async ({ page }) => {
+  await seedRecords(page, [], "/settings");
+  await expect(page.getByRole("radio", { name: "Character" })).toBeChecked();
+  await page.evaluate(() => ((window as any).__slowWrites = 800));
+  await page.getByRole("radio", { name: "Text only" }).click();
+  await page.getByRole("link", { name: "Home" }).click();
+  await page.getByRole("link", { name: "Settings" }).click();
+  await page.evaluate(() => ((window as any).__slowWrites = 0));
+  await failWrites(page, true);
+  await page.getByRole("radio", { name: /Pidgin/ }).click(); // waits until the earlier save has landed
+  await expect(alert(page)).toBeVisible();
+  await failWrites(page, false);
+  await page.getByRole("button", { name: "Retry" }).click();
+  await expect(alert(page)).toHaveCount(0);
+  expect(await learner(page)).toMatchObject({ coach: "text", lang: "pcm" });
+  await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
 });
