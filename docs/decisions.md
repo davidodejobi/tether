@@ -87,5 +87,7 @@ These decisions override conflicting text in `requirements.txt`.
 - Font: Atkinson Hyperlegible Next, variable woff2 (latin plus latin-ext, from Fontsource), in `src/styles/fonts/` with its SIL OFL licence (`OFL.txt`). No runtime font fetch.
 - Icons are drawn as CSS masks so they follow `currentColor`. Bo art keeps its own colours.
 - Stamp states follow spec.md section 9: none, proved, held, fading, plus a Due badge. Figma's "Reopened" stamp and gold Button variant are not built. Readiness label reads "Readiness n/3" instead of Figma's "Solo-ready".
+- Readiness dots are green (spec.md section 14), not Figma's gold: gold means proof, and dots only recommend readiness. Figma's SoloDots still use gold.
+- `E2E_PORT` and `SCREENS_PORT` override the test server ports so parallel worktrees never reuse each other's server.
 - `/kit` shows every component in light and dark and exists only under `vite dev` (guarded by `import.meta.env.DEV` plus a dynamic import); the production build contains no kit code.
 - `npm run screens` runs `playwright.screens.config.ts` against the Vite dev server on port 5174. It visits each `{name, path}` in `e2e-screens/screens.ts` at 360x800 in light, dark and reduced motion and writes `screenshots/` (gitignored). Add each new screen to that list.

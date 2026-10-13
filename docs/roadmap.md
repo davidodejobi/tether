@@ -30,7 +30,7 @@ contract. Bring supporting files into this repository only when needed.
   stamps and schedules locally. Define interrupted-run restoration, storage failure
   feedback and schema versioning; request persistent storage where available.
   Done: refresh/reopen preserves progress without duplicate answers or proof awards.
-- [ ] **6. Build the design foundation.** Bring in the needed tokens, font, Bo
+- [x] **6. Build the design foundation.** Bring in the needed tokens, font, Bo
   poses and icons; verify current Figma references when implementing the designs.
   Correct reviewed colour issues and build buttons, sentence/answer controls,
   dots, stamps and score displays with light/dark and reduced-motion support.
