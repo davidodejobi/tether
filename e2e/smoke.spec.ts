@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { answerTutorials } from "./tutorial";
 
 test("home, settings and unknown routes render once onboarded", async ({ page }) => {
   await page.goto("/");
@@ -8,7 +9,7 @@ test("home, settings and unknown routes render once onboarded", async ({ page })
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: /Got it/ }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
+  await answerTutorials(page);
   await page.getByRole("button", { name: "Skip for now" }).click();
   await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
 

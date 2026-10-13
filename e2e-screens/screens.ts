@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { answerTutorials } from "../e2e/tutorial";
 
 // Add every new screen here: { name, path } at 360x800, plus optional wider captures.
 export type Screen = { name: string; path: string; width?: number; height?: number; /** Runs after load and before the capture, e.g. to reach a later step. */ actions?: (page: Page) => Promise<void> };
@@ -94,7 +95,7 @@ const nickname = async (page: Page) => {
   await page.getByLabel("Nickname").fill("Amaka");
 };
 const lesson = [nickname, click("Continue")];
-const win = [...lesson, click("Next"), click("Next"), click(/Got it/), click("Continue")];
+const win = [...lesson, click("Next"), click("Next"), click(/Got it/), answerTutorials];
 const choices = [...win, click("Make Tether yours")];
 
 SCREENS.push(

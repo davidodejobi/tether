@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { answerTutorials } from "./tutorial";
 
 const savedLearner = (page: Page) =>
   page.evaluate(
@@ -26,8 +27,7 @@ async function throughLesson(page: Page) {
   await expect(page.getByRole("heading", { name: /What's left/ })).toBeFocused();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: /Got it/ }).click();
-  await expect(page.getByText("Three tutorial questions")).toBeVisible();
-  await page.getByRole("button", { name: "Continue" }).click();
+  await answerTutorials(page);
   await expect(page.getByRole("heading", { name: "First win" })).toBeFocused();
 }
 
@@ -70,9 +70,9 @@ test("a reload mid-lesson resumes the lesson", async ({ page }) => {
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: /Got it/ }).click();
-  await expect(page.getByText("Three tutorial questions")).toBeVisible(); // saved before the step changes
+  await expect(page.getByText("1 of 3")).toBeVisible(); // saved before the step changes
   await page.reload();
-  await expect(page.getByText("Three tutorial questions")).toBeVisible();
+  await expect(page.getByText("1 of 3")).toBeVisible();
 });
 
 test("an empty or 31-character nickname is refused", async ({ page }) => {

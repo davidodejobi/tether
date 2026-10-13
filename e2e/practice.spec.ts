@@ -118,7 +118,7 @@ test("the move sheet opens without counting as help, and keys select and check",
   await expect(page.getByRole("button", { name: "Next" })).toBeVisible();
 });
 
-test("no learner redirects to Home", async ({ page }) => {
+test("with no learner, practice starts onboarding", async ({ page }) => {
   await page.goto("/practice");
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
 });

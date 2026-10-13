@@ -1,18 +1,23 @@
-import { Button } from "../components/Button";
-import { StepHeading } from "./parts";
+import { useState } from "preact/hooks";
+import { tutorialQuestions } from "../../content/generate.ts";
+import { stripDisguise } from "../../content/strip-disguise.ts";
+import { QuestionView } from "../practice/QuestionView";
 
-// Placeholder: the lead replaces this body with the reusable question view (origin "tutorial").
-// Tutorial answers must change no scores, dots or claims; that rule lives in that view.
+// The three tutorial questions run through the normal question view with origin "tutorial",
+// so the rules give them no scores, dots or claims (spec section 4).
 export function TutorialQuestions({ onDone }: { onDone: () => void }) {
+  const [questions] = useState(() => tutorialQuestions(stripDisguise, Math.random));
+  const [n, setN] = useState(0);
+  const q = questions[n]!;
   return (
-    <>
-      <div class="ob-body">
-        <StepHeading>Try three questions</StepHeading>
-        <p class="ob-placeholder">Three tutorial questions</p>
-      </div>
-      <div class="ob-actions">
-        <Button onClick={onDone}>Continue</Button>
-      </div>
-    </>
+    <QuestionView
+      key={q.id}
+      question={q}
+      origin="tutorial"
+      round={{ n: n + 1, of: questions.length }}
+      onDone={() => (n + 1 < questions.length ? setN(n + 1) : onDone())}
+      // ponytail: leaving restarts the three tutorial questions on return; they earn nothing, so nothing is lost.
+      onExit={() => location.assign("/")}
+    />
   );
 }

@@ -191,7 +191,7 @@ export function Onboarding() {
         <Lesson coach={learner.coach} lang={learner.lang} onDone={async () => (await saveLearner({ ...learner, lessonDone: true }), setStep("questions"))} />
       </Screen>
     );
-  if (step === "questions") return <Screen><TutorialQuestions onDone={() => setStep("win")} /></Screen>;
+  if (step === "questions") return <TutorialQuestions onDone={() => setStep("win")} />;
   if (step === "win")
     return (
       <Screen>
