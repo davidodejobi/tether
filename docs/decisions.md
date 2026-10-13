@@ -91,3 +91,10 @@ These decisions override conflicting text in `requirements.txt`.
 - `E2E_PORT` and `SCREENS_PORT` override the test server ports so parallel worktrees never reuse each other's server.
 - `/kit` shows every component in light and dark and exists only under `vite dev` (guarded by `import.meta.env.DEV` plus a dynamic import); the production build contains no kit code.
 - `npm run screens` runs `playwright.screens.config.ts` against the Vite dev server on port 5174. It visits each `{name, path}` in `e2e-screens/screens.ts` at 360x800 in light, dark and reduced motion and writes `screenshots/` (gitignored). Add each new screen to that list.
+
+## Onboarding and the lesson (roadmap step 7)
+
+- Startup gate (`src/ui/onboarding/Gate.tsx`) wraps Home and Settings, not the dev-only kit. It shows, in order: opening, could not open (Retry; "Continue without saving" is the learner's explicit choice and opens `memoryKV`), read-only (another tab; newer schema), a temporary-progress notice when storage is not durable, then onboarding or the app.
+- Resume derives from saved fields only: no learner → Welcome; `lessonDone` false → lesson; `lessonDone` true and not `onboarded` → tutorial questions. First win and Make Tether yours are reached from the questions in one visit, so no extra stored field exists. Reloading there repeats the tutorial questions, which earn nothing.
+- Preferences are saved together with `onboarded` when the learner presses Done or either Skip; nothing is stored earlier.
+- The lesson uses the pack's own `lessonExample` (Chidi), not Figma's Tunde sentence. Reduced motion renders static step cards revealed by Next.

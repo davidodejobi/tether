@@ -18,6 +18,7 @@ for (const s of SCREENS) {
       });
       const page = await context.newPage();
       await page.goto(s.path, { waitUntil: "networkidle" });
+      await s.actions?.(page);
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({ path: `screenshots/${s.name}-${v.name}.png`, fullPage: true, animations: "disabled" });
       await context.close();
