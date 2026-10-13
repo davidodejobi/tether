@@ -92,25 +92,29 @@ function Summary({ onAnother, onDone }: { onAnother(): void; onDone(): void }) {
   const { dots } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
   return (
     <main class="pr-summary">
-      {store.progress.learner?.coach === "character" && <Bo pose={right >= 3 ? "pleased" : "concerned"} size={120} />}
-      <h1>Round done</h1>
-      <p class="pr-lead">{right} of {ROUND_SIZE} right on the first try.</p>
-      <ol class="pr-marks" aria-label="Each question">
-        {round.map((a, i) => (
-          <li key={a.id} class={firstTry(a) ? "pr-mark pr-mark-ok" : "pr-mark pr-mark-miss"}>
-            <span class="pr-badge">
-              <Icon name={firstTry(a) ? "check" : "x"} size={24} label={firstTry(a) ? "Right first try" : "Needed more than one try"} />
-            </span>
-            <span>{i + 1}</span>
-          </li>
-        ))}
-      </ol>
-      <Dots filled={dots as 0 | 1 | 2 | 3} />
-      <p class="pr-note-text">Dots come from showing you used the move. You have {dots} of 3 so far.</p>
-      <div class="pr-actions">
-        <Button onClick={onAnother}>Another 5</Button>
-        <Button variant="secondary" onClick={onDone}>Done for today</Button>
-        <a class="pr-solo" href="/solo-entry">Solo check</a>
+      <div class="pr-hero">
+        {store.progress.learner?.coach === "character" && <Bo pose={right >= 3 ? "pleased" : "concerned"} size={120} />}
+        <h1>Round done</h1>
+        <p class="pr-lead">{right} of {ROUND_SIZE} right on the first try.</p>
+      </div>
+      <div class="pr-detail">
+        <ol class="pr-marks" aria-label="Each question">
+          {round.map((a, i) => (
+            <li key={a.id} class={firstTry(a) ? "pr-mark pr-mark-ok" : "pr-mark pr-mark-miss"}>
+              <span class="pr-badge">
+                <Icon name={firstTry(a) ? "check" : "x"} size={24} label={firstTry(a) ? "Right first try" : "Needed more than one try"} />
+              </span>
+              <span>{i + 1}</span>
+            </li>
+          ))}
+        </ol>
+        <Dots filled={dots as 0 | 1 | 2 | 3} />
+        <p class="pr-note-text">Dots come from showing you used the move. You have {dots} of 3 so far.</p>
+        <div class="pr-actions">
+          <Button onClick={onAnother}>Another 5</Button>
+          <Button variant="secondary" onClick={onDone}>Done for today</Button>
+          <a class="pr-solo" href="/solo-entry">Solo check</a>
+        </div>
       </div>
     </main>
   );

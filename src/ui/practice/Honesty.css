@@ -29,3 +29,21 @@
 .hn button:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
 @media (min-width: 768px) { .hn-actions { flex-direction: row-reverse; } .hn-actions .btn { flex: 1; } }
 @media (prefers-reduced-motion: reduce) { .hn { animation: none; } .hn-choice { transition: none; } }
+
+/* Tablet and laptop: the reason prompt is a focus page. The large Bo sits to the right on laptop only (QuestionView.css lays it out). */
+.hn-bo, .hn-num, .hn-foot-keys { display: none; }
+@media (min-width: 768px) {
+  .hn { gap: var(--spacing-lg); }
+  .hn-choice { min-height: 64px; }
+  .hn-words { padding: var(--spacing-lg); gap: var(--spacing-sm); }
+}
+@media (min-width: 1280px) {
+  .hn-bo, .hn-foot-keys { display: initial; }
+  .hn-ask-bo { display: none; }
+  .hn-choice { position: relative; min-height: 56px; }
+  .hn-num { display: grid; position: absolute; left: var(--spacing-sm); top: 50%; transform: translateY(-50%); width: 28px; height: 28px; place-items: center; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font: var(--type-label-s); color: var(--text-secondary); }
+  .hn-foot { text-align: left; }
+  .qv-correct.qv-focus .bo { display: none; }
+  .hn-words { padding: var(--spacing-md); }
+  .hn-correct { justify-content: flex-start; }
+}

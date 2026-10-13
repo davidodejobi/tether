@@ -59,6 +59,19 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
     if (intro) saveLearner({ ...learner, honestyIntroSeen: true });
   }, []);
 
+  // Keys 1-3 pick a reason, on equal terms with the buttons.
+  const keyRef = useRef<(e: KeyboardEvent) => void>(undefined);
+  keyRef.current = (e) => {
+    if (phase !== "reason" || blocked || e.altKey || e.ctrlKey || e.metaKey || (e.target as HTMLElement).closest("input, textarea, select, dialog")) return;
+    const c = CHOICES["123".indexOf(e.key)];
+    if (c) (e.preventDefault(), choose(c.reason));
+  };
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => keyRef.current?.(e);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, []);
+
   const choose = (reason: Reason) => update(giveReason(attempt, reason, Math.random, store.moment(Date.now())));
   const tap = (i: number, covered: boolean) => {
     // The tapped word is marked only once the verification is saved.
@@ -69,7 +82,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
 
   if (phase === "plain")
     return (
-      <div class="qv-correct">
+      <div class="qv-correct qv-focus">
         {bo && <Bo pose="pleased" size={96} />}
         <h2 class="qv-correct-word" tabIndex={-1} ref={heading}><Icon name="check" size={24} /> Correct</h2>
         <Button disabled={blocked} onClick={next}>Next</Button>
@@ -82,9 +95,10 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   const earned = moveClaim && (!attempt.verifySampled || attempt.verifyResult === "passed");
 
   return (
-    <section class={`hn${showChips ? " hn-chips-mode" : ""}`}>
+    <section class={`hn${showChips ? " hn-chips-mode" : ""}${phase === "reason" ? " qv-focus" : ""}`}>
       {phase === "reason" && (
         <>
+          {bo && <span class="hn-bo"><Bo pose="pleased" size={200} /></span>}
           <h2 class="hn-correct"><Icon name="check" size={24} /> Correct</h2>
           {intro && (
             <p class="hn-intro">
@@ -92,17 +106,17 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
             </p>
           )}
           <div class="hn-ask">
-            {bo && <Bo pose="idle" size={48} />}
+            {bo && <span class="hn-ask-bo"><Bo pose="idle" size={48} /></span>}
             <h3 tabIndex={-1} ref={heading}>How did you know?</h3>
           </div>
           <div class="hn-choices" role="radiogroup" aria-label="How did you know?" onKeyDown={arrowFocus}>
             {CHOICES.map((c, i) => (
               <button key={c.reason} type="button" role="radio" aria-checked="false" tabIndex={i === 0 ? 0 : -1} class="hn-choice" disabled={blocked} onClick={() => choose(c.reason)}>
-                {c.label}
+                <kbd class="hn-num" aria-hidden="true">{i + 1}</kbd>{c.label}
               </button>
             ))}
           </div>
-          <p class="hn-foot">Sometimes we will ask you to show it.</p>
+          <p class="hn-foot">Sometimes we will ask you to show it.<span class="hn-foot-keys"> Press 1, 2 or 3.</span></p>
         </>
       )}
 
