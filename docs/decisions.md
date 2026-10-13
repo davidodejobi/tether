@@ -80,6 +80,7 @@ These decisions override conflicting text in `requirements.txt`.
 - Data from a newer app version, or a second tab without the writer lock, opens read-only. Without the Web Locks API every tab may write (a known gap on browsers lacking it).
 - Call `requestPersistentStorage` after the nickname is saved, not on load.
 - For step 16: WebKit can clear script-written storage after seven days without a visit unless the app is installed, which puts the day-14 recheck at risk on iOS Safari. Check whether persistent storage exempts it, and say so in the install guidance.
+- For step 16: an update install fails unless the new cache holds every file (the old worker and cache keep serving, no "Update ready"); activate keeps the old cache unless the current one is complete. Only the first install may be partial.
 
 ## Design foundation (roadmap step 6)
 

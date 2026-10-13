@@ -24,12 +24,24 @@ async function fill() {
   );
 }
 
-self.addEventListener("install", (e) => e.waitUntil(fill()));
+// A first install may stay partial (the page offers Retry). An update must not: failing it keeps the old worker and
+// its cache serving, and the browser retries on its next check (fill only fetches what is still missing).
+self.addEventListener("install", (e) =>
+  e.waitUntil(
+    (async () => {
+      const update = !!self.registration.active;
+      await fill();
+      if (update && (await store()).missing.length) throw new Error("incomplete update");
+    })(),
+  ),
+);
 
 self.addEventListener("activate", (e) =>
   e.waitUntil(
     (async () => {
-      for (const key of await caches.keys()) if (key.startsWith("tether-") && key !== CACHE) await caches.delete(key);
+      // Never drop the previous cache for an incomplete one.
+      if (!(await store()).missing.length)
+        for (const key of await caches.keys()) if (key.startsWith("tether-") && key !== CACHE) await caches.delete(key);
       await self.clients.claim();
     })(),
   ),

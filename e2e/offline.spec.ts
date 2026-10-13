@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { answerRight, LEARNER } from "./practice-helpers";
 import { answerTutorials } from "./tutorial";
 
@@ -149,4 +149,39 @@ test("on a simulated date, Add to calendar is a disabled preview and records not
       }),
   );
   expect(uses).toBeUndefined();
+});
+
+// An update that cannot store every file must leave the working offline app alone (spec section 13).
+/** Playwright cannot intercept the browser's own sw.js update check, so the page registers a changed copy at /sw.js?next:
+ * a new script URL on the same scope is an update with the old worker still active. Serves it (new cache name), optionally with one JS asset missing, then runs update() and returns the new worker's end state. */
+async function update(page: Page, context: BrowserContext, missingAsset: boolean) {
+  await seedHome(page);
+  await expect(page.getByText("Ready offline")).toBeVisible();
+  await context.route("**/sw.js?next", async (route) => {
+    const body = (await (await route.fetch()).text()).replace(/tether-([^"]+)"/, 'tether-$1-next"');
+    await route.fulfill({ body, contentType: "text/javascript", headers: { "cache-control": "no-store" } });
+  });
+  if (missingAsset) await context.route("**/assets/*.js", (route) => route.fulfill({ status: 404 }));
+  return page.evaluate(async () => {
+    const reg = await navigator.serviceWorker.ready;
+    await navigator.serviceWorker.register("/sw.js?next");
+    const w = reg.installing ?? reg.waiting;
+    if (w && w.state !== "installed" && w.state !== "redundant")
+      await new Promise((r) => w.addEventListener("statechange", () => (w.state === "installed" || w.state === "redundant") && r(null)));
+    return { state: w?.state ?? "none", waiting: !!reg.waiting };
+  });
+}
+
+test("an update missing a file is rejected: no Update ready, and the old app still works offline", async ({ page, context }) => {
+  expect(await update(page, context, true)).toEqual({ state: "redundant", waiting: false });
+  await expect(page.getByRole("button", { name: "Update ready" })).toHaveCount(0);
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
+  await expect(page.getByText("Ready offline")).toBeVisible();
+});
+
+test("control: a complete update offers Update ready", async ({ page, context }) => {
+  expect(await update(page, context, false)).toEqual({ state: "installed", waiting: true });
+  await expect(page.getByRole("button", { name: "Update ready" })).toBeVisible();
 });
