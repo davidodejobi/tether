@@ -1,9 +1,19 @@
+import { readiness } from "../../rules/practice.ts";
+import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
+import { Dots } from "../components/Dots";
+import { useProgress } from "../progress";
+
 export function Home() {
+  const { store } = useProgress();
+  const { dots } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
   return (
     <main>
       <h1>Tether</h1>
       <p>JAMB English concord. Move 1: Strip the Disguise.</p>
-      <a href="/practice">Practice</a> <a href="/settings">Settings</a>
+      <Dots filled={dots as 0 | 1 | 2 | 3} />
+      <p>
+        <a href="/practice">Practice</a> <a href="/solo-entry">Solo check</a> <a href="/settings">Settings</a>
+      </p>
     </main>
   );
 }

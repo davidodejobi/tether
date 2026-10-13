@@ -10,3 +10,5 @@
 .pr-mark-miss .pr-badge { background: var(--bg-wrong-container); color: var(--text-on-wrong-container); border-color: var(--border-wrong); }
 .pr-actions { display: flex; flex-direction: column; gap: var(--spacing-sm); align-self: stretch; margin-top: auto; }
 .pr-summary button:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+.pr-solo { display: inline-flex; align-items: center; justify-content: center; min-height: var(--size-touch-target); color: var(--text-brand); font: var(--type-label-l); }
+.pr-solo:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }

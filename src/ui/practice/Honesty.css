@@ -1,0 +1,33 @@
+/* How did you know, verification and free look. While it is up, the question above gives way to it. */
+.qv:has(.hn) :is(.qv-move, .qv-prompt, .qv-read, .tiles, .qv-keys) { display: none; }
+.qv:has(.hn-chips-mode) .sentence { display: none; }
+.hn { display: flex; flex-direction: column; gap: var(--spacing-md); animation: qv-rise var(--dur-medium) var(--ease-emphasized); }
+.hn h2, .hn h3 { margin: 0; }
+.hn :is(h2, h3):focus { outline: none; }
+.hn-correct { display: flex; align-items: center; justify-content: center; gap: var(--spacing-xs); padding: var(--spacing-sm); background: var(--bg-proof-container); border: 2px solid var(--border-proof); border-radius: var(--radius-lg); color: var(--text-on-proof-container); font: var(--type-title-l); }
+.hn-intro { display: flex; gap: var(--spacing-xs); margin: 0; padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-primary-container); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); color: var(--text-on-primary-container); font: var(--type-body-m); }
+.hn-intro .icon { flex: none; margin-top: 1px; }
+.hn-ask { display: flex; align-items: center; gap: var(--spacing-sm); }
+.hn-ask h3 { font: var(--type-title-l); }
+.hn-choices { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+/* Three choices share one style: same size, border and weight, none preselected. */
+.hn-choice { min-height: 56px; padding: 0 var(--spacing-md); background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--border-strong); border-radius: var(--radius-lg); box-shadow: 0 var(--size-edge) 0 var(--border-edge); font: var(--type-label-l); cursor: pointer; transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard); }
+.hn-choice:active { transform: translateY(var(--size-edge)); box-shadow: none; }
+.hn-foot { margin: 0; text-align: center; color: var(--text-secondary); font: var(--type-body-s); }
+.hn-words { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); padding: var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.hn-word { min-width: var(--size-touch-target); min-height: var(--size-touch-target); padding: 0 var(--spacing-sm); background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--border-edge); border-radius: var(--radius-md); box-shadow: 0 2px 0 var(--border-edge); font: var(--type-question); cursor: pointer; }
+.hn-word:disabled { cursor: default; }
+.hn-word-covered { background: var(--bg-proof-container); border-color: var(--border-proof); color: var(--text-on-proof-container); }
+.hn-word-wrong { background: var(--bg-wrong-container); border-color: var(--border-wrong); color: var(--text-on-wrong-container); text-decoration: line-through; }
+.hn-result { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+.hn-result h3 { font: var(--type-title-l); }
+.hn-msg { display: flex; align-items: flex-start; gap: var(--spacing-xs); margin: 0; font: var(--type-body-l); }
+.hn-msg .icon { flex: none; margin-top: 2px; }
+.hn-hint { display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-coach-container); color: var(--text-on-coach-container); border-radius: var(--radius-lg); }
+.hn-hint p { margin: 0; font: var(--type-body-l); }
+.hn-showme { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xl) var(--spacing-md); background: var(--bg-sunken); border: 2px dashed var(--border-strong); border-radius: var(--radius-lg); }
+.hn-showme p { margin: 0; font: var(--type-label-l); }
+.hn-actions { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.hn button:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+@media (min-width: 768px) { .hn-actions { flex-direction: row-reverse; } .hn-actions .btn { flex: 1; } }
+@media (prefers-reduced-motion: reduce) { .hn { animation: none; } .hn-choice { transition: none; } }

@@ -2,6 +2,7 @@ import { LocationProvider, Router, Route, lazy } from "preact-iso";
 import { Home } from "./ui/screens/Home";
 import { Settings } from "./ui/screens/Settings";
 import { Practice } from "./ui/practice/Practice";
+import { Solo, SoloEntryScreen } from "./ui/solo/SoloScreens";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 import { Gate } from "./ui/onboarding/Gate";
@@ -20,6 +21,8 @@ const gated = (Screen: () => preact.JSX.Element) => () => (
 const GatedHome = gated(Home);
 const GatedSettings = gated(Settings);
 const GatedPractice = gated(Practice);
+const GatedSoloEntry = gated(SoloEntryScreen);
+const GatedSolo = gated(Solo);
 
 export function App() {
   return (
@@ -28,6 +31,8 @@ export function App() {
         <Router>
           <Route path="/" component={GatedHome} />
           <Route path="/practice" component={GatedPractice} />
+          <Route path="/solo-entry" component={GatedSoloEntry} />
+          <Route path="/solo" component={GatedSolo} />
           <Route path="/settings" component={GatedSettings} />
           {kitRoute}
           <Route default component={NotFound} />
