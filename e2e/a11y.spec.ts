@@ -144,3 +144,73 @@ test("without speechSynthesis the text controls stay usable", async ({ page }) =
   await page.keyboard.press("r"); // must not throw
   await expect(page.getByText(/Read aloud isn.t available/)).toBeVisible();
 });
+
+// Targets of 48 px, text of 12 px and 16 px inputs, on each screen (spec section 14).
+const sizes = (page: Page) =>
+  page.evaluate(() => {
+    const out: string[] = [];
+    const vis = (e: Element) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; };
+    const name = (e: Element) => `${e.tagName.toLowerCase()}.${(e as HTMLElement).className} "${(e.textContent ?? "").trim().slice(0, 20)}"`;
+    for (const e of document.querySelectorAll("button, a[href], [role=radio], input, select, textarea, summary")) {
+      if (!vis(e) || (e as HTMLInputElement).type === "hidden") continue;
+      const r = e.getBoundingClientRect();
+      if (r.width < 47.5 || r.height < 47.5) out.push(`target ${Math.round(r.width)}x${Math.round(r.height)} ${name(e)}`);
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName) && parseFloat(getComputedStyle(e).fontSize) < 16) out.push(`input font ${name(e)}`);
+    }
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const el = n.parentElement;
+      if (el && n.textContent?.trim() && vis(el) && !el.closest("[aria-hidden=true]") && parseFloat(getComputedStyle(el).fontSize) < 12) out.push(`text ${getComputedStyle(el).fontSize} ${name(el)}`);
+    }
+    return out;
+  });
+
+for (const [w, h] of SIZES)
+  test(`targets, text and inputs meet size minimums at ${w}px`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Start" }).click();
+    expect(await sizes(page), "onboarding").toEqual([]);
+    await page.getByLabel("Nickname").fill("Amaka");
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
+    expect(await sizes(page), "lesson").toEqual([]);
+  });
+
+for (const [w, h] of SIZES)
+  test(`practice and run meet size minimums at ${w}px`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await seed(page);
+    await current(page);
+    expect(await sizes(page), "question").toEqual([]);
+    await tile(page, (await current(page)).answer).click();
+    await page.getByRole("button", { name: "Check" }).click();
+    await expect(page.getByRole("radio", { name: "I guessed" })).toBeEnabled();
+    expect(await sizes(page), "honesty").toEqual([]);
+    await page.goto("/run/solo");
+    await expect(page.getByRole("heading", { name: /^Question 1 of 10/ })).toBeVisible();
+    expect(await sizes(page), "solo").toEqual([]);
+  });
+
+test("choices are a radio group: 1-4 and arrows select, the blank is filled, Enter checks", async ({ page }) => {
+  await seed(page);
+  await current(page);
+  await expect(page.getByRole("radiogroup")).toBeVisible();
+  await page.keyboard.press("2");
+  await expect(page.getByRole("radio").nth(1)).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("ArrowRight");
+  const checked = page.getByRole("radio", { checked: true });
+  await expect(checked).toHaveCount(1);
+  await expect(checked).not.toHaveAttribute("aria-checked", "false");
+  await expect(page.locator(".qv-sentence")).toContainText((await checked.getAttribute("aria-label"))!.split(": ").pop()!.trim());
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status").first()).toBeAttached();
+});
+
+test("shortcuts are ignored while typing", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start" }).click();
+  await page.getByLabel("Nickname").fill("");
+  await page.getByLabel("Nickname").pressSequentially("Srsr");
+  await expect(page.getByLabel("Nickname")).toHaveValue("Srsr");
+});
