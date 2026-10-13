@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { addDays, applyRun, civilDate, dueEntries, proofStatus, recheckAvailable, recheckShapeIndex, type ProofCycle } from "./proof.ts";
+import { addDays, applyRun, atCivilDate, civilDate, homeAction, dueEntries, proofStatus, recheckAvailable, recheckShapeIndex, type ProofCycle } from "./proof.ts";
 import { nextMoment, type Moment } from "./moment.ts";
 import { convert, finish, startRun, submit, type Run } from "./runs.ts";
 
@@ -162,5 +162,62 @@ describe("§9 proof, dates and recovery (release check 5)", () => {
     expect(recheckShapeIndex(c)).toBe(0);
     c = applyRun(c, recheck(c, "2026-10-16", 4), "m", LAGOS)!;
     expect(recheckShapeIndex(c)).toBe(1);
+  });
+});
+
+describe("recheck due, late, recovery and Home action", () => {
+  test("not due before day 3, due on it, overdue from the next date, still Held", () => {
+    const c = earned();
+    expect(proofStatus(c, at("2026-10-15", "23:59"))).toMatchObject({ state: "proved", due: false, overdue: false, nextDue: "2026-10-16" });
+    expect(proofStatus(c, at("2026-10-16", "00:00"))).toMatchObject({ due: true, overdue: false });
+    expect(proofStatus(c, at("2026-10-17", "00:00"))).toMatchObject({ due: true, overdue: true, state: "proved" });
+  });
+
+  test("a late pass resolves every due entry together and does not shift later dates", () => {
+    const c = earned();
+    const late = at("2026-10-21"); // day 3 and day 7 are both due
+    expect(recheckAvailable(c, late)!.entryIds).toHaveLength(2);
+    const held = applyRun(c, recheck(c, "2026-10-21", 4), "strip-disguise", LAGOS)!;
+    expect(held.state).toBe("held");
+    expect(held.entries.map((e) => [e.day, e.status, e.due])).toEqual([[3, "passed", "2026-10-16"], [7, "passed", "2026-10-20"], [14, "scheduled", "2026-10-27"]]);
+    expect(proofStatus(held, late)).toMatchObject({ due: false, nextDue: "2026-10-27" });
+  });
+
+  test("after the last pass Held shows no next date", () => {
+    let c = earned();
+    for (const d of ["2026-10-16", "2026-10-20", "2026-10-27"]) c = applyRun(c, recheck(c, d, 5), "strip-disguise", LAGOS)!;
+    expect(proofStatus(c, at("2026-11-30"))).toMatchObject({ state: "held", due: false, nextDue: null });
+  });
+
+  test("a miss makes Fading, pauses the rest, and recovery restarts day 3/7/14 from the recovery date", () => {
+    const c = earned();
+    const fading = applyRun(c, recheck(c, "2026-10-16", 3), "strip-disguise", LAGOS)!;
+    expect(fading.state).toBe("fading");
+    expect(fading.entries.map((e) => e.status)).toEqual(["missed", "paused", "paused"]);
+    expect(dueEntries(fading, at("2026-12-01"))).toHaveLength(0);
+    const miss = applyRun(fading, recheck(fading, "2026-10-17", 2), "strip-disguise", LAGOS)!;
+    expect(miss.state).toBe("fading");
+    const back = applyRun(miss, recheck(miss, "2026-10-18", 4), "strip-disguise", LAGOS)!;
+    expect(back.state).toBe("held");
+    expect(back.entries.slice(3).map((e) => e.due)).toEqual(["2026-10-21", "2026-10-25", "2026-11-01"]);
+  });
+
+  test("Home action order", () => {
+    const c = earned();
+    expect(homeAction(c, at("2026-10-14"), false)).toBe("practice");
+    expect(homeAction(c, at("2026-10-16"), false)).toBe("recheck");
+    expect(homeAction(c, at("2026-10-16"), true)).toBe("continue");
+    const fading = applyRun(c, recheck(c, "2026-10-16", 1), "strip-disguise", LAGOS)!;
+    expect(homeAction(fading, at("2026-10-17"), false)).toBe("recover");
+    expect(homeAction(null, at("2026-10-17"), false)).toBe("practice");
+  });
+
+  test("civil-date edges across zones, including UTC+14 and UTC-11", () => {
+    for (const tz of ["Africa/Lagos", "Pacific/Kiritimati", "Pacific/Pago_Pago", "America/New_York"])
+      expect(civilDate(atCivilDate("2026-10-16", tz), tz)).toBe("2026-10-16");
+    // 23:30 in Lagos is already the next date in Kiritimati, but the cycle keeps its own zone.
+    const c = applyRun(null, soloPass("2026-10-13", "23:30"), "strip-disguise", "Pacific/Kiritimati")!;
+    expect(c.anchor).toBe(civilDate(at("2026-10-13", "23:30"), "Pacific/Kiritimati"));
+    expect(addDays("2026-12-30", 3)).toBe("2027-01-02");
   });
 });

@@ -117,3 +117,23 @@ export function applyRun(cycle: ProofCycle | null, run: Run, moveId: string, tim
   });
   return { ...cycle, state: passed ? "held" : "fading", entries, history: [...cycle.history, record] };
 }
+
+/** An instant that falls on `date` in `timeZone` (as close to local noon as the zone allows). For simulated dates and tests. */
+export function atCivilDate(date: string, timeZone: string): number {
+  const [y, m, d] = date.split("-").map(Number) as [number, number, number];
+  const noonUtc = Date.UTC(y, m - 1, d, 12);
+  for (const h of [0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6, -7, 7, -8, 8, -9, 9, -10, 10, -11, 11, -12, 12, -13, 13, -14, 14]) {
+    const t = noonUtc + h * 3_600_000;
+    if (civilDate(t, timeZone) === date) return t;
+  }
+  throw new Error(`No instant on ${date} in ${timeZone}`);
+}
+
+export type HomeAction = "continue" | "recheck" | "recover" | "practice";
+
+/** Home's one primary action (spec section 10): continue active practice, then recheck if due, then recover if Fading, else practice. */
+export function homeAction(cycle: ProofCycle | null, now: number, hasActivePractice: boolean): HomeAction {
+  if (hasActivePractice) return "continue";
+  const r = recheckAvailable(cycle, now);
+  return r ? (r.purpose === "recovery" ? "recover" : "recheck") : "practice";
+}
