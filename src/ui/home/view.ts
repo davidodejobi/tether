@@ -11,8 +11,8 @@ export function moveOne(status: ReturnType<typeof proofStatus>): { state: NodeSt
   return status ? { state: status.state, due: status.due } : { state: "current", due: false };
 }
 
-/** The most recent saved solo result that has a gap (needs a practice score), or null. */
-export function latestGap(p: Progress): Snapshot | null {
-  const snaps = [...p.runs.values()].map((s) => snapshotOf(s.run)).filter((s): s is Snapshot => s !== null && s.gap !== null);
+/** The most recent completed solo, with or without a practice score (spec section 8: never skip back to an older gap), or null. */
+export function latestSolo(p: Progress): Snapshot | null {
+  const snaps = [...p.runs.values()].map((s) => snapshotOf(s.run)).filter((s): s is Snapshot => s !== null);
   return snaps.sort((a, b) => inOrder(a.order, b.order)).at(-1) ?? null;
 }

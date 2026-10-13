@@ -23,7 +23,14 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   await expect(map.getByText("Current")).toBeVisible();
   // Centred on Move 1: the scroll box has moved down towards the bottom of the art.
   expect(await map.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
-  await expect(page.getByText("No gap yet.")).toBeVisible();
+  await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible();
+});
+
+test("a solo without a practice score shows the alone score and how to get a first gap", async ({ page }) => {
+  await seedRecords(page, [finishedRun("s1", "solo", 6, { n: 1, practice: null })], "/");
+  await expect(page.getByText("Alone: 6 of 10")).toBeVisible();
+  await expect(page.getByText(/Answer ten practice questions, then take another solo check/)).toBeVisible();
+  await expect(page.getByText("No gap yet")).toHaveCount(0);
 });
 
 test("the map art loads lazily and the screen works without it", async ({ page }) => {

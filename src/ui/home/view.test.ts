@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Progress, SavedRun } from "../../storage/progress.ts";
-import { latestGap, moveOne } from "./view.ts";
+import { latestSolo, moveOne } from "./view.ts";
 
 const solo = (id: string, seq: number, score: number, practice: number | null): [string, SavedRun] => [
   id,
@@ -15,13 +15,15 @@ describe("moveOne", () => {
   });
 });
 
-describe("latestGap", () => {
-  it("is null without a solo that has a practice score", () => {
-    expect(latestGap(progress([]))).toBeNull();
-    expect(latestGap(progress([solo("a", 1, 7, null)]))).toBeNull();
+describe("latestSolo", () => {
+  it("is null without a solo", () => {
+    expect(latestSolo(progress([]))).toBeNull();
   });
-  it("picks the latest solo with a gap by start order", () => {
-    const g = latestGap(progress([solo("b", 200, 8, 9), solo("a", 100, 5, 10), solo("c", 300, 9, null)]));
-    expect(g).toMatchObject({ runId: "b", gap: 1 });
+  it("keeps a solo without a practice score, with no gap", () => {
+    expect(latestSolo(progress([solo("a", 1, 7, null)]))).toMatchObject({ runId: "a", alone: 7, gap: null });
+  });
+  it("picks the latest solo by start order and never skips back to an older gap", () => {
+    expect(latestSolo(progress([solo("b", 200, 8, 9), solo("a", 100, 5, 10)]))).toMatchObject({ runId: "b", gap: 1 });
+    expect(latestSolo(progress([solo("b", 200, 8, 9), solo("a", 100, 5, 10), solo("c", 300, 9, null)]))).toMatchObject({ runId: "c", gap: null });
   });
 });

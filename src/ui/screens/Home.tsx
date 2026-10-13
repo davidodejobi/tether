@@ -6,7 +6,7 @@ import { CoachBubble } from "../components/CoachBubble";
 import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { HomeMap } from "../home/HomeMap";
-import { latestGap, moveOne } from "../home/view.ts";
+import { latestSolo, moveOne } from "../home/view.ts";
 import { OfflineCues } from "../offline/OfflineCues";
 import { ProofCard } from "../proof/ProofCard";
 import { appNow } from "../proof/simulate";
@@ -20,7 +20,7 @@ export function Home() {
   const { dots } = readiness(attemptsOf(p), runStartsOf(p));
   const cycle = p.cycles.get("strip-disguise") ?? null;
   const { state, due } = moveOne(proofStatus(cycle, appNow(cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)));
-  const gap = latestGap(p);
+  const solo = latestSolo(p);
   const coach = p.learner?.coach ?? "character";
   return (
     <main class="page hm">
@@ -37,10 +37,13 @@ export function Home() {
         <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>
         <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>
         <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
-        {gap ? (
-          <p class="hm-gap"><strong>{gap.raw! <= 0 ? "No help gap on your latest solo check" : `Latest gap: ${gap.gap}`}</strong> (with help {gap.practice}, alone {gap.alone}) on {when(gap.at)}</p>
+        {/* Spec section 8: the latest saved solo decides; without a practice score it shows alone and how to get a first gap. */}
+        {!solo ? (
+          <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>
+        ) : solo.gap === null ? (
+          <p class="hm-gap hm-gap-none"><strong>Alone: {solo.alone} of 10</strong> on {when(solo.at)}. Answer ten practice questions, then take another solo check, to see your first gap.</p>
         ) : (
-          <p class="hm-gap hm-gap-none">No gap yet. Do 10 practice questions, then a solo check, to see yours.</p>
+          <p class="hm-gap"><strong>{solo.raw! <= 0 ? "No help gap on your latest solo check" : `Latest gap: ${solo.gap}`}</strong> (with help {solo.practice}, alone {solo.alone}) on {when(solo.at)}</p>
         )}
       </div>
       <HomeMap state={state} due={due} />
