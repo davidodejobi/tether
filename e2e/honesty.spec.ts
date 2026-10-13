@@ -164,8 +164,8 @@ test("solo entry works not ready (Try anyway) and ready (three dots)", async ({ 
   await expect(page.getByRole("heading", { name: "You're not solo-ready yet." })).toBeVisible();
   await expect(page.getByText("We recommend 3 dots first.")).toBeVisible();
   await page.getByRole("button", { name: "Try anyway" }).click();
-  await expect(page).toHaveURL(/\/solo$/);
-  await expect(page.getByRole("heading", { name: "Solo check is coming" })).toBeVisible();
+  await expect(page).toHaveURL(/\/run\/solo$/);
+  await expect(page.getByRole("heading", { name: /^Question 1 of 10/ })).toBeVisible();
 
   await page.goto("/");
   await page.getByRole("link", { name: "Solo check" }).click();
@@ -183,7 +183,7 @@ test("solo entry works not ready (Try anyway) and ready (three dots)", async ({ 
   await expect(page.getByText("4 of 5", { exact: true })).toBeVisible();
   await page.goto("/solo-entry");
   await page.getByRole("button", { name: "Start solo checkpoint" }).click();
-  await expect(page.getByRole("heading", { name: "Solo check is coming" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^Question 1 of 10/ })).toBeVisible();
 });
 
 test("the round summary offers the solo check", async ({ page }) => {
