@@ -115,13 +115,20 @@ Avoided on purpose: collective nouns (team, class, choir, family, staff), becaus
 
 Only the third Show me beat may name the answer; the validator enforces this.
 
-## 6. Sign-off
+## 6. Decision needed: the "disagree with the nearest noun" shortcut
+
+Today every question pairs a subject with a side phrase of the opposite number. That means a learner can score 10/10 without the move by always picking the verb that disagrees with the noun just before the blank. On a real JAMB item where the side phrase has the same number as the subject ("Tunde, along with his brother, ___ …"), that shortcut gives the wrong answer. Solo has no "tap what you covered" check, so 8/10 alone cannot tell the move from the shortcut.
+
+**Recommendation:** make about 1 in 5 questions same-number pairings (singular subject with a singular side phrase, plural with plural). The shortcut then fails, while the move still works and the Show me copy stays true. It is a small change to the generator and draw rules, plus new same-number side phrases to review. It changes what proof means, so it is your call.
+
+## 7. Sign-off
 
 - [ ] The rule in section 2 is correct as taught.
 - [ ] Every word-list line in section 3 reads sensibly in every pairing.
 - [ ] The 30 samples in section 4 read as natural exam-style English.
 - [ ] The English coach copy in section 5 is correct and does not give answers away.
+- [ ] Decide section 6: keep opposite-number pairings only, or add same-number pairings (recommended).
 
-When all four are ticked, set `review.en` in `src/content/strip-disguise.ts` to
+When all five are ticked, set `review.en` in `src/content/strip-disguise.ts` to
 `{ status: "approved", reviewer: "<name>", date: "<YYYY-MM-DD>" }` and bump `version` if anything changed.
 Pidgin stays labelled Unreviewed until a named native speaker approves it the same way in `review.pcm`.

@@ -114,3 +114,13 @@ export function drawRun(
   }
   return shuffle(picked, rng).map((c) => buildQuestion(pack, c, rng));
 }
+
+/** The full question list David reviews (docs/content/move-1-questions.txt). */
+export function questionListing(pack: Pack): string {
+  const reserved = new Set<string>(pack.tutorialIds);
+  const lines = allCombos(pack).map(
+    (c) => `${c.id}\t${c.number}\t${c.verb[c.number]}\t${sentence(c)}${reserved.has(c.id) ? "\t[tutorial]" : ""}`,
+  );
+  const header = [`# ${pack.title} (${pack.moveId}) v${pack.version}: ${lines.length} questions`, "# id\tnumber\tanswer\tsentence"];
+  return [...header, ...lines, ""].join("\n");
+}

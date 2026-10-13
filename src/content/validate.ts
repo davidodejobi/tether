@@ -109,6 +109,9 @@ export function validatePack(pack: Pack): ValidationResult {
       if (v.includes("{answer}") && k !== "showMe.2") err(`coach.${lang}.${k} must not state the answer`);
       for (const ph of placeholders(v)) if (!SHOW_ME_PLACEHOLDERS.has(ph)) err(`coach.${lang}.${k}: unknown placeholder ${ph}`);
     }
+    // Go deeper steps must not hand over what the learner is being asked to find.
+    for (const k of ["goDeeper.subject", "goDeeper.subjectHint"]) if (copy[k]?.includes("{subject}")) err(`coach.${lang}.${k} gives the subject away`);
+    for (const k of ["goDeeper.count", "goDeeper.countHint"]) if (copy[k]?.includes("{count}")) err(`coach.${lang}.${k} gives the count away`);
     for (const n of ["sg", "pl"] as const) if (!pack.countWords[lang]?.[n]) err(`countWords.${lang}.${n} is missing`);
   }
 

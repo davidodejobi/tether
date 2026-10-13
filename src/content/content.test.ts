@@ -1,5 +1,6 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
-import { allCombos, drawRun, nextPracticeQuestion, practicePool, tutorialQuestions, type Rng } from "./generate.ts";
+import { allCombos, drawRun, nextPracticeQuestion, practicePool, questionListing, tutorialQuestions, type Rng } from "./generate.ts";
 import { stripDisguise } from "./strip-disguise.ts";
 import type { Pack } from "./types.ts";
 import { validatePack } from "./validate.ts";
@@ -27,6 +28,11 @@ describe("Move 1 pack", () => {
     const pool = practicePool(stripDisguise);
     expect(pool.length).toBeGreaterThanOrEqual(50);
     for (const n of ["sg", "pl"]) expect(pool.filter((c) => c.number === n).length).toBeGreaterThanOrEqual(10);
+  });
+
+  test("the committed review listing matches the pack (run npm run content:list after edits)", () => {
+    const committed = readFileSync(new URL("../../docs/content/move-1-questions.txt", import.meta.url), "utf8");
+    expect(committed).toBe(questionListing(stripDisguise));
   });
 });
 
@@ -111,6 +117,12 @@ describe("validator catches broken packs", () => {
     p.sidePhrases = p.sidePhrases.filter((s) => s.number === "sg" || s.id === "two-classmates");
     p.verbs = p.verbs.slice(0, 1);
     expect(validatePack(p).errors.join("\n")).toMatch(/sg practice sentences/);
+  });
+
+  test("Go deeper hint that gives the subject away", () => {
+    const p = copy();
+    p.coach.en.goDeeper.subjectHint = "The subject is {subject}.";
+    expect(validatePack(p).errors.join("\n")).toMatch(/gives the subject away/);
   });
 
   test("approved English review clears the release blocker", () => {
