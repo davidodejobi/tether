@@ -43,7 +43,7 @@ export function ProofCard() {
             <a class="btn btn-secondary" href={`/recheck-entry${q}`}>Try anyway</a>
           </>
         )}
-        {action === "continue" && <a class="btn btn-primary" href="/practice">Continue practice</a>}
+        {action === "continue" && <a class="btn btn-primary" href="/practice">Continue where you stopped</a>}
       </div>
       {demoOn() && (
         <form class="pc-demo" onSubmit={(e) => {

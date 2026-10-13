@@ -300,3 +300,29 @@ for (const [suffix, width, height] of [["", 360, 800], ["-768", 768, 1024], ["-1
   );
 }
 SCREENS.push({ name: "home-avatar-text-only", path: "/", actions: identity("/", { coach: "text" }) });
+
+// Step 13: Home with a seeded proof cycle. Dates come from ?demo= so the captures never depend on today.
+const recheckCycle = (state: string, statuses: string[]) => ({
+  moveId: "strip-disguise", timeZone: "Africa/Lagos", state, earnedOn: "2026-10-13", anchor: "2026-10-13", history: [],
+  entries: [3, 7, 14].map((day, i) => ({ id: `2026-10-13+${day}`, day, due: ["2026-10-16", "2026-10-20", "2026-10-27"][i], status: statuses[i] })),
+});
+const withCycle = (cycle: object, path: string) => async (page: Page) => {
+  await seedLearner(page, "/");
+  await page.evaluate((c) => new Promise<void>((resolve) => {
+    const open = indexedDB.open("tether");
+    open.onsuccess = () => {
+      const tx = open.result.transaction("records", "readwrite");
+      tx.objectStore("records").put(c, "cycle:strip-disguise");
+      tx.oncomplete = () => resolve();
+    };
+  }), cycle);
+  await page.goto(path, { waitUntil: "networkidle" });
+};
+for (const [suffix, width, height] of [["", 360, 800], ["-1366", 1366, 768]] as const) {
+  const proved = recheckCycle("proved", ["scheduled", "scheduled", "scheduled"]);
+  SCREENS.push(
+    { name: `recheck-due${suffix}`, path: "/", width, height, actions: withCycle(proved, "/?demo=2026-10-16") },
+    { name: `recheck-overdue${suffix}`, path: "/", width, height, actions: withCycle(proved, "/?demo=2026-10-18") },
+    { name: `recheck-fading${suffix}`, path: "/", width, height, actions: withCycle(recheckCycle("fading", ["missed", "paused", "paused"]), "/") },
+  );
+}

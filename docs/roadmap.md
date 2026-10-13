@@ -66,7 +66,7 @@ contract. Bring supporting files into this repository only when needed.
 - [ ] **12. Build results and gap cards.** First-score state, absent-practice-score
   state, saved comparisons, passed/not-yet outcomes and post-run misses review.
   Done: results show only real scores and qualifying improvement claims.
-- [ ] **13. Build rechecks and recovery.** Five no-help questions, five-minute
+- [x] **13. Build rechecks and recovery.** Five no-help questions, five-minute
   timer, 4/5 pass, due/overdue entry, Held/Fading states and recovery scheduling.
   Include labelled simulated dates for demonstration without altering real records.
   Done: day-3/7/14, late checks and recovery behave according to the spec.
