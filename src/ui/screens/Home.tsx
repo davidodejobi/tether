@@ -32,6 +32,7 @@ export function Home() {
         {p.learner && <Identity learner={p.learner} />}
         <div class="hm-status"><OfflineCues /></div>
         <CoachBubble mode={coach}>{state === "fading" ? "Your proof needs a quick restore." : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone."}</CoachBubble>
+        <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
         <ProofCard />
         <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>
         <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>

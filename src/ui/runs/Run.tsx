@@ -8,7 +8,7 @@ import { sentence, type Question } from "../../content/generate.ts";
 import { clockWentBack, finish, lowTime, RUN_RULES, seen, submit, type Run as RunState, type RunKind } from "../../rules/runs.ts";
 import { onReturn } from "../../rules/runs.ts";
 import { cue, setProofMode } from "../../platform/sound.ts";
-import { speak, speechOk } from "../../platform/speech.ts";
+import { speak, useCanSpeak } from "../../platform/speech.ts";
 import { acquireWake, releaseWake } from "../../platform/wakeLock.ts";
 import { completeRunBatch, convertBatch, recoverRun, type Batch, type SavedRun } from "../../storage/progress.ts";
 import { AnswerTiles } from "../components/AnswerTiles";
@@ -363,6 +363,7 @@ function Runner({ kind }: { kind: RunKind }) {
 // The sentence, blank, four tiles and Next. Selecting is not submitting; nothing says right or wrong.
 function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of: number; busy: boolean; onSubmit(word: string): void }) {
   const [sel, setSel] = useState<number | null>(null);
+  const canSpeak = useCanSpeak();
   const go = () => sel !== null && !busy && onSubmit(q.options[sel]!);
   const key = useRef<(e: KeyboardEvent) => void>(() => {});
   key.current = (e) => {
@@ -386,12 +387,12 @@ function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of
       <h1 class="run-prompt">Question {n} of {of} · Pick the verb that fits.</h1>
       <section class="run-card">
         <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={sel === null ? undefined : q.options[sel]} />
-        {speechOk() && (
+        {canSpeak && (
           <button type="button" class="qv-read" onClick={() => speak(sentence(q, "blank"), "en")}>
             <Icon name="speaker" size={20} /> Read aloud
           </button>
         )}
-        {!speechOk() && <p class="qv-source">Read aloud isn't available on this device.</p>}
+        {!canSpeak && <p class="qv-source">Read aloud isn't available on this device.</p>}
       </section>
       <AnswerTiles tiles={q.options.map((label) => ({ label }))} value={sel} disabled={busy} onSelect={(i) => setSel(i)} />
       <div class="run-bar">

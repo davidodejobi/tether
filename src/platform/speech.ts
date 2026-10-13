@@ -45,3 +45,21 @@ export function useVoiceNote(lang: Lang): string {
   }, []);
   return pick(lang).label;
 }
+
+const VOICE_WAIT_MS = 1500;
+
+/** True when read-aloud can work: the API exists and has a voice. Some browsers load voices late, so until they arrive
+ *  (voiceschanged) or a short wait ends, the API alone counts; a device that stays voiceless then reads as unavailable. */
+export function useCanSpeak(): boolean {
+  const [, tick] = useState(0);
+  const [waited, setWaited] = useState(false);
+  useEffect(() => {
+    if (!speechOk()) return;
+    const synth = window.speechSynthesis;
+    const on = () => tick((n) => n + 1);
+    synth.addEventListener("voiceschanged", on);
+    const t = setTimeout(() => setWaited(true), VOICE_WAIT_MS);
+    return () => (synth.removeEventListener("voiceschanged", on), clearTimeout(t));
+  }, []);
+  return speechOk() && (!waited || window.speechSynthesis.getVoices().length > 0);
+}

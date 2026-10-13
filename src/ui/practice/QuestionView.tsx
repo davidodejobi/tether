@@ -20,7 +20,7 @@
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { cue } from "../../platform/sound.ts";
-import { speak, speechOk, useVoiceNote } from "../../platform/speech.ts";
+import { speak, useCanSpeak, useVoiceNote } from "../../platform/speech.ts";
 import { stripDisguise } from "../../content/strip-disguise.ts";
 import type { Pack } from "../../content/types.ts";
 import { sentence, type Question } from "../../content/generate.ts";
@@ -243,6 +243,7 @@ export function QuestionView(props: QuestionViewProps) {
   const filled = done ? q.answer : selected === null ? undefined : q.options[selected];
   const lang = learner.lang;
   const coach = pack.coach[lang];
+  const canSpeak = useCanSpeak();
   const voiceNote = useVoiceNote(lang); // set when Pidgin would be read by an English voice
 
   const bo = learner.coach === "character"; // Text only shows no Bo anywhere
@@ -282,12 +283,12 @@ export function QuestionView(props: QuestionViewProps) {
           <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={filled} correct={done} />
           {bo && <span class="qv-bo-side"><Bo pose={done ? "pleased" : misses > 1 ? "concerned" : "idle"} size={72} /></span>}
         </div>
-        {speechOk() && (
+        {canSpeak && (
           <button type="button" class="qv-read" onClick={() => speak(sentence(q, "blank"), "en")}>
             <Icon name="speaker" size={20} /> Read aloud
           </button>
         )}
-        {!speechOk() && <p class="qv-source">Read aloud isn't available on this device. The text is all here.</p>}
+        {!canSpeak && <p class="qv-source">Read aloud isn't available on this device. The text is all here.</p>}
 
         <div class="qv-status" role="status" aria-live="polite">
           {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, blocked, finish: exit })}
@@ -366,8 +367,8 @@ export function QuestionView(props: QuestionViewProps) {
         </p>
         <p class="qv-source">Rule source: {pack.source.line}</p>
         <Button onClick={closeSheet}>Got it</Button>
-        {speechOk() && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`, lang)}>Read it to me</Button>}
-        {speechOk() && voiceNote && <p class="qv-source">{voiceNote}</p>}
+        {canSpeak && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`, lang)}>Read it to me</Button>}
+        {canSpeak && voiceNote && <p class="qv-source">{voiceNote}</p>}
       </dialog>
     </div>
   );

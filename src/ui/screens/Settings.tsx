@@ -5,6 +5,7 @@ import { cue, setSoundsOn, unlockSound } from "../../platform/sound.ts";
 import { cleanNickname, type Learner } from "../../storage/progress.ts";
 import { Identity } from "../components/Avatar";
 import { Button } from "../components/Button";
+import { Icon } from "../components/Icon";
 import { useProgress } from "../progress";
 import "./settings.css";
 
@@ -60,6 +61,7 @@ export function Settings() {
 
   return (
     <main class="page st">
+      <a class="st-back" href="/"><Icon name="back" /> Home</a>
       <h1>Settings</h1>
       <Identity learner={learner} />
 
@@ -122,7 +124,6 @@ export function Settings() {
           Couldn't save this change. <Button variant="secondary" disabled={busy} onClick={failed}>Retry</Button>
         </p>
       )}
-      <a href="/">Home</a>
     </main>
   );
 }

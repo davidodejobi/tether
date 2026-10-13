@@ -13,3 +13,5 @@
 .st-alert { margin: 0; padding: var(--spacing-sm); background: var(--bg-wrong-container); color: var(--text-on-wrong-container); border: 2px solid var(--border-wrong); border-radius: var(--radius-md); }
 @media (min-width: 1280px) { .page.st { max-width: 40rem; } }
 @media (max-width: 767px) { .page.st { padding-bottom: var(--spacing-xxl); } }
+.page a.st-back { display: inline-flex; align-items: center; gap: var(--spacing-xs); justify-self: start; min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
+@media (min-width: 1280px) { .page a.st-back { display: none; } } /* the rail has Home from here */
