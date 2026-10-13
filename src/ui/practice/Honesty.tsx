@@ -33,7 +33,9 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   const { attempt, next, update, help, openMove } = ctx;
   const { store, save } = useProgress();
   const learner = store.progress.learner!;
-  const { dots, offerMove } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
+  // Readiness counts this attempt as it is now, so the message never waits for the save to land.
+  const attempts = attemptsOf(store.progress).filter((a) => a.id !== attempt.id).concat(attempt);
+  const { dots, offerMove } = readiness(attempts, runStartsOf(store.progress));
   const [tapped, setTapped] = useState<number | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
 
@@ -131,7 +133,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
       {phase === "done" && (
         <>
           <div class="hn-result" role="status" aria-live="polite">
-            {!showChips && <h3 tabIndex={-1} ref={heading}>Thanks for telling us.</h3>}
+            {!showChips && <h3 tabIndex={-1} ref={heading}>{!moveClaim ? "Thanks for telling us." : "That's the move."}</h3>}
             <p class="hn-msg">
               <Icon name={earned ? "check" : "lightbulb"} size={20} />
               <span>

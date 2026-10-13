@@ -61,8 +61,8 @@ function Round() {
   // The third dot earned by this answer shows the Solo-ready card before the next step; "Keep practising" carries on.
   const earnedThird = (a: PracticeAttempt) => {
     const dotsNow = (all: readonly PracticeAttempt[]) => readiness(all, runStartsOf(store.progress)).dots;
-    const all = attemptsOf(store.progress);
-    return dotsNow(all) === 3 && dotsNow(all.filter((x) => x.id !== a.id)) < 3;
+    const others = attemptsOf(store.progress).filter((x) => x.id !== a.id);
+    return dotsNow([...others, a]) === 3 && dotsNow(others) < 3;
   };
 
   if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => route("/")} />;

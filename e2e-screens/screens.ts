@@ -4,10 +4,11 @@ import { answerTutorials } from "../e2e/tutorial";
 // Add every new screen here: { name, path } at 360x800, plus optional wider captures.
 export type Screen = { name: string; path: string; width?: number; height?: number; /** Runs after load and before the capture, e.g. to reach a later step. */ actions?: (page: Page) => Promise<void> };
 
-const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, coach: "character", lang: "en", readAloud: false, partner: null, schemaVersion: 1 };
+// The honesty rule is shown once; most screens start after it, so it is marked seen here.
+const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, coach: "character", lang: "en", readAloud: false, partner: null, honestyIntroSeen: true, schemaVersion: 1 };
 
 /** Writes a learner into the app's IndexedDB, then opens `path`. */
-export async function seedLearner(page: Page, path: string) {
+export async function seedLearner(page: Page, path: string, learner: object = LEARNER) {
   await page.goto("/");
   await page.evaluate(
     (learner) =>
@@ -19,7 +20,7 @@ export async function seedLearner(page: Page, path: string) {
           tx.oncomplete = () => resolve();
         };
       }),
-    LEARNER,
+    learner,
   );
   await page.goto(path, { waitUntil: "networkidle" });
 }
@@ -66,7 +67,67 @@ const summary = async (page: Page) => {
     if (n === 2) (await pickWrong(page), await check(page));
     await pickRight(page);
     await check(page);
-    await page.getByRole("button", { name: "Next" }).click();
+    const reason = page.getByRole("radio", { name: "It sounded right" });
+    const nx = page.getByRole("button", { name: /^Next/ });
+    await reason.or(nx).waitFor();
+    if (await reason.isVisible()) await reason.click();
+    await nx.click();
+  }
+};
+
+// Honesty screens. Math.random is replaced so the one-in-three verification is forced: 0.1 samples it, 0.9 does not.
+const roll = (page: Page, r: number | null) => page.evaluate((v) => ((window as any).__r = v ?? undefined), r);
+const forceable = (page: Page) =>
+  page.evaluate(() => {
+    const real = Math.random;
+    Math.random = () => (window as any).__r ?? real();
+  });
+const reasons = async (page: Page, learner: object = LEARNER) => {
+  await seedLearner(page, "/practice", learner);
+  await forceable(page);
+  await pickRight(page);
+  await check(page);
+  await page.getByRole("radio", { name: "I guessed" }).waitFor();
+};
+const claim = async (page: Page, name: string, r: number) => {
+  await roll(page, r);
+  await page.getByRole("radio", { name }).click();
+  await roll(page, null);
+};
+const next = (page: Page) => page.getByRole("button", { name: /^Next/ }).click();
+const oneDot = async (page: Page) => (await reasons(page), await claim(page, "I used the move", 0.9), await next(page));
+const asking = async (page: Page) => {
+  await reasons(page);
+  await claim(page, "I used the move", 0.1);
+  await page.locator(".hn-words").waitFor();
+  await page.waitForFunction(() => [...document.images].every((i) => i.complete));
+};
+const wordIndex = async (page: Page, covered: boolean) => {
+  const q = await page.evaluate(
+    () => new Promise<{ subject: string }>((resolve) => {
+      const open = indexedDB.open("tether");
+      open.onsuccess = () => {
+        const req = open.result.transaction("records").objectStore("records").getAll();
+        req.onsuccess = () => resolve((req.result as any[]).filter((r) => r?.attempt).sort((a, b) => b.attempt.startedAt.seq - a.attempt.startedAt.seq)[0].question);
+      };
+    }),
+  );
+  return covered ? q.subject.split(" ").length : 0;
+};
+const tapCovered = async (page: Page, covered: boolean) => (await asking(page), await page.locator(".hn-words button").nth(await wordIndex(page, covered)).click());
+const sounded = async (page: Page) => {
+  await oneDot(page);
+  await pickRight(page);
+  await check(page);
+  await claim(page, "It sounded right", 0.5);
+};
+const thirdDot = async (page: Page) => {
+  await oneDot(page);
+  for (let i = 0; i < 2; i++) {
+    await pickRight(page);
+    await check(page);
+    await claim(page, "I used the move", 0.9);
+    if (i === 0) await next(page);
   }
 };
 
@@ -83,6 +144,22 @@ export const SCREENS: Screen[] = [
   { name: "practice-selected-768", path: "/", width: 768, height: 1024, actions: selected },
   { name: "practice-selected-1366", path: "/", width: 1366, height: 768, actions: selected },
 ];
+
+SCREENS.push(
+  { name: "honesty-reasons", path: "/", actions: (p) => reasons(p) },
+  { name: "honesty-reasons-768", path: "/", width: 768, height: 1024, actions: (p) => reasons(p) },
+  { name: "honesty-reasons-1366", path: "/", width: 1366, height: 768, actions: (p) => reasons(p) },
+  { name: "honesty-intro", path: "/", actions: (p) => reasons(p, { ...LEARNER, honestyIntroSeen: undefined }) },
+  { name: "honesty-dot-fills", path: "/", actions: async (p) => (await reasons(p), await claim(p, "I used the move", 0.9)) },
+  { name: "honesty-verify-asking", path: "/", actions: asking },
+  { name: "honesty-verify-correct", path: "/", actions: (p) => tapCovered(p, true) },
+  { name: "honesty-verify-wrong", path: "/", actions: (p) => tapCovered(p, false) },
+  { name: "honesty-streak-unchanged", path: "/", actions: sounded },
+  { name: "honesty-third-dot", path: "/", actions: thirdDot },
+  { name: "solo-ready", path: "/", actions: async (p) => (await thirdDot(p), await next(p)) },
+  { name: "solo-not-ready", path: "/", actions: async (p) => { await oneDot(p); await p.goto("/solo-entry", { waitUntil: "networkidle" }); } },
+  { name: "solo-placeholder", path: "/", actions: async (p) => (await seedLearner(p, "/solo")) },
+);
 
 // Onboarding steps, each reached from a fresh browser by pressing through the earlier ones.
 const click = (name: string | RegExp) => (page: Page) => page.getByRole("button", { name }).click();
