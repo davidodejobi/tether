@@ -25,6 +25,8 @@ export interface Learner {
 export interface SavedAttempt {
   attempt: PracticeAttempt;
   question: Question;
+  /** Options already checked as wrong, so a reload keeps them struck out. */
+  struck?: string[];
 }
 export interface SavedRun {
   run: Run;
