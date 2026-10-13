@@ -91,3 +91,11 @@ These decisions override conflicting text in `requirements.txt`.
 - `E2E_PORT` and `SCREENS_PORT` override the test server ports so parallel worktrees never reuse each other's server.
 - `/kit` shows every component in light and dark and exists only under `vite dev` (guarded by `import.meta.env.DEV` plus a dynamic import); the production build contains no kit code.
 - `npm run screens` runs `playwright.screens.config.ts` against the Vite dev server on port 5174. It visits each `{name, path}` in `e2e-screens/screens.ts` at 360x800 in light, dark and reduced motion and writes `screenshots/` (gitignored). Add each new screen to that list.
+
+## Practice round (roadmap step 8)
+
+- `QuestionView` (`src/ui/practice/`) is the one question screen for practice and, later, the tutorial. Slots for steps 9 and 10, all documented at the top of the file: `afterMiss({attempt, misses, retry, help, finish})`, `hideTiles(attempt, misses)`, `onShowMe({attempt, help})`, `afterCorrect({attempt, next})`. Every checked answer is saved before a slot runs; `help(kind)` goes through `useHelp` and saves.
+- A started question is saved at once (checks 0), so a reload or the close button brings back the same question through `resumePoint`. `SavedAttempt` gained optional `struck` (options checked wrong) so struck tiles survive a reload; old records stay valid.
+- Rounds are derived, not stored: position is completed practice questions modulo 5 (`src/rules/round.ts`). The summary is in-memory, so a reload on it opens a fresh question; nothing is blocked.
+- Practice ignores a pending How did you know or verification (`resumePoint` kinds "reason" and "verify") until step 10 handles them.
+- The move sheet is a native modal `<dialog>`: it blocks input underneath, traps focus and returns it on close.
