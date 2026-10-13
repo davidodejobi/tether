@@ -42,3 +42,10 @@ These decisions override conflicting text in `requirements.txt`.
 - Boundaries under `src/`: `content/` (reviewed content), `rules/` (pure learning rules; take a `Clock`), `storage/` (local persistence), `platform/` (browser capabilities and fallbacks), `ui/` (screens and components).
 - Added later, when the step needs it: `idb-keyval` (step 5), local font and tokens (step 6), `vite-plugin-pwa` (step 16).
 - Tests: Vitest for rules and content (`npm test`); Playwright at 360x800 for browser journeys against the preview build (`npm run test:e2e`).
+
+## Move 1 content (roadmap step 3)
+
+- Syllabus source verified on 13 Oct 2026 from JAMB's own PDF (IBASS portal): Use of English, Section B Lexis and Structure, item (e) "...number, agreement/concord...". Details and hash in `src/content/strip-disguise.ts` and `docs/content/move-1-review.md`. The syllabus names the topic, not the "as well as" rule, so learner-facing lines name the topic only.
+- Each question pairs a subject with an opposite-number side phrase. Options: singular form, plural form and two never-correct fillers. 960 questions; three reserved for the tutorial.
+- Content changes bump the pack `version`; stored questions keep the version they were built with.
+- `validatePack` separates errors (fail tests) from release blockers (English review pending). Pidgin ships labelled Unreviewed rather than blocking release.

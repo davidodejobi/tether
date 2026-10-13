@@ -18,6 +18,8 @@ contract. Bring supporting files into this repository only when needed.
   distractors and source metadata. Implement generation and content validation.
   Enumerate the finite question space; check keys, options, grammar and repetition.
   Done: validated content generates four shuffled options with one correct answer.
+  Status: syllabus verified; pack, generator and validator built and passing.
+  Waiting on the owner's English review (`docs/content/move-1-review.md`).
 - [ ] **4. Implement the learning rules.** Build attempt scoring, readiness dots,
   verification, score snapshots, gap calculation, stamp transitions and scheduling.
   Exercise free looks, early solo entry, declining practice scores and overdue dates.
