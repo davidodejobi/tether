@@ -2,6 +2,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
 import { Button } from "../components/Button";
+import { useOnline } from "../offline/sw.ts";
 import { useProgress } from "../progress";
 import { resultView } from "../results/view.ts";
 import { cardModel } from "./card.ts";
@@ -22,15 +23,7 @@ export function Share() {
   const [image, setImage] = useState<{ blob: Blob; url: string } | null>(null);
   const [message, setMessage] = useState(model?.message ?? "");
   const [note, setNote] = useState("");
-  const [online, setOnline] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const on = () => setOnline(true);
-    const off = () => setOnline(false);
-    addEventListener("online", on);
-    addEventListener("offline", off);
-    return () => (removeEventListener("online", on), removeEventListener("offline", off));
-  }, []);
+  const online = useOnline();
   useEffect(() => {
     if (!model) return;
     let url = "";

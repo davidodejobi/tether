@@ -15,10 +15,23 @@ function ask(sw: ServiceWorker, type: "status" | "fill"): Promise<number> {
   });
 }
 
+/** Live navigator.onLine. Re-read after the listeners attach, so a change between first render and the effect is not missed. */
+export function useOnline() {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const sync = () => setOnline(navigator.onLine);
+    addEventListener("online", sync);
+    addEventListener("offline", sync);
+    sync();
+    return () => (removeEventListener("online", sync), removeEventListener("offline", sync));
+  }, []);
+  return online;
+}
+
 /** How many required entries the active worker has not stored (null until it answers), and a waiting update, if any. */
 export function useServiceWorker() {
   const [missing, setMissing] = useState<number | null>(null);
-  const [online, setOnline] = useState(navigator.onLine);
+  const online = useOnline();
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
   const [reg, setReg] = useState<ServiceWorkerRegistration | null>(null);
 
@@ -27,11 +40,7 @@ export function useServiceWorker() {
   }, []);
 
   useEffect(() => {
-    const up = () => setOnline(true);
-    const down = () => setOnline(false);
-    addEventListener("online", up);
-    addEventListener("offline", down);
-    if (!swSupported()) return () => (removeEventListener("online", up), removeEventListener("offline", down));
+    if (!swSupported()) return;
     let live = true;
     // `ready` waits for an active worker, so a first visit shows "preparing" until install finishes.
     navigator.serviceWorker.ready.then((r) => {
@@ -45,11 +54,7 @@ export function useServiceWorker() {
       watch();
       r.addEventListener("updatefound", () => r.installing?.addEventListener("statechange", watch));
     });
-    return () => {
-      live = false;
-      removeEventListener("online", up);
-      removeEventListener("offline", down);
-    };
+    return () => void (live = false);
   }, [check]);
 
   const retry = () => (reg ? check(reg, "fill") : navigator.serviceWorker.getRegistration().then((r) => r?.update()));
