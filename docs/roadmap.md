@@ -9,7 +9,7 @@ contract. Bring supporting files into this repository only when needed.
   incomplete runs, recovery, dates and release criteria. Map every requirement
   to a step below or an explicitly deferred feature.
   Done: one current spec with no conflicting behaviour or unexplained controls.
-- [ ] **2. Establish the technical foundation.** Confirm the lightweight browser
+- [x] **2. Establish the technical foundation.** Confirm the lightweight browser
   stack and hosting target; define boundaries for app, content, learning logic,
   persistence and UI. Scaffold the app, routing, scripts, tests and preview build.
   Done: a minimal app runs locally and produces a deployable production build.
