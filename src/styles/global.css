@@ -1,2 +1,10 @@
+@import "./tokens.css";
+@import "./fonts.css";
+
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, sans-serif; line-height: 1.5; }
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font: var(--type-body-m);
+}
