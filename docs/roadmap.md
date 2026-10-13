@@ -55,6 +55,11 @@ contract. Bring supporting files into this repository only when needed.
 - [x] **10. Build honesty and readiness.** Equal-weight reason choices, random
   one-in-three verification, free looks, the three-honest-answer hint and readiness.
   Done: honesty preserves dots; solo is reachable both ready and not ready.
+- [ ] **10a. Add local sounds and learner avatars.** Implement spec §14a with
+  bundled Cuelume/Blobatar, a saved Sounds toggle and stable local avatar identity.
+  Keep the Home/Settings additions small; step 14 completes those screens.
+  Done: sounds respect save/mute/speech/proof boundaries, old records remain intact,
+  avatars survive reload/nickname changes, and runtime external requests are absent.
 - [ ] **11. Build solo checks.** Ten questions, no help/Bo, ten-minute timer,
   wake lock with fallback, absence grace period, timeout and exit confirmation.
   Done: scores, practice conversion and 8/10 proof work without help leakage.
@@ -69,6 +74,7 @@ contract. Bring supporting files into this repository only when needed.
   accessible HTML nodes, correct proof states and Coming soon labels. Provide one
   primary action, solo entry, reachable Settings, partner preferences, coach style,
   language and read-aloud. Preserve exam content in English; label unreviewed Pidgin.
+  Retain step 10a's Sounds toggle and learner avatar when completing these screens.
   Done: every implemented flow is reachable; state changes persist across screens.
 - [ ] **15. Build optional sharing.** Generate the serious proof/progress image,
   source line and plain-language message. Add learner-controlled mobile sharing

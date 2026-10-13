@@ -1,9 +1,10 @@
 # Tether MVP build spec
 
-Version 1.1 — 13 October 2026. This is the implementation source of truth.
+Version 1.2 — 13 October 2026. This is the implementation source of truth.
 It consolidates `requirements.txt` and `decisions.md`; conflicting historical
 copy and priorities in those documents are superseded by this spec.
 Revision 1.1 restores online AI explanations as required capstone-demo scope.
+Revision 1.2 adds local interaction sounds and generated learner avatars (§14a).
 
 ## 1. Outcome and scope
 
@@ -24,7 +25,7 @@ Proof is for this move, never for all English or a predicted JAMB score.
 Include onboarding, the lesson, five-question practice, the help ladder,
 honesty/readiness, solo checks, results, rechecks/recovery, Home, Settings,
 read-aloud, English/Pidgin coach text, online AI explanations, optional sharing, offline installation,
-calendar cues and usable phone/tablet/laptop layouts.
+calendar cues, local interaction sounds/generated avatars and usable phone/tablet/laptop layouts.
 
 Exclude diagnostic, profiles/PINs, export/restore, Coach Auto,
 separate Proof history, accounts, payments, mock exams, other working subjects,
@@ -46,7 +47,7 @@ Persist these logical records; the implementation chooses their physical schema:
 
 | Record | Required information |
 |---|---|
-| Learner | Nickname; onboarding/lesson completion; coach/language/read-aloud settings; optional partner; schema version |
+| Learner | Nickname; onboarding/lesson completion; coach/language/read-aloud/sound settings; local avatar seed/generation; optional partner; schema version |
 | Question | Stable identity, content version, sentence segments, shuffled options, correct option, subject number and covered phrase |
 | Practice attempt | Unique ID, question, time, origin, checked-answer count, correctness, help/reveal history, reason and verification result |
 | Run | Unique ID, kind, question list, submitted answers, start/deadline, last visibility evidence, status, result, practice snapshot and covered recheck dates |
@@ -431,6 +432,45 @@ without navigation or help panels. Do not double-scale map labels on tablets.
 - Keep first-load application JavaScript below 100 KB gzipped, excluding font,
   images and content. Measure total cached download separately. Avoid loading
   decorative map art before the first teaching interaction; fallback remains usable.
+
+## 14a. Local sounds and learner avatars
+
+Use the installed `cuelume` and `blobatar` packages, bundled with the app. Sound
+is synthesized locally; avatars render locally. No hosted scripts, audio files,
+avatar endpoints, accounts, photo uploads or identity requests are needed.
+Preserve required third-party licence notices and pin the selected package versions.
+
+- Sounds are optional, default off for new and existing learners. A keyboard-
+  accessible Sounds toggle in Settings persists immediately through the guarded
+  progress save, with unchanged UI and Retry on failure. Use a quiet fixed volume
+  around 20%; automatic read-aloud remains a separate preference.
+- Use a short selection/tap cue for deliberate enabled actions, a gentle correct
+  or try-again cue after a practice answer successfully saves, and a short round/
+  proof celebration after the completed result saves. Check plays its outcome cue;
+  selecting a tile does not grade it. Play each outcome once from its successful
+  action, not from rendering or restoring saved records.
+- Keep active solo/recheck runs silent. Existing text, icons and live feedback
+  carry every state. Sounds never alter scores, dots, help, timers or claim sampling.
+  Typing, hovering, initial load, reload and background tabs stay silent. Suppress
+  interaction cues during read-aloud; mute applies immediately, including pending
+  cues. Unlock Web Audio on a user gesture; unavailable/blocked audio is harmless
+  and never delays a save or learning action.
+- Persist a random avatar seed and a supported generation once per learner,
+  independent of nickname, phone, email or device fingerprint. A nickname change
+  keeps the avatar. Backfill older learner records once through a successful save,
+  preserving every existing setting and learning record; retry reuses the seed.
+- Show a small static avatar beside the nickname on Home and Settings. It remains
+  in Text only mode because it represents the learner, while Bo remains the coach.
+  Beside a visible nickname, the avatar is decorative for assistive technology.
+  Use initials if rendering is unavailable. Avatars remain outside teaching, proof
+  runs and serious proof/share cards. Multiple profiles and avatar editing stay deferred.
+- Verify local operation with runtime external requests blocked. The full installed
+  offline journey is verified in step 16. Keep the §14 JavaScript budget and measure
+  the actual production delta rather than relying on package marketing sizes.
+
+References: [Cuelume](https://github.com/danielwh2/cuelume),
+[Blobatar packages](https://blobatar.dev/docs),
+[Blobatar privacy](https://blobatar.dev/privacy).
 
 ## 15. Measurements and demonstration
 
