@@ -142,7 +142,7 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
         </button>
       </header>
       <div class="sm-body">
-        <CoachBubble mode={coach} pose={pose} unreviewed={unreviewed}>
+        <CoachBubble mode={coach} pose={pose} unreviewed={unreviewed} speaks={false}>
           {beat < 3 ? "Watch your own sentence." : "That is the verb."}
         </CoachBubble>
         <ol class="ls-steps" aria-label="Steps">

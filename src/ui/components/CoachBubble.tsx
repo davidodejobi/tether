@@ -11,16 +11,18 @@ type Props = {
   mode?: "character" | "text";
   pose?: Pose;
   unreviewed?: boolean;
+  /** False when the screen speaks its own lines instead (Show me reads its captions): one speech owner per screen. */
+  speaks?: boolean;
   children: ComponentChildren;
 };
 
-export function CoachBubble({ mode = "character", pose = "idle", unreviewed, children }: Props) {
+export function CoachBubble({ mode = "character", pose = "idle", unreviewed, speaks = true, children }: Props) {
   const progress = useProgressState();
   const learner = progress.status === "ready" ? progress.store.progress.learner : null;
   const canSpeak = useCanSpeak();
   const line = useRef<HTMLParagraphElement>(null);
   const on = learner?.readAloud === true && canSpeak;
-  useAutoSpeak(line, learner?.lang ?? "en", on);
+  useAutoSpeak(line, learner?.lang ?? "en", on && speaks);
   const voiceNote = useVoiceNote(learner?.lang ?? "en"); // Pidgin read by an English voice is labelled, spec section 13
   return (
     <div class={`coach coach-${mode}`}>
