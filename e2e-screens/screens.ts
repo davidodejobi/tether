@@ -241,3 +241,19 @@ SCREENS.push(
   { name: "onboarding-choices", path: "/", actions: to(...choices) },
   { name: "onboarding-partner", path: "/", actions: to(...choices, click(/Someone to see your wins/)) },
 );
+
+// Tablet and laptop captures of every onboarding step, the startup gate, Home and Settings.
+const WIDE = [{ suffix: "768", width: 768, height: 1024 }, { suffix: "1366", width: 1366, height: 768 }] as const;
+const onboardingSteps: [string, (page: Page) => Promise<void>][] = [
+  ["nickname", to(nickname)],
+  ["lesson-2", to(...lesson, click("Next"))],
+  ["lesson-3", to(...lesson, click("Next"), click("Next"))],
+  ["win", to(...win)],
+  ["choices", to(...choices)],
+  ["partner", to(...choices, click(/Someone to see your wins/))],
+];
+for (const w of WIDE) {
+  for (const [name, actions] of onboardingSteps) SCREENS.push({ name: `onboarding-${name}-${w.suffix}`, path: "/", width: w.width, height: w.height, actions });
+  for (const [name, path] of [["home", "/"], ["settings", "/settings"]] as const)
+    SCREENS.push({ name: `${name}-${w.suffix}`, path: "/", width: w.width, height: w.height, actions: (p) => seedLearner(p, path) });
+}
