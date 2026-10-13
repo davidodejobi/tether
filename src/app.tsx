@@ -3,6 +3,7 @@ import { Home } from "./ui/screens/Home";
 import { Settings } from "./ui/screens/Settings";
 import { Practice } from "./ui/practice/Practice";
 import { Solo, SoloEntryScreen } from "./ui/solo/SoloScreens";
+import { RecheckEntry } from "./ui/proof/RecheckEntry";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 import { Gate } from "./ui/onboarding/Gate";
@@ -25,6 +26,7 @@ const GatedSettings = gated(Settings, true);
 const GatedPractice = gated(Practice, true);
 const GatedSoloEntry = gated(SoloEntryScreen);
 const GatedSolo = gated(Solo);
+const GatedRecheckEntry = gated(RecheckEntry);
 
 export function App() {
   return (
@@ -35,6 +37,7 @@ export function App() {
           <Route path="/practice" component={GatedPractice} />
           <Route path="/solo-entry" component={GatedSoloEntry} />
           <Route path="/solo" component={GatedSolo} />
+          <Route path="/recheck-entry" component={GatedRecheckEntry} />
           <Route path="/settings" component={GatedSettings} />
           {kitRoute}
           <Route default component={NotFound} />

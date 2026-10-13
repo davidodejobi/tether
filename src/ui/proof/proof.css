@@ -1,0 +1,8 @@
+.pc { display: flex; flex-direction: column; gap: var(--spacing-md); align-self: stretch; padding: var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.pc-stamp { display: flex; align-items: center; gap: var(--spacing-md); }
+.pc-line { margin: 0; font: var(--type-body-l); }
+.pc-actions { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.pc-sim { margin: 0; padding: var(--spacing-xs) var(--spacing-sm); font: var(--type-body-m); border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); }
+.pc-demo { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-sm); font: var(--type-body-m); }
+.pc a.btn, .rc a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.pc a:focus-visible, .rc a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
