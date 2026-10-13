@@ -210,7 +210,8 @@ test("choices are a radio group: 1-4 and arrows select, the blank is filled, Ent
 test("shortcuts are ignored while typing", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Start" }).click();
-  await page.getByLabel("Nickname").fill("");
-  await page.getByLabel("Nickname").pressSequentially("Srsr");
+  await expect(page.getByRole("heading", { name: /What should we call you/ })).toBeFocused();
+  await page.getByLabel("Nickname").click();
+  await page.getByLabel("Nickname").pressSequentially("Srsr", { delay: 60 });
   await expect(page.getByLabel("Nickname")).toHaveValue("Srsr");
 });
