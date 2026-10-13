@@ -62,7 +62,7 @@ export function submit(run: Run, questionId: string, correct: boolean, now: Mome
   return next.submissions.length === run.questionIds.length ? finish(next, now.at) : next;
 }
 
-/** Scores the run. Unsubmitted questions count as wrong. */
+/** Scores the run. Unsubmitted questions count as wrong, and a timed-out run ends at its deadline, not when it was noticed. */
 export function finish(run: Run, now: number): Run {
   if (run.status !== "active") return run;
   const rules = RUN_RULES[run.kind];
@@ -71,7 +71,7 @@ export function finish(run: Run, now: number): Run {
   return {
     ...run,
     status: "completed",
-    endedAt: now,
+    endedAt: timedOut ? Math.min(now, run.deadline) : now,
     result: { score, total: rules.questions, passed: score >= rules.pass, timedOut },
   };
 }

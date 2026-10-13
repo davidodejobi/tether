@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { addDays, applyRun, civilDate, dueEntries, proofStatus, recheckAvailable, recheckShapeIndex, type ProofCycle } from "./proof.ts";
 import { nextMoment, type Moment } from "./moment.ts";
-import { convert, startRun, submit, type Run } from "./runs.ts";
+import { convert, finish, startRun, submit, type Run } from "./runs.ts";
 
 let last: Moment | null = null;
 const m = (at: number) => (last = nextMoment(last, at));
@@ -31,6 +31,14 @@ describe("calendar dates", () => {
     expect(c.entries.map((e) => e.due)).toEqual(["2026-10-16", "2026-10-20", "2026-10-27"]);
     expect(dueEntries(c, at("2026-10-15", "23:59"))).toHaveLength(0);
     expect(dueEntries(c, at("2026-10-16", "00:00")).map((e) => e.day)).toEqual([3]);
+  });
+
+  test("a pass that timed out at 23:59 and was noticed after midnight is dated by its deadline", () => {
+    let r = startRun({ id: "late", kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `late-${i}`) }, m(at("2026-10-13", "23:49")));
+    for (let i = 0; i < 8; i++) r = submit(r, r.questionIds[i]!, true, m(r.started.at + (i + 1) * 1000));
+    const done = finish(r, at("2026-10-14", "00:01"));
+    expect(done.endedAt).toBe(r.deadline);
+    expect(applyRun(null, done, "m", LAGOS)!.earnedOn).toBe("2026-10-13");
   });
 
   test("dates are calendar dates in the cycle's time zone, across a daylight-saving change", () => {
