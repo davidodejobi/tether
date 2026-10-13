@@ -18,14 +18,18 @@ export interface PracticeAttempt {
   correctOnCheck?: number;
   /** Answer help used before the correct check, in order. A miss adds "nudge". */
   help: AnswerHelp[];
+  /** When the first miss or help happened: dots reset at that moment, not when the question started. */
+  helpAt?: number;
   /** A Show me after a correct answer. Changes neither score nor dots. */
   freeLook: boolean;
   /** The move sheet was opened. Not answer help; recorded for measurement. */
   moveSheetOpened: boolean;
   reason?: Reason;
+  reasonAt?: number;
   /** Decided once when "I used the move" is claimed; a reload cannot reroll it. */
   verifySampled?: boolean;
   verifyResult?: "passed" | "failed";
+  verifiedAt?: number;
 }
 
 export const VERIFY_PROBABILITY = 1 / 3;
@@ -44,7 +48,7 @@ export function check(a: PracticeAttempt, correct: boolean, now: number): Practi
   if (!open(a)) return a;
   const checks = a.checks + 1;
   if (correct) return { ...a, checks, correctOnCheck: checks, completedAt: now };
-  return { ...a, checks, help: a.help.includes("nudge") ? a.help : [...a.help, "nudge"] };
+  return { ...a, checks, help: a.help.includes("nudge") ? a.help : [...a.help, "nudge"], helpAt: a.helpAt ?? now };
 }
 
 /** What the help ladder does after this many misses on one question. */
@@ -57,9 +61,9 @@ export function afterMisses(misses: number): "retry" | "nudge" | "offerShowMe" |
  * is open; after a correct answer a Show me is a free look instead. Failed or cancelled AI requests are
  * never passed here.
  */
-export function useHelp(a: PracticeAttempt, kind: Exclude<AnswerHelp, "nudge">): PracticeAttempt {
+export function useHelp(a: PracticeAttempt, kind: Exclude<AnswerHelp, "nudge">, now: number): PracticeAttempt {
   if (!open(a)) return kind === "showMe" ? { ...a, freeLook: true } : a;
-  return { ...a, help: [...a.help, kind] };
+  return { ...a, help: [...a.help, kind], helpAt: a.helpAt ?? now };
 }
 
 export function openMoveSheet(a: PracticeAttempt): PracticeAttempt {
@@ -72,14 +76,15 @@ export function asksReason(a: PracticeAttempt): boolean {
 }
 
 /** Records the reason once. A move claim is sampled for verification once, here. */
-export function giveReason(a: PracticeAttempt, reason: Reason, rng: () => number): PracticeAttempt {
+export function giveReason(a: PracticeAttempt, reason: Reason, rng: () => number, now: number): PracticeAttempt {
   if (!asksReason(a) || a.reason) return a;
-  return reason === "move" ? { ...a, reason, verifySampled: rng() < VERIFY_PROBABILITY } : { ...a, reason };
+  const given = { ...a, reason, reasonAt: now };
+  return reason === "move" ? { ...given, verifySampled: rng() < VERIFY_PROBABILITY } : given;
 }
 
-export function verify(a: PracticeAttempt, tappedCovered: boolean): PracticeAttempt {
+export function verify(a: PracticeAttempt, tappedCovered: boolean, now: number): PracticeAttempt {
   if (a.reason !== "move" || !a.verifySampled || a.verifyResult) return a;
-  return { ...a, verifyResult: tappedCovered ? "passed" : "failed" };
+  return { ...a, verifyResult: tappedCovered ? "passed" : "failed", verifiedAt: now };
 }
 
 /**
@@ -102,31 +107,35 @@ export function practiceScore(attempts: readonly PracticeAttempt[]): number | nu
 
 /**
  * Readiness dots from the practice timeline and the start times of every solo or recheck run
- * (including runs later converted or exited). Dots recommend; they never gate a run.
+ * (including runs later converted or exited). Effects apply when they happened: a miss on a resumed
+ * question, or a verification finished later, counts at that moment. Dots recommend; they never gate a run.
  */
 export function readiness(attempts: readonly PracticeAttempt[], runStarts: readonly number[]) {
-  type Event = { at: number; attempt?: PracticeAttempt };
-  const events: Event[] = [
-    ...attempts.filter((a) => a.origin === "practice").map((attempt) => ({ at: attempt.startedAt, attempt })),
-    ...runStarts.map((at) => ({ at })),
-  ].sort((x, y) => x.at - y.at);
+  type Effect = "run" | "reset" | "claim" | "dot" | "honest";
+  const events: { at: number; effect: Effect }[] = runStarts.map((at) => ({ at, effect: "run" }));
+  for (const a of attempts) {
+    if (a.origin !== "practice") continue;
+    if (a.helpAt !== undefined) events.push({ at: a.helpAt, effect: "reset" });
+    else if (a.reason === "move" && a.reasonAt !== undefined) {
+      events.push({ at: a.reasonAt, effect: "claim" });
+      if (!a.verifySampled) events.push({ at: a.reasonAt, effect: "dot" });
+      else if (a.verifyResult === "passed" && a.verifiedAt !== undefined) events.push({ at: a.verifiedAt, effect: "dot" });
+    } else if (a.reason && a.reasonAt !== undefined) events.push({ at: a.reasonAt, effect: "honest" });
+  }
+  events.sort((x, y) => x.at - y.at);
 
   let dots = 0;
   let honestStreak = 0;
   let offerMove = false;
-  for (const { attempt: a } of events) {
+  for (const { effect } of events) {
     offerMove = false;
-    if (!a) {
-      dots = 0; // a genuine solo or recheck begins
-      continue;
-    }
-    if (a.help.length > 0) {
-      dots = 0; // miss, nudge, voluntary help or accepted AI before correct
+    if (effect === "run") dots = 0; // a genuine solo or recheck begins
+    else if (effect === "reset") {
+      dots = 0;
       honestStreak = 0;
-    } else if (a.reason === "move") {
-      honestStreak = 0;
-      if (!a.verifySampled || a.verifyResult === "passed") dots = Math.min(MAX_DOTS, dots + 1);
-    } else if (a.reason === "sounded" || a.reason === "guessed") {
+    } else if (effect === "claim") honestStreak = 0;
+    else if (effect === "dot") dots = Math.min(MAX_DOTS, dots + 1);
+    else {
       honestStreak += 1;
       offerMove = honestStreak === HONEST_RESPONSES_BEFORE_HINT;
     }
