@@ -1,0 +1,35 @@
+/* Help ladder: nudge block, Go deeper, Show me dialog. Tokens only. */
+.hp { display: flex; flex-direction: column; gap: var(--spacing-sm); animation: hp-rise var(--dur-medium) var(--ease-emphasized); }
+.hp-actions { display: flex; gap: var(--spacing-sm); }
+.hp-actions .btn { flex: 1; }
+.hp-prompt { margin: 0; font: var(--type-title-l); }
+.hp-prompt:focus { outline: none; }
+.hp-chips { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); padding: var(--spacing-sm); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.hp-chip { min-height: var(--size-touch-target); min-width: var(--size-touch-target); padding: 0 var(--spacing-sm); font: var(--type-label-l); color: var(--text-primary); background: var(--bg-surface); border: 2px solid var(--border-strong); border-radius: var(--radius-md); cursor: pointer; }
+.hp-blank { display: inline-block; min-width: 56px; min-height: var(--size-touch-target); border: 2px dashed var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-sunken); }
+.hp-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm); }
+.hp button:focus-visible, .sm button:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+.hp-prompt:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+
+.sm { width: 100%; max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 0; border: 0; background: var(--bg-page); color: var(--text-primary); }
+.sm[open] { display: flex; flex-direction: column; }
+.sm::backdrop { background: rgb(0 0 0 / 0.5); }
+.sm-top { display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-xs) var(--spacing-md); }
+.sm-title { margin: 0; font: var(--type-title-m); }
+.sm-close { width: var(--size-touch-target); height: var(--size-touch-target); display: grid; place-items: center; background: none; border: 0; color: var(--text-primary); cursor: pointer; }
+.sm-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md); }
+.sm-caption { margin: 0; font: var(--type-title-l); }
+.sm-caption:focus { outline: none; }
+.sm-caption:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+.sm-card { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+.sm-chip { align-self: flex-start; margin: 0; padding: 0 var(--spacing-sm); border-radius: var(--radius-full); background: var(--bg-sunken); color: var(--text-secondary); font: var(--type-label-m); }
+.sm-bar { display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md); background: var(--bg-surface); border-top: 2px solid var(--border-subtle); }
+.sm-tools { display: flex; gap: var(--spacing-sm); }
+.sm-tools .btn { flex: 1; }
+@keyframes hp-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (min-width: 768px) {
+  .sm { max-width: 600px; height: auto; max-height: 90dvh; margin: auto; border-radius: var(--radius-xl); }
+  .sm-bar { flex-direction: row-reverse; justify-content: space-between; align-items: center; }
+  .sm-tools { flex: none; }
+}
+@media (prefers-reduced-motion: reduce) { .hp { animation: none; } }

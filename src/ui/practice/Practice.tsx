@@ -12,7 +12,7 @@ import { Button } from "../components/Button";
 import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { useProgress, useProgressState } from "../progress";
-import { QuestionView } from "./QuestionView";
+import { HelpedQuestion } from "../help/HelpedQuestion";
 import "./Practice.css";
 
 type Step = { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" };
@@ -54,7 +54,7 @@ function Round() {
 
   if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => route("/")} />;
   return (
-    <QuestionView
+    <HelpedQuestion
       key={step.key}
       question={step.question}
       origin="practice"

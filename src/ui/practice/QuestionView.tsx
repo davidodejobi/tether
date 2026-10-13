@@ -233,7 +233,7 @@ export function QuestionView(props: QuestionViewProps) {
         )}
 
         <div class="qv-status" role="status" aria-live="polite">
-          {done ? <span class="sr-only">Correct.</span> : misses > 0 && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, finish: props.onExit })}
+          {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, finish: props.onExit })}
         </div>
 
         {failed && (
