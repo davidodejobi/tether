@@ -1,5 +1,6 @@
 import { readiness } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
+import { Identity } from "../components/Avatar";
 import { Dots } from "../components/Dots";
 import { useProgress } from "../progress";
 
@@ -9,6 +10,7 @@ export function Home() {
   return (
     <main>
       <h1>Tether</h1>
+      {store.progress.learner && <Identity learner={store.progress.learner} />}
       <p>JAMB English concord. Move 1: Strip the Disguise.</p>
       <Dots filled={dots as 0 | 1 | 2 | 3} />
       <p>

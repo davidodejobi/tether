@@ -1,0 +1,5 @@
+.avatar { display: inline-grid; place-items: center; flex: none; border-radius: var(--radius-full); overflow: hidden; line-height: 0; }
+.avatar svg { display: block; width: 100%; height: 100%; }
+.avatar-initials { background: var(--bg-primary-container); color: var(--text-on-primary-container); font: var(--type-label-m); font-weight: 700; line-height: 1; }
+.identity { display: flex; align-items: center; gap: var(--spacing-sm); margin: 0; }
+.identity-name { font: var(--type-body-l); font-weight: 700; overflow-wrap: anywhere; }
