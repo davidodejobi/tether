@@ -84,7 +84,7 @@ contract. Bring supporting files into this repository only when needed.
   local font, assets and pack; add app icons, safe update behaviour, Ready offline,
   install guidance and Add to calendar. Record calendar use locally for pilot metrics.
   Done: after initial loading, the full learning loop runs with the network disabled.
-- [ ] **17. Finish device and accessibility support.** Verify phone 360, tablet
+- [x] **17. Finish device and accessibility support.** Verify phone 360, tablet
   768 and laptop 1366×768 layouts; keyboard controls, focus, screen-reader labels,
   48 px targets, contrast, large text, reduced motion and read-aloud with fallbacks.
   Keep download/rendering costs small; inspect real-device behaviour.
