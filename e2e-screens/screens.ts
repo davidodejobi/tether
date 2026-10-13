@@ -129,6 +129,7 @@ const thirdDot = async (page: Page) => {
     await claim(page, "I used the move", 0.9);
     if (i === 0) await next(page);
   }
+  await page.getByText("3 of 3 dots now.").waitFor(); // capture after the save, not mid-update
 };
 
 // Help ladder (step 9). `missN` makes the nth wrong pick (0-based) and checks; the others open each help view.
