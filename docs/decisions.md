@@ -62,3 +62,4 @@ These decisions override conflicting text in `requirements.txt`.
 - Owner decision (13 Oct 2026): a gap counts as improved only when it shrinks and alone rises. A gap that shrinks because practice fell, with alone flat or lower, gets neutral copy and no improvement sharing. Spec §8 updated.
 - For step 5: store attempts and runs keyed by ID. `practiceScore` and `readiness` assume each attempt appears once, so keyed storage is what keeps a duplicate save from inflating scores.
 - For step 11: save `lastSeenAt` on `visibilitychange` (hidden), on `pagehide` and on a short heartbeat. `onReturn` judges a reopen from it, so a stale value would convert a run that should resume.
+- Learning events are `Moment`s: wall-clock time plus a sequence number (`src/rules/moment.ts`). Step 5 must persist the last moment and create every new one with `nextMoment`, so the sequence never repeats, even across reloads or a changed device clock.
