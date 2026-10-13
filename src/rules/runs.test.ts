@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { practiceScore, readiness } from "./practice.ts";
 import { nextMoment, type Moment } from "./moment.ts";
-import { convert, finish, lowTime, onReturn, startRun, submit, type Run } from "./runs.ts";
+import { clockWentBack, convert, finish, lowTime, onReturn, seen, startRun, submit, type Run } from "./runs.ts";
 
 let last: Moment | null = null;
 const m = (at: number) => (last = nextMoment(last, at));
@@ -77,6 +77,18 @@ describe("§7 absences and reopening (release check 3)", () => {
   test("a short absence that crosses the deadline times out", () => {
     const late = { ...r, lastSeenAt: r.deadline - 2_000 };
     expect(onReturn(late, r.deadline + 1_000, late.lastSeenAt)).toBe("timeout");
+  });
+
+  test("a clock set back behind saved visibility evidence converts", () => {
+    const evidence = { ...solo(), lastSeenAt: T0 + 300_000 };
+    expect(onReturn(evidence, T0 + 181_000, T0 + 180_000)).toBe("convert");
+    expect(clockWentBack(evidence, T0 + 181_000)).toBe(true);
+  });
+
+  test("earlier times never overwrite saved evidence or submit answers", () => {
+    const evidence = { ...solo(), lastSeenAt: T0 + 300_000 };
+    expect(seen(evidence, T0 + 200_000).lastSeenAt).toBe(T0 + 300_000);
+    expect(submit(evidence, "q0", true, m(T0 + 200_000)).submissions).toHaveLength(0);
   });
 
   test("an unknown absence or a clock that went backwards converts", () => {

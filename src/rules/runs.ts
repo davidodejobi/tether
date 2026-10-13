@@ -16,7 +16,7 @@ export interface Run {
   /** Run start; `started.at` is also when dots reset. */
   started: Moment;
   deadline: number;
-  /** Last wall-clock time the run was known to be visible; used on return and on reopen. */
+  /** Latest wall-clock time the run was known to be visible. Never moves backwards. */
   lastSeenAt: number;
   status: RunStatus;
   endedAt?: number;
@@ -43,11 +43,20 @@ export function startRun(
   return { ...r, submissions: [], started: now, deadline: now.at + rules.minutes * 60_000, lastSeenAt: now.at, status: "active" };
 }
 
+/**
+ * The device clock is earlier than evidence already saved for this run, so the remaining time cannot be
+ * trusted. The run must convert to practice (spec section 7).
+ */
+export const clockWentBack = (run: Run, now: number) => now < run.lastSeenAt || now < run.started.at;
+
 export const lowTime = (run: Run, now: number) => run.status === "active" && run.deadline - now <= LOW_TIME_MS;
 
-/** Submits the answer to the next question. Ignored if the run is over or the question is not next. */
+/**
+ * Submits the answer to the next question. Ignored if the run is over, the question is not next, or the
+ * clock went back (the caller converts the run).
+ */
 export function submit(run: Run, questionId: string, correct: boolean, now: Moment): Run {
-  if (run.status !== "active" || now.at >= run.deadline) return run;
+  if (run.status !== "active" || now.at >= run.deadline || clockWentBack(run, now.at)) return run;
   if (run.questionIds[run.submissions.length] !== questionId) return run;
   const next = { ...run, submissions: [...run.submissions, { questionId, correct, at: now }], lastSeenAt: now.at };
   return next.submissions.length === run.questionIds.length ? finish(next, now.at) : next;
@@ -67,18 +76,19 @@ export function finish(run: Run, now: number): Run {
   };
 }
 
-/** Marks the run as visible now (called while the learner is on the run screen). */
-export const seen = (run: Run, now: number): Run => (run.status === "active" ? { ...run, lastSeenAt: now } : run);
+/** Marks the run as visible now (called while the learner is on the run screen). Earlier times never overwrite later evidence. */
+export const seen = (run: Run, now: number): Run =>
+  run.status === "active" && now > run.lastSeenAt ? { ...run, lastSeenAt: now } : run;
 
 /**
  * What happens when the learner comes back, after hiding the page or reopening the app.
  * `hiddenSince` is when the page was hidden, or `run.lastSeenAt` on reopen; null when unknown. Unknown
- * absences, absences of ten seconds or more, and clocks that went backwards convert to practice,
- * even if the deadline passed while away.
+ * absences, absences of ten seconds or more, and clocks that went backwards (against the hide time or any
+ * saved evidence) convert to practice, even if the deadline passed while away.
  */
 export function onReturn(run: Run, now: number, hiddenSince: number | null): "continue" | "timeout" | "convert" {
   if (run.status !== "active") return "continue";
-  if (hiddenSince === null || now < hiddenSince || now < run.started.at) return "convert";
+  if (hiddenSince === null || now < hiddenSince || hiddenSince < run.lastSeenAt || clockWentBack(run, now)) return "convert";
   if (now - hiddenSince >= ABSENCE_LIMIT_MS) return "convert";
   return now >= run.deadline ? "timeout" : "continue";
 }
