@@ -213,3 +213,8 @@ These decisions override conflicting text in `requirements.txt`.
 - `learner.readAloud` was saved but nothing used it. `CoachBubble` now calls `useAutoSpeak`: with read-aloud on, speech usable (`useCanSpeak`) and the tab visible, each new coach line is spoken once in `learner.lang` through `speak()` (Pidgin follows the existing pcm, then en-NG, fallback). The last spoken text stops repeats on re-render; turning read-aloud off and on again allows the line once more.
 - A bubble that spoke cancels speech when it unmounts, so a route change never leaves a line talking over the next screen. Off (the default), no speech API or a hidden tab: silent. Exam sentences are never auto-read; the manual R / Read aloud control is unchanged and works with read-aloud off.
 - Coach bubbles never render in proof runs, results or share, so nothing speaks there (`e2e/readaloud.spec.ts`, solo case).
+
+## Read-aloud: fallback note, Show me captions, hidden bubbles (fix)
+- `CoachBubble` shows the voice note (`useVoiceNote`) in small secondary text under its line whenever read-aloud is on and Pidgin would be read by an English voice, so automatic speech is labelled like the move sheet's button.
+- Show me speaks each beat's caption (the teaching instruction) once as the beat appears, in normal and reduced motion, inline and dialog; Replay speaks beat 1 again. Closing it cancels speech. Same gates as the bubble: read-aloud on, `useCanSpeak()`, tab visible.
+- `useAutoSpeak` never speaks a bubble that is not rendered (closed `<dialog>` or `display:none`, via `closest("dialog:not([open])")` and `checkVisibility()`). An IntersectionObserver re-runs it when the bubble appears, so the move sheet's line speaks when the sheet opens; closing the sheet cancels it.
