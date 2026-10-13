@@ -175,7 +175,7 @@ export const SCREENS: Screen[] = [
   { name: "practice-selected", path: "/", actions: selected },
   { name: "practice-wrong", path: "/", actions: struck },
   { name: "practice-correct", path: "/", actions: correct },
-  { name: "practice-move-sheet", path: "/", actions: async (p) => (await start(p), await p.getByRole("button", { name: /The move:/ }).click()) },
+  { name: "practice-move-sheet", path: "/", actions: async (p) => (await start(p), await p.getByRole("button", { name: /The move:/ }).click(), await p.getByRole("dialog").waitFor()) },
   { name: "practice-summary", path: "/", actions: summary },
   { name: "practice-selected-768", path: "/", width: 768, height: 1024, actions: selected },
   { name: "practice-selected-1366", path: "/", width: 1366, height: 768, actions: selected },
