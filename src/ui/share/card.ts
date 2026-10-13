@@ -45,7 +45,7 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
     return {
       ...base, headline: "My gap is shrinking", badge: null, score: `${b.alone} of 10`, scoreLabel: "alone now, no help",
       details: [`Gap ${a.gap} to ${b.gap}`, `Alone ${a.alone} to ${b.alone} (since ${when(a.at)})`],
-      message: `${hi}my gap shrank from ${a.gap} to ${b.gap} and my alone score rose from ${a.alone} to ${b.alone} on JAMB English (${date}). I am still practising.`,
+      message: `${hi ? `${hi}my` : "My"} gap shrank from ${a.gap} to ${b.gap} and my alone score rose from ${a.alone} to ${b.alone} on JAMB English (${date}). I am still practising.`,
     };
   }
 

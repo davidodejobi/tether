@@ -333,3 +333,10 @@ const resultScreens: [string, (page: Page) => Promise<void>][] = [
 ];
 for (const [name, actions] of resultScreens)
   for (const [suffix, width, height] of [["", 360, 800], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions });
+// Step 15: share preview, at phone, tablet and laptop widths.
+const shareScreens: [string, (page: Page) => Promise<void>][] = [
+  ["share-proof", (p) => seedRecords(p, [finishedRun("a", "solo", 9, { n: 1, practice: 9 }), cycle("proved", "a", "2026-10-13", "2026-10-16")], "/share/a?kind=proof")],
+  ["share-progress", (p) => seedRecords(p, [finishedRun("a", "solo", 5, { n: 1, practice: 9, daysAgo: 4 }), finishedRun("b", "solo", 7, { n: 2, practice: 9 })], "/share/b?kind=progress")],
+];
+for (const [name, actions] of shareScreens)
+  for (const [suffix, width, height] of [["", 360, 800], ["-768", 768, 1024], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions });

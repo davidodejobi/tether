@@ -76,7 +76,7 @@ contract. Bring supporting files into this repository only when needed.
   language and read-aloud. Preserve exam content in English; label unreviewed Pidgin.
   Retain step 10a's Sounds toggle and learner avatar when completing these screens.
   Done: every implemented flow is reachable; state changes persist across screens.
-- [ ] **15. Build optional sharing.** Generate the serious proof/progress image,
+- [x] **15. Build optional sharing.** Generate the serious proof/progress image,
   source line and plain-language message. Add learner-controlled mobile sharing
   and image download on laptops; cover no-partner and offline states.
   Done: eligible wins can be shared/downloaded; failures never trigger sharing.
