@@ -1,10 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import { LEARNER, current, seed, tile } from "./practice-helpers";
-import { finishedRun, seedRecords } from "./results-helpers";
+import { cycle as proofCycle, finishedRun, seedRecords } from "./results-helpers";
 
-// Step 17 first pass (spec section 14). TODO(post-merge): add Home and Settings once steps 14-16 land;
-// they are excluded from axe here because they are being rewritten in parallel.
+// Step 17 (spec section 14): axe, sizes, overflow, focus and reduced motion on every screen.
 
 const scan = async (page: Page) => {
   // Entrance fades would otherwise be measured half transparent.
@@ -12,6 +11,36 @@ const scan = async (page: Page) => {
   const { violations } = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
   expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
 };
+
+// Home's saved cycle uses the id "strip-disguise" (results-helpers' cycle() uses the pack's other id, which Share reads).
+const cyc = (state: string, due: string, status = "scheduled") => ({
+  key: "cycle:strip-disguise",
+  value: { moveId: "strip-disguise", timeZone: "UTC", state, earnedOn: "2026-10-01", anchor: "2026-10-01", entries: [{ id: "2026-10-01+3", day: 3, due, status }], history: [{ runId: "g1", kind: "solo", on: "2026-10-01", passed: true, entryIds: [] }] },
+});
+const gapRun = finishedRun("g1", "solo", 8, { n: 1, practice: 10 });
+
+const homeReady = async (page: Page) => {
+  await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Journey map, scrollable" })).toBeVisible();
+};
+
+/** Every screen from the Step 17 list, seeded and waited for. `cues` are Home's offline and install cues. */
+const SCREENS: [string, (page: Page) => Promise<void>][] = [
+  ["home new", async (p) => (await seedRecords(p, [], "/"), await homeReady(p))],
+  ["home held and due", async (p) => (await seedRecords(p, [gapRun, cyc("held", "2026-10-04")], "/"), await homeReady(p), await expect(p.getByRole("link", { name: "Start recheck" })).toBeVisible())],
+  ["home fading with a gap", async (p) => (await seedRecords(p, [gapRun, cyc("fading", "2026-10-04", "paused")], "/"), await homeReady(p), await expect(p.getByText("Latest gap: 2")).toBeVisible())],
+  ["settings", async (p) => (await seedRecords(p, [], "/settings"), await expect(p.getByRole("heading", { name: "Settings" })).toBeVisible())],
+  ["share preview", async (p) => (await seedRecords(p, [finishedRun("a", "solo", 9, { n: 1, practice: 9 }), proofCycle("proved", "a", "2026-10-13", "2026-10-16")], "/share/a?kind=proof"), await expect(p.locator("img.sh-card")).toBeVisible())],
+  ["offline cues", async (p) => (await seedRecords(p, [], "/"), await expect(p.getByText("Ready offline")).toBeVisible(), await expect(p.getByText("Add Tether to your home screen")).toBeVisible())],
+  ["offline cue Retry", async (p) => {
+    await seedRecords(p, [], "/");
+    await expect(p.getByText("Ready offline")).toBeVisible();
+    await p.evaluate(async () => (await caches.open((await caches.keys()).find((k) => k.startsWith("tether-"))!)).delete("/icon-512.png"));
+    await p.reload();
+    await expect(p.getByRole("button", { name: "Retry" })).toBeVisible();
+  }],
+  ["add to calendar on the result", async (p) => (await seedRecords(p, [gapRun, cyc("proved", "2099-03-04"), proofCycle("proved", "g1", "2026-10-01", "2099-03-04")], "/result/g1"), await expect(p.getByRole("button", { name: "Add to calendar" })).toBeVisible())],
+];
 
 const SIZES = [[360, 800], [1366, 768]] as const;
 const SCHEMES = ["light", "dark"] as const;
@@ -78,6 +107,17 @@ for (const [w, h] of SIZES)
         await expect(page.getByRole("heading", { name: "Not yet" })).toBeVisible();
         await scan(page);
       });
+    });
+
+for (const [w, h] of SIZES)
+  for (const scheme of SCHEMES)
+    test.describe(`axe step 14-16 screens ${w}px ${scheme}`, () => {
+      test.use({ viewport: { width: w, height: h }, colorScheme: scheme });
+      for (const [name, open] of SCREENS)
+        test(name, async ({ page }) => {
+          await open(page);
+          await scan(page);
+        });
     });
 
 test("no horizontal overflow at phone, tablet and laptop, and at 200% text", async ({ page }) => {
