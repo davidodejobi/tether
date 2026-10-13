@@ -60,7 +60,7 @@ contract. Bring supporting files into this repository only when needed.
   Keep the Home/Settings additions small; step 14 completes those screens.
   Done: sounds respect save/mute/speech/proof boundaries, old records remain intact,
   avatars survive reload/nickname changes, and runtime external requests are absent.
-- [ ] **11. Build solo checks.** Ten questions, no help/Bo, ten-minute timer,
+- [x] **11. Build solo checks.** Ten questions, no help/Bo, ten-minute timer,
   wake lock with fallback, absence grace period, timeout and exit confirmation.
   Done: scores, practice conversion and 8/10 proof work without help leakage.
 - [ ] **12. Build results and gap cards.** First-score state, absent-practice-score
