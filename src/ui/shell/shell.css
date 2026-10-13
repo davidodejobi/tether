@@ -1,0 +1,43 @@
+/* --shell-rail is the width the left rail takes: 0 below 1280 px, 240 px from there. Pages size themselves to what is left. */
+:root { --shell-rail: 0px; }
+.shell { display: flex; min-height: 100dvh; }
+.shell-content { flex: 1; min-width: 0; }
+.shell-rail { display: none; }
+
+@media (min-width: 1280px) {
+  :root { --shell-rail: 240px; }
+  .shell-rail {
+    display: flex; flex-direction: column; gap: var(--spacing-xl);
+    position: sticky; top: 0; flex: none; align-self: flex-start;
+    width: var(--shell-rail); height: 100dvh; padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md);
+    background: var(--bg-surface); border-right: 1px solid var(--border-subtle);
+  }
+  .shell-brand { display: flex; align-items: center; gap: var(--spacing-xs); margin: 0 0 0 var(--spacing-xs); font: var(--type-title-l); color: var(--text-brand); }
+  .shell-nav { display: grid; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; }
+  .shell-link {
+    display: flex; align-items: center; gap: var(--spacing-md);
+    min-height: var(--size-touch-target); padding: 0 var(--spacing-md);
+    border-radius: var(--radius-lg); color: var(--text-secondary); font: var(--type-label-l); text-decoration: none;
+  }
+  .shell-link .icon { color: var(--icon-secondary); }
+  .shell-link:hover { background: var(--bg-sunken); }
+  .shell-link[aria-current="page"] { background: var(--bg-primary-container); color: var(--text-brand); }
+  .shell-link[aria-current="page"] .icon { color: var(--icon-brand); }
+  .shell-link:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+  .shell-learner {
+    display: grid; gap: var(--spacing-xxs); margin-top: auto; padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-primary-container); border-radius: var(--radius-lg); overflow-wrap: anywhere;
+  }
+  .shell-learner strong { font: var(--type-title-m); }
+  .shell-learner span { font: var(--type-label-m); color: var(--text-secondary); }
+}
+
+/* Home and Settings pages: a roomier column from tablet up, left-aligned beside the rail. */
+@media (min-width: 768px) {
+  .page { max-width: 720px; margin: 0 auto; padding: var(--spacing-xxxl) var(--spacing-xxl); }
+  .page h1 { margin: 0 0 var(--spacing-md); font: var(--type-display-m); }
+  .page p { font: var(--type-body-l); }
+  .page a { display: inline-block; padding: var(--spacing-xs) 0; margin-right: var(--spacing-md); color: var(--text-brand); font: var(--type-label-l); }
+  .page a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+}
+@media (min-width: 1280px) { .page { margin: 0; padding: var(--spacing-xxl) var(--spacing-xxxl); } }
