@@ -53,3 +53,10 @@ These decisions override conflicting text in `requirements.txt`.
 - Proof runs have fixed counts so "pick the verb that disagrees with the side phrase" cannot pass: solo 5 + 5 with four same-number items (shortcut scores 6/10), rechecks 3 + 2 or 2 + 3 with two (3/5). Practice is about 40% same-number. See `SOLO_SHAPE` and `RECHECK_SHAPES`.
 - Content changes bump the pack `version`; stored questions keep the version they were built with.
 - `validatePack` separates structural errors from release blockers. English v2 was approved by David on 13 October 2026; the pack has no release blockers. Pidgin stays labelled Unreviewed until a named native speaker approves it.
+
+## Learning rules (roadmap step 4)
+
+- `src/rules/` holds pure functions over plain records; callers pass the time, the time zone and randomness. Modules: `practice.ts` (attempts, with-help score, dots, verification, move hint), `runs.ts` (solo/recheck deadlines, submissions, absences, conversion), `gap.ts` (snapshots and comparisons), `proof.ts` (stamps, day-3/7/14 schedule, recovery).
+- Dots are derived from the attempt timeline plus run start times, so an unfinished question with a miss still resets them.
+- An unknown absence on reopen is passed as `null` and converts the run.
+- Open question for the owner: as written, §8 counts a shrinking gap as improvement when practice falls and alone stays the same (pinned by a test). Requiring alone to rise would stop a falling practice score reading as progress.

@@ -22,7 +22,7 @@ contract. Bring supporting files into this repository only when needed.
   English signed off by David on 13 October 2026 (`docs/content/move-1-review.md`).
   Unknown number tags/rule IDs are rejected; 23 tests, typecheck and build pass.
   Pidgin remains visibly Unreviewed until native-speaker approval.
-- [ ] **4. Implement the learning rules.** Build attempt scoring, readiness dots,
+- [x] **4. Implement the learning rules.** Build attempt scoring, readiness dots,
   verification, score snapshots, gap calculation, stamp transitions and scheduling.
   Exercise free looks, early solo entry, declining practice scores and overdue dates.
   Done: focused logic tests demonstrate the agreed rules independently of the UI.
