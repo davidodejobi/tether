@@ -1,8 +1,9 @@
 # Tether MVP build spec
 
-Version 1 — 13 October 2026. This is the implementation source of truth.
+Version 1.1 — 13 October 2026. This is the implementation source of truth.
 It consolidates `requirements.txt` and `decisions.md`; conflicting historical
 copy and priorities in those documents are superseded by this spec.
+Revision 1.1 restores online AI explanations as required capstone-demo scope.
 
 ## 1. Outcome and scope
 
@@ -22,19 +23,20 @@ Proof is for this move, never for all English or a predicted JAMB score.
 
 Include onboarding, the lesson, five-question practice, the help ladder,
 honesty/readiness, solo checks, results, rechecks/recovery, Home, Settings,
-read-aloud, English/Pidgin coach text, optional sharing, offline installation,
+read-aloud, English/Pidgin coach text, online AI explanations, optional sharing, offline installation,
 calendar cues and usable phone/tablet/laptop layouts.
 
-Exclude diagnostic, profiles/PINs, export/restore, AI explanations, Coach Auto,
+Exclude diagnostic, profiles/PINs, export/restore, Coach Auto,
 separate Proof history, accounts, payments, mock exams, other working subjects,
 leaderboards, tutor dashboards and automatic messages. French is a future label.
 The opportunity card is conditional on source verification (§12).
 
 ## 2. App boundaries and records
 
-Use a client-side app: content generation, grading and learning rules run locally.
-No backend or runtime AI is required for this MVP. Framework, dependencies and
-hosting are selected in roadmap step 2; this spec defines their required behaviour.
+Use Preact, TypeScript and Vite with client-side content generation, grading and
+learning rules. Cloudflare Pages serves the web app. A separate Pages Function
+supplies online AI explanations (§5a); it does not store progress or grade answers.
+Framework/provider integration must preserve the local learning loop.
 
 Keep five responsibilities separate: reviewed content, deterministic learning
 rules, local persistence, UI, and browser capabilities with fallbacks. Learning
@@ -122,6 +124,7 @@ without a selection. Wrong tiles are struck out and cannot be selected again.
 | Show me finished | Put it in yourself returns to this question; subsequent correctness earns no practice point or dot |
 | Go deeper | Learner identifies subject, one/many, then verb; incorrect steps receive hints without stating the final answer |
 | The move opened | Show the general rule/its separate lesson example; no help mark or dot reset |
+| Still stuck? after Go deeper is opened | Request an online AI explanation of the move; accepted help is marked separately and resets dots |
 
 Show me supports pause, replay and a static Next-based reduced-motion version.
 Its third beat may reveal the verb. Nudge and Go deeper never state the answer
@@ -132,8 +135,66 @@ An answer reached with help skips How did you know and offers the next question.
 correctly on the first or second checked attempt, before any Show me/Go deeper
 answer-building/reveal. Count unaided first-attempt answers too. Explain it as:
 “Your last 10 practice questions. Hints were available.” A miss followed by a
-successful second try contributes one point; a third try or a revealed answer
-contributes zero. The move sheet is not answer help for this calculation.
+successful second try contributes one point; a third try, a revealed answer or
+an answer reached after AI explanation contributes zero. The move sheet is not
+answer help for this calculation.
+
+## 5a. Online AI concept explanation
+
+This is required for the working capstone demo. The learner chooses Still stuck?
+in the practice help view after opening Go deeper. It explains the concept in
+another way; it is not an unrestricted chat tutor. No AI controls or responses
+appear in solo, rechecks, results or sharing.
+
+- Explain only the reviewed Move 1 rule in simple English, using plain language
+  or a short analogy. Maximum three sentences and 90 words. The MVP's live AI
+  explanations are English-only; say AI help · English when the coach is Pidgin.
+  Existing English/Pidgin lesson and help copy remain available independently.
+- Label genuine responses AI help · based on the reviewed move explanation.
+  AI output is not human-approved copy and does not inherit a review stamp.
+  Source metadata identifies the syllabus topic; it does not claim JAMB generated
+  or endorsed the AI response.
+- The server loads the approved pack by move ID and content version. It never
+  trusts a client-supplied explanation. Request input is limited to those IDs and
+  the style plain/analogy; no free-text chat. Do not send the learner's nickname,
+  partner, progress, question sentence, options or answer to the provider. The
+  model therefore explains the general move rather than solving the active item.
+- The prompt constrains the model to that rule: no new grammar rules, grading,
+  active-question verb choices or correctness claims. Return plain text after
+  checking response type, length and prohibited answer-giving instructions.
+  Rejected responses show the reviewed explanation instead, labelled The move.
+- Use a same-origin `POST /api/explain` Pages Function with server-side credentials;
+  model/provider configuration and request limits live on the server, not in the
+  browser bundle. Select and verify a supported provider/model during step 9a.
+  Validate request shape, permit only approved content versions, enforce a limit
+  of ten requests per minute per client, and configure a provider spending limit.
+  Do not log learner records or expose provider error details to the learner.
+- The action is unavailable offline with Online AI help needs internet and an
+  immediate path to the local lesson/Show me/Go deeper. Connectivity detection is
+  advisory: actual request failures use the same fallback. Keep practice usable
+  during loading; one request at a time, cancellable, with a 15-second timeout.
+- Receiving/viewing an accepted explanation before answering marks that question
+  AI-helped, earns no readiness dot and contributes no practice point. A failed,
+  cancelled or offline request does not independently change scores or dots;
+  prior misses/help still count. Never undo already-recorded help effects.
+- Navigating away or starting a proof run cancels the UI request. A late response
+  cannot appear in another question, mutate its score or leak into a proof run.
+  Persist only local usage/result status for pilot measurement, not provider keys.
+
+States: loading, genuine AI explanation, cancelled, offline, rate-limited,
+timed-out, invalid/refused response and unavailable service. Each unsuccessful
+state offers the reviewed offline help rather than blocking the learner.
+No canned response is presented as a live AI call. A cached genuine reply, if
+used online, is labelled Saved AI explanation and still counts as help.
+
+Acceptance includes mocked failure/late-response cases plus a real configured
+provider call in the demo. Review at least 20 responses across both styles for
+rule fidelity and answer leakage; prompt instructions alone are not verification.
+Document the observed limitations. The live call is a release condition, not
+proof that every future model response will be correct.
+
+Implementation references: [Pages Functions](https://developers.cloudflare.com/pages/functions/)
+and [server-side bindings/secrets](https://developers.cloudflare.com/pages/functions/bindings/).
 
 ## 6. Honesty and readiness
 
@@ -148,7 +209,7 @@ preserves the scored answer; resume the pending prompt on return.
 | I used the move, selected randomly with probability 1/3 | Add one only after correctly selecting the covered phrase | None |
 | Failed verification | Preserve previous dots; offer a free Show me | None |
 | It sounded right / I guessed | Preserve dots; optional free Show me | None |
-| Miss, nudge, voluntary answer help before correct | Reset to zero | Mark question helped |
+| Miss, nudge, voluntary answer help or accepted AI explanation before correct | Reset to zero | Mark question helped |
 
 Sample verification once per claim and persist that choice; reloading cannot
 reroll it. A free look after correctness changes neither score nor dots, and
@@ -324,6 +385,8 @@ proof runs, results, rechecks, card generation, calendar export and Settings wor
 offline. Ready offline appears only after all required local resources are ready;
 connectivity alone is not proof of cache readiness. Partial caching offers retry.
 First-ever access without cached resources explains that one initial download is needed.
+Live AI explanation is online-only and never required to finish practice or earn
+proof. Offline help is reviewed local content, not an on-device AI claim.
 
 Persist checked answers and their rule effects together before advancing. After
 storage failure, retain the current UI, show retry and do not promise the result
@@ -335,7 +398,8 @@ where supported and keep content versions stable for active runs.
 Defer an app/content update until the current question/run is safely finished.
 Version data and content; an update must not reinterpret stored keys, change old
 score snapshots or lose the nickname. No external planning-folder files, remote
-fonts or network fetches are required for the learning loop.
+fonts or network fetches are required for the core learning loop. The optional
+learner action that requests AI help is the explicit network exception.
 
 Read-aloud uses available device/browser speech: exam sentences stay English;
 coach text uses the selected language. Prefer a suitable Nigerian English voice
@@ -370,14 +434,17 @@ without navigation or help panels. Do not double-scale map labels on tablets.
 ## 15. Measurements and demonstration
 
 Store measurements on-device only; no analytics service, automatic uploads or
-progress-export feature. With consent, pilot observation/manual recording can
+progress-export feature. A learner-requested AI call sends only the move/version
+and explanation style to the server; it does not upload these local measurements.
+With consent, pilot observation/manual recording can
 collect the local results without adding a learner-facing data-sharing workflow.
 
 Track completed solo scores/gaps; due/pass/miss/recovery; claimed/sounded/guessed
 responses; verification outcomes; move-card/free-look usage; calendar use; session
 and correct-to-next timings. Reason rates use answered unaided-correct prompts as
 their denominator. Preserve verification status and whether the move card was
-opened. Session ends on Done for today or 30 minutes of inactivity; hidden time
+opened. Track AI requests/successes/fallbacks separately from other help.
+Session ends on Done for today or 30 minutes of inactivity; hidden time
 is excluded from interaction duration. Aborted/converted proof runs are separate.
 
 Demo dates and simulated rechecks use separate demo records, a persistent Demo
@@ -393,6 +460,7 @@ with under-18 testers, as required by the project’s pilot requirements.
 | Setup | New learner, nickname validation, lesson steps, tutorial help, skipped/saved preferences |
 | Home | New, active practice, scored, Proved, Held, due, overdue, Fading, offline, cache incomplete |
 | Practice | Empty/selected answer, miss 1/2/3, Show me playing/paused/finished/static, Go deeper steps, correctness, pending reason/verification, summary |
+| AI help | Loading, genuine explanation, cancelled, offline, rate-limited, timeout, invalid/refused output, unavailable service and reviewed fallback |
 | Proof run | Ready/not-ready entry, running, low time, timeout, short/long absence, exit confirmation, restored/converted run |
 | Result | First alone, missing practice comparison, first gap, later improvement/no improvement, pass/not yet, misses review |
 | Recheck | Due/overdue, pass, miss, recovery entry/pass/miss, paused schedule |
@@ -419,6 +487,10 @@ Release checks must demonstrate:
    text and unavailable browser capabilities all preserve the core flow.
 9. A production build/deployed HTTPS app installs where supported and runs the
    complete cached loop offline, independent of any planning folder.
+10. The deployed demo makes a genuine provider call for AI concept explanation;
+    rule fidelity, help scoring, proof-mode isolation, credential handling and
+    offline/error/late-response fallbacks meet §5a. Pitch and demo both state
+    that fixed rules grade, AI explains online, and the core works offline.
 
 ## 17. Requirement coverage and roadmap ownership
 
@@ -450,7 +522,7 @@ override the agreed scope. Step numbers refer to `roadmap.md`.
 | FR21 return cues | Required | 11, 13 | 16 |
 | FR22 coach style | Character/Text only required; Auto deferred | 10 | 14 |
 | FR23 responsive | Required | 14 | 17 |
-| FR24 AI | Deferred | 1 | Deferred |
+| FR24 AI | Required online concept explanation | 5a | 9a, 18–19 |
 | FR25 profiles | Deferred | 1 | Deferred |
 | FR26 export/restore | Deferred | 1 | Deferred |
 | FR27 validator | Required | 3 | 3 |

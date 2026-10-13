@@ -43,6 +43,13 @@ contract. Bring supporting files into this repository only when needed.
   sentence, replay/pause, Put it in yourself and Go deeper after three misses.
   Keep The move available and prevent reveal by elimination.
   Done: every help route recovers to practice and records help correctly.
+- [ ] **9a. Build online AI explanations.** Add Still stuck? in the practice help
+  view and a Pages Function that rewords approved Move 1 teaching content.
+  Select/verify the provider/model; configure server secrets and request/spending
+  limits. Apply §5a scoring, labels and proof-mode isolation. Verify timeout,
+  cancellation, late response, offline, invalid-output and rate-limit fallbacks.
+  Done: a real provider call explains the concept in the demo; at least 20 reviewed
+  outputs match the rule, failures preserve local help, and the pitch states online-only AI.
 - [ ] **10. Build honesty and readiness.** Equal-weight reason choices, random
   one-in-three verification, free looks, the three-honest-answer hint and readiness.
   Done: honesty preserves dots; solo is reachable both ready and not ready.
@@ -76,12 +83,14 @@ contract. Bring supporting files into this repository only when needed.
   Done: the core loop works on target devices without clipping or inaccessible controls.
 - [ ] **18. Verify the whole product.** Run content/logic checks and browser
   journeys for onboarding, helped practice, honest answers, solo pass/fail,
-  interruptions, sharing, recheck pass/fail/recovery and offline reopening.
+  interruptions, sharing, recheck pass/fail/recovery, AI help and offline reopening.
   Check stored pilot measures without adding automatic uploads.
   Done: release checks pass and any remaining limitations are documented.
 - [ ] **19. Deploy and verify the release.** Produce a clean build from this
   repository, deploy to the chosen HTTPS host and repeat installation/offline smoke
   checks on the deployed app. Check that no required files point outside the repo.
+  Configure the deployed AI endpoint and make a genuine provider call; align the
+  capstone pitch with the demo's online AI and offline learning behaviour.
   Include the opportunity card only if its figures and sources have been verified.
   Done: a usable release URL and reproducible local setup exist independently of planning.
 - [ ] **20. Run the pilot and observe retention.** Arrange testers and the
@@ -91,4 +100,4 @@ contract. Bring supporting files into this repository only when needed.
 
 Steps 1–19 deliver the application. Step 20 validates it over time and cannot be
 completed within a 24-hour build. Deferred: diagnostic, profiles, export/restore,
-AI help, Coach Auto, Proof history and working content for other moves/exams.
+Coach Auto, Proof history and working content for other moves/exams.

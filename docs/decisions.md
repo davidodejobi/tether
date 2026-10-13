@@ -6,7 +6,10 @@ These decisions override conflicting text in `requirements.txt`.
   Ship learn → practise → help → solo → gap → optional sharing → recheck,
   with local progress, offline installation, Settings and usable phone/tablet/laptop layouts.
 - Learn-first onboarding: three tutorial questions earn no scores or dots.
-  Remove diagnostic; defer profiles, export/restore, AI help, Coach Auto and Proof history.
+  Remove diagnostic; defer profiles, export/restore, Coach Auto and Proof history.
+- AI explanation is required in the MVP: an online Still stuck? action in practice
+  rewords reviewed Move 1 teaching content. It counts as help, never grades or
+  chooses answers, and is absent in proof runs. The core loop remains offline.
 - Practice rounds: five questions. “With help” counts first/second-attempt
   correct answers before reveal, out of the latest ten completed practice questions.
   Explain that hints were available; a free look after a correct answer preserves its score.
@@ -37,8 +40,8 @@ These decisions override conflicting text in `requirements.txt`.
 
 ## Technical foundation (roadmap step 2)
 
-- Stack: Preact, TypeScript and Vite, with `preact-iso` routing. Client-side only; no backend or runtime AI (spec section 2). The first-load JS budget is 100 KB gzipped; the foundation is about 8 KB.
-- Hosting: Cloudflare Pages serving the static `dist/` build over HTTPS. Deployment happens in step 19.
+- Stack: Preact, TypeScript and Vite, with `preact-iso` routing. Learning and grading run client-side; online AI explanations use a separate server-side endpoint (spec section 5a). The first-load JS budget is 100 KB gzipped; the foundation is about 8 KB.
+- Hosting: Cloudflare Pages serves `dist/` over HTTPS, with a Pages Function for AI explanations. Deployment happens in step 19; live AI integration is built in step 9a.
 - Boundaries under `src/`: `content/` (reviewed content), `rules/` (pure learning rules; take a `Clock`), `storage/` (local persistence), `platform/` (browser capabilities and fallbacks), `ui/` (screens and components).
 - Added later, when the step needs it: `idb-keyval` (step 5), local font and tokens (step 6), `vite-plugin-pwa` (step 16).
 - Tests: Vitest for rules and content (`npm test`); Playwright at 360x800 for browser journeys against the preview build (`npm run test:e2e`).
