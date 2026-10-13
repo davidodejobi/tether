@@ -37,7 +37,9 @@ const TIMED_OUT = Symbol("timedOut");
 
 async function probeIdb(dbName: string): Promise<void> {
   const store = createStore(dbName, "records");
-  const key = "meta:probe";
+  // Each open probes its own key, so tabs opening together cannot overwrite each other's check.
+  // Not crypto.randomUUID: it needs a secure context, and plain-http LAN testing would fall back to memory.
+  const key = `meta:probe:${Math.random().toString(36).slice(2)}`;
   const value = Date.now();
   await set(key, value, store);
   if ((await get(key, store)) !== value) throw new Error("storage probe mismatch");

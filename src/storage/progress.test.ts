@@ -1,5 +1,5 @@
 import "fake-indexeddb/auto";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { drawRun, nextPracticeQuestion, SOLO_SHAPE, type Question } from "../content/generate.ts";
 import { stripDisguise } from "../content/strip-disguise.ts";
 import { check, giveReason, startAttempt } from "../rules/practice.ts";
@@ -215,6 +215,18 @@ describe("storage failures and versions", () => {
 
   test("working IndexedDB is reported as durable", async () => {
     expect((await openKV(freshDb())).durable).toBe(true);
+  });
+
+  test("tabs opening at the same moment both find working storage", async () => {
+    const db = freshDb();
+    let t = 0;
+    const now = vi.spyOn(Date, "now").mockImplementation(() => ++t); // each tab opens a millisecond apart
+    try {
+      const opens = await Promise.all(Array.from({ length: 5 }, () => openKV(db)));
+      expect(opens.map((o) => o.durable)).toEqual([true, true, true, true, true]);
+    } finally {
+      now.mockRestore();
+    }
   });
 
   test("storage that fails its probe falls back to temporary memory", async () => {
