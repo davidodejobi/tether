@@ -6,6 +6,7 @@ import { SoloEntryScreen } from "./ui/solo/SoloScreens";
 import { RunScreen } from "./ui/runs/Run";
 import { RecheckEntry } from "./ui/proof/RecheckEntry";
 import { Result } from "./ui/results/Result";
+import { Share } from "./ui/share/Share";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 import { Gate } from "./ui/onboarding/Gate";
@@ -31,6 +32,7 @@ const GatedSoloEntry = gated(SoloEntryScreen);
 const GatedRun = ({ kind }: { kind?: string }) => <Gate><RunScreen kind={kind} /></Gate>;
 const GatedRecheckEntry = gated(RecheckEntry);
 const GatedResult = gated(Result);
+const GatedShare = gated(Share);
 
 export function App() {
   return (
@@ -43,6 +45,7 @@ export function App() {
           <Route path="/run/:kind" component={GatedRun} />
           <Route path="/recheck-entry" component={GatedRecheckEntry} />
           <Route path="/result/:runId" component={GatedResult} />
+          <Route path="/share/:runId" component={GatedShare} />
           <Route path="/settings" component={GatedSettings} />
           {kitRoute}
           <Route default component={NotFound} />

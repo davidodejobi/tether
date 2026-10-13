@@ -178,7 +178,7 @@ These decisions override conflicting text in `requirements.txt`.
 ## Results (step 12)
 - `/result/:runId` (Gate, no AppShell, no Bo, no sound) reads the saved run from `progress.runs` and never saves it. Unknown or unfinished runs show "Result not found" with a way Home. Pure logic is `src/ui/results/view.ts`; the comparison is the saved run's own, using only snapshots up to that run, so an old result never shows a later comparison.
 - "See your misses" (spec section 7: review changes neither the practice window, dots nor the saved result) plays Show me as a free look. Each look is saved with the guarded save as an attempt `<runId>:look:<questionId>`, origin "converted", `freeLook: true`, never completed: measured (section 15), never scored, never a round or resume point.
-- Try anyway goes to `/solo-entry` (solo) or `/run/recheck` (recheck); Practise again goes to `/practice`. `ResultView.share` says which share spec section 11 allows ("proof", "progress" or none); step 15 builds the button.
+- Try anyway goes to `/solo-entry` (solo) or `/run/recheck` (recheck); Practise again goes to `/practice`. `ResultView.shares` lists the shares spec section 11 allows (step 15).
 - Demo dates (`?demo=DATE`) are a read-only preview: Home and the recheck entry show the simulated state, but every action that starts a run is a disabled "(demo preview)" button, and nothing links to `/run/...` with a demo date, so a simulated day cannot change saved progress.
 
 ## Home and Settings (roadmap step 14)
@@ -188,3 +188,11 @@ These decisions override conflicting text in `requirements.txt`.
 - Move 1 shows Current until a solo pass earns proof, then Proved, Held or Fading, with Due as a second badge. The single primary action is ProofCard's (`homeAction`); when it is plain practice the card shows "Practise Move 1". Solo check is a separate always-visible link. The empty `.hm-status` block is reserved for step 16's Ready offline line.
 - Dates read "16 Oct 2026" through `src/ui/results/dates.ts`, shared with the result page.
 - Settings changes share one save-first path: the saved value decides what shows, controls disable while saving, and Retry repeats the failed change. Nickname edits keep `avatarSeed`. Read-aloud is saved but its automatic playback is not wired yet; manual playback is unchanged.
+
+## Sharing (step 15)
+- `ResultView.shares` replaces `share`: `["proof"]`, `["progress"]`, both (an improved pass), or none. Nothing is offered from a Fading result, which includes every failed recheck, even when an old gap improved.
+- `/share/:runId?kind=proof|progress` (Gate, no shell, no Bo) draws the card with Canvas 2D into a PNG (`src/ui/share/draw.ts`), reading colour tokens from a `.pin-light` element so the card is light in dark mode. Gold is proof, green is improvement; a progress card has no stamp. The text is the pure model in `card.ts`, and the preview shows the actual PNG.
+- A gap shows only when the saved solo has both practice and alone scores. A recheck card shows today's five-question score plus the latest earlier solo with its own date and gap, never one combined score.
+- Phone: `navigator.share({files, text})` only when `canShare({files})` and the viewport is under 1280 px; otherwise Download card and Copy text. Laptop (1280 px and up) never shows a share button. AbortError is silent; other failures say to download or copy instead. The offline note appears from `navigator.onLine`.
+- Message starts as plain text and is editable; the "Ask <partner> how it went" line is on the card, and a neutral line replaces it with no partner.
+- Not built: the Figma header back arrow and "Next check" line on the card; "Back to result" replaces the arrow.

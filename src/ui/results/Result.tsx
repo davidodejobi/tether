@@ -108,6 +108,11 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
         <GapNote v={v} />
       </div>
       <div class="rs-actions">
+        {v.shares.map((k, i) => (
+          <Button key={k} variant={i === 0 ? "secondary" : "tertiary"} icon="share" onClick={() => route(`/share/${v.saved.run.id}?kind=${k}`)}>
+            {k === "proof" ? "Share proof" : "Share progress"}
+          </Button>
+        ))}
         {v.misses.length > 0 && <Button variant="secondary" onClick={onMisses}>See your misses</Button>}
         {v.passed ? (
           <Button onClick={() => route("/")}>Back to Home</Button>
