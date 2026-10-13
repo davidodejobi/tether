@@ -1,48 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-
-const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, coach: "character", lang: "en", readAloud: false, partner: null, schemaVersion: 1 };
-
-// Writes the learner straight into the app's IndexedDB (db "tether", store "records"), then opens practice.
-async function seed(page: Page) {
-  await page.goto("/");
-  await page.evaluate(
-    (learner) =>
-      new Promise<void>((resolve, reject) => {
-        const open = indexedDB.open("tether");
-        open.onerror = () => reject(open.error);
-        open.onsuccess = () => {
-          const tx = open.result.transaction("records", "readwrite");
-          tx.objectStore("records").put(learner, "learner");
-          tx.oncomplete = () => resolve();
-        };
-      }),
-    LEARNER,
-  );
-  await page.goto("/practice");
-}
-
-// The saved, unfinished question: the test reads its answer from storage, as the UI never shows it before Check.
-const current = (page: Page) =>
-  expect.poll(() => read(page), { message: "saved question" }).not.toBeNull().then(() => read(page) as Promise<{ answer: string; options: string[] }>);
-
-const read = (page: Page) =>
-  page.evaluate(
-    () =>
-      new Promise<{ answer: string; options: string[] } | null>((resolve, reject) => {
-        const open = indexedDB.open("tether");
-        open.onerror = () => reject(open.error);
-        open.onsuccess = () => {
-          const req = open.result.transaction("records").objectStore("records").getAll();
-          req.onsuccess = () => {
-            const open_ = (req.result as any[]).filter((r) => r?.attempt && r.attempt.completedAt === undefined);
-            const last = open_.sort((a, b) => b.attempt.startedAt.seq - a.attempt.startedAt.seq)[0];
-            resolve(last ? last.question : null);
-          };
-        };
-      }),
-  );
-
-const tile = (page: Page, word: string) => page.getByRole("radio", { name: new RegExp(`: ${word}(,|$)`) });
+import { expect, test } from "@playwright/test";
+import { current, leave, seed, tile } from "./practice-helpers";
 
 test("five questions with a miss, summary, Another 5, reload and Done", async ({ page }) => {
   await seed(page);
@@ -65,7 +22,7 @@ test("five questions with a miss, summary, Another 5, reload and Done", async ({
     }
     await tile(page, q.answer).click();
     await page.getByRole("button", { name: "Check" }).click();
-    await page.getByRole("button", { name: "Next" }).click();
+    await leave(page);
   }
 
   await expect(page.getByRole("heading", { name: "Round done" })).toBeVisible();
@@ -99,7 +56,7 @@ test("Done for today returns to Home", async ({ page }) => {
     const q = await current(page);
     await tile(page, q.answer).click();
     await page.getByRole("button", { name: "Check" }).click();
-    await page.getByRole("button", { name: "Next" }).click();
+    await leave(page);
   }
   await page.getByRole("button", { name: "Done for today" }).click();
   await expect(page).toHaveURL(/\/$/);
@@ -115,7 +72,7 @@ test("the move sheet opens without counting as help, and keys select and check",
   await page.keyboard.press(String(q.options.indexOf(q.answer) + 1));
   await expect(page.getByRole("radio", { checked: true })).toHaveCount(1);
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("button", { name: "Next" })).toBeVisible();
+  await expect(page.getByRole("radio", { name: "I guessed" })).toBeVisible();
 });
 
 test("with no learner, practice starts onboarding", async ({ page }) => {

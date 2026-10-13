@@ -13,9 +13,11 @@ import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { useProgress, useProgressState } from "../progress";
 import { HelpedQuestion } from "../help/HelpedQuestion";
+import { Honesty } from "./Honesty";
+import { SoloEntry } from "../solo/SoloEntry";
 import "./Practice.css";
 
-type Step = { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" };
+type Step = { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" } | { kind: "ready" };
 
 // An unfinished practice question comes back as it was; otherwise a fresh one, never the same as the last.
 function begin(store: ProgressStore): Step {
@@ -24,6 +26,9 @@ function begin(store: ProgressStore): Step {
   const point = resumePoint(p);
   if (point?.kind === "question" && point.saved.attempt.origin === "practice")
     return { kind: "question", question: point.saved.question, resume: point.saved, n, key: point.saved.attempt.id };
+  // A pending How did you know or verification: the question is already scored, so it is the one just finished.
+  if (point && point.kind !== "question")
+    return { kind: "question", question: point.saved.question, resume: point.saved, n: n === 1 ? ROUND_SIZE : n - 1, key: point.saved.attempt.id };
   const last = attemptsOf(p).filter((a) => a.origin === "practice").sort((x, y) => inOrder(x.startedAt, y.startedAt)).at(-1);
   const question = nextPracticeQuestion(pack, Math.random, last?.questionId);
   return { kind: "question", question, n, key: question.id + Math.random() };
@@ -52,7 +57,16 @@ function Round() {
   }, [hasLearner]);
   if (!step || !hasLearner) return null;
 
+  const after = () => setStep(doneInRound(attemptsOf(store.progress)) === 0 ? { kind: "summary" } : begin(store));
+  // The third dot earned by this answer shows the Solo-ready card before the next step; "Keep practising" carries on.
+  const earnedThird = (a: PracticeAttempt) => {
+    const dotsNow = (all: readonly PracticeAttempt[]) => readiness(all, runStartsOf(store.progress)).dots;
+    const others = attemptsOf(store.progress).filter((x) => x.id !== a.id);
+    return dotsNow([...others, a]) === 3 && dotsNow(others) < 3;
+  };
+
   if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => route("/")} />;
+  if (step.kind === "ready") return <SoloEntry dots={3} onStart={() => route("/solo")} onPractise={after} />;
   return (
     <HelpedQuestion
       key={step.key}
@@ -61,7 +75,8 @@ function Round() {
       resume={step.resume}
       round={{ n: step.n, of: ROUND_SIZE }}
       onExit={() => route("/")}
-      onDone={() => setStep(doneInRound(attemptsOf(store.progress)) === 0 ? { kind: "summary" } : begin(store))}
+      afterCorrect={(ctx) => <Honesty ctx={ctx} question={step.question} />}
+      onDone={(a) => (earnedThird(a) ? setStep({ kind: "ready" }) : after())}
     />
   );
 }
@@ -91,6 +106,7 @@ function Summary({ onAnother, onDone }: { onAnother(): void; onDone(): void }) {
       <div class="pr-actions">
         <Button onClick={onAnother}>Another 5</Button>
         <Button variant="secondary" onClick={onDone}>Done for today</Button>
+        <a class="pr-solo" href="/solo-entry">Solo check</a>
       </div>
     </main>
   );

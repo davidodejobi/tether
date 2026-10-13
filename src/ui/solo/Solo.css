@@ -1,0 +1,13 @@
+.so { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-xl); max-width: 600px; min-height: 100dvh; margin: 0 auto; padding: var(--spacing-xxl) var(--spacing-md) var(--spacing-xl); }
+.so-card { align-self: stretch; padding: var(--spacing-xl) var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.so-card h1 { margin: 0 0 var(--spacing-sm); font: var(--type-headline-m); }
+.so-card h1:focus { outline: none; }
+.so-lead { margin: 0 0 var(--spacing-md); font: var(--type-body-l); }
+.so-facts { display: flex; flex-direction: column; gap: var(--spacing-md); margin: 0; padding: 0; list-style: none; }
+.so-facts li { display: flex; align-items: flex-start; gap: var(--spacing-sm); font: var(--type-body-l); }
+.so-facts .icon { flex: none; }
+.so-actions { display: flex; flex-direction: column; align-self: stretch; gap: var(--spacing-sm); margin-top: auto; }
+.so button:focus-visible, .so a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+.so-soon { text-align: center; }
+.so-soon h1 { margin: 0; font: var(--type-headline-l); }
+.so-soon p { margin: 0; }

@@ -18,6 +18,8 @@ export interface Learner {
   lang: "en" | "pcm";
   readAloud: boolean;
   partner: { name?: string; phone?: string } | null;
+  /** The honesty rule was shown once in regular practice (spec section 4). Absent on older records, so no migration. */
+  honestyIntroSeen?: boolean;
   schemaVersion: number;
 }
 

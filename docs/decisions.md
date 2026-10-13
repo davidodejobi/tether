@@ -115,3 +115,11 @@ These decisions override conflicting text in `requirements.txt`.
 - After help, a further miss shows "Not quite. Pick again" with Try again instead of a nudge; the nudge appears only on the first and second miss with no help.
 - The tutorial e2e helper (`e2e/tutorial.ts`) now opens Show me on each question first, so tiles are never hidden.
 - Step 9a plugs into `src/ui/help/StillStuck.tsx` (renders nothing now), placed at the bottom of Go deeper.
+
+## Honesty and readiness (roadmap step 10)
+
+- Honesty-rule intro: one optional boolean on the learner record, `honestyIntroSeen`. It is saved the moment the intro is first shown (inside the first How did you know), so a reload mid-prompt never repeats it. Optional, so old records stay valid and no migration is needed. Tutorials never ask a reason, so they never show it.
+- `QuestionView`'s `afterCorrect` context gained `update(attempt)`, `help(kind)` and `openMove()` so the honesty step edits the one attempt the question view owns and saves; otherwise a later save from the view (a free look, the move sheet) would overwrite the reason with an older copy.
+- A pending How did you know or verification resumes through `begin()` in Practice: the already-scored question reopens in `QuestionView`, which shows the prompt for a completed attempt.
+- Solo entry is `/solo-entry` (ready card at three dots; "not solo-ready yet" with Try anyway otherwise). Start or Try anyway go to `/solo`, a placeholder until step 11. The Solo-ready card also appears once, right after the answer that earns the third dot; "Keep practising" carries on. No Bo on the entry, since spec section 7 keeps Bo out of solo.
+- The free-look Show me is a placeholder (`ShowMeSlot`) recorded as `help("showMe")` when chosen, until step 9's playback replaces it.

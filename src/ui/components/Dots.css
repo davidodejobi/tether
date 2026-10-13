@@ -1,12 +1,36 @@
 .dots { display: inline-flex; align-items: center; gap: var(--spacing-xs); }
 .dot {
+  position: relative;
+  display: grid;
+  place-items: center;
   width: 12px;
   height: 12px;
   border-radius: var(--radius-full);
   background: var(--bg-sunken);
   border: 2px solid var(--border-strong);
 }
-.dot-on { background: var(--bg-primary); border-color: var(--bg-primary-edge); animation: dot-pop var(--dur-short) var(--ease-emphasized); }
+.dot-on { background: var(--bg-primary); border-color: var(--bg-primary-edge); color: var(--text-on-primary); animation: dot-pop var(--dur-short) var(--ease-emphasized); }
 .dots-label { margin-left: var(--spacing-xxs); font: var(--type-label-m); color: var(--text-secondary); }
+.dots-hero { flex-wrap: wrap; justify-content: center; gap: var(--spacing-md); }
+.dots-hero .dot { width: 40px; height: 40px; }
+.dots-hero .dot-on { animation-duration: 200ms; }
+.dots-hero .dots-label { flex-basis: 100%; margin: 0; text-align: center; color: var(--text-brand); }
+/* Ring burst on the third dot: three rings, staggered, no confetti. */
+.dot-ring, .dot-ring::before, .dot-ring::after {
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--bg-primary);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  animation: dot-burst 600ms var(--ease-standard) both;
+}
+.dot-ring::before, .dot-ring::after { content: ""; inset: -2px; animation-delay: 100ms; }
+.dot-ring::after { animation-delay: 200ms; }
 @keyframes dot-pop { from { transform: scale(0.4); } to { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .dot-on { animation: none; } }
+@keyframes dot-burst { from { transform: scale(1); opacity: 0.9; } to { transform: scale(1.9); opacity: 0; } }
+/* Reduced motion: no pop and no burst; the third dot keeps one still ring. */
+@media (prefers-reduced-motion: reduce) {
+  .dot-on { animation: none; }
+  .dot-ring { animation: none; opacity: 1; }
+  .dot-ring::before, .dot-ring::after { display: none; }
+}

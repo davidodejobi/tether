@@ -9,8 +9,9 @@
 //       Default: "Not quite. Try again."
 //   hideTiles(attempt, misses)  true hides the answer tiles (step 9: third miss). Default: never.
 //   onShowMe({ attempt, help })  runs on the Show me button or S. Default: no-op, button stays visible.
-//   afterCorrect({ attempt, next })  shown once the answer is correct; next() calls onDone(attempt).
-//       Default: the correct moment plus Next. Step 10 inserts How did you know before next().
+//   afterCorrect({ attempt, next, update, help, openMove })  shown once the answer is correct; next() calls onDone(attempt).
+//       update(attempt) saves a changed attempt (reason, verification). Default: the correct moment plus Next.
+//       Step 10 (src/ui/practice/Honesty.tsx) inserts How did you know before next().
 // Every checked answer is saved before the slots run. Selecting or changing a tile is never an attempt.
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
@@ -45,6 +46,12 @@ export interface ShowMeContext {
 export interface CorrectContext {
   attempt: PracticeAttempt;
   next(): void;
+  /** Replaces this attempt with a changed copy (a reason, a verification) and saves it. */
+  update(next: PracticeAttempt): void;
+  /** Free look: help("showMe") after the answer is correct sets freeLook only. */
+  help(kind: HelpKind): void;
+  /** Opens The move sheet. */
+  openMove(): void;
 }
 
 export interface QuestionViewProps {
@@ -135,6 +142,10 @@ export function QuestionView(props: QuestionViewProps) {
 
   const help = (kind: HelpKind) => {
     const next = useHelp(attempt, kind, store.moment(Date.now()));
+    setAttempt(next);
+    void persist(next, struck);
+  };
+  const update = (next: PracticeAttempt) => {
     setAttempt(next);
     void persist(next, struck);
   };
@@ -249,7 +260,7 @@ export function QuestionView(props: QuestionViewProps) {
         <p class="qv-keys" aria-hidden="true">1-4 pick · Enter check · R read · S show me</p>
 
         {done && (
-          props.afterCorrect ? props.afterCorrect({ attempt, next: () => props.onDone(attempt) }) : (
+          props.afterCorrect ? props.afterCorrect({ attempt, next: () => props.onDone(attempt), update, help, openMove: openSheet }) : (
             <div class="qv-correct">
               <Bo pose="pleased" size={96} />
               <p class="qv-correct-word"><Icon name="check" size={24} /> Correct</p>
