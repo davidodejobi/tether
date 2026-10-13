@@ -131,3 +131,9 @@ These decisions override conflicting text in `requirements.txt`.
 - Free looks after a correct answer play the same `ShowMe` with the note "Free look: nothing lost"; `help("showMe")` is recorded when chosen, so `freeLook` is set and nothing is penalised.
 - New Pidgin line in Go deeper ("Na no be the subject…") is shown under the Unreviewed tag until a native reviewer approves Pidgin.
 - The startup gate now also covers `/practice`: with no learner it shows Welcome.
+
+## Review fixes (wave 3)
+
+- Read-aloud lives in one helper, `src/platform/speech.ts`. Exam sentences are always read with an English voice (en-NG first). Pidgin coach text looks for a `pcm` voice, then `en-NG`, then any English voice. Unless a `pcm` voice exists, the move sheet says "Read in a Nigerian English voice" or "Read in an English voice" beside Read it to me. It reads anyway; speech is never promised.
+- The move sheet shows the pack's `lessonExample` (Chidi). It can never be the current sentence: `validatePack` fails if the lesson sentence repeats any question sentence. When the question uses the same verb as the example, the example's verb shows as ___, so a singular or plural form is never hinted.
+- Text only means no Bo anywhere after the choice (practice, honesty, summary, First win); the quiet text coach card replaces her. The Unreviewed tag shows wherever Pidgin coach copy does.

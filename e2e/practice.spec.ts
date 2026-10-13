@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { current, lastAttempt, leave, seed, tile } from "./practice-helpers";
+import { LEARNER, current, lastAttempt, leave, seed, tile } from "./practice-helpers";
 
 test("five questions with a miss, summary, Another 5, reload and Done", async ({ page }) => {
   await seed(page);
@@ -86,4 +86,32 @@ test("the move sheet opens without counting as help, and keys select and check",
 test("with no learner, practice starts onboarding", async ({ page }) => {
   await page.goto("/practice");
   await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+});
+
+// A stub speech engine records what is spoken and with which voice.
+const stubSpeech = (page: import("@playwright/test").Page, voices: { lang: string }[]) =>
+  page.addInitScript((voices) => {
+    (window as any).spoken = [];
+    (window as any).SpeechSynthesisUtterance = class { text: string; voice: any; lang = ""; constructor(t: string) { this.text = t; } };
+    Object.defineProperty(window, "speechSynthesis", {
+      value: { getVoices: () => voices, cancel() {}, speak: (u: any) => (window as any).spoken.push({ text: u.text, voice: u.voice?.lang ?? null }), addEventListener() {}, removeEventListener() {} },
+    });
+  }, voices);
+
+test("Pidgin coach text uses a pcm voice, then en-NG, and says so when it falls back to English", async ({ page }) => {
+  await stubSpeech(page, [{ lang: "en-US" }, { lang: "pcm" }]);
+  await seed(page, { ...LEARNER, lang: "pcm" });
+  await page.getByRole("button", { name: /The move: Strip the Disguise/ }).click();
+  await expect(page.getByText(/^Read in /)).toHaveCount(0);
+  await page.getByRole("button", { name: "Read it to me" }).click();
+  expect(await page.evaluate(() => (window as any).spoken.at(-1).voice)).toBe("pcm");
+});
+
+test("Pidgin falls back to a labelled English voice when no pcm or en-NG voice exists", async ({ page }) => {
+  await stubSpeech(page, [{ lang: "en-US" }]);
+  await seed(page, { ...LEARNER, lang: "pcm" });
+  await page.getByRole("button", { name: /The move: Strip the Disguise/ }).click();
+  await expect(page.getByText("Read in an English voice")).toBeVisible();
+  await page.getByRole("button", { name: "Read it to me" }).click();
+  expect(await page.evaluate(() => (window as any).spoken.at(-1).voice)).toBe("en-US");
 });

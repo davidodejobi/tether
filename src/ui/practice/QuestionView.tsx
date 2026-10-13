@@ -19,6 +19,7 @@
 // for Retry (the same batch), every mutating or advancing control is disabled. Close stays enabled.
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { speak, speechOk, useVoiceNote } from "../../platform/speech.ts";
 import { stripDisguise } from "../../content/strip-disguise.ts";
 import type { Pack } from "../../content/types.ts";
 import { sentence, type Question } from "../../content/generate.ts";
@@ -86,20 +87,6 @@ const ex = pack.lessonExample;
 const exVerb = pack.verbs.find((v) => v.id === ex.verbId)!;
 // Not crypto.randomUUID: it needs a secure context, and plain-http LAN testing must work.
 const newId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-const speechOk = () => typeof window !== "undefined" && "speechSynthesis" in window;
-
-function speak(text: string) {
-  if (!speechOk()) return;
-  const synth = window.speechSynthesis;
-  synth.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  const voices = synth.getVoices();
-  const v = voices.find((x) => x.lang.replace("_", "-").toLowerCase() === "en-ng") ?? voices.find((x) => x.lang.toLowerCase().startsWith("en"));
-  if (v) u.voice = v;
-  u.lang = v?.lang ?? "en-NG";
-  synth.speak(u);
-}
-
 const defaultMiss = () => <p class="qv-miss">Not quite. Try again.</p>;
 
 export function QuestionView(props: QuestionViewProps) {
@@ -203,7 +190,7 @@ export function QuestionView(props: QuestionViewProps) {
     }
     if (onControl && e.key === " ") return; // Space presses the focused button
     const k = e.key.toLowerCase();
-    if (k === "r") speak(sentence(q, "blank"));
+    if (k === "r") speak(sentence(q, "blank"), "en");
     else if (k === "s" && origin === "practice") showMe();
     else if (!onTile && !done && !hidden && !blocked) {
       const to = targetTile(e.key, selected ?? 0, tiles.map((x) => !!x.struck));
@@ -227,6 +214,7 @@ export function QuestionView(props: QuestionViewProps) {
   const filled = done ? q.answer : selected === null ? undefined : q.options[selected];
   const lang = learner.lang;
   const coach = pack.coach[lang];
+  const voiceNote = useVoiceNote(lang); // set when Pidgin would be read by an English voice
 
   return (
     <div class="qv" ref={root}>
@@ -259,7 +247,7 @@ export function QuestionView(props: QuestionViewProps) {
         <h1 class="qv-prompt">Pick the verb that fits.</h1>
         <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={filled} correct={done} />
         {speechOk() && (
-          <button type="button" class="qv-read" onClick={() => speak(sentence(q, "blank"))}>
+          <button type="button" class="qv-read" onClick={() => speak(sentence(q, "blank"), "en")}>
             <Icon name="speaker" size={20} /> Read aloud
           </button>
         )}
@@ -311,7 +299,8 @@ export function QuestionView(props: QuestionViewProps) {
         </p>
         <p class="qv-source">Rule source: {pack.source.line}</p>
         <Button onClick={closeSheet}>Got it</Button>
-        {speechOk() && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`)}>Read it to me</Button>}
+        {speechOk() && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`, lang)}>Read it to me</Button>}
+        {speechOk() && voiceNote && <p class="qv-source">{voiceNote}</p>}
       </dialog>
     </div>
   );
