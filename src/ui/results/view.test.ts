@@ -55,12 +55,12 @@ describe("resultView", () => {
   test("improved only when the gap fell and alone rose", () => {
     const up = resultView(progress([solo(1, 5, 9), solo(2, 7, 9)]), "s2", T0)!;
     expect(up.gap!.comparison).toMatchObject({ kind: "later", improved: true });
-    expect(up.share).toBe("progress");
+    expect(up.shares).toEqual(["progress"]);
     expect(up.oneAway).toBe(true);
     // Gap shrank only because practice fell: not progress.
     const practiceFell = resultView(progress([solo(1, 5, 9), solo(2, 5, 7)]), "s2", T0)!;
     expect(practiceFell.gap!.comparison).toMatchObject({ kind: "later", improved: false });
-    expect(practiceFell.share).toBeNull();
+    expect(practiceFell.shares).toEqual([]);
   });
 
   test("a missing earlier practice score is not skipped over", () => {
@@ -80,7 +80,7 @@ describe("resultView", () => {
   test("a pass earns Proved with a next check date; a failed repeat keeps old proof un-earned", () => {
     const p = progress([solo(1, 8, 9), solo(2, 6, 9)]);
     const pass = resultView(p, "s1", T0)!;
-    expect(pass).toMatchObject({ passed: true, share: "proof" });
+    expect(pass).toMatchObject({ passed: true, shares: ["proof"] });
     expect(pass.proof).toMatchObject({ state: "proved", earnedNow: true, nextDue: "2026-10-05" });
     const repeat = resultView(p, "s2", T0)!;
     expect(repeat.proof).toMatchObject({ state: "proved", earnedNow: false });

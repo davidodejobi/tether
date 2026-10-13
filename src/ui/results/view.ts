@@ -6,6 +6,11 @@ import { RUN_RULES } from "../../rules/runs.ts";
 import type { Question } from "../../content/generate.ts";
 import type { Progress, SavedRun } from "../../storage/progress.ts";
 
+export type ShareKind = "proof" | "progress";
+
+export const day = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+export const when = (at: number) => new Date(at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
 export interface Proof {
   state: ProofState;
   /** This solo pass created the proof cycle: the only result that celebrates "Proved". */
@@ -35,8 +40,8 @@ export interface ResultView {
   proof: Proof | null;
   /** Missed or unanswered questions, in run order. */
   misses: Question[];
-  /** Which share the spec allows here (step 15 builds it); null when none. */
-  share: "proof" | "progress" | null;
+  /** Which shares the spec allows here (section 11): proof first, progress secondary; empty when none. */
+  shares: ShareKind[];
 }
 
 /** Null when the run is unknown or has no result (active, converted or exited runs never reach the result page). */
@@ -68,11 +73,16 @@ export function resultView(p: Progress, runId: string, now: number): ResultView 
   }
 
   const improved = gap?.comparison.kind === "later" && gap.comparison.improved;
-  // Proof shares need a pass that is not a Fading result; progress shares need a qualifying improvement (even on a not-yet).
-  const share = passed && proof && proof.state !== "fading" ? "proof" : kind === "solo" && improved ? "progress" : null;
+  // Nothing is shared from a Fading result (this covers a failed recheck). A proof share needs a pass; a progress share
+  // needs a qualifying solo improvement, even on a not-yet. A solo pass with an improvement offers both.
+  const shares: ShareKind[] = [];
+  if (proof?.state !== "fading") {
+    if (passed && proof) shares.push("proof");
+    if (kind === "solo" && improved) shares.push("progress");
+  }
 
   const answered = new Map(run.submissions.map((s) => [s.questionId, s.correct]));
   const misses = saved.questions.filter((q) => answered.get(q.id) !== true);
 
-  return { saved, kind, score, total, pass, passed, timedOut, oneAway: kind === "solo" && !passed && score === pass - 1, gap, proof, misses, share };
+  return { saved, kind, score, total, pass, passed, timedOut, oneAway: kind === "solo" && !passed && score === pass - 1, gap, proof, misses, shares };
 }

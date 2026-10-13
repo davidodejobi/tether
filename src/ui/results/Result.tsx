@@ -9,11 +9,9 @@ import { Score } from "../components/Score";
 import { Stamp } from "../components/Stamp";
 import { ShowMe } from "../help/ShowMe";
 import { useProgress } from "../progress";
-import { resultView, type ResultView } from "./view.ts";
+import { day, resultView, when, type ResultView } from "./view.ts";
 import "./Result.css";
 
-const day = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-const when = (at: number) => new Date(at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 export function Result() {
   const { params } = useRoute();
@@ -109,6 +107,11 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
         <GapNote v={v} />
       </div>
       <div class="rs-actions">
+        {v.shares.map((k, i) => (
+          <Button key={k} variant={i === 0 ? "secondary" : "tertiary"} icon="share" onClick={() => route(`/share/${v.saved.run.id}?kind=${k}`)}>
+            {k === "proof" ? "Share proof" : "Share progress"}
+          </Button>
+        ))}
         {v.misses.length > 0 && <Button variant="secondary" onClick={onMisses}>See your misses</Button>}
         {v.passed ? (
           <Button onClick={() => route("/")}>Back to Home</Button>
