@@ -59,6 +59,8 @@ function Runner({ kind }: { kind: RunKind }) {
   const chain = useRef<Promise<void>>(Promise.resolve());
   const hiddenAt = useRef<number | null>(null);
   const ended = useRef(false); // finishing or converting has begun: timers stop
+  // A conversion decided while an answer was still saving or awaiting Retry: it runs once that save lands, so it includes the answer.
+  const deferred = useRef<(() => void) | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const mounted = useRef(true);
   useEffect(() => () => void (mounted.current = false), []);
@@ -87,6 +89,11 @@ function Runner({ kind }: { kind: RunKind }) {
         } finally {
           blocked.current.pending--;
           if (mounted.current) setPending((n) => n - 1);
+          const d = deferred.current;
+          if (d && mounted.current && blocked.current.pending === 0 && !blocked.current.failed) {
+            deferred.current = null;
+            d();
+          }
         }
       });
     };
@@ -222,7 +229,14 @@ function Runner({ kind }: { kind: RunKind }) {
       hiddenAt.current = null;
       void acquireWake().then(setAwake);
       const out = onReturn(cur.run, t, since);
-      if (out === "convert") return convertRun("converted", since !== null && t < since ? "clock" : clockWentBack(cur.run, t) ? "clock" : "away");
+      if (out === "convert") {
+        const why = since !== null && t < since ? "clock" : clockWentBack(cur.run, t) ? "clock" : "away";
+        if (!blocked.current.pending && !blocked.current.failed) return convertRun("converted", why);
+        // An answer is saving or awaiting Retry: stop the run now (no more answers, no deadline), convert once it lands.
+        ended.current = true;
+        deferred.current = () => convertRun("converted", why);
+        return;
+      }
       if (out === "timeout") return blocked.current.failed ? setToast(false) : finishRun(t); // failed: the tick finishes it after Retry
       beatSave(t);
       setToast(true);
@@ -353,8 +367,9 @@ function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of
   const key = useRef<(e: KeyboardEvent) => void>(() => {});
   key.current = (e) => {
     const t = e.target as HTMLElement;
-    if (e.altKey || e.ctrlKey || e.metaKey || t.closest("input, textarea, select, dialog, button:not([role=radio])")) return;
-    if (e.key.toLowerCase() === "r") return speak(sentence(q, "blank"), "en"); // reading aloud is not help
+    if (e.altKey || e.ctrlKey || e.metaKey || t.closest("input, textarea, select, dialog")) return;
+    if (e.key.toLowerCase() === "r") return speak(sentence(q, "blank"), "en"); // reading aloud is not help, and works from any button
+    if (t.closest("button:not([role=radio])")) return;
     if (e.key === "Enter") return e.preventDefault(), go();
     if (/^[1-4]$/.test(e.key) && !t.closest(".tiles")) {
       const to = targetTile(e.key, 0, [false, false, false, false]);

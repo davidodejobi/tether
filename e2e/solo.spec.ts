@@ -324,3 +324,42 @@ test("R reads the sentence aloud during a run", async ({ page }) => {
   expect(spoken).toHaveLength(1);
   expect(spoken[0]!.length).toBeGreaterThan(10);
 });
+
+test("a long absence while an answer awaits Retry keeps Retry; converting after it saves includes that answer", async ({ page }) => {
+  await page.clock.install();
+  await start(page);
+  await expect(heading(page, 1)).toBeVisible();
+  const q = (await activeRun(page)).questions[0];
+  await page.getByRole("radio", { name: new RegExp(`: ${q.answer}$`) }).click();
+  await page.evaluate(() => ((window as any).__failWrites = true));
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByRole("alert")).toContainText("Couldn't save");
+  await page.evaluate(() => ((window as any).__failWrites = false)); // storage is back, but Retry is not pressed yet
+  await hide(page, true);
+  await page.clock.fastForward(15_000);
+  await hide(page, false);
+  await expect(page.getByRole("button", { name: "Retry" })).toBeVisible(); // the answer is not dropped by the conversion
+  expect((await activeRun(page)).run.submissions).toHaveLength(0);
+  await page.getByRole("button", { name: "Retry" }).click();
+  await expect(page.getByRole("heading", { name: "You were away too long" })).toBeVisible();
+  const [r] = await runs(page);
+  expect(r.run.status).toBe("converted");
+  expect(r.run.submissions).toHaveLength(1);
+  const attempts = await idb(page, (rows) => rows.filter(([k]) => String(k).startsWith("attempt:")).map(([, v]) => v.attempt));
+  expect(attempts.map((a: any) => [a.origin, !!a.correctOnCheck])).toEqual([["converted", true]]);
+});
+
+test("R reads aloud even when an action button has focus", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as any).spoken = [];
+    (window as any).SpeechSynthesisUtterance = class { text: string; voice: any; lang = ""; constructor(t: string) { this.text = t; } };
+    Object.defineProperty(window, "speechSynthesis", {
+      value: { getVoices: () => [{ lang: "en-NG" }], cancel() {}, speak: (u: any) => (window as any).spoken.push(u.text), addEventListener() {}, removeEventListener() {} },
+    });
+  });
+  await start(page);
+  await expect(heading(page, 1)).toBeVisible();
+  await page.getByRole("button", { name: /Close|Leave/ }).first().focus();
+  await page.keyboard.press("r");
+  expect(await page.evaluate(() => (window as any).spoken.length)).toBe(1);
+});
