@@ -131,3 +131,22 @@ test("Add to calendar downloads an all-day .ics for the next recheck, offline, a
     )
     .toEqual([expect.any(Number)]);
 });
+
+test("on a simulated date, Add to calendar is a disabled preview and records nothing", async ({ page }) => {
+  await seedHome(page);
+  await page.goto("/?demo=2099-03-02");
+  const button = page.getByRole("button", { name: "Add to calendar (demo preview)" });
+  await expect(button).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Add to calendar", exact: true })).toHaveCount(0);
+  const uses = await page.evaluate(
+    () =>
+      new Promise<unknown>((resolve) => {
+        const open = indexedDB.open("tether");
+        open.onsuccess = () => {
+          const req = open.result.transaction("records").objectStore("records").get("meta:calendarUses");
+          req.onsuccess = () => resolve(req.result);
+        };
+      }),
+  );
+  expect(uses).toBeUndefined();
+});

@@ -3,6 +3,7 @@
 import { proofStatus } from "../../rules/proof.ts";
 import { Button } from "../components/Button";
 import { useProgress } from "../progress";
+import { simulatedDate } from "../proof/simulate";
 import { buildIcs } from "./ics.ts";
 
 const MOVE_ID = "strip-disguise";
@@ -31,5 +32,7 @@ export function AddToCalendar() {
     store.recordCalendarUse(now).catch(() => {}); // ponytail: a metric, not a promise; never blocks the download
   };
 
+  // A simulated date is a read-only preview: no download and no pilot-metric record.
+  if (simulatedDate()) return <Button variant="tertiary" icon="calendar" disabled>Add to calendar (demo preview)</Button>;
   return <Button variant="tertiary" icon="calendar" onClick={add}>Add to calendar</Button>;
 }
