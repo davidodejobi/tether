@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 // Browser behaviour that claimWriter (src/platform/storage.ts) relies on. Its wait-and-give-up logic is unit tested.
+// A separate lock name, because the app itself holds "tether-writer" once it loads.
 const take = (page: Page, wait: boolean) =>
   page.evaluate(
     (wait) =>
@@ -9,8 +10,8 @@ const take = (page: Page, wait: boolean) =>
           resolve(true);
           return new Promise<void>(() => {});
         };
-        if (wait) void navigator.locks.request("tether-writer", hold);
-        else void navigator.locks.request("tether-writer", { ifAvailable: true }, (lock) => (lock ? hold() : resolve(false)));
+        if (wait) void navigator.locks.request("e2e-writer", hold);
+        else void navigator.locks.request("e2e-writer", { ifAvailable: true }, (lock) => (lock ? hold() : resolve(false)));
       }),
     wait,
   );
