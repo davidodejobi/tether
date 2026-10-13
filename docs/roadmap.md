@@ -13,13 +13,15 @@ contract. Bring supporting files into this repository only when needed.
   stack and hosting target; define boundaries for app, content, learning logic,
   persistence and UI. Scaffold the app, routing, scripts, tests and preview build.
   Done: a minimal app runs locally and produces a deployable production build.
-- [ ] **3. Prepare and verify Move 1 content.** Verify the official syllabus
+- [x] **3. Prepare and verify Move 1 content.** Verify the official syllabus
   section; write the reviewed word lists, templates, English/Pidgin coach copy,
   distractors and source metadata. Implement generation and content validation.
   Enumerate the finite question space; check keys, options, grammar and repetition.
   Done: validated content generates four shuffled options with one correct answer.
-  Status: syllabus verified; pack, generator and validator built and passing.
-  Waiting on the owner's English review (`docs/content/move-1-review.md`).
+  Status: syllabus verified; v2 pack, generator and validator pass all checks.
+  English signed off by David on 13 October 2026 (`docs/content/move-1-review.md`).
+  Unknown number tags/rule IDs are rejected; 23 tests, typecheck and build pass.
+  Pidgin remains visibly Unreviewed until native-speaker approval.
 - [ ] **4. Implement the learning rules.** Build attempt scoring, readiness dots,
   verification, score snapshots, gap calculation, stamp transitions and scheduling.
   Exercise free looks, early solo entry, declining practice scores and overdue dates.

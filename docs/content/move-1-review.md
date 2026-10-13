@@ -1,6 +1,8 @@
 # Move 1 content review: Strip the Disguise (v2)
 
-Status: **English pending review. Pidgin unreviewed.** Nothing here is approved until a named person signs below.
+Status: **English v2 approved by David on 13 October 2026. Pidgin unreviewed.**
+David explicitly signed off the five English review items below. This approval
+covers the current v2 lists, pairings, samples and English coach copy.
 
 ## 1. Syllabus source (checked 13 Oct 2026)
 
@@ -132,12 +134,14 @@ A test runs the shortcut against 50 solo runs and 100 rechecks and confirms it f
 
 ## 7. Sign-off
 
-- [ ] The rule in section 2 is correct as taught.
-- [ ] Every word-list line in section 3 reads sensibly in every pairing.
-- [ ] The 30 samples in section 4 read as natural exam-style English.
-- [ ] The English coach copy in section 5 is correct and does not give answers away.
-- [ ] The same-number pairings (★ in section 3, and the same-number samples in section 4) read sensibly.
+- [x] The rule in section 2 is correct as taught.
+- [x] Every word-list line in section 3 reads sensibly in every pairing.
+- [x] The 30 samples in section 4 read as natural exam-style English.
+- [x] The English coach copy in section 5 is correct and does not give answers away.
+- [x] The same-number pairings (★ in section 3, and the same-number samples in section 4) read sensibly.
 
-When all five are ticked, set `review.en` in `src/content/strip-disguise.ts` to
-`{ status: "approved", reviewer: "<name>", date: "<YYYY-MM-DD>" }` and bump `version` if anything changed.
+Recorded in `src/content/strip-disguise.ts` as
+`{ status: "approved", reviewer: "David", date: "2026-10-13" }`.
+Approval metadata alone does not change the question space, so the pack remains
+v2. Later changes to lists, pairings or copy require a version bump and renewed review.
 Pidgin stays labelled Unreviewed until a named native speaker approves it the same way in `review.pcm`.

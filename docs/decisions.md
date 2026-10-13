@@ -52,4 +52,4 @@ These decisions override conflicting text in `requirements.txt`.
 - Questions pair a subject with an opposite-number side phrase, or with a same-number side phrase marked `sameNumber`. Options: singular form, plural form and two never-correct fillers. 1,560 questions; three reserved for the tutorial.
 - Proof runs have fixed counts so "pick the verb that disagrees with the side phrase" cannot pass: solo 5 + 5 with four same-number items (shortcut scores 6/10), rechecks 3 + 2 or 2 + 3 with two (3/5). Practice is about 40% same-number. See `SOLO_SHAPE` and `RECHECK_SHAPES`.
 - Content changes bump the pack `version`; stored questions keep the version they were built with.
-- `validatePack` separates errors (fail tests) from release blockers (English review pending). Pidgin ships labelled Unreviewed rather than blocking release.
+- `validatePack` separates structural errors from release blockers. English v2 was approved by David on 13 October 2026; the pack has no release blockers. Pidgin stays labelled Unreviewed until a named native speaker approves it.

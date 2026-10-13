@@ -23,7 +23,7 @@ export const stripDisguise = {
     line: "Topic: agreement/concord. JAMB UTME Use of English syllabus, Section B (Lexis and Structure).",
   },
   review: {
-    en: { status: "pending" },
+    en: { status: "approved", reviewer: "David", date: "2026-10-13" },
     pcm: { status: "unreviewed" },
   },
   subjects: [
