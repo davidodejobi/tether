@@ -308,3 +308,19 @@ test("a deadline passing while an answer awaits Retry waits; Retry then finishes
   expect(r.run.submissions).toHaveLength(1);
   expect(r.run.result).toMatchObject({ score: 1, timedOut: true });
 });
+
+test("R reads the sentence aloud during a run", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as any).spoken = [];
+    (window as any).SpeechSynthesisUtterance = class { text: string; voice: any; lang = ""; constructor(t: string) { this.text = t; } };
+    Object.defineProperty(window, "speechSynthesis", {
+      value: { getVoices: () => [{ lang: "en-NG" }], cancel() {}, speak: (u: any) => (window as any).spoken.push(u.text), addEventListener() {}, removeEventListener() {} },
+    });
+  });
+  await start(page);
+  await expect(heading(page, 1)).toBeVisible();
+  await page.keyboard.press("r");
+  const spoken = await page.evaluate(() => (window as any).spoken as string[]);
+  expect(spoken).toHaveLength(1);
+  expect(spoken[0]!.length).toBeGreaterThan(10);
+});

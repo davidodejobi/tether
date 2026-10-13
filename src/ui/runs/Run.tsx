@@ -353,7 +353,8 @@ function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of
   const key = useRef<(e: KeyboardEvent) => void>(() => {});
   key.current = (e) => {
     const t = e.target as HTMLElement;
-    if (e.altKey || e.ctrlKey || e.metaKey || t.closest("dialog, button:not([role=radio])")) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || t.closest("input, textarea, select, dialog, button:not([role=radio])")) return;
+    if (e.key.toLowerCase() === "r") return speak(sentence(q, "blank"), "en"); // reading aloud is not help
     if (e.key === "Enter") return e.preventDefault(), go();
     if (/^[1-4]$/.test(e.key) && !t.closest(".tiles")) {
       const to = targetTile(e.key, 0, [false, false, false, false]);
