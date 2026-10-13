@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { compare, snapshotOf, type Snapshot } from "./gap.ts";
+import { nextMoment, type Moment } from "./moment.ts";
 import { convert, startRun, submit, type Run } from "./runs.ts";
+
+let last: Moment | null = null;
+const m = (at: number) => (last = nextMoment(last, at));
 
 const T0 = Date.UTC(2026, 9, 13, 9, 0);
 let n = 0;
@@ -8,8 +12,8 @@ let n = 0;
 /** A completed solo run with the given practice snapshot and alone score. */
 function soloRun(practice: number | null, alone: number): Run {
   const id = `solo-${++n}`;
-  let r = startRun({ id, kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `${id}-q${i}`), practiceSnapshot: practice }, T0 + n * 3_600_000);
-  for (let i = 0; i < 10; i++) r = submit(r, r.questionIds[i]!, i < alone, r.startedAt + (i + 1) * 1000);
+  let r = startRun({ id, kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `${id}-q${i}`), practiceSnapshot: practice }, m(T0 + n * 3_600_000));
+  for (let i = 0; i < 10; i++) r = submit(r, r.questionIds[i]!, i < alone, m(r.started.at + (i + 1) * 1000));
   return r;
 }
 const snap = (practice: number | null, alone: number) => snapshotOf(soloRun(practice, alone))!;
@@ -62,7 +66,7 @@ describe("§8 results, alone score and gap (release check 4)", () => {
   });
 
   test("converted or exited runs produce no snapshot", () => {
-    const r = startRun({ id: "c", kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `c${i}`), practiceSnapshot: 9 }, T0);
+    const r = startRun({ id: "c", kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `c${i}`), practiceSnapshot: 9 }, m(T0));
     expect(snapshotOf(convert(r, T0 + 1_000, "converted").run)).toBeNull();
   });
 });

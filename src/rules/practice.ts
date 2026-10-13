@@ -1,5 +1,6 @@
 // Practice attempts, the "with help" score, readiness dots and the move hint (spec sections 5, 5a and 6).
-// Pure functions over plain records: callers pass the time and randomness.
+// Pure functions over plain records: callers pass the moment (time + order) and randomness.
+import { inOrder, type Moment } from "./moment.ts";
 
 export type AnswerHelp = "nudge" | "showMe" | "goDeeper" | "ai";
 export type Reason = "move" | "sounded" | "guessed";
@@ -9,27 +10,27 @@ export interface PracticeAttempt {
   id: string;
   questionId: string;
   origin: Origin;
-  startedAt: number;
+  startedAt: Moment;
   /** Set when the question is finished; unfinished questions never enter the score window. */
-  completedAt?: number;
+  completedAt?: Moment;
   /** Checked answers so far. Selecting or changing a tile is not a check. */
   checks: number;
   /** 1-based check that was correct. */
   correctOnCheck?: number;
   /** Answer help used before the correct check, in order. A miss adds "nudge". */
   help: AnswerHelp[];
-  /** When the first miss or help happened: dots reset at that moment, not when the question started. */
-  helpAt?: number;
+  /** Every miss or help before the correct answer. Each resets dots at that moment, including on a resumed question. */
+  resets: Moment[];
   /** A Show me after a correct answer. Changes neither score nor dots. */
   freeLook: boolean;
   /** The move sheet was opened. Not answer help; recorded for measurement. */
   moveSheetOpened: boolean;
   reason?: Reason;
-  reasonAt?: number;
+  reasonAt?: Moment;
   /** Decided once when "I used the move" is claimed; a reload cannot reroll it. */
   verifySampled?: boolean;
   verifyResult?: "passed" | "failed";
-  verifiedAt?: number;
+  verifiedAt?: Moment;
 }
 
 export const VERIFY_PROBABILITY = 1 / 3;
@@ -37,18 +38,18 @@ export const PRACTICE_WINDOW = 10;
 export const MAX_DOTS = 3;
 const HONEST_RESPONSES_BEFORE_HINT = 3;
 
-export function startAttempt(id: string, questionId: string, origin: Origin, now: number): PracticeAttempt {
-  return { id, questionId, origin, startedAt: now, checks: 0, help: [], freeLook: false, moveSheetOpened: false };
+export function startAttempt(id: string, questionId: string, origin: Origin, now: Moment): PracticeAttempt {
+  return { id, questionId, origin, startedAt: now, checks: 0, help: [], resets: [], freeLook: false, moveSheetOpened: false };
 }
 
 const open = (a: PracticeAttempt) => a.completedAt === undefined;
 
 /** A checked answer. A miss marks help (the nudge); a correct answer finishes the question. */
-export function check(a: PracticeAttempt, correct: boolean, now: number): PracticeAttempt {
+export function check(a: PracticeAttempt, correct: boolean, now: Moment): PracticeAttempt {
   if (!open(a)) return a;
   const checks = a.checks + 1;
   if (correct) return { ...a, checks, correctOnCheck: checks, completedAt: now };
-  return { ...a, checks, help: a.help.includes("nudge") ? a.help : [...a.help, "nudge"], helpAt: a.helpAt ?? now };
+  return { ...a, checks, help: a.help.includes("nudge") ? a.help : [...a.help, "nudge"], resets: [...a.resets, now] };
 }
 
 /** What the help ladder does after this many misses on one question. */
@@ -61,9 +62,9 @@ export function afterMisses(misses: number): "retry" | "nudge" | "offerShowMe" |
  * is open; after a correct answer a Show me is a free look instead. Failed or cancelled AI requests are
  * never passed here.
  */
-export function useHelp(a: PracticeAttempt, kind: Exclude<AnswerHelp, "nudge">, now: number): PracticeAttempt {
+export function useHelp(a: PracticeAttempt, kind: Exclude<AnswerHelp, "nudge">, now: Moment): PracticeAttempt {
   if (!open(a)) return kind === "showMe" ? { ...a, freeLook: true } : a;
-  return { ...a, help: [...a.help, kind], helpAt: a.helpAt ?? now };
+  return { ...a, help: [...a.help, kind], resets: [...a.resets, now] };
 }
 
 export function openMoveSheet(a: PracticeAttempt): PracticeAttempt {
@@ -76,13 +77,13 @@ export function asksReason(a: PracticeAttempt): boolean {
 }
 
 /** Records the reason once. A move claim is sampled for verification once, here. */
-export function giveReason(a: PracticeAttempt, reason: Reason, rng: () => number, now: number): PracticeAttempt {
+export function giveReason(a: PracticeAttempt, reason: Reason, rng: () => number, now: Moment): PracticeAttempt {
   if (!asksReason(a) || a.reason) return a;
   const given = { ...a, reason, reasonAt: now };
   return reason === "move" ? { ...given, verifySampled: rng() < VERIFY_PROBABILITY } : given;
 }
 
-export function verify(a: PracticeAttempt, tappedCovered: boolean, now: number): PracticeAttempt {
+export function verify(a: PracticeAttempt, tappedCovered: boolean, now: Moment): PracticeAttempt {
   if (a.reason !== "move" || !a.verifySampled || a.verifyResult) return a;
   return { ...a, verifyResult: tappedCovered ? "passed" : "failed", verifiedAt: now };
 }
@@ -100,7 +101,7 @@ export function point(a: PracticeAttempt): 0 | 1 {
 export function practiceScore(attempts: readonly PracticeAttempt[]): number | null {
   const done = attempts
     .filter((a) => a.origin !== "tutorial" && a.completedAt !== undefined)
-    .sort((x, y) => x.completedAt! - y.completedAt!);
+    .sort((x, y) => inOrder(x.completedAt!, y.completedAt!));
   if (done.length < PRACTICE_WINDOW) return null;
   return done.slice(-PRACTICE_WINDOW).reduce((sum, a) => sum + point(a), 0);
 }
@@ -110,19 +111,19 @@ export function practiceScore(attempts: readonly PracticeAttempt[]): number | nu
  * (including runs later converted or exited). Effects apply when they happened: a miss on a resumed
  * question, or a verification finished later, counts at that moment. Dots recommend; they never gate a run.
  */
-export function readiness(attempts: readonly PracticeAttempt[], runStarts: readonly number[]) {
+export function readiness(attempts: readonly PracticeAttempt[], runStarts: readonly Moment[]) {
   type Effect = "run" | "reset" | "claim" | "dot" | "honest";
-  const events: { at: number; effect: Effect }[] = runStarts.map((at) => ({ at, effect: "run" }));
+  const events: { at: Moment; effect: Effect }[] = runStarts.map((at) => ({ at, effect: "run" }));
   for (const a of attempts) {
     if (a.origin !== "practice") continue;
-    if (a.helpAt !== undefined) events.push({ at: a.helpAt, effect: "reset" });
+    if (a.resets.length) for (const at of a.resets) events.push({ at, effect: "reset" });
     else if (a.reason === "move" && a.reasonAt !== undefined) {
       events.push({ at: a.reasonAt, effect: "claim" });
       if (!a.verifySampled) events.push({ at: a.reasonAt, effect: "dot" });
       else if (a.verifyResult === "passed" && a.verifiedAt !== undefined) events.push({ at: a.verifiedAt, effect: "dot" });
     } else if (a.reason && a.reasonAt !== undefined) events.push({ at: a.reasonAt, effect: "honest" });
   }
-  events.sort((x, y) => x.at - y.at);
+  events.sort((x, y) => inOrder(x.at, y.at));
 
   let dots = 0;
   let honestStreak = 0;

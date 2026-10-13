@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { addDays, applyRun, civilDate, dueEntries, proofStatus, recheckAvailable, recheckShapeIndex, type ProofCycle } from "./proof.ts";
+import { nextMoment, type Moment } from "./moment.ts";
 import { convert, startRun, submit, type Run } from "./runs.ts";
+
+let last: Moment | null = null;
+const m = (at: number) => (last = nextMoment(last, at));
 
 const LAGOS = "Africa/Lagos"; // UTC+1, no daylight saving
 const at = (date: string, time = "10:00") => Date.parse(`${date}T${time}:00+01:00`);
@@ -9,8 +13,8 @@ let n = 0;
 function completed(kind: Run["kind"], correct: number, endedAt: number, extra: Partial<Run> = {}): Run {
   const total = kind === "solo" ? 10 : 5;
   const id = `${kind}-${++n}`;
-  let r = startRun({ id, kind, questionIds: Array.from({ length: total }, (_, i) => `${id}-${i}`), ...extra }, endedAt - 60_000);
-  for (let i = 0; i < total; i++) r = submit(r, r.questionIds[i]!, i < correct, endedAt - 60_000 + (i + 1) * 1000);
+  let r = startRun({ id, kind, questionIds: Array.from({ length: total }, (_, i) => `${id}-${i}`), ...extra }, m(endedAt - 60_000));
+  for (let i = 0; i < total; i++) r = submit(r, r.questionIds[i]!, i < correct, m(endedAt - 60_000 + (i + 1) * 1000));
   return { ...r, endedAt };
 }
 const soloPass = (date: string, time?: string) => completed("solo", 8, at(date, time));
@@ -134,7 +138,7 @@ describe("§9 proof, dates and recovery (release check 5)", () => {
   test("a converted or exited recheck leaves the due entry unresolved and does not fade proof", () => {
     const c = earned();
     const entry = recheckAvailable(c, at("2026-10-16"))!;
-    const active = startRun({ id: "r", kind: "recheck", purpose: entry.purpose, coveredEntryIds: entry.entryIds, questionIds: ["a", "b", "c", "d", "e"] }, at("2026-10-16"));
+    const active = startRun({ id: "r", kind: "recheck", purpose: entry.purpose, coveredEntryIds: entry.entryIds, questionIds: ["a", "b", "c", "d", "e"] }, m(at("2026-10-16")));
     expect(applyRun(c, convert(active, at("2026-10-16", "10:01"), "converted").run, "m", LAGOS)).toBe(c);
   });
 

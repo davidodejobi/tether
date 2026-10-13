@@ -1,23 +1,27 @@
 import { describe, expect, test } from "vitest";
 import { practiceScore, readiness } from "./practice.ts";
+import { nextMoment, type Moment } from "./moment.ts";
 import { convert, finish, lowTime, onReturn, startRun, submit, type Run } from "./runs.ts";
+
+let last: Moment | null = null;
+const m = (at: number) => (last = nextMoment(last, at));
 
 const T0 = Date.UTC(2026, 9, 13, 9, 0);
 const ids = (n: number) => Array.from({ length: n }, (_, i) => `q${i}`);
 const solo = (practiceSnapshot: number | null = 9) =>
-  startRun({ id: "solo-1", kind: "solo", questionIds: ids(10), practiceSnapshot }, T0);
+  startRun({ id: "solo-1", kind: "solo", questionIds: ids(10), practiceSnapshot }, m(T0));
 
 /** Submits answers in order; `true` = correct. */
 function answer(run: Run, results: boolean[], from = T0): Run {
-  return results.reduce((r, ok, i) => submit(r, r.questionIds[r.submissions.length]!, ok, from + (i + 1) * 1000), run);
+  return results.reduce((r, ok, i) => submit(r, r.questionIds[r.submissions.length]!, ok, m(from + (i + 1) * 1000)), run);
 }
 
 describe("§7 solo and recheck rules", () => {
   test("solo is ten questions in ten minutes; recheck is five in five", () => {
     expect(solo().deadline - T0).toBe(10 * 60_000);
-    const r = startRun({ id: "r", kind: "recheck", purpose: "scheduled", questionIds: ids(5), coveredEntryIds: [] }, T0);
+    const r = startRun({ id: "r", kind: "recheck", purpose: "scheduled", questionIds: ids(5), coveredEntryIds: [] }, m(T0));
     expect(r.deadline - T0).toBe(5 * 60_000);
-    expect(() => startRun({ id: "x", kind: "solo", questionIds: ids(5) }, T0)).toThrow();
+    expect(() => startRun({ id: "x", kind: "solo", questionIds: ids(5) }, m(T0))).toThrow();
   });
 
   test("solo can start at zero dots: nothing in the rules gates entry", () => {
@@ -26,10 +30,10 @@ describe("§7 solo and recheck rules", () => {
   });
 
   test("one submitted answer per question, in order; no backtracking", () => {
-    let r = submit(solo(), "q0", true, T0 + 1);
-    expect(submit(r, "q0", false, T0 + 2).submissions).toHaveLength(1);
-    expect(submit(r, "q5", true, T0 + 2).submissions).toHaveLength(1);
-    r = submit(r, "q1", false, T0 + 3);
+    let r = submit(solo(), "q0", true, m(T0 + 1));
+    expect(submit(r, "q0", false, m(T0 + 2)).submissions).toHaveLength(1);
+    expect(submit(r, "q5", true, m(T0 + 2)).submissions).toHaveLength(1);
+    r = submit(r, "q1", false, m(T0 + 3));
     expect(r.submissions.map((s) => s.questionId)).toEqual(["q0", "q1"]);
   });
 
@@ -48,7 +52,7 @@ describe("§7 solo and recheck rules", () => {
 
   test("answers after the deadline are ignored", () => {
     const r = solo();
-    expect(submit(r, "q0", true, r.deadline).submissions).toHaveLength(0);
+    expect(submit(r, "q0", true, m(r.deadline)).submissions).toHaveLength(0);
   });
 
   test("warns in the last 20 seconds", () => {
@@ -98,13 +102,13 @@ describe("§7 conversion to practice", () => {
     const once = convert(answer(solo(), [true]), T0 + 5_000, "exited");
     expect(convert(once.run, T0 + 6_000, "converted").attempts).toEqual([]);
     expect(finish(once.run, T0 + 7_000).status).toBe("exited");
-    expect(submit(once.run, "q1", true, T0 + 7_000).submissions).toHaveLength(1);
+    expect(submit(once.run, "q1", true, m(T0 + 7_000)).submissions).toHaveLength(1);
   });
 
   test("converted answers count in the practice window but earn no dots", () => {
     const { attempts } = convert(answer(solo(), Array(10).fill(true).slice(0, 9)), T0 + 20_000, "converted");
     const extra = convert(answer({ ...solo(), id: "solo-2" }, [true]), T0 + 30_000, "converted").attempts;
     expect(practiceScore([...attempts, ...extra])).toBe(10);
-    expect(readiness([...attempts, ...extra], [T0]).dots).toBe(0);
+    expect(readiness([...attempts, ...extra], [m(T0)]).dots).toBe(0);
   });
 });

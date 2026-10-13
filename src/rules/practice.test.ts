@@ -14,10 +14,11 @@ import {
   type PracticeAttempt,
   type Reason,
 } from "./practice.ts";
+import type { Moment } from "./moment.ts";
 
 // Every action happens at the next tick, so timelines read top to bottom.
 let clock = 0;
-const tick = () => ++clock * 1000;
+const tick = (): Moment => ({ at: ++clock * 1000, seq: clock });
 const fresh = (origin: PracticeAttempt["origin"] = "practice") => startAttempt(`a${clock}`, `q${clock}`, origin, tick());
 const never = () => 0.99; // never sampled for verification
 const always = () => 0; // always sampled
@@ -157,6 +158,22 @@ describe("§6 honesty and readiness dots", () => {
     const pending = unaided("move", always);
     const runStart = tick();
     expect(readiness([verify(pending, true, tick())], [runStart]).dots).toBe(1);
+  });
+
+  test("a later miss on a resumed question resets dots earned since its first miss", () => {
+    const first = miss(fresh());
+    const claims = [unaided("move"), unaided("move")];
+    expect(readiness([first, ...claims], []).dots).toBe(2);
+    expect(readiness([miss(first), ...claims], []).dots).toBe(0);
+  });
+
+  test("events sharing a wall-clock time keep their true order", () => {
+    const pending = unaided("move", always);
+    const same = tick();
+    const verifiedFirst = verify(pending, true, { at: same.at, seq: same.seq });
+    expect(readiness([verifiedFirst], [{ at: same.at, seq: same.seq + 1 }]).dots).toBe(0);
+    const runFirst = verify(pending, true, { at: same.at, seq: same.seq + 1 });
+    expect(readiness([runFirst], [{ at: same.at, seq: same.seq }]).dots).toBe(1);
   });
 
   test("voluntary Show me or accepted AI before answering resets dots", () => {
