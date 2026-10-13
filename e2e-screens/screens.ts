@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { answerTutorials } from "../e2e/tutorial";
+import { cycle, finishedRun, seedRecords } from "../e2e/results-helpers";
 
 // Add every new screen here: { name, path } at 360x800, plus optional wider captures.
 export type Screen = { name: string; path: string; width?: number; height?: number; /** Runs after load and before the capture, e.g. to reach a later step. */ actions?: (page: Page) => Promise<void> };
@@ -324,3 +325,11 @@ for (const [suffix, width, height] of [["", 360, 800], ["-1366", 1366, 768]] as 
     { name: `recheck-fading${suffix}`, path: "/", width, height, actions: withCycle(recheckCycle("fading", ["missed", "paused", "paused"]), "/") },
   );
 }
+// Step 12: results, at phone and laptop widths. Runs are seeded straight into storage (the run screen is step 11).
+const resultScreens: [string, (page: Page) => Promise<void>][] = [
+  ["result-passed", (p) => seedRecords(p, [finishedRun("a", "solo", 9, { n: 1, practice: 9 }), cycle("proved", "a", "2026-10-13", "2026-10-16")], "/result/a")],
+  ["result-not-yet", (p) => seedRecords(p, [finishedRun("a", "solo", 5, { n: 1, practice: 9, daysAgo: 4 }), finishedRun("b", "solo", 7, { n: 2, practice: 9 })], "/result/b")],
+  ["result-misses", async (p) => (await seedRecords(p, [finishedRun("a", "solo", 7, { n: 1, practice: 9 })], "/result/a"), await p.getByRole("button", { name: "See your misses" }).click())],
+];
+for (const [name, actions] of resultScreens)
+  for (const [suffix, width, height] of [["", 360, 800], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions });

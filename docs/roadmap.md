@@ -63,7 +63,7 @@ contract. Bring supporting files into this repository only when needed.
 - [x] **11. Build solo checks.** Ten questions, no help/Bo, ten-minute timer,
   wake lock with fallback, absence grace period, timeout and exit confirmation.
   Done: scores, practice conversion and 8/10 proof work without help leakage.
-- [ ] **12. Build results and gap cards.** First-score state, absent-practice-score
+- [x] **12. Build results and gap cards.** First-score state, absent-practice-score
   state, saved comparisons, passed/not-yet outcomes and post-run misses review.
   Done: results show only real scores and qualifying improvement claims.
 - [x] **13. Build rechecks and recovery.** Five no-help questions, five-minute

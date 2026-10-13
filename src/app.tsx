@@ -5,6 +5,7 @@ import { Practice } from "./ui/practice/Practice";
 import { SoloEntryScreen } from "./ui/solo/SoloScreens";
 import { RunScreen } from "./ui/runs/Run";
 import { RecheckEntry } from "./ui/proof/RecheckEntry";
+import { Result } from "./ui/results/Result";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 import { Gate } from "./ui/onboarding/Gate";
@@ -29,6 +30,7 @@ const GatedSoloEntry = gated(SoloEntryScreen);
 // /run/solo and /run/recheck: focus layout, no shell (step 13 links to /run/recheck).
 const GatedRun = ({ kind }: { kind?: string }) => <Gate><RunScreen kind={kind} /></Gate>;
 const GatedRecheckEntry = gated(RecheckEntry);
+const GatedResult = gated(Result);
 
 export function App() {
   return (
@@ -40,6 +42,7 @@ export function App() {
           <Route path="/solo-entry" component={GatedSoloEntry} />
           <Route path="/run/:kind" component={GatedRun} />
           <Route path="/recheck-entry" component={GatedRecheckEntry} />
+          <Route path="/result/:runId" component={GatedResult} />
           <Route path="/settings" component={GatedSettings} />
           {kitRoute}
           <Route default component={NotFound} />
