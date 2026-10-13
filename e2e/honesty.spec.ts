@@ -196,3 +196,37 @@ test("the round summary offers the solo check", async ({ page }) => {
   await page.getByRole("link", { name: "Solo check" }).click();
   await expect(page.getByRole("heading", { name: "You're not solo-ready yet." })).toBeVisible();
 });
+
+test("Text only shows no Bo on the nudge, correct moment, verify and summary", async ({ page }) => {
+  await seed(page, { ...LEARNER, coach: "text" });
+  const noBo = () => expect(page.locator("img.bo")).toHaveCount(0);
+  // Question 1: a miss shows the nudge, then the helped correct moment.
+  const q = await current(page);
+  await tile(page, q.options.find((o: string) => o !== q.answer)!).click();
+  await page.getByRole("button", { name: "Check" }).click();
+  await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
+  await noBo();
+  await page.getByRole("button", { name: "Try again" }).click();
+  await tile(page, q.answer).click();
+  await page.getByRole("button", { name: "Check" }).click();
+  await expect(page.getByRole("heading", { name: "Correct" })).toBeVisible();
+  await noBo();
+  await page.getByRole("button", { name: /^Next/ }).click();
+  // Question 2: a sampled move claim shows the verify prompt.
+  await correct(page);
+  await noBo();
+  await claimMove(page, 0.1);
+  await expect(page.getByRole("heading", { name: "Show us. Tap the part you covered." })).toBeVisible();
+  await noBo();
+  await page.locator(".hn-words button").first().click();
+  await page.getByRole("button", { name: /^Next/ }).click();
+  // Questions 3 to 5, then the summary.
+  for (let i = 0; i < 3; i++) {
+    await correct(page);
+    await noBo();
+    await page.getByRole("radio", { name: "I guessed" }).click();
+    await page.getByRole("button", { name: /^Next/ }).click();
+  }
+  await expect(page.getByRole("heading", { name: "Round done" })).toBeVisible();
+  await noBo();
+});

@@ -33,6 +33,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   const { attempt, next, update, saveLearner, help, openMove, blocked } = ctx;
   const { store } = useProgress();
   const learner = store.progress.learner!;
+  const bo = learner.coach === "character"; // Text only shows no Bo anywhere
   // Readiness counts this attempt as it is now, so the message never waits for the save to land.
   const attempts = attemptsOf(store.progress).filter((a) => a.id !== attempt.id).concat(attempt);
   const { dots, offerMove } = readiness(attempts, runStartsOf(store.progress));
@@ -69,7 +70,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   if (phase === "plain")
     return (
       <div class="qv-correct">
-        <Bo pose="pleased" size={96} />
+        {bo && <Bo pose="pleased" size={96} />}
         <h2 class="qv-correct-word" tabIndex={-1} ref={heading}><Icon name="check" size={24} /> Correct</h2>
         <Button disabled={blocked} onClick={next}>Next</Button>
       </div>
@@ -91,7 +92,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
             </p>
           )}
           <div class="hn-ask">
-            <Bo pose="idle" size={48} />
+            {bo && <Bo pose="idle" size={48} />}
             <h3 tabIndex={-1} ref={heading}>How did you know?</h3>
           </div>
           <div class="hn-choices" role="radiogroup" aria-label="How did you know?" onKeyDown={arrowFocus}>
@@ -108,7 +109,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
       {showChips && (
         <>
           <div class="hn-ask">
-            <Bo pose={phase === "verify" ? "thinking" : "idle"} size={48} />
+            {bo && <Bo pose={phase === "verify" ? "thinking" : "idle"} size={48} />}
             <h3 tabIndex={-1} ref={heading}>Show us. Tap the part you covered.</h3>
           </div>
           <div class="hn-words" role="group" aria-label="The sentence. Tap the part you covered.">

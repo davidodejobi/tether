@@ -76,7 +76,7 @@ function FirstWin({ learner, onYours, onSkip, busy, error }: { learner: Learner;
   return (
     <>
       <div class="ob-body ob-center">
-        <Bo pose={learner.coach === "character" ? "pleased" : "idle"} size={140} />
+        {learner.coach === "character" && <Bo pose="pleased" size={140} />}
         <StepHeading>First win</StepHeading>
         <p class="ob-lead">You finished the introduction. You know the move now: cover the side phrase, read what's left, match the verb.</p>
         <div class="ls-card ob-left">

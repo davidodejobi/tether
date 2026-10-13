@@ -88,7 +88,7 @@ function Summary({ onAnother, onDone }: { onAnother(): void; onDone(): void }) {
   const { dots } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
   return (
     <main class="pr-summary">
-      <Bo pose={right >= 3 ? "pleased" : "concerned"} size={120} />
+      {store.progress.learner?.coach === "character" && <Bo pose={right >= 3 ? "pleased" : "concerned"} size={120} />}
       <h1>Round done</h1>
       <p class="pr-lead">{right} of {ROUND_SIZE} right on the first try.</p>
       <ol class="pr-marks" aria-label="Each question">

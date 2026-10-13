@@ -283,7 +283,7 @@ export function QuestionView(props: QuestionViewProps) {
         {done && (
           props.afterCorrect ? props.afterCorrect({ attempt, next: () => props.onDone(attempt), update, saveLearner, help, blocked, openMove: openSheet }) : (
             <div class="qv-correct">
-              <Bo pose="pleased" size={96} />
+              {learner.coach === "character" && <Bo pose="pleased" size={96} />}
               <p class="qv-correct-word"><Icon name="check" size={24} /> Correct</p>
               <Button disabled={blocked} onClick={() => props.onDone(attempt)}>Next</Button>
             </div>
