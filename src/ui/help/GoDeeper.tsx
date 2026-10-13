@@ -16,7 +16,7 @@ const NOT_SUBJECT: Record<Lang, string> = {
   pcm: "Na no be the subject. Cover the side talk, look again.",
 };
 
-export function GoDeeper({ question: q, lang, coach, onFinish }: { question: Question; lang: Lang; coach: "character" | "text"; onFinish(): void }) {
+export function GoDeeper({ question: q, lang, coach, blocked, onFinish }: { question: Question; lang: Lang; coach: "character" | "text"; blocked: boolean; onFinish(): void }) {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [hint, setHint] = useState("");
   const heading = useRef<HTMLHeadingElement>(null);
@@ -37,7 +37,7 @@ export function GoDeeper({ question: q, lang, coach, onFinish }: { question: Que
       <div class="hp" aria-live="off">
         <CoachBubble mode={coach} pose="pleased">You rebuilt it yourself. That still counts as with help.</CoachBubble>
         <h2 class="hp-prompt" ref={heading} tabIndex={-1}>{q.subject}, {q.covered}, {q.answer} {q.predicate}</h2>
-        <Button onClick={onFinish}>Back to the question</Button>
+        <Button disabled={blocked} onClick={onFinish}>Back to the question</Button>
       </div>
     );
 

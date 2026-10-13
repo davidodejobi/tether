@@ -24,10 +24,11 @@ export function HelpedQuestion(props: QuestionViewProps) {
   const [playing, setPlaying] = useState(false);
   const question = props.question;
 
+  // Show me plays only once its help mark is saved; if the save fails, the question stays and Retry appears.
   const open = ({ attempt, help }: ShowMeContext) => {
     if (attempt.completedAt !== undefined) return; // free looks after a correct answer belong to step 10
-    if (!attempt.help.includes("showMe")) help("showMe");
-    setPlaying(true);
+    if (attempt.help.includes("showMe")) setPlaying(true);
+    else help("showMe", () => setPlaying(true));
   };
   const close = () => {
     setPlaying(false);
@@ -47,7 +48,7 @@ export function HelpedQuestion(props: QuestionViewProps) {
 }
 
 function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; question: Question; coach: "character" | "text"; lang: "en" | "pcm"; onShowMe(): void }) {
-  const { attempt, misses, retry, help } = ctx;
+  const { attempt, misses, retry, help, blocked } = ctx;
   const copy = pack.coach[lang];
   const unreviewed = lang === "pcm" && pack.review.pcm.status !== "approved";
   const first = useRef<HTMLButtonElement>(null);
@@ -59,10 +60,8 @@ function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; que
         question={question}
         lang={lang}
         coach={coach}
-        onFinish={() => {
-          help("goDeeper");
-          setTimeout(retry, 0);
-        }}
+        blocked={blocked}
+        onFinish={() => help("goDeeper", () => setTimeout(retry, 0))}
       />
     );
   if (helped(attempt))
@@ -72,7 +71,7 @@ function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; que
           {misses > 0 ? "Not quite. Pick again. " : "Now put it in yourself. "}
           Help counts as with help, so this one won't fill a dot.
         </CoachBubble>
-        {misses > 0 && <button ref={first} type="button" class="btn btn-primary" onClick={retry}>Try again</button>}
+        {misses > 0 && <button ref={first} type="button" class="btn btn-primary" disabled={blocked} onClick={retry}>Try again</button>}
       </div>
     );
   return (
@@ -81,11 +80,11 @@ function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; que
       <div class="hp-actions">
         {misses >= 2 ? (
           <>
-            <button ref={first} type="button" class="btn btn-primary" onClick={onShowMe}>Show me</button>
-            <Button variant="secondary" onClick={retry}>Try again</Button>
+            <button ref={first} type="button" class="btn btn-primary" disabled={blocked} onClick={onShowMe}>Show me</button>
+            <Button variant="secondary" disabled={blocked} onClick={retry}>Try again</Button>
           </>
         ) : (
-          <button ref={first} type="button" class="btn btn-primary" onClick={retry}>Try again</button>
+          <button ref={first} type="button" class="btn btn-primary" disabled={blocked} onClick={retry}>Try again</button>
         )}
       </div>
     </div>

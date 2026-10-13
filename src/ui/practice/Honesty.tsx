@@ -30,8 +30,8 @@ function chips(q: Question): Chip[] {
 }
 
 export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Question }) {
-  const { attempt, next, update, help, openMove } = ctx;
-  const { store, save } = useProgress();
+  const { attempt, next, update, saveLearner, help, openMove, blocked } = ctx;
+  const { store } = useProgress();
   const learner = store.progress.learner!;
   // Readiness counts this attempt as it is now, so the message never waits for the save to land.
   const attempts = attemptsOf(store.progress).filter((a) => a.id !== attempt.id).concat(attempt);
@@ -52,26 +52,26 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   useEffect(() => heading.current?.focus(), [phase]);
 
   // Show the honesty rule once. Decided at first render; the flag is saved at once so a reload never repeats it.
+  // It goes through the question view's guarded save: a failure shows Retry and blocks the reason choices.
   const [intro] = useState(() => phase === "reason" && !learner.honestyIntroSeen);
   useEffect(() => {
-    if (!intro) return;
-    // The answer's own save may still be running (the store takes one save at a time), so try again briefly.
-    const mark = (left: number) => save({ learner: { ...learner, honestyIntroSeen: true } }).catch(() => left > 0 && setTimeout(() => mark(left - 1), 250));
-    void mark(4);
+    if (intro) saveLearner({ ...learner, honestyIntroSeen: true });
   }, []);
 
   const choose = (reason: Reason) => update(giveReason(attempt, reason, Math.random, store.moment(Date.now())));
   const tap = (i: number, covered: boolean) => {
-    setTapped(i);
-    update(verify(attempt, covered, store.moment(Date.now())));
+    // The tapped word is marked only once the verification is saved.
+    update(verify(attempt, covered, store.moment(Date.now())), () => setTapped(i));
   };
+  // A free look plays only once its mark is saved.
+  const freeLook = () => (attempt.freeLook ? setPlaying(true) : help("showMe", () => setPlaying(true)));
 
   if (phase === "plain")
     return (
       <div class="qv-correct">
         <Bo pose="pleased" size={96} />
         <h2 class="qv-correct-word" tabIndex={-1} ref={heading}><Icon name="check" size={24} /> Correct</h2>
-        <Button onClick={next}>Next</Button>
+        <Button disabled={blocked} onClick={next}>Next</Button>
       </div>
     );
 
@@ -96,7 +96,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
           </div>
           <div class="hn-choices" role="radiogroup" aria-label="How did you know?" onKeyDown={arrowFocus}>
             {CHOICES.map((c, i) => (
-              <button key={c.reason} type="button" role="radio" aria-checked="false" tabIndex={i === 0 ? 0 : -1} class="hn-choice" onClick={() => choose(c.reason)}>
+              <button key={c.reason} type="button" role="radio" aria-checked="false" tabIndex={i === 0 ? 0 : -1} class="hn-choice" disabled={blocked} onClick={() => choose(c.reason)}>
                 {c.label}
               </button>
             ))}
@@ -119,7 +119,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
                   key={i}
                   type="button"
                   class={`hn-word ${result ? `hn-word-${result}` : ""}`}
-                  disabled={phase === "done"}
+                  disabled={phase === "done" || blocked}
                   aria-label={result === "covered" ? `${w.word}, covered phrase` : result === "wrong" ? `${w.word}, not the covered phrase` : w.word}
                   onClick={() => tap(i, w.part === "covered")}
                 >
@@ -149,13 +149,13 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
           {offerMove && !moveClaim && (
             <div class="hn-hint">
               <p>Try the move next time: cover the side phrase, find the subject, match its verb.</p>
-              <Button variant="secondary" icon="lightbulb" onClick={openMove}>Open The move</Button>
+              <Button variant="secondary" icon="lightbulb" disabled={blocked} onClick={openMove}>Open The move</Button>
             </div>
           )}
           {playing && <ShowMe question={q} lang={learner.lang} coach={learner.coach} doneLabel="Done" note="Free look: nothing lost" onDone={() => setPlaying(false)} />}
           <div class="hn-actions">
-            <Button variant="secondary" icon="play" onClick={() => (attempt.freeLook || help("showMe"), setPlaying(true))}>{attempt.freeLook ? "Watch again" : "Show me, free look"}</Button>
-            <Button onClick={next}>{attempt.freeLook ? "Next question" : "Next"}</Button>
+            <Button variant="secondary" icon="play" disabled={blocked} onClick={freeLook}>{attempt.freeLook ? "Watch again" : "Show me, free look"}</Button>
+            <Button disabled={blocked} onClick={next}>{attempt.freeLook ? "Next question" : "Next"}</Button>
           </div>
         </>
       )}

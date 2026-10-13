@@ -9,16 +9,18 @@ type Props = {
   value: number | null;
   /** Index of the tile checked as correct; locks the group. */
   correct?: number | null;
+  /** A save is running or waiting for Retry: tiles cannot be changed. */
+  disabled?: boolean;
   onSelect: (index: number) => void;
 };
 
 const LETTERS = "ABCD";
 
 // Single-choice radio group. Selecting only fills the blank; checking is a separate step.
-export function AnswerTiles({ tiles, value, correct = null, onSelect }: Props) {
+export function AnswerTiles({ tiles, value, correct = null, disabled = false, onSelect }: Props) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const struck = tiles.map((t) => !!t.struck);
-  const locked = correct !== null;
+  const locked = correct !== null || disabled;
   const stop = value !== null && !struck[value] ? value : struck.findIndex((s) => !s);
 
   const pick = (i: number) => {

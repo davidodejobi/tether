@@ -4,22 +4,26 @@
 // Extension slots (steps 9 and 10 plug in here instead of changing the state machine):
 //   afterMiss({ attempt, misses, retry, help, finish })  shown after any wrong check, inside a live region.
 //       retry()  clears the selection and focuses the first usable tile.
-//       help(kind)  records useHelp(kind) (Show me, Go deeper, AI) and saves it.
+//       help(kind)  records useHelp(kind) (Show me, Go deeper, AI) and saves it. `then` runs only once it is saved (also after a Retry).
+//       blocked  a save is running or waiting for Retry: disable every control that mutates or advances.
 //       finish()  leaves this question unfinished (saved) and calls onExit.
 //       Default: "Not quite. Try again."
 //   hideTiles(attempt, misses)  true hides the answer tiles (step 9: third miss). Default: never.
 //   onShowMe({ attempt, help })  runs on the Show me button or S. Default: no-op, button stays visible.
 //   afterCorrect({ attempt, next, update, help, openMove })  shown once the answer is correct; next() calls onDone(attempt).
-//       update(attempt) saves a changed attempt (reason, verification). Default: the correct moment plus Next.
+//       update(attempt, then?) saves a changed attempt (reason, verification); `then` as for help. blocked as above.
+//       saveLearner(learner) saves a learner change through the same guard. Default: the correct moment plus Next.
 //       Step 10 (src/ui/practice/Honesty.tsx) inserts How did you know before next().
 // Every checked answer is saved before the slots run. Selecting or changing a tile is never an attempt.
+// Save rule (spec section 13): the screen changes only after save() resolves. While a save runs, or a failed one waits
+// for Retry (the same batch), every mutating or advancing control is disabled. Close stays enabled.
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { stripDisguise } from "../../content/strip-disguise.ts";
 import type { Pack } from "../../content/types.ts";
 import { sentence, type Question } from "../../content/generate.ts";
 import { check, openMoveSheet, startAttempt, useHelp, readiness, type AnswerHelp, type Origin, type PracticeAttempt } from "../../rules/practice.ts";
-import { attemptsOf, runStartsOf, type SavedAttempt } from "../../storage/progress.ts";
+import { attemptsOf, runStartsOf, type Batch, type Learner, type SavedAttempt } from "../../storage/progress.ts";
 import { Bo } from "../components/Bo";
 import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
@@ -36,20 +40,26 @@ export interface MissContext {
   attempt: PracticeAttempt;
   misses: number;
   retry(): void;
-  help(kind: HelpKind): void;
+  help(kind: HelpKind, then?: () => void): void;
+  /** A save is running or waiting for Retry: disable controls that mutate or advance. */
+  blocked: boolean;
   finish(): void;
 }
 export interface ShowMeContext {
   attempt: PracticeAttempt;
-  help(kind: HelpKind): void;
+  help(kind: HelpKind, then?: () => void): void;
 }
 export interface CorrectContext {
   attempt: PracticeAttempt;
   next(): void;
   /** Replaces this attempt with a changed copy (a reason, a verification) and saves it. */
-  update(next: PracticeAttempt): void;
+  update(next: PracticeAttempt, then?: () => void): void;
+  /** Saves a learner change (the honesty-intro flag) through the same guard. */
+  saveLearner(next: Learner): void;
   /** Free look: help("showMe") after the answer is correct sets freeLook only. */
-  help(kind: HelpKind): void;
+  help(kind: HelpKind, then?: () => void): void;
+  /** A save is running or waiting for Retry: disable controls that mutate or advance. */
+  blocked: boolean;
   /** Opens The move sheet. */
   openMove(): void;
 }
@@ -97,7 +107,7 @@ export function QuestionView(props: QuestionViewProps) {
   );
   const [struck, setStruck] = useState<string[]>(props.resume?.struck ?? []);
   const [selected, setSelected] = useState<number | null>(null);
-  const [failed, setFailed] = useState<(() => void) | null>(null);
+  const [failed, setFailed] = useState<(() => Promise<boolean>) | null>(null);
   const [busy, setBusy] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const root = useRef<HTMLDivElement>(null);
@@ -107,66 +117,73 @@ export function QuestionView(props: QuestionViewProps) {
   const tiles = q.options.map((label) => ({ label, struck: struck.includes(label) }));
   const hidden = !done && (props.hideTiles?.(attempt, misses) ?? false);
 
-  // Saves the attempt with the exact question shown. One save at a time (store refuses overlapping saves).
-  const persist = async (next: PracticeAttempt, nextStruck: string[]) => {
-    const go = async () => {
+  const blocked = busy || !!failed;
+
+  // Saves one batch, then (and only then) runs onSaved, which changes the screen. One save at a time (the store refuses
+  // overlapping saves). On failure the screen stays and Retry runs the same batch again.
+  const commit = (batch: Batch, onSaved?: () => void): Promise<boolean> => {
+    const go = async (): Promise<boolean> => {
       setBusy(true);
       try {
-        await save({ attempts: [{ attempt: next, question: q, struck: nextStruck }] });
+        await save(batch);
+        onSaved?.();
         setFailed(null);
+        return true;
       } catch {
         setFailed(() => go);
+        return false;
       } finally {
         setBusy(false);
       }
     };
-    await go();
+    return go();
   };
+  // The attempt is saved with the exact question shown.
+  const attemptBatch = (next: PracticeAttempt, nextStruck: string[]): Batch => ({ attempts: [{ attempt: next, question: q, struck: nextStruck }] });
 
   // A started question is saved at once so a reload or exit brings it back.
   useEffect(() => {
-    if (!store.progress.attempts.has(attempt.id)) void persist(attempt, struck);
+    if (!store.progress.attempts.has(attempt.id)) void commit(attemptBatch(attempt, struck));
   }, []);
 
   const doCheck = () => {
-    if (selected === null || done || busy) return;
+    if (selected === null || done || blocked) return;
     const word = q.options[selected]!;
     const ok = word === q.answer;
     const next = check(attempt, ok, store.moment(Date.now()));
     const nextStruck = ok ? struck : [...struck, word];
-    setAttempt(next);
-    setStruck(nextStruck);
-    if (!ok) setSelected(null);
-    void persist(next, nextStruck);
+    void commit(attemptBatch(next, nextStruck), () => {
+      setAttempt(next);
+      setStruck(nextStruck);
+      if (!ok) setSelected(null);
+    });
   };
 
-  const help = (kind: HelpKind) => {
-    const next = useHelp(attempt, kind, store.moment(Date.now()));
-    setAttempt(next);
-    void persist(next, struck);
+  const update = (next: PracticeAttempt, then?: () => void) => {
+    if (!blocked) void commit(attemptBatch(next, struck), () => (setAttempt(next), then?.()));
   };
-  const update = (next: PracticeAttempt) => {
-    setAttempt(next);
-    void persist(next, struck);
+  const help = (kind: HelpKind, then?: () => void) => update(useHelp(attempt, kind, store.moment(Date.now())), then);
+  const saveLearner = (next: Learner) => {
+    if (!blocked) void commit({ learner: next });
   };
-  const showMe = () => props.onShowMe?.({ attempt, help });
+  const showMe = () => {
+    if (!blocked) props.onShowMe?.({ attempt, help });
+  };
   const retry = () => {
     setSelected(null);
     root.current?.querySelector<HTMLElement>('[role="radio"]:not([aria-disabled])')?.focus();
   };
 
   const openSheet = () => {
+    if (blocked) return;
     const next = openMoveSheet(attempt);
-    if (next !== attempt) {
-      setAttempt(next);
-      void persist(next, struck);
-    }
-    dialog.current?.showModal();
+    if (next === attempt) dialog.current?.showModal();
+    else void commit(attemptBatch(next, struck), () => (setAttempt(next), dialog.current?.showModal()));
   };
   const closeSheet = () => dialog.current?.close();
 
   const setLang = (lang: "en" | "pcm") => {
-    if (lang !== learner.lang) void save({ learner: { ...learner, lang } }).catch(() => {});
+    if (lang !== learner.lang && !blocked) void commit({ learner: { ...learner, lang } });
   };
 
   // Keyboard: 1-4, arrows and Space select; Enter checks; R reads; S is Show me.
@@ -184,7 +201,7 @@ export function QuestionView(props: QuestionViewProps) {
     const k = e.key.toLowerCase();
     if (k === "r") speak(sentence(q, "blank"));
     else if (k === "s" && origin === "practice") showMe();
-    else if (!onTile && !done && !hidden) {
+    else if (!onTile && !done && !hidden && !blocked) {
       const to = targetTile(e.key, selected ?? 0, tiles.map((x) => !!x.struck));
       if (to !== null) {
         e.preventDefault();
@@ -220,7 +237,7 @@ export function QuestionView(props: QuestionViewProps) {
         )}
         <div class="qv-lang" role="group" aria-label="Coach language">
           {(["en", "pcm"] as const).map((l) => (
-            <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}>
+            <button key={l} type="button" aria-pressed={lang === l} disabled={blocked} onClick={() => setLang(l)}>
               {l === "en" ? "EN" : "PCM"}
             </button>
           ))}
@@ -230,7 +247,7 @@ export function QuestionView(props: QuestionViewProps) {
       </header>
 
       <main class="qv-main">
-        <button type="button" class="qv-move" onClick={openSheet}>
+        <button type="button" class="qv-move" disabled={blocked} onClick={openSheet}>
           <Icon name="lightbulb" size={20} />
           <span>The move: {pack.title}</span>
           <Icon name="chevron-right" size={20} />
@@ -244,27 +261,27 @@ export function QuestionView(props: QuestionViewProps) {
         )}
 
         <div class="qv-status" role="status" aria-live="polite">
-          {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, finish: props.onExit })}
+          {done ? <span class="sr-only">Correct.</span> : (misses > 0 || (props.afterMiss && attempt.help.length > 0)) && (props.afterMiss ?? defaultMiss)({ attempt, misses, retry, help, blocked, finish: props.onExit })}
         </div>
 
         {failed && (
           <div class="qv-fail" role="alert">
             <span>Couldn't save this answer. Your progress may not be kept.</span>
-            <Button variant="secondary" onClick={failed}>Retry</Button>
+            <Button variant="secondary" disabled={busy} onClick={failed}>Retry</Button>
           </div>
         )}
 
         {!hidden && (
-          <AnswerTiles tiles={tiles} value={done ? q.options.indexOf(q.answer) : selected} correct={done ? q.options.indexOf(q.answer) : null} onSelect={setSelected} />
+          <AnswerTiles tiles={tiles} value={done ? q.options.indexOf(q.answer) : selected} correct={done ? q.options.indexOf(q.answer) : null} disabled={blocked} onSelect={setSelected} />
         )}
         <p class="qv-keys" aria-hidden="true">1-4 pick · Enter check · R read · S show me</p>
 
         {done && (
-          props.afterCorrect ? props.afterCorrect({ attempt, next: () => props.onDone(attempt), update, help, openMove: openSheet }) : (
+          props.afterCorrect ? props.afterCorrect({ attempt, next: () => props.onDone(attempt), update, saveLearner, help, blocked, openMove: openSheet }) : (
             <div class="qv-correct">
               <Bo pose="pleased" size={96} />
               <p class="qv-correct-word"><Icon name="check" size={24} /> Correct</p>
-              <Button onClick={() => props.onDone(attempt)}>Next</Button>
+              <Button disabled={blocked} onClick={() => props.onDone(attempt)}>Next</Button>
             </div>
           )
         )}
@@ -273,8 +290,8 @@ export function QuestionView(props: QuestionViewProps) {
       {!done && (
         <footer class="qv-bar">
           {learner.coach === "character" && <Bo pose={misses > 1 ? "concerned" : "idle"} size={48} />}
-          <Button variant="secondary" onClick={showMe}>Show me</Button>
-          <Button disabled={selected === null || busy} onClick={doCheck}>Check</Button>
+          <Button variant="secondary" disabled={blocked} onClick={showMe}>Show me</Button>
+          <Button disabled={selected === null || blocked} onClick={doCheck}>Check</Button>
         </footer>
       )}
 

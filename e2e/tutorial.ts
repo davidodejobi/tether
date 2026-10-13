@@ -17,12 +17,14 @@ export async function answerTutorials(page: Page) {
       await tile.click();
       await page.getByRole("button", { name: "Check" }).click();
       const next = page.getByRole("button", { name: "Next" });
-      await expect(next.or(page.getByRole("button", { name: "Try again" }))).toBeVisible();
+      // Try again stays on screen but disabled while the check is being saved, so wait for it to be usable.
+      const again = page.getByRole("button", { name: "Try again" }).and(page.locator(":enabled"));
+      await expect(next.or(again)).toBeVisible();
       if (await next.isVisible()) {
         await next.click();
         break;
       }
-      await page.getByRole("button", { name: "Try again" }).click();
+      await again.click();
     }
   }
 }
