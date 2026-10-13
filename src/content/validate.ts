@@ -1,4 +1,4 @@
-import { allCombos, buildQuestion, lessonCombo, practicePool, sentence, SOLO_SHAPE } from "./generate.ts";
+import { allCombos, buildQuestion, lessonCombo, practicePool, RULE_ID, sentence, SOLO_SHAPE } from "./generate.ts";
 import type { CoachCopy, Lang, Linker, Pack } from "./types.ts";
 
 export interface ValidationResult {
@@ -12,6 +12,7 @@ const LINKERS: Linker[] = ["as well as", "along with", "together with", "in addi
 const SHOW_ME_PLACEHOLDERS = new Set(["{covered}", "{subject}", "{count}", "{answer}"]);
 const MIN_SENTENCES = 50;
 const LANGS: Lang[] = ["en", "pcm"];
+const NUMBERS: readonly string[] = ["sg", "pl"];
 // Every language must have exactly these coach keys (CoachCopy, flattened).
 const COACH_KEYS = [
   "rule",
@@ -53,6 +54,16 @@ export function validatePack(pack: Pack): ValidationResult {
     ...pack.verbs.flatMap((v) => v.predicates.map((p) => `predicate:${p.id}`)),
   ];
   for (const id of new Set(ids.filter((id, i) => ids.indexOf(id) !== i))) err(`Duplicate ID ${id}`);
+
+  if (pack.ruleId !== RULE_ID) err(`ruleId "${pack.ruleId}" is not the implemented rule "${RULE_ID}"`);
+
+  // Tags must be ones the rule understands
+  for (const s of pack.subjects) if (!NUMBERS.includes(s.number)) err(`subject ${s.id}: unknown number "${s.number}"`);
+  for (const p of pack.sidePhrases) {
+    if (!NUMBERS.includes(p.number)) err(`side phrase ${p.id}: unknown number "${p.number}"`);
+    if (!LINKERS.includes(p.linker)) err(`side phrase ${p.id}: unknown linker "${p.linker}"`);
+  }
+  if (!NUMBERS.includes(pack.lessonExample.number)) err(`lessonExample: unknown number "${pack.lessonExample.number}"`);
 
   // Word-list hygiene
   const clean = (where: string, t: string) => {

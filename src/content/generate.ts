@@ -1,5 +1,8 @@
 import type { NumberTag, Pack, Verb } from "./types.ts";
 
+/** The only rule this generator implements; a pack must name it. */
+export const RULE_ID = "verb-matches-subject-before-side-phrase";
+
 /** Returns a float in [0, 1). Math.random in the app; seeded in tests. */
 export type Rng = () => number;
 

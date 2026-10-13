@@ -138,6 +138,14 @@ describe("validator catches broken packs", () => {
     expect(errorsOf(p)).toMatch(/verb have: empty text/);
   });
 
+  test("unknown number tag or rule identifier", () => {
+    const p = copy();
+    (p.sidePhrases[0] as { number: string }).number = "bad";
+    p.ruleId = "nearest-noun";
+    expect(errorsOf(p)).toMatch(/side phrase two-classmates: unknown number "bad"/);
+    expect(errorsOf(p)).toMatch(/ruleId "nearest-noun" is not the implemented rule/);
+  });
+
   test("unfilled placeholder", () => {
     const p = copy();
     p.sidePhrases[0]!.text = "as well as {poss} friends";
