@@ -241,3 +241,13 @@ SCREENS.push(
   { name: "onboarding-choices", path: "/", actions: to(...choices) },
   { name: "onboarding-partner", path: "/", actions: to(...choices, click(/Someone to see your wins/)) },
 );
+
+// Step 10a: the learner avatar beside the nickname on Home and Settings (fixed seed so captures are comparable).
+const identity = (path: string, patch: Record<string, unknown> = {}) => (page: Page) => seedLearner(page, path, { avatarSeed: "a1b2c3d4e5f6a1b2c3d4e5f6", avatarGen: 2, ...patch });
+for (const [suffix, width, height] of [["", 360, 800], ["-768", 768, 1024], ["-1366", 1366, 768]] as const) {
+  SCREENS.push(
+    { name: `home-avatar${suffix}`, path: "/", width, height, actions: identity("/") },
+    { name: `settings-avatar${suffix}`, path: "/", width, height, actions: identity("/settings", { sounds: true }) },
+  );
+}
+SCREENS.push({ name: "home-avatar-text-only", path: "/", actions: identity("/", { coach: "text" }) });

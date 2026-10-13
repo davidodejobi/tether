@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import { requestPersistentStorage } from "../../platform/storage.ts";
 import { cleanNickname, newLearner, type Learner } from "../../storage/progress.ts";
 import { Bo } from "../components/Bo";
@@ -33,13 +33,15 @@ function Nickname({ onBack, onSaved }: { onBack: () => void; onSaved: () => void
   const [value, setValue] = useState("");
   const [invalid, setInvalid] = useState(false);
   const { error, busy, run } = useAction();
+  const base = useRef<Learner | null>(null); // a retried save reuses the same avatar seed
   const submit = (e: Event) => {
     e.preventDefault();
     const name = cleanNickname(value);
     setInvalid(!name);
     if (!name) return;
     run(async () => {
-      await save({ learner: newLearner(name) });
+      base.current ??= newLearner(name);
+      await save({ learner: { ...base.current, nickname: name } });
       void requestPersistentStorage(); // after the save, never blocking
       onSaved();
     });

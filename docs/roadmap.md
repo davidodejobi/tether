@@ -55,7 +55,7 @@ contract. Bring supporting files into this repository only when needed.
 - [x] **10. Build honesty and readiness.** Equal-weight reason choices, random
   one-in-three verification, free looks, the three-honest-answer hint and readiness.
   Done: honesty preserves dots; solo is reachable both ready and not ready.
-- [ ] **10a. Add local sounds and learner avatars.** Implement spec §14a with
+- [x] **10a. Add local sounds and learner avatars.** Implement spec §14a with
   bundled Cuelume/Blobatar, a saved Sounds toggle and stable local avatar identity.
   Keep the Home/Settings additions small; step 14 completes those screens.
   Done: sounds respect save/mute/speech/proof boundaries, old records remain intact,
