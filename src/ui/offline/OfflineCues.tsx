@@ -14,11 +14,11 @@ export function OfflineCues() {
   return (
     <section class="oc" aria-label="Offline and install">
       {state === "ready" && <p class="oc-line oc-ready"><Icon name="check" size={20} />Ready offline</p>}
-      {state === "preparing" && <p class="oc-line" role="status">Getting ready for offline use...</p>}
-      {state === "needsDownload" && <p class="oc-line" role="status">You are offline. Tether needs one download first. Connect once and open it again.</p>}
+      {state === "preparing" && <p class="oc-line" aria-live="polite">Getting ready for offline use...</p>}
+      {state === "needsDownload" && <p class="oc-line" aria-live="polite">You are offline. Tether needs one download first. Connect once and open it again.</p>}
       {state === "partial" && (
         <div class="oc-row">
-          <p class="oc-line" role="status">Not everything is saved for offline yet.</p>
+          <p class="oc-line" aria-live="polite">Not everything is saved for offline yet.</p>
           <Button variant="secondary" onClick={() => void sw.retry()}>Retry</Button>
         </div>
       )}

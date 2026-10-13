@@ -3,10 +3,12 @@
 const CACHE = "tether-__VERSION__";
 const FILES = __FILES__;
 
+// Module scripts are requested with an Origin header, so a server's Vary: Origin must not hide a stored entry.
+const VARY = { ignoreVary: true };
 const store = async () => {
   const cache = await caches.open(CACHE);
   const missing = [];
-  for (const url of FILES) if (!(await cache.match(url))) missing.push(url);
+  for (const url of FILES) if (!(await cache.match(url, VARY))) missing.push(url);
   return { cache, missing };
 };
 
@@ -50,7 +52,7 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(
     (async () => {
       const cache = await caches.open(CACHE);
-      const hit = await cache.match(request.mode === "navigate" ? "/index.html" : request);
+      const hit = await cache.match(request.mode === "navigate" ? "/index.html" : request, VARY);
       return hit ?? fetch(request);
     })(),
   );
