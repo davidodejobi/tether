@@ -7,7 +7,7 @@ export type Screen = { name: string; path: string; width?: number; height?: numb
 const LEARNER = { nickname: "Amaka", lessonDone: true, onboarded: true, coach: "character", lang: "en", readAloud: false, partner: null, schemaVersion: 1 };
 
 /** Writes a learner into the app's IndexedDB, then opens `path`. */
-export async function seedLearner(page: Page, path: string) {
+export async function seedLearner(page: Page, path: string, patch: Record<string, unknown> = {}) {
   await page.goto("/");
   await page.evaluate(
     (learner) =>
@@ -19,7 +19,7 @@ export async function seedLearner(page: Page, path: string) {
           tx.oncomplete = () => resolve();
         };
       }),
-    LEARNER,
+    { ...LEARNER, ...patch },
   );
   await page.goto(path, { waitUntil: "networkidle" });
 }
@@ -70,6 +70,39 @@ const summary = async (page: Page) => {
   }
 };
 
+// Help ladder (step 9). `missN` makes the nth wrong pick (0-based) and checks; the others open each help view.
+const startAs = (patch: Record<string, unknown>) => (page: Page) => seedLearner(page, "/practice", patch);
+const missN = async (page: Page, n: number) => {
+  const q = await openQuestion(page);
+  await tile(page, q.options.filter((o) => o !== q.answer)[n]!).click();
+  await check(page);
+};
+const tryAgain = (page: Page) => page.getByRole("button", { name: "Try again" }).click();
+const nudge = (patch: Record<string, unknown> = {}) => async (page: Page) => (await startAs(patch)(page), await missN(page, 0));
+const miss2 = async (page: Page) => (await nudge()(page), await tryAgain(page), await missN(page, 1));
+const miss3 = async (page: Page) => (await miss2(page), await tryAgain(page), await missN(page, 2));
+// Opens Show me and stops on beat 1-3 (pausing the timer so the capture is stable).
+const showMe = (beat: 1 | 2 | 3, reduced = false) => async (page: Page) => {
+  if (reduced) await page.emulateMedia({ reducedMotion: "reduce" });
+  await start(page);
+  await openQuestion(page);
+  await page.getByRole("button", { name: "Show me" }).click();
+  const dialog = page.getByRole("dialog", { name: "Show me" });
+  await dialog.waitFor();
+  const pause = dialog.getByRole("button", { name: "Pause" });
+  if (await pause.count()) await pause.click();
+  for (let b = 1; b < beat; b++) await dialog.getByRole("button", { name: "Next" }).click();
+  await page.waitForTimeout(500);
+};
+const putItInYourself = async (page: Page) => (await showMe(3)(page), await page.getByRole("button", { name: "Put it in yourself" }).click());
+const subjectChip = (page: Page) => page.locator(".hp-chip").first();
+const deeper = (step: 1 | 2 | 3, wrong = false) => async (page: Page) => {
+  await miss3(page);
+  if (step === 1 && wrong) await page.locator(".hp-chip").last().click();
+  if (step >= 2) await subjectChip(page).click();
+  if (step >= 3) await page.getByRole("button", { name: /^(One|Many)$/ }).first().click();
+};
+
 export const SCREENS: Screen[] = [
   { name: "kit", path: "/kit" },
   { name: "kit-768", path: "/kit", width: 768, height: 1024 },
@@ -83,6 +116,24 @@ export const SCREENS: Screen[] = [
   { name: "practice-selected-768", path: "/", width: 768, height: 1024, actions: selected },
   { name: "practice-selected-1366", path: "/", width: 1366, height: 768, actions: selected },
 ];
+
+SCREENS.push(
+  { name: "help-nudge", path: "/", actions: nudge() },
+  { name: "help-nudge-text", path: "/", actions: nudge({ coach: "text" }) },
+  { name: "help-nudge-pidgin", path: "/", actions: nudge({ lang: "pcm" }) },
+  { name: "help-miss2", path: "/", actions: miss2 },
+  { name: "help-showme-1", path: "/", actions: showMe(1) },
+  { name: "help-showme-2", path: "/", actions: showMe(2) },
+  { name: "help-showme-3", path: "/", actions: showMe(3) },
+  { name: "help-showme-reduced", path: "/", actions: showMe(3, true) },
+  { name: "help-put-it-in-yourself", path: "/", actions: putItInYourself },
+  { name: "help-deeper-1", path: "/", actions: deeper(1) },
+  { name: "help-deeper-1-wrong", path: "/", actions: deeper(1, true) },
+  { name: "help-deeper-2", path: "/", actions: deeper(2) },
+  { name: "help-deeper-3", path: "/", actions: deeper(3) },
+  { name: "help-showme-2-768", path: "/", width: 768, height: 1024, actions: showMe(2) },
+  { name: "help-showme-2-1366", path: "/", width: 1366, height: 768, actions: showMe(2) },
+);
 
 // Onboarding steps, each reached from a fresh browser by pressing through the earlier ones.
 const click = (name: string | RegExp) => (page: Page) => page.getByRole("button", { name }).click();

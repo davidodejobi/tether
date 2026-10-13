@@ -106,3 +106,12 @@ These decisions override conflicting text in `requirements.txt`.
 - Rounds are derived, not stored: position is completed practice questions modulo 5 (`src/rules/round.ts`). The summary is in-memory, so a reload on it opens a fresh question; nothing is blocked.
 - Practice ignores a pending How did you know or verification (`resumePoint` kinds "reason" and "verify") until step 10 handles them.
 - The move sheet is a native modal `<dialog>`: it blocks input underneath, traps focus and returns it on close.
+
+## Help ladder (roadmap step 9)
+
+- `HelpedQuestion` (`src/ui/help/`) wraps `QuestionView` and fills its slots; practice and the tutorial both render it. `QuestionView` changed in one line: the `afterMiss` slot also renders once help was used with no miss yet (only when a caller supplies `afterMiss`), so "Now put it in yourself" shows after an early Show me.
+- Tiles are hidden from the third miss until Show me or Go deeper has recorded help. Go deeper records `help("goDeeper")` only when the learner finishes the verb step and presses Back to the question, so hiding cannot lift early; a reload mid-way restarts Go deeper.
+- Show me records `help("showMe")` when opened (a second open in the same question does not record again) and plays in a modal dialog. With normal motion the beats play on a 2.6 s timer with Pause/Play and Replay; with reduced motion nothing advances by itself and beats are static cards revealed by Next. `ShowMe` takes `doneLabel` and `note` so step 10 can reuse it for free looks. After a correct answer the S key and button do nothing here; step 10 owns free looks.
+- After help, a further miss shows "Not quite. Pick again" with Try again instead of a nudge; the nudge appears only on the first and second miss with no help.
+- The tutorial e2e helper (`e2e/tutorial.ts`) now opens Show me on each question first, so tiles are never hidden.
+- Step 9a plugs into `src/ui/help/StillStuck.tsx` (renders nothing now), placed at the bottom of Go deeper.

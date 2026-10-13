@@ -72,7 +72,7 @@ export function ShowMe({ question: q, lang, coach, onDone, doneLabel = "Put it i
   }, [auto, beat, run]);
   // Reduced motion: each Next moves focus to the new card's caption.
   useEffect(() => {
-    if (reduced) caption.current?.focus({ preventScroll: true });
+    if (reduced) caption.current?.focus();
   }, [beat, reduced]);
 
   const next = () => setBeat((b) => (b < 3 ? ((b + 1) as Beat) : b));
