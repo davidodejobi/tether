@@ -9,10 +9,10 @@ const m = (at: number) => (last = nextMoment(last, at));
 const T0 = Date.UTC(2026, 9, 13, 9, 0);
 let n = 0;
 
-/** A completed solo run with the given practice snapshot and alone score. */
-function soloRun(practice: number | null, alone: number): Run {
+/** A completed solo run with the given practice snapshot and alone score, started at `wall` (default: an hour after the last). */
+function soloRun(practice: number | null, alone: number, wall = T0 + (n + 1) * 3_600_000): Run {
   const id = `solo-${++n}`;
-  let r = startRun({ id, kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `${id}-q${i}`), practiceSnapshot: practice }, m(T0 + n * 3_600_000));
+  let r = startRun({ id, kind: "solo", questionIds: Array.from({ length: 10 }, (_, i) => `${id}-q${i}`), practiceSnapshot: practice }, m(wall));
   for (let i = 0; i < 10; i++) r = submit(r, r.questionIds[i]!, i < alone, m(r.started.at + (i + 1) * 1000));
   return r;
 }
@@ -47,6 +47,14 @@ describe("§8 results, alone score and gap (release check 4)", () => {
   test("a shrinking gap is not celebrated when alone fell", () => {
     const c = compare([snap(10, 8), snap(7, 7)]);
     expect(c).toMatchObject({ kind: "later", improved: false, aloneFell: true });
+  });
+
+  test("a device clock set back between solo runs cannot reorder results", () => {
+    const older = snapshotOf(soloRun(10, 9, T0 + 48 * 3_600_000))!;
+    const newer = snapshotOf(soloRun(10, 5, T0 + 24 * 3_600_000))!; // taken later, but the clock now reads a day earlier
+    expect(newer.at).toBeLessThan(older.at);
+    const c = compare([older, newer]);
+    expect(c).toMatchObject({ kind: "later", latest: { alone: 5 }, previous: { alone: 9 }, improved: false, aloneFell: true });
   });
 
   test("alone at or above practice keeps both scores, raw difference negative, gap shown as zero", () => {
