@@ -44,3 +44,7 @@
 @media (prefers-reduced-motion: reduce) {
   .tile, .tile-selected, .tile-struck, .tile-correct .icon { animation: none; transition: none; }
 }
+/* Laptop: tiles are numbered 1-4 (the keys that pick them). */
+.tile { position: relative; }
+.tile-num { display: none; position: absolute; top: 50%; left: var(--spacing-sm); transform: translateY(-50%); width: 24px; height: 24px; place-items: center; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); font: var(--type-label-s); color: var(--text-secondary); }
+@media (min-width: 1280px) { .tile-num { display: grid; } }

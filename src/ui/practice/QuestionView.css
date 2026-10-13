@@ -36,9 +36,71 @@
 .qv-source { font: var(--type-body-s); color: var(--text-secondary); }
 .qv button:focus-visible, .qv-sheet button:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
 @keyframes qv-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+.qv-panel, .qv-bo-side, .qv-keys { display: none; }
+.qv-key { display: inline-flex; align-items: center; gap: var(--spacing-xs); margin-right: var(--spacing-md); }
+.qv-key kbd { display: inline-grid; place-items: center; min-width: 32px; min-height: 32px; padding: 0 var(--spacing-xs); background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font: var(--type-label-s); color: var(--text-primary); }
+.qv-sentence { display: block; }
+
+/* Tablet (768-1279): one wider column, Bo beside the sentence card. Sizes are relative to the column, never to the
+   viewport width, so the page fits with or without the shell's left rail (laptop). */
 @media (min-width: 768px) {
-  .qv { padding-top: var(--spacing-xl); min-height: 100dvh; }
+  .qv { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; grid-template-areas: "top" "main" "bar"; max-width: 720px; padding-top: var(--spacing-md); }
+  .qv-top { grid-area: top; padding: var(--spacing-xs) var(--spacing-xl); }
+  .qv-main { grid-area: main; gap: var(--spacing-md); padding: var(--spacing-sm) var(--spacing-xl) var(--spacing-xl); }
+  .qv-bar { grid-area: bar; padding: var(--spacing-md) var(--spacing-xl) var(--spacing-xl); }
+  .qv-bar .bo { display: none; }
+  .qv-prompt { font: var(--type-headline-m); }
+  .qv-sentence { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: var(--spacing-md); }
+  .qv-sentence .sentence { padding: var(--spacing-xl); }
+  .qv-bo-side { display: block; }
+  .qv .tile { min-height: 72px; }
   .qv-sheet { margin: auto; border-radius: var(--radius-xl); }
+  .qv-suspended .qv-main, .qv-suspended .qv-bar { display: none; }
+  .qv-has-panel .hp .coach-character > .bo { display: none; }
+  .qv-has-panel .hp .coach-character .coach-body::before { display: none; }
 }
-@media (min-width: 1280px) { .qv-keys { display: block; } }
+
+/* Laptop (1280 and up): centre column plus the right panel. The page may sit beside a rail (--shell-rail, 240 px):
+   the grid is "fluid column + fixed panel", so it only ever uses the width it is given. */
+@media (min-width: 1280px) {
+  .qv-has-panel { max-width: none; padding-top: 0; grid-template-columns: minmax(0, 1fr) var(--qv-panel, 320px); grid-template-areas: "top panel" "main panel" "bar panel"; }
+  .qv-has-panel > :is(.qv-top, .qv-main, .qv-bar), .qv-has-panel .sm-page :is(.sm-top, .sm-body, .sm-bar) { width: min(100%, 640px); justify-self: center; padding-left: 0; padding-right: 0; }
+  .qv-has-panel .qv-top { padding-top: var(--spacing-md); }
+  .qv-has-panel .qv-main { gap: var(--spacing-sm); }
+  .qv-has-panel .qv-sentence .sentence { padding: var(--spacing-md) var(--spacing-xl); }
+  .qv-has-panel .qv-prompt { margin-top: 0; }
+  /* Short laptops: the nudge text and its buttons share a row, so tiles and the bar stay on screen. */
+  .qv-has-panel .qv-status .hp:not(:has(.ls-steps)) { flex-direction: row; align-items: center; }
+  .qv-has-panel .qv-status .hp:not(:has(.ls-steps)) > .coach { flex: 1; }
+  .qv-has-panel .qv-status .hp .btn, .qv-has-panel .qv-status .hp-actions { flex: none; }
+  .qv-has-panel .qv-status .hp-actions .btn { flex: none; }
+  .qv-bo-side { display: none; }
+  .qv-sentence { display: block; }
+  .qv-keys { display: block; }
+  .qv-bar { background: none; border-top: 0; }
+  .qv-panel { grid-area: panel; position: sticky; top: 0; align-self: start; height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-md); background: var(--bg-surface); border-left: 2px solid var(--border-subtle); }
+  .qv-panel > .bo { align-self: flex-start; }
+  .qv-panel p { margin: 0; }
+  .qv-panel-note, .qv-panel-sub { font: var(--type-body-s); color: var(--text-secondary); }
+  .qv-panel-help { padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-coach-container); color: var(--text-on-coach-container); border-radius: var(--radius-lg); font: var(--type-label-m); }
+  .qv-panel-move { padding: var(--spacing-md); background: var(--bg-coach-container); color: var(--text-on-coach-container); border-radius: var(--radius-lg); }
+  .qv-panel-move h2 { display: flex; align-items: center; gap: var(--spacing-xs); margin: 0 0 var(--spacing-xs); font: var(--type-title-m); }
+  .qv-panel-h { margin: var(--spacing-xs) 0 0; font: var(--type-label-s); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+  .qv-ladder { display: flex; flex-direction: column; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; }
+  .qv-rung { display: flex; gap: var(--spacing-sm); padding: var(--spacing-sm); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); font: var(--type-body-s); color: var(--text-secondary); }
+  .qv-rung strong { font: var(--type-title-m); color: var(--text-primary); }
+  .qv-rung-n { flex: none; display: grid; place-items: center; width: 32px; height: 32px; background: var(--bg-primary-container); border-radius: var(--radius-full); font: var(--type-label-l); color: var(--text-primary); }
+  .qv-rung-now { background: var(--bg-primary-container); border-color: var(--border-selected); color: var(--text-on-primary-container); }
+  .qv-rung-now .qv-rung-n { background: var(--bg-primary); color: var(--text-on-primary); }
+  .qv-rung-now strong { color: var(--text-on-primary-container); }
+  /* The correct moment and its reasons are a focus page: two columns, no panel, a large Bo on the right. */
+  .qv-has-panel:has(.qv-focus) { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main" "bar"; }
+  .qv-has-panel:has(.qv-focus) .qv-panel { display: none; }
+  .qv-has-panel:has(.qv-focus) .qv-main { width: min(100%, 880px); display: grid; grid-template-columns: minmax(0, 1fr) 240px; column-gap: var(--spacing-xxl); align-content: center; }
+  .qv-has-panel:has(.qv-focus) .qv-main > * { grid-column: 1; }
+  .qv-has-panel:has(.qv-focus) .qv-main > .hn { display: contents; }
+  .qv-has-panel:has(.qv-focus) .qv-main > .hn > * { grid-column: 1; }
+  .qv-has-panel:has(.qv-focus) .qv-main > .hn { gap: 0; }
+  .qv-has-panel:has(.qv-focus) .qv-main .hn-bo { grid-column: 2; grid-row: 1 / span 8; align-self: center; justify-self: center; }
+}
 @media (prefers-reduced-motion: reduce) { .qv-miss, .qv-correct, .qv-sheet[open] { animation: none; } .qv-progress span { transition: none; } }

@@ -7,7 +7,7 @@ export function Home() {
   const { store } = useProgress();
   const { dots } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
   return (
-    <main>
+    <main class="page">
       <h1>Tether</h1>
       <p>JAMB English concord. Move 1: Strip the Disguise.</p>
       <Dots filled={dots as 0 | 1 | 2 | 3} />

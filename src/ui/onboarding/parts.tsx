@@ -15,8 +15,8 @@ export function StepHeading({ level = 1, children }: { level?: 1 | 2; children: 
 }
 
 /** Screen shell shared by onboarding and the startup screens. */
-export function Screen({ children }: { children: ComponentChildren }) {
-  return <main class="ob">{children}</main>;
+export function Screen({ children, kind }: { children: ComponentChildren; kind?: "welcome" | "lesson" }) {
+  return <main class={kind ? `ob ob-${kind}` : "ob"}>{children}</main>;
 }
 
 /** Errors are announced as they appear. */

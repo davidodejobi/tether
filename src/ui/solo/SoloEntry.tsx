@@ -17,33 +17,35 @@ export function SoloEntry({ dots, onStart, onPractise }: { dots: 0 | 1 | 2 | 3; 
   const ready = dots === 3;
   return (
     <main class="so">
-      <Dots filled={dots} hero />
-      <section class="so-card" aria-labelledby="so-title">
-        <h1 id="so-title" tabIndex={-1}>
-          {ready ? `You're solo-ready on ${pack.title}.` : "You're not solo-ready yet."}
-        </h1>
-        {!ready && <p class="so-lead">We recommend 3 dots first.</p>}
-        <ul class="so-facts">
-          {FACTS.map((f) => (
-            <li key={f.icon}>
-              <Icon name={f.icon} size={24} />
-              <span>{f.text}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <div class="so-actions">
-        {ready ? (
-          <>
-            <Button onClick={onStart}>Start solo checkpoint</Button>
-            <Button variant="tertiary" onClick={onPractise}>Keep practising</Button>
-          </>
-        ) : (
-          <>
-            <Button onClick={onPractise}>Keep practising</Button>
-            <Button variant="secondary" onClick={onStart}>Try anyway</Button>
-          </>
-        )}
+      <div class="so-hero"><Dots filled={dots} hero /></div>
+      <div class="so-side">
+        <section class="so-card" aria-labelledby="so-title">
+          <h1 id="so-title" tabIndex={-1}>
+            {ready ? `You're solo-ready on ${pack.title}.` : "You're not solo-ready yet."}
+          </h1>
+          {!ready && <p class="so-lead">We recommend 3 dots first.</p>}
+          <ul class="so-facts">
+            {FACTS.map((f) => (
+              <li key={f.icon}>
+                <Icon name={f.icon} size={24} />
+                <span>{f.text}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <div class="so-actions">
+          {ready ? (
+            <>
+              <Button onClick={onStart}>Start solo checkpoint</Button>
+              <Button variant="tertiary" onClick={onPractise}>Keep practising</Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={onPractise}>Keep practising</Button>
+              <Button variant="secondary" onClick={onStart}>Try anyway</Button>
+            </>
+          )}
+        </div>
       </div>
     </main>
   );

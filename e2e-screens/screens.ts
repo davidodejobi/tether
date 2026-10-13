@@ -140,6 +140,7 @@ const missN = async (page: Page, n: number) => {
   const q = await openQuestion(page);
   await tile(page, q.options.filter((o) => o !== q.answer)[n]!).click();
   await check(page);
+  await page.locator(".hp").waitFor(); // the help block shows once the miss is saved
 };
 const tryAgain = (page: Page) => page.getByRole("button", { name: "Try again" }).click();
 const nudge = (patch: Record<string, unknown> = {}) => async (page: Page) => (await startAs(patch)(page), await missN(page, 0));
@@ -151,7 +152,8 @@ const showMe = (beat: 1 | 2 | 3, reduced = false) => async (page: Page) => {
   await start(page);
   await openQuestion(page);
   await page.getByRole("button", { name: "Show me" }).click();
-  const dialog = page.getByRole("dialog", { name: "Show me" });
+  // A modal dialog on phone, an inline section from 768 px.
+  const dialog = page.locator(".sm");
   await dialog.waitFor();
   const pause = dialog.getByRole("button", { name: "Pause" });
   if (await pause.count()) await pause.click();
@@ -163,8 +165,13 @@ const subjectChip = (page: Page) => page.locator(".hp-chip").first();
 const deeper = (step: 1 | 2 | 3, wrong = false) => async (page: Page) => {
   await miss3(page);
   if (step === 1 && wrong) await page.locator(".hp-chip").last().click();
-  if (step >= 2) await subjectChip(page).click();
-  if (step >= 3) await page.getByRole("button", { name: /^(One|Many)$/ }).first().click();
+  if (step >= 2) (await subjectChip(page).click(), await page.getByRole("button", { name: /^(One|Many)$/ }).first().waitFor());
+  if (step >= 3) {
+    // One or Many: whichever is right moves on; the wrong one only shows a hint.
+    for (const name of ["One", "Many"])
+      if (!(await page.getByText("Step 3 of 3").isVisible())) (await page.getByRole("button", { name, exact: true }).click(), await page.waitForTimeout(300));
+    await page.getByText("Step 3 of 3").waitFor();
+  }
 };
 
 export const SCREENS: Screen[] = [
@@ -241,3 +248,46 @@ SCREENS.push(
   { name: "onboarding-choices", path: "/", actions: to(...choices) },
   { name: "onboarding-partner", path: "/", actions: to(...choices, click(/Someone to see your wins/)) },
 );
+
+// Tablet and laptop captures of every onboarding step, the startup gate, Home and Settings.
+const WIDE = [{ suffix: "768", width: 768, height: 1024 }, { suffix: "1366", width: 1366, height: 768 }] as const;
+const onboardingSteps: [string, (page: Page) => Promise<void>][] = [
+  ["nickname", to(nickname)],
+  ["lesson-2", to(...lesson, click("Next"))],
+  ["lesson-3", to(...lesson, click("Next"), click("Next"))],
+  ["win", to(...win)],
+  ["choices", to(...choices)],
+  ["partner", to(...choices, click(/Someone to see your wins/))],
+];
+for (const w of WIDE) {
+  for (const [name, actions] of onboardingSteps) SCREENS.push({ name: `onboarding-${name}-${w.suffix}`, path: "/", width: w.width, height: w.height, actions });
+  for (const [name, path] of [["home", "/"], ["settings", "/settings"]] as const)
+    SCREENS.push({ name: `${name}-${w.suffix}`, path: "/", width: w.width, height: w.height, actions: (p) => seedLearner(p, path) });
+}
+// Tablet (768x1024) and laptop (1366x768) layouts of the practice, help and honesty screens.
+const wide: [string, (page: Page) => Promise<void>][] = [
+  ["practice-unselected", start],
+  ["practice-selected", selected],
+  ["practice-wrong", struck],
+  ["practice-text-only", startAs({ coach: "text" })],
+  ["help-nudge", nudge()],
+  ["help-nudge-text", nudge({ coach: "text" })],
+  ["help-showme-1", showMe(1)],
+  ["help-showme-2", showMe(2)],
+  ["help-showme-3", showMe(3)],
+  ["help-showme-reduced", showMe(2, true)],
+  ["help-deeper-1", deeper(1)],
+  ["help-deeper-3", deeper(3)],
+  ["honesty-reasons-text", (p) => reasons(p, { ...LEARNER, coach: "text" })],
+  ["honesty-verify-asking", asking],
+  ["honesty-dot-fills", async (p) => (await reasons(p), await claim(p, "I used the move", 0.9), await p.locator(".hn-result").waitFor())],
+  ["practice-summary", summary],
+  ["solo-ready", async (p) => (await thirdDot(p), await next(p))],
+  ["solo-not-ready", async (p) => { await oneDot(p); await p.goto("/solo-entry", { waitUntil: "networkidle" }); }],
+  ["solo-placeholder", (p) => seedLearner(p, "/solo")],
+];
+for (const [name, actions] of wide)
+  for (const w of WIDE) {
+    const id = `${name}-${w.suffix}`;
+    if (!SCREENS.some((x) => x.name === id)) SCREENS.push({ name: id, path: "/", width: w.width, height: w.height, actions });
+  }

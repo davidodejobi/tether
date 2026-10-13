@@ -30,6 +30,7 @@ import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
 import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
+import { Key } from "../components/Key";
 import { AnswerTiles } from "../components/AnswerTiles";
 import { SentenceCard } from "../components/SentenceCard";
 import { targetTile } from "../components/answerKeys";
@@ -78,6 +79,10 @@ export interface QuestionViewProps {
   afterCorrect?(ctx: CorrectContext): ComponentChildren;
   onShowMe?(ctx: ShowMeContext): void;
   hideTiles?(attempt: PracticeAttempt, misses: number): boolean;
+  /** Tablet/laptop Show me: takes the place of the question (the grid areas main and bar). Ignored by CSS on phone. */
+  overlay?: ComponentChildren;
+  /** True while the overlay plays: this view ignores the keyboard (Enter must not check under it). */
+  suspended?: boolean;
 }
 
 const pack: Pack = stripDisguise;
@@ -87,6 +92,11 @@ const ex = pack.lessonExample;
 const exVerb = pack.verbs.find((v) => v.id === ex.verbId)!;
 // Not crypto.randomUUID: it needs a secure context, and plain-http LAN testing must work.
 const newId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+const LADDER = [
+  ["Nudge", "A small hint. Then try again."],
+  ["Show me", "Watch the move on a sample, then try a new one."],
+  ["Go deeper", "Step through it: subject, number, verb."],
+] as const;
 const defaultMiss = () => <p class="qv-miss">Not quite. Try again.</p>;
 
 export function QuestionView(props: QuestionViewProps) {
@@ -179,6 +189,7 @@ export function QuestionView(props: QuestionViewProps) {
 
   // Keyboard: 1-4, arrows and Space select; Enter checks; R reads; S is Show me.
   const onKey = (e: KeyboardEvent) => {
+    if (props.suspended) return;
     const t = e.target as HTMLElement;
     if (e.altKey || e.ctrlKey || e.metaKey || t.closest("input, textarea, select, dialog")) return;
     const onTile = !!t.closest(".tiles");
@@ -216,8 +227,12 @@ export function QuestionView(props: QuestionViewProps) {
   const coach = pack.coach[lang];
   const voiceNote = useVoiceNote(lang); // set when Pidgin would be read by an English voice
 
+  const bo = learner.coach === "character"; // Text only shows no Bo anywhere
+  const rung = attempt.help.includes("goDeeper") ? 3 : attempt.help.includes("showMe") ? 2 : misses > 0 || attempt.help.length > 0 ? 1 : 0;
+  const panel = origin === "practice";
+
   return (
-    <div class="qv" ref={root}>
+    <div class={`qv${panel ? " qv-has-panel" : ""}${props.suspended ? " qv-suspended" : ""}`} ref={root}>
       <header class="qv-top">
         <button type="button" class="qv-close" aria-label="Close and come back later" onClick={props.onExit}>
           <Icon name="close" size={24} />
@@ -245,7 +260,10 @@ export function QuestionView(props: QuestionViewProps) {
           <Icon name="chevron-right" size={20} />
         </button>
         <h1 class="qv-prompt">Pick the verb that fits.</h1>
-        <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={filled} correct={done} />
+        <div class="qv-sentence">
+          <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={filled} correct={done} />
+          {bo && <span class="qv-bo-side"><Bo pose={done ? "pleased" : misses > 1 ? "concerned" : "idle"} size={72} /></span>}
+        </div>
         {speechOk() && (
           <button type="button" class="qv-read" onClick={() => speak(sentence(q, "blank"), "en")}>
             <Icon name="speaker" size={20} /> Read aloud
@@ -266,7 +284,9 @@ export function QuestionView(props: QuestionViewProps) {
         {!hidden && (
           <AnswerTiles tiles={tiles} value={done ? q.options.indexOf(q.answer) : selected} correct={done ? q.options.indexOf(q.answer) : null} disabled={blocked} onSelect={setSelected} />
         )}
-        <p class="qv-keys" aria-hidden="true">1-4 pick · Enter check · R read · S show me</p>
+        <p class="qv-keys" aria-hidden="true">
+          <Key k="1–4">Pick</Key><Key k="Enter">Check</Key><Key k="R">Read aloud</Key>{origin === "practice" && <Key k="S">Show me</Key>}
+        </p>
 
         {done && (
           props.afterCorrect ? props.afterCorrect({ attempt, next: () => props.onDone(attempt), update, saveLearner, help, blocked, openMove: openSheet }) : (
@@ -286,6 +306,34 @@ export function QuestionView(props: QuestionViewProps) {
           <Button disabled={selected === null || blocked} onClick={doCheck}>Check</Button>
         </footer>
       )}
+
+      {panel && (
+        <aside class="qv-panel" aria-label="Coach and help">
+          {bo ? <Bo pose={done ? "pleased" : rung >= 2 ? "thinking" : misses > 0 ? "nudge" : "idle"} size={120} /> : null}
+          <div class="qv-panel-note">
+            {bo ? <p>Open The move any time. Opening it is not help.</p> : <CoachBubble mode="text">Open The move any time. Opening it is not help.</CoachBubble>}
+          </div>
+          {rung > 0 && <p class="qv-panel-help">Help used. Your streak starts again. That's fine.</p>}
+          {rung > 0 && (
+            <section class="qv-panel-move" aria-label="The move">
+              <h2><Icon name="lightbulb" size={20} /> {pack.title}</h2>
+              <p>{coach.rule}</p>
+            </section>
+          )}
+          <h2 class="qv-panel-h">Help ladder</h2>
+          <p class="qv-panel-sub">Help is fine. It counts as with help.</p>
+          <ol class="qv-ladder">
+            {LADDER.map(([name, text], i) => (
+              <li key={name} class={rung === i + 1 ? "qv-rung qv-rung-now" : "qv-rung"} aria-current={rung === i + 1 ? "step" : undefined}>
+                <span class="qv-rung-n">{i + 1}</span>
+                <span><strong>{name}</strong><br />{text}</span>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      )}
+
+      {props.overlay}
 
       <dialog ref={dialog} class="qv-sheet" aria-labelledby="qv-sheet-title">
         <Icon name="lightbulb" size={32} />

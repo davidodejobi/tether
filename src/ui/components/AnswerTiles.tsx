@@ -58,6 +58,7 @@ export function AnswerTiles({ tiles, value, correct = null, disabled = false, on
             tabIndex={i === stop ? 0 : -1}
             onClick={() => !t.struck && !locked && pick(i)}
           >
+            <kbd class="tile-num" aria-hidden="true">{i + 1}</kbd>
             {state === "struck" && <Icon name="x" size={20} />}
             {state === "correct" && <Icon name="check" size={20} />}
             <span class="tile-word">{t.label}</span>
