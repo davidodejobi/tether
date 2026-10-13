@@ -10,7 +10,7 @@ import { Button } from "../components/Button";
 import { Icon } from "../components/Icon";
 import { useProgress } from "../progress";
 import type { CorrectContext } from "./QuestionView";
-import { ShowMeSlot } from "./ShowMeSlot";
+import { ShowMe } from "../help/ShowMe";
 import "./Honesty.css";
 
 export const HONESTY_INTRO = "Tell us the truth and nothing is lost. Dots only come from using the move. The solo check is what proves it. Sometimes we’ll ask you to show it.";
@@ -37,6 +37,7 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   const attempts = attemptsOf(store.progress).filter((a) => a.id !== attempt.id).concat(attempt);
   const { dots, offerMove } = readiness(attempts, runStartsOf(store.progress));
   const [tapped, setTapped] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
 
   const phase = !asksReason(attempt)
@@ -151,9 +152,9 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
               <Button variant="secondary" icon="lightbulb" onClick={openMove}>Open The move</Button>
             </div>
           )}
-          {attempt.freeLook && <ShowMeSlot />}
+          {playing && <ShowMe question={q} lang={learner.lang} coach={learner.coach} doneLabel="Done" note="Free look: nothing lost" onDone={() => setPlaying(false)} />}
           <div class="hn-actions">
-            {!attempt.freeLook && <Button variant="secondary" icon="play" onClick={() => help("showMe")}>Show me, free look</Button>}
+            <Button variant="secondary" icon="play" onClick={() => (attempt.freeLook || help("showMe"), setPlaying(true))}>{attempt.freeLook ? "Watch again" : "Show me, free look"}</Button>
             <Button onClick={next}>{attempt.freeLook ? "Next question" : "Next"}</Button>
           </div>
         </>

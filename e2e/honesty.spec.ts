@@ -76,7 +76,8 @@ test("a wrong tap gives no dot and no penalty, and a free Show me", async ({ pag
   expect(attempt).toMatchObject({ verifyResult: "failed", freeLook: false, help: [], resets: [] });
 
   await page.getByRole("button", { name: /Show me/ }).click();
-  await expect(page.getByText("Show me plays here")).toBeVisible();
+  await expect(page.getByText("Free look: nothing lost")).toBeVisible();
+  await page.getByRole("button", { name: "Close Show me" }).click();
   const look = await lastAttempt(page, (a) => a.freeLook);
   expect(look.attempt).toMatchObject({ freeLook: true, help: [], resets: [], verifyResult: "failed" });
   await dots(page, 1);
@@ -93,7 +94,8 @@ test("It sounded right and I guessed keep the dots; Show me is a free look", asy
   await dots(page, 1);
   await expect(page.getByText("Your dots stay as they are.")).toBeVisible();
   await page.getByRole("button", { name: /Show me/ }).click();
-  await expect(page.getByText("Show me plays here")).toBeVisible();
+  await expect(page.getByText("Free look: nothing lost")).toBeVisible();
+  await page.getByRole("button", { name: "Close Show me" }).click();
   const first = await lastAttempt(page, (a) => a.reason === "sounded");
   expect(first.attempt).toMatchObject({ reason: "sounded", freeLook: true, help: [], resets: [] });
   await page.getByRole("button", { name: "Next question" }).click();
