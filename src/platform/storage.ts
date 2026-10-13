@@ -16,19 +16,21 @@ export async function requestPersistentStorage(): Promise<"persisted" | "notGran
 
 /**
  * Only one tab may write learning progress. The first tab holds this lock until it closes; others open
- * read-only and offer to return to that tab. Without the Locks API every tab may write.
+ * read-only and offer to return to that tab. A reloading page waits briefly, because the page it replaces
+ * releases the lock as it closes. Without the Locks API every tab may write.
  */
-export function claimWriter(name = "tether-writer"): Promise<"owner" | "taken" | "unsupported"> {
+export function claimWriter(name = "tether-writer", waitMs = 1500): Promise<"owner" | "taken" | "unsupported"> {
   const locks = typeof navigator === "undefined" ? undefined : navigator.locks;
   if (!locks) return Promise.resolve("unsupported");
+  const hold = (resolve: (r: "owner") => void) => () => {
+    resolve("owner");
+    return new Promise<void>(() => {}); // held for the life of the page
+  };
   return new Promise((resolve) => {
-    void locks.request(name, { ifAvailable: true }, (lock) => {
-      if (!lock) {
-        resolve("taken");
-        return;
-      }
-      resolve("owner");
-      return new Promise<void>(() => {}); // held for the life of the page
-    });
+    if (typeof AbortSignal.timeout !== "function") {
+      void locks.request(name, { ifAvailable: true }, (lock) => (lock ? hold(resolve)() : resolve("taken")));
+      return;
+    }
+    locks.request(name, { signal: AbortSignal.timeout(waitMs) }, hold(resolve)).catch(() => resolve("taken"));
   });
 }
