@@ -63,3 +63,14 @@ These decisions override conflicting text in `requirements.txt`.
 - For step 5: store attempts and runs keyed by ID. `practiceScore` and `readiness` assume each attempt appears once, so keyed storage is what keeps a duplicate save from inflating scores.
 - For step 11: save `lastSeenAt` on `visibilitychange` (hidden), on `pagehide` and on a short heartbeat. `onReturn` judges a reopen from it, so a stale value would convert a run that should resume.
 - Learning events are `Moment`s: wall-clock time plus a sequence number (`src/rules/moment.ts`). Step 5 must persist the last moment and create every new one with `nextMoment`, so the sequence never repeats, even across reloads or a changed device clock.
+
+## Local progress (roadmap step 5)
+
+- One IndexedDB database (`tether`) with one object store (`records`). Keys: `learner`, `attempt:<id>`, `run:<id>`, `cycle:<moveId>`, `meta:schema`, `meta:lastMoment`. Never rename a prefix; add a migration in `ProgressStore.open` when `SCHEMA_VERSION` rises.
+- Each batch is one transaction. Memory updates only after it commits; on failure the screen stays put and offers retry with the same batch.
+- Attempts and runs are saved with the exact question shown (shuffled options, content version), so a reload or content update never changes an active question or run.
+- Interrupted runs: judge with `recoverRun` before marking the run seen, then save its batch once. Converted answers keep deterministic IDs and proof applies once per run ID.
+- If IndexedDB is missing or fails its probe, progress lives in memory and `durable` is false; step 7 must say progress is temporary before learning starts.
+- Data from a newer app version, or a second tab without the writer lock, opens read-only. Without the Web Locks API every tab may write (a known gap on browsers lacking it).
+- Call `requestPersistentStorage` after the nickname is saved, not on load.
+- For step 16: WebKit can clear script-written storage after seven days without a visit unless the app is installed, which puts the day-14 recheck at risk on iOS Safari. Check whether persistent storage exempts it, and say so in the install guidance.

@@ -26,7 +26,7 @@ contract. Bring supporting files into this repository only when needed.
   verification, score snapshots, gap calculation, stamp transitions and scheduling.
   Exercise free looks, early solo entry, declining practice scores and overdue dates.
   Done: focused logic tests demonstrate the agreed rules independently of the UI.
-- [ ] **5. Persist learner progress.** Store nickname, settings, attempts, runs,
+- [x] **5. Persist learner progress.** Store nickname, settings, attempts, runs,
   stamps and schedules locally. Define interrupted-run restoration, storage failure
   feedback and schema versioning; request persistent storage where available.
   Done: refresh/reopen preserves progress without duplicate answers or proof awards.
