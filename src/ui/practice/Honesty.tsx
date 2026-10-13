@@ -1,7 +1,7 @@
 // After a correct answer: How did you know, verification and free looks (spec section 6).
 // Plugs into QuestionView's afterCorrect slot. Everything it shows comes from the saved attempt,
 // so a reload on a pending reason or verification brings the same prompt back.
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import type { Question } from "../../content/generate.ts";
 import { asksReason, giveReason, readiness, verify, type Reason } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
@@ -66,7 +66,8 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
     const c = CHOICES["123".indexOf(e.key)];
     if (c) (e.preventDefault(), choose(c.reason));
   };
-  useEffect(() => {
+  // Layout effect: listen as soon as the reasons are on screen, not after the next paint, so a quick key press is never lost.
+  useLayoutEffect(() => {
     const h = (e: KeyboardEvent) => keyRef.current?.(e);
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
