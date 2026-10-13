@@ -144,3 +144,11 @@ These decisions override conflicting text in `requirements.txt`.
 - `AppShell` (`src/ui/shell`) wraps Home, Practice and Settings for an onboarded learner. From 1280 px it adds a 240 px left rail (Tether, Home, Practice, Settings, learner card). Proof is left out until a Proof screen exists (spec section 10). `--shell-rail` holds the rail width (0 below 1280 px, 240 px from there); pages fill the rest of the row (`.shell-content` is `flex: 1; min-width: 0`).
 - Tablet has no rail: Figma's tablet frames use a bottom bar with Proof, which the spec rules out, so tablet gets a wider, centred single column. Solo and onboarding never get the shell.
 - Onboarding is a centred column from 768 px; Welcome and Learn the move go two-column at 1280 px.
+
+## Tablet and laptop layouts for practice, help and honesty
+
+- `QuestionView` is a grid from 768 px: one wider column on tablet (Bo beside the sentence card), and from 1280 px a centre column plus a right panel (Bo or the Text-only coach card, "Open The move any time", the Help ladder with the current rung highlighted, the move card once help is used). Only practice shows the panel; the tutorial keeps one column.
+- Sizing never uses viewport widths: the grid is a fluid column plus a fixed 320 px panel (`--qv-panel`), so it fits with or without the shell's 240 px rail (`--shell-rail`) and never scrolls sideways.
+- Show me plays inline from 768 px (`ShowMe` renders a section; `HelpedQuestion` passes it as `overlay` and sets `suspended` so the question ignores keys under it). On phone it stays a modal dialog. Inline keys: R replay, Enter next, Esc leave. Behaviour, saving and help marking are unchanged.
+- The correct moment and reasons are a focus page: two columns with a large Bo on the right on laptop, no panel. Reasons are numbered 1-3 and keys 1-3 pick one, with equal weight (spec section 6).
+- Figma differences resolved for the spec: the readiness label stays "Readiness n/3" (Figma says "Solo-ready"); the nudge text stays in the centre column (Figma puts it in the panel) so it sits beside Try again; the correct moment keeps the app header and the page colour (Figma's warm page has neither); copy "How did you know?" is kept over Figma's "How did you get that one?".

@@ -40,10 +40,14 @@ export function HelpedQuestion(props: QuestionViewProps) {
   );
 
   return (
-    <>
-      <QuestionView {...props} afterMiss={afterMiss} hideTiles={hideTiles} onShowMe={open} />
-      {playing && <ShowMe question={question} lang={learner.lang} coach={learner.coach} onDone={close} />}
-    </>
+    <QuestionView
+      {...props}
+      afterMiss={afterMiss}
+      hideTiles={hideTiles}
+      onShowMe={open}
+      suspended={playing}
+      overlay={playing && <ShowMe page question={question} lang={learner.lang} coach={learner.coach} onDone={close} />}
+    />
   );
 }
 

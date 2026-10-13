@@ -11,3 +11,13 @@
 .so-soon { text-align: center; }
 .so-soon h1 { margin: 0; font: var(--type-headline-l); }
 .so-soon p { margin: 0; }
+.so-hero, .so-side { display: contents; }
+@media (min-width: 768px) {
+  .so { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-content: center; align-items: center; gap: var(--spacing-xxl); max-width: 920px; padding: var(--spacing-xxl); }
+  .so-hero { display: grid; place-items: center; }
+  .so-side { display: flex; flex-direction: column; gap: var(--spacing-lg); }
+  .so-card { padding: var(--spacing-xl); }
+  .so-actions { margin-top: 0; }
+  /* The placeholder is one centred card, not two columns. */
+  .so.so-soon { display: flex; flex-direction: column; justify-content: center; max-width: 560px; }
+}

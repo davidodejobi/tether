@@ -33,3 +33,36 @@
   .sm-tools { flex: none; }
 }
 @media (prefers-reduced-motion: reduce) { .hp { animation: none; } }
+
+/* Tablet and laptop: Show me plays inline. As the page (.sm-page) it takes the grid areas main and bar of the question view;
+   in a flow (a free look after a correct answer) it is a card in the column. */
+.sm-inline { height: auto; max-height: none; max-width: none; background: none; }
+.sm-inline .sm-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.sm-inline:not(.sm-page) { display: flex; flex-direction: column; border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-surface); }
+.sm-inline .sm-body { overflow: visible; }
+.sm-page { display: contents; }
+.sm-page .sm-top { grid-area: main; align-self: start; justify-content: flex-end; z-index: 1; padding: var(--spacing-xs) var(--spacing-xl); }
+.sm-page .sm-bar { flex-direction: row; justify-content: flex-start; }
+.sm-page .sm-tools { flex: 1; }
+.sm-page .sm-bar > .btn { flex: 1; }
+.sm-page .sm-body { grid-area: main; padding: var(--spacing-sm) var(--spacing-xl) var(--spacing-xl); }
+.sm-page .sm-bar { grid-area: bar; position: sticky; bottom: 0; padding: var(--spacing-md) var(--spacing-xl) var(--spacing-xl); background: var(--bg-surface); }
+.sm-page .ls-stage { min-height: 160px; padding: var(--spacing-xl); }
+.sm-page .sm-caption { font: var(--type-headline-m); }
+@media (min-width: 1280px) {
+  .sm-page .sm-top { padding-right: 0; }
+  .sm-page .sm-body { padding-left: 0; padding-right: 0; gap: var(--spacing-sm); }
+  .sm-page .sm-bar { padding-left: 0; padding-right: 0; background: none; border-top: 0; }
+  .sm-page .coach { display: none; }
+  .sm-page .ls-stage { min-height: 120px; padding: var(--spacing-md); }
+  .sm-page .sm-caption { font: var(--type-title-l); }
+  .sm-page .ls-rule { display: none; }
+}
+@media (max-width: 1279px) { .sm-page .qv-keys { display: none; } }
+@media (min-width: 768px) {
+  .hp { gap: var(--spacing-md); }
+  .hp-chips { padding: var(--spacing-md); gap: var(--spacing-sm); }
+  .hp-chip { font: var(--type-title-m); }
+  .hp-prompt { font: var(--type-headline-m); }
+}
+@media (min-width: 1280px) { .qv-main:has(.hp .ls-steps) .qv-keys { display: none; } }
