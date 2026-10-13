@@ -87,7 +87,7 @@ These decisions override conflicting text in `requirements.txt`.
 - Font: Atkinson Hyperlegible Next, variable woff2 (latin plus latin-ext, from Fontsource), in `src/styles/fonts/` with its SIL OFL licence (`OFL.txt`). No runtime font fetch.
 - Icons are drawn as CSS masks so they follow `currentColor`. Bo art keeps its own colours.
 - Stamp states follow spec.md section 9: none, proved, held, fading, plus a Due badge. Figma's "Reopened" stamp and gold Button variant are not built. Readiness label reads "Readiness n/3" instead of Figma's "Solo-ready".
-- Readiness dots are green (spec.md section 14), not Figma's gold: gold means proof, and dots only recommend readiness. Figma's SoloDots still use gold.
+- Readiness dots are green (spec.md section 14), not Figma's gold: gold means proof, and dots only recommend readiness. Figma's SoloDots were changed to green to match.
 - `E2E_PORT` and `SCREENS_PORT` override the test server ports so parallel worktrees never reuse each other's server.
 - `/kit` shows every component in light and dark and exists only under `vite dev` (guarded by `import.meta.env.DEV` plus a dynamic import); the production build contains no kit code.
 - `npm run screens` runs `playwright.screens.config.ts` against the Vite dev server on port 5174. It visits each `{name, path}` in `e2e-screens/screens.ts` at 360x800 in light, dark and reduced motion and writes `screenshots/` (gitignored). Add each new screen to that list.
@@ -123,3 +123,10 @@ These decisions override conflicting text in `requirements.txt`.
 - A pending How did you know or verification resumes through `begin()` in Practice: the already-scored question reopens in `QuestionView`, which shows the prompt for a completed attempt.
 - Solo entry is `/solo-entry` (ready card at three dots; "not solo-ready yet" with Try anyway otherwise). Start or Try anyway go to `/solo`, a placeholder until step 11. The Solo-ready card also appears once, right after the answer that earns the third dot; "Keep practising" carries on. No Bo on the entry, since spec section 7 keeps Bo out of solo.
 - The free-look Show me is a placeholder (`ShowMeSlot`) recorded as `help("showMe")` when chosen, until step 9's playback replaces it.
+
+## Integration notes (steps 7–10)
+
+- Show me plays its three beats on a 2.6 s timer with Pause/Play and Replay; reduced motion uses static beats revealed by Next. Reading: spec §14's "no auto-advancing" covers lesson beats; §5 asks Show me for pause and replay, which only make sense if it plays.
+- Free looks after a correct answer play the same `ShowMe` with the note "Free look: nothing lost"; `help("showMe")` is recorded when chosen, so `freeLook` is set and nothing is penalised.
+- New Pidgin line in Go deeper ("Na no be the subject…") is shown under the Unreviewed tag until a native reviewer approves Pidgin.
+- The startup gate now also covers `/practice`: with no learner it shows Welcome.

@@ -35,13 +35,13 @@ contract. Bring supporting files into this repository only when needed.
   Correct reviewed colour issues and build buttons, sentence/answer controls,
   dots, stamps and score displays with light/dark and reduced-motion support.
   Done: shared components are legible, accessible and usable at 360 px.
-- [ ] **7. Build onboarding and the lesson.** Welcome, nickname, three lesson
+- [x] **7. Build onboarding and the lesson.** Welcome, nickname, three lesson
   beats with Next, three tutorial questions, first win and skippable preferences.
   Done: a new learner reaches Home; tutorial answers change no scores or dots.
-- [ ] **8. Build five-question practice.** Tap-to-fill answers, checking, round
+- [x] **8. Build five-question practice.** Tap-to-fill answers, checking, round
   progress, Another 5, Done for today and safe exits.
   Done: completed rounds feed the practice score and never block further practice.
-- [ ] **9. Build the help ladder.** Nudge after one miss, Show me on the same
+- [x] **9. Build the help ladder.** Nudge after one miss, Show me on the same
   sentence, replay/pause, Put it in yourself and Go deeper after three misses.
   Keep The move available and prevent reveal by elimination.
   Done: every help route recovers to practice and records help correctly.
@@ -52,7 +52,7 @@ contract. Bring supporting files into this repository only when needed.
   cancellation, late response, offline, invalid-output and rate-limit fallbacks.
   Done: a real provider call explains the concept in the demo; at least 20 reviewed
   outputs match the rule, failures preserve local help, and the pitch states online-only AI.
-- [ ] **10. Build honesty and readiness.** Equal-weight reason choices, random
+- [x] **10. Build honesty and readiness.** Equal-weight reason choices, random
   one-in-three verification, free looks, the three-honest-answer hint and readiness.
   Done: honesty preserves dots; solo is reachable both ready and not ready.
 - [ ] **11. Build solo checks.** Ten questions, no help/Bo, ten-minute timer,
