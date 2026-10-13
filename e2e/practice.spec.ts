@@ -59,7 +59,7 @@ test("five questions with a miss, summary, Another 5, reload and Done", async ({
       const wrong = q.options.find((o) => o !== q.answer)!;
       await tile(page, wrong).click();
       await page.getByRole("button", { name: "Check" }).click();
-      await expect(page.getByText("Not quite. Try again.")).toBeVisible();
+      await expect(page.getByText("Cover the side phrase and read it again.")).toBeVisible();
       await expect(page.getByRole("radio", { name: /struck out/ })).toHaveCount(1);
       await expect(page.getByRole("button", { name: "Check" })).toBeDisabled();
     }
