@@ -5,6 +5,7 @@
 .page a.hm-settings { display: inline-flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); margin: 0; }
 /* Step 16 puts the "Ready offline" line and the install hint here. */
 .hm-status:empty { display: none; }
+.hm-main { display: grid; gap: var(--spacing-md); align-content: start; }
 .hm-ready { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-md); margin: 0; }
 .hm-gap { margin: 0; padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-gap-container); color: var(--text-on-gap-container); border: 2px solid var(--border-gap); border-radius: var(--radius-md); }
 .hm-gap-none { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-subtle); }
