@@ -37,6 +37,7 @@ All e2e files run against the production preview in `e2e/`.
 | Home, Settings, layout | `home.spec.ts`, `settings.spec.ts`, `layout.spec.ts`, `layout-shell.spec.ts` |
 | Accessibility (axe), read aloud, sounds | `a11y.spec.ts`, `readaloud.spec.ts`, `sounds.spec.ts` |
 | Whole-product journeys (part A) | `journeys.spec.ts` |
+| Online AI help (Still stuck?), mocked `/api/explain` | `ai.spec.ts` |
 
 Rules, storage and content have unit tests next to the code (`src/**/*.test.ts`).
 
@@ -47,6 +48,7 @@ Rules, storage and content have unit tests next to the code (`src/**/*.test.ts`)
 - Attempts: help flags, `freeLook`, `moveSheetOpened`, reason (move, sounded, guessed), verification sample and outcome, start and complete moments (correct-to-next timing comes from these).
 - Solo and recheck runs with score, pass and `practiceSnapshot` (for the gap); proof cycle history and schedule entries.
 - `meta:calendarUses`.
+- `meta:aiUses`: time and result of each AI help request (`ai.spec.ts`).
 - `meta:sessions`: added in step 18 (`src/rules/session.ts`). A session ends on Done for today or 30 minutes idle; hidden time is excluded.
 
 The same journey records every request and fails on any non-localhost origin.
@@ -62,7 +64,7 @@ The same journey records every request and fails on any non-localhost origin.
 
 ## Known limitations
 
-- AI help (roadmap 9a, Still stuck?) is not built. Its e2e journey is pending, and AI requests are not yet measured.
+- AI help (roadmap 9a, Still stuck?) is built and its journeys run against a mocked endpoint. The live provider call and the 20-output human review (`docs/ai-review.md`) are pending.
 - Some Chrome extensions capture single-key shortcuts (1-4, Enter, R, S). Test in a clean profile.
 - Pidgin coach copy is unreviewed by a native speaker.
 - Real retention needs elapsed days; the build proves the workflow only (spec section 15).
