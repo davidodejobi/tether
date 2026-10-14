@@ -79,10 +79,23 @@ export function at(d: number): P & { dx: number } {
   return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, dx: b.x - a.x };
 }
 
-/** Evenly spaced stops along the road between two distances, for a drive. */
+/** Degrees clockwise from "up the screen" for a vehicle on the road at distance d facing towards higher stages. */
+export function heading(d: number): number {
+  const a = at(d - 4), b = at(d + 4);
+  return (Math.atan2(b.x - a.x, a.y - b.y) * 180) / Math.PI;
+}
+
+/** Evenly spaced stops (with the facing angle, unwrapped so it never spins the long way) between two distances, for a drive. */
 export const along = (from: number, to: number, step = 14) => {
   const n = Math.max(2, Math.ceil(Math.abs(to - from) / step));
-  return Array.from({ length: n + 1 }, (_, i) => at(from + ((to - from) * i) / n));
+  let prev = 0;
+  return Array.from({ length: n + 1 }, (_, i) => {
+    const d = from + ((to - from) * i) / n;
+    let a = heading(d) + (to < from ? 180 : 0);
+    if (i) a += Math.round((prev - a) / 360) * 360;
+    prev = a;
+    return { ...at(d), a };
+  });
 };
 
 /** x of the road at height y (the road only ever climbs, so y is unique). */
