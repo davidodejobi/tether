@@ -67,7 +67,7 @@ export function HomeMap({ state, due }: { state: NodeState; due: boolean }) {
       </div>
       <div class="hm-pager">
         <button class="btn btn-secondary" type="button" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button>
-        <p class="hm-page" role="status">Page {page + 1} of {PAGES}</p>
+        <p class="hm-page" aria-live="polite">Page {page + 1} of {PAGES}</p>
         <button class="btn btn-secondary" type="button" disabled={page === PAGES - 1} onClick={() => setPage(page + 1)}>Next</button>
       </div>
       <details class="hm-list">
