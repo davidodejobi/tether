@@ -66,3 +66,12 @@
   .hp-prompt { font: var(--type-headline-m); }
 }
 @media (min-width: 1280px) { .qv-main:has(.hp .ls-steps) .qv-keys { display: none; } }
+
+/* Still stuck? (spec section 5a) */
+.hp-ai { display: flex; flex-direction: column; gap: var(--spacing-sm); margin-top: var(--spacing-sm); padding-top: var(--spacing-sm); border-top: 2px solid var(--border-subtle); }
+.hp-ai-title { margin: 0; font: var(--type-title-m); }
+.hp-ai-body { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+.hp-ai-note, .hp-ai-text, .hp-ai-label { margin: 0; }
+.hp-ai-note { color: var(--text-secondary); }
+.hp-ai-card { display: flex; flex-direction: column; gap: var(--spacing-xs); padding: var(--spacing-sm); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.hp-ai-label { font: var(--type-label-m); color: var(--text-secondary); }

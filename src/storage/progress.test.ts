@@ -360,3 +360,16 @@ describe("calendar uses (spec section 11)", () => {
     expect((await reopen(kv)).calendarUseTimes).toEqual([T0, T0 + 5]);
   });
 });
+
+describe("AI help uses (spec section 5a)", () => {
+  test("keep only time and result locally, and a read-only tab writes nothing", async () => {
+    const kv = idbKV(freshDb());
+    const store = await reopen(kv);
+    await store.recordAiUse({ at: T0, result: "genuine" });
+    await store.recordAiUse({ at: T0 + 5, result: "offline" });
+    expect((await reopen(kv)).aiUseLog).toEqual([{ at: T0, result: "genuine" }, { at: T0 + 5, result: "offline" }]);
+    const other = await reopen(kv, false);
+    await other.recordAiUse({ at: T0 + 9, result: "rate" });
+    expect((await reopen(kv)).aiUseLog).toHaveLength(2);
+  });
+});

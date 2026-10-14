@@ -92,6 +92,7 @@ const KEY = {
   schema: "meta:schema",
   lastMoment: "meta:lastMoment",
   calendarUses: "meta:calendarUses",
+  aiUses: "meta:aiUses",
 };
 
 function highestMoment(p: Progress, stored: Moment | null): Moment | null {
@@ -113,6 +114,12 @@ function highestMoment(p: Progress, stored: Moment | null): Moment | null {
   return top;
 }
 
+export type AiResult = "genuine" | "cancelled" | "offline" | "rate" | "timeout" | "invalid" | "unavailable";
+export interface AiUse {
+  at: number;
+  result: AiResult;
+}
+
 export class ProgressStore {
   private issued: Moment | null;
   private saving = false;
@@ -124,6 +131,7 @@ export class ProgressStore {
     private state: Progress,
     lastMoment: Moment | null,
     private calendarUses: number[],
+    private aiUses: AiUse[],
     /** False when progress lives only in memory and disappears on reload. */
     readonly durable: boolean,
     /** Set when this tab must not write: another tab owns the session, or the data is from a newer app. */
@@ -146,7 +154,8 @@ export class ProgressStore {
     const readOnly: ReadOnlyReason | null = schema > SCHEMA_VERSION ? "newerSchema" : opts.writer ? null : "otherTab";
     const last = highestMoment(p, (records.get(KEY.lastMoment) as Moment | undefined) ?? null);
     const uses = records.get(KEY.calendarUses);
-    return new ProgressStore(kv, p, last, Array.isArray(uses) ? (uses as number[]) : [], opts.durable, readOnly);
+    const ai = records.get(KEY.aiUses);
+    return new ProgressStore(kv, p, last, Array.isArray(uses) ? (uses as number[]) : [], Array.isArray(ai) ? (ai as AiUse[]) : [], opts.durable, readOnly);
   }
 
   get progress(): Readonly<Progress> {
@@ -164,6 +173,19 @@ export class ProgressStore {
     const next = [...this.calendarUses, at];
     await this.kv.setMany([[KEY.calendarUses, next]]);
     this.calendarUses = next;
+  }
+
+  /** Online AI help requests and how each ended: a local pilot metric, learner-independent, never uploaded (spec section 5a). */
+  get aiUseLog(): readonly AiUse[] {
+    return this.aiUses;
+  }
+
+  /** Records one AI help request result. Best effort: a failure never blocks the learner. */
+  async recordAiUse(use: AiUse): Promise<void> {
+    if (this.readOnly) return;
+    const next = [...this.aiUses, use].slice(-500);
+    await this.kv.setMany([[KEY.aiUses, next]]);
+    this.aiUses = next;
   }
 
   /** The next moment in this learner's timeline. Saved with the next batch; never repeats, even after a failed save. */
