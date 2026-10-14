@@ -39,13 +39,13 @@ test("a new learner sees the English destination and reaches Move 1 from the top
   // Official counts on the sections; only Lexis and Structure has anything available.
   await expect(page.getByText("25 questions in the exam")).toHaveCount(2);
   await expect(page.getByText("10 questions in the exam")).toHaveCount(1);
-  await expect(page.getByText("English · 50 planned stages · 1 available · 0 completed")).toBeVisible();
-  await expect(page.getByText("English · 1 of 50 stages available · 0 completed")).toBeVisible();
-  await expect(page.getByText("33 planned stages · 1 available")).toBeVisible();
+  await expect(page.getByText("English · 50 planned stages · 5 available · 0 completed")).toBeVisible();
+  await expect(page.getByText("English · 5 of 50 stages available · 0 completed")).toBeVisible();
+  await expect(page.getByText("33 planned stages · 5 available")).toBeVisible();
 
   await page.getByRole("link", { name: "B. Lexis and Structure" }).click();
   await expect(page.getByRole("heading", { name: "Lexis and Structure" })).toBeVisible();
-  await expect(page.getByText("Lexis and Structure: 33 planned stages · 1 available · 0 completed")).toBeVisible();
+  await expect(page.getByText("Lexis and Structure: 33 planned stages · 5 available · 0 completed")).toBeVisible();
   // Concord inherits no question count, even though Basic grammar has 10.
   const concord = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: "Concord" }) });
   await expect(concord).not.toContainText("questions");
@@ -61,7 +61,7 @@ test("a new learner sees the English destination and reaches Move 1 from the top
 
 test("an existing learner resumes practice and takes an early solo check from the topic", async ({ page }) => {
   await seedRecords(page, [gap], TOPIC);
-  await page.getByRole("link", { name: "Solo check" }).click();
+  await page.getByRole("link", { name: "Solo check" }).first().click(); // stage 1 is the first of five
   await expect(page).toHaveURL(/\/solo-entry$/);
   await page.getByRole("button", { name: "Try anyway" }).click();
   await expect(page.getByRole("heading", { name: /^Question 1 of 10/ })).toBeVisible();
@@ -110,25 +110,25 @@ test("completed counts once per move after repeat solo passes, and never claims 
   const p1 = finishedRun("p1", "solo", 9, { n: 1, practice: 9, daysAgo: 2 });
   const p2 = finishedRun("p2", "solo", 10, { n: 2, practice: 10 });
   await seedRecords(page, [p1, p2, cycle("proved", "p1", "2026-10-12", "2026-10-15")], "/course");
-  await expect(page.getByText("English · 1 of 50 stages available · 1 completed")).toBeVisible();
-  await expect(page.getByText("English · 50 planned stages · 1 available · 1 completed")).toBeVisible();
+  await expect(page.getByText("English · 5 of 50 stages available · 1 completed")).toBeVisible();
+  await expect(page.getByText("English · 50 planned stages · 5 available · 1 completed")).toBeVisible();
   await page.goto(TOPIC);
-  await expect(page.getByText("Concord: 8 planned stages · 1 available · 1 completed")).toBeVisible();
+  await expect(page.getByText("Concord: 8 planned stages · 5 available · 1 completed")).toBeVisible();
   await expect(page.getByText("Completed", { exact: true })).toHaveCount(1);
   await expect(page.getByText(/course (is )?complete/i)).toHaveCount(0);
   await page.goto("/");
-  await expect(page.getByText("English · 1 of 50 stages available · 1 completed")).toBeVisible();
+  await expect(page.getByText("English · 5 of 50 stages available · 1 completed")).toBeVisible();
 });
 
 test("a Fading move stays completed and needs review", async ({ page }) => {
   const g = finishedRun("p1", "solo", 9, { n: 1, practice: 9, daysAgo: 20 });
   await seedRecords(page, [g, cycle("fading", "p1", "2026-09-20", "2026-09-23")], "/course");
-  await expect(page.getByText("English · 1 of 50 stages available · 1 completed · 1 needs review")).toBeVisible();
+  await expect(page.getByText("English · 5 of 50 stages available · 1 completed · 1 needs review")).toBeVisible();
 });
 
 test("a failed solo leaves completed at 0", async ({ page }) => {
   await seedRecords(page, [finishedRun("f1", "solo", 4, { n: 1, practice: 9 })], "/course");
-  await expect(page.getByText("English · 1 of 50 stages available · 0 completed")).toBeVisible();
+  await expect(page.getByText("English · 5 of 50 stages available · 0 completed")).toBeVisible();
 });
 
 test("the whole path works from the keyboard", async ({ page }) => {

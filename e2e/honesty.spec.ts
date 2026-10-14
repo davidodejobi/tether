@@ -251,7 +251,7 @@ test("closing while a claim is still saving never lets it be answered again on r
   await page.evaluate(() => ((window as any).__slowSave = 1500));
   await claim(page, "I used the move", 0.1); // sampled: a verification must follow
   await page.getByRole("button", { name: "Close and come back later" }).click();
-  await page.getByRole("link", { name: "Practice" }).click(); // back in, same page, while the save is landing
+  await page.getByRole("link", { name: /^Stage 1, Move 1/ }).click(); // back in, same page, while the save is landing
   await expect(page.getByText("Show us. Tap the part you covered.")).toBeVisible();
   await expect(page.getByRole("radio", { name: "I used the move" })).toHaveCount(0);
   const { attempt } = await lastAttempt(page, (a) => a.reason === "move");

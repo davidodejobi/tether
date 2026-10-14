@@ -74,7 +74,7 @@ export function Share() {
   return (
     <main class="rs sh">
       <h1>{kind === "proof" ? "Share your proof" : "Share your progress"}</h1>
-      {image ? <img class="sh-card" src={image.url} alt={`Share card: ${model.headline}, ${model.score}, ${model.date}`} /> : <div class="sh-card sh-wait" aria-hidden="true" />}
+      {image ? <img class="sh-card" src={image.url} alt={`Share card: ${model.headline}, ${model.score}, ${model.date}${model.move ? `, ${model.move}` : ""}`} /> : <div class="sh-card sh-wait" aria-hidden="true" />}
       <label class="sh-msg">
         <span>Message</span>
         <textarea rows={4} value={message} onInput={(e) => setMessage(e.currentTarget.value)} />

@@ -162,7 +162,7 @@ test("a save still landing after the learner left plays no cue, and coming back 
   await page.getByRole("button", { name: "Close and come back later" }).click();
   await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
   await release(page);
-  await page.getByRole("link", { name: "Practice" }).click();
+  await page.getByRole("link", { name: /^Stage 1, Move 1/ }).click();
   await expect(page.getByRole("radio", { name: "I guessed" })).toBeVisible(); // the pending reason prompt resumes
   await page.waitForTimeout(300);
   expect((await log(page)).filter((c) => c !== "select")).toEqual([]);

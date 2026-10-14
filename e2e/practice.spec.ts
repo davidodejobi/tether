@@ -44,7 +44,7 @@ test("five questions with a miss, summary, Another 5, reload and Done", async ({
 
   await page.getByRole("button", { name: "Close and come back later" }).click();
   await expect(page).toHaveURL(/\/$/);
-  await page.getByRole("link", { name: "Practice" }).click();
+  await page.getByRole("link", { name: /^Stage 1, Move 1/ }).click();
   await expect(page.getByText("1 of 5", { exact: true })).toBeVisible();
   expect(await page.getByRole("radio").evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")))).toEqual(labels);
 });

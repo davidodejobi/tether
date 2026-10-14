@@ -120,7 +120,7 @@ test.describe("offline reopening", () => {
     await expect(cold.getByRole("img", { name: "Proved" })).toBeVisible(); // the saved cycle
     await expect(cold.getByRole("button", { name: "Add to calendar" })).toBeVisible();
 
-    await cold.getByRole("link", { name: "Practice" }).click();
+    await cold.getByRole("link", { name: /^Stage 1, Move 1/ }).click();
     await expect(cold.getByRole("button", { name: "Check" })).toBeVisible();
     await cold.goto("/run/solo");
     await expect(cold.getByRole("heading", { name: /^Question 1 of 10/ })).toBeVisible();

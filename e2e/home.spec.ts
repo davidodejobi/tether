@@ -15,12 +15,12 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   await expect(page.getByRole("link", { name: "Practise Move 1" })).toHaveAttribute("href", "/practice");
   await expect(page.getByRole("link", { name: "Solo check" })).toHaveAttribute("href", "/solo-entry");
   await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
-  // The long trail: 50 stage nodes, stage 1 the only link, the other 49 plain Coming soon markers.
+  // The long trail: 50 stage nodes, stages 1 to 5 links, the other 45 plain Coming soon markers.
   const map = page.getByRole("region", { name: "Journey map" });
   await expect(map.locator(".hm-pos")).toHaveCount(50);
-  await expect(map.getByRole("link")).toHaveCount(1);
+  await expect(map.getByRole("link")).toHaveCount(5);
   await expect(map.getByRole("button")).toHaveCount(0);
-  await expect(map.getByText("Coming soon")).toHaveCount(49);
+  await expect(map.getByText("Coming soon")).toHaveCount(45);
   await expect(map.getByText("Stage 7: There is, there are. Coming soon")).toHaveCount(1);
   await expect(map.getByText("Current")).toBeVisible();
   // Three regions with banners and counts from the blueprint.
@@ -36,7 +36,7 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
 
 test("progress is always on Home, and the phone map keeps most of the screen", async ({ page }) => {
   await seedRecords(page, [], "/");
-  await expect(page.getByText("English · 1 of 50 stages available · 0 completed")).toBeVisible(); // not behind More
+  await expect(page.getByText("English · 5 of 50 stages available · 0 completed")).toBeVisible(); // not behind More
   await expect(page.getByText("JAMB English concord. Move 1: Strip the Disguise.")).toBeVisible();
   const share = await page.locator(".hm-scroll").evaluate((el) => el.getBoundingClientRect().height / innerHeight);
   expect(share).toBeGreaterThanOrEqual(0.55);
@@ -72,7 +72,7 @@ test("List view shows all 50 stages as an ordered list, and Map view brings the 
   const map = page.getByRole("region", { name: "Journey map" });
   await page.getByRole("button", { name: "List view" }).click();
   await expect(map.locator(".hm-listview ol > li")).toHaveCount(50);
-  await expect(map.getByRole("link")).toHaveCount(1);
+  await expect(map.getByRole("link")).toHaveCount(5);
   await expect(map.getByText("Stage 7: There is, there are. Coming soon.")).toBeVisible();
   await expect(map.getByText("Stage 50: Emphatic stress. Coming soon.")).toHaveCount(1);
   await page.getByRole("button", { name: "Map view" }).click();

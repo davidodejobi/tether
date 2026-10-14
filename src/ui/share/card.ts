@@ -1,6 +1,6 @@
 // What a share card says (spec section 11). Pure text: the canvas draws it, the preview and the message reuse it.
 // No Bo here. A gap appears only when the saved result holds both practice and alone scores.
-import { moveOrFirst } from "../../content/moves.ts";
+import { moveOrFirst, stripDisguiseMove } from "../../content/moves.ts";
 import { moveLabel } from "../move.ts";
 import { snapshotOf, type Snapshot } from "../../rules/gap.ts";
 import { inOrder } from "../../rules/moment.ts";
@@ -12,6 +12,8 @@ export interface CardModel {
   kind: ShareKind;
   nickname: string;
   exam: string;
+  /** "Move 3: Collective nouns" for the moves after the first; null for Move 1, whose messages never named it. */
+  move: string | null;
   headline: string;
   /** Proof state word for the stamp ring (gold); null on a progress card, which has no newly earned stamp. */
   badge: string | null;
@@ -36,9 +38,11 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
   const date = when(run.endedAt ?? run.started.at);
   const name = learner.partner?.name?.trim();
   const base = {
+    move: pack === stripDisguiseMove ? null : moveLabel(pack),
     kind, nickname: learner.nickname, exam: `JAMB English · ${moveLabel(pack)}`, date, source: `Source: ${pack.source.line}`,
     support: name ? `Ask ${name} how it went` : "One move at a time. Small steps hold.",
   };
+  const at = base.move ? ` (${base.move})` : "";
   const hi = name ? `Hi ${name}, ` : "";
 
   if (kind === "progress") {
@@ -48,7 +52,7 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
     return {
       ...base, headline: "My gap is shrinking", badge: null, score: `${b.alone} of 10`, scoreLabel: "alone now, no help",
       details: [`Gap ${a.gap} to ${b.gap}`, `Alone ${a.alone} to ${b.alone} (since ${when(a.at)})`],
-      message: `${hi ? `${hi}my` : "My"} gap shrank from ${a.gap} to ${b.gap} and my alone score rose from ${a.alone} to ${b.alone} on JAMB English (${date}). I am still practising.`,
+      message: `${hi ? `${hi}my` : "My"} gap shrank from ${a.gap} to ${b.gap} and my alone score rose from ${a.alone} to ${b.alone} on JAMB English${at} (${date}). I am still practising.`,
     };
   }
 
@@ -60,7 +64,7 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
     return {
       ...base, headline: v.proof!.earnedNow ? "Proved: passed with no help" : "Passed with no help", badge,
       score: `${v.score} of ${v.total}`, scoreLabel: "alone, no help", details: gap ? [gap] : [],
-      message: `${hi}I got ${v.score} of ${v.total} on my own in JAMB English concord, with no help (${date}).`,
+      message: `${hi}I got ${v.score} of ${v.total} on my own in JAMB English concord${at}, with no help (${date}).`,
     };
   }
   // A recheck is today's five questions only; an older solo and gap keep their own score and date.
@@ -71,6 +75,6 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
   const details = prior ? [`Last solo check: ${prior.alone} of 10 on ${when(prior.at)}`, ...(priorGap ? [priorGap] : [])] : [];
   return {
     ...base, headline: "Recheck passed", badge, score: `${v.score} of ${v.total}`, scoreLabel: "today's recheck, no help", details,
-    message: `${hi}I passed today's ${v.score} of ${v.total} recheck in JAMB English concord, with no help (${date}).`,
+    message: `${hi}I passed today's ${v.score} of ${v.total} recheck in JAMB English concord${at}, with no help (${date}).`,
   };
 }

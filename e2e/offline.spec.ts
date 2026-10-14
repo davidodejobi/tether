@@ -112,7 +112,7 @@ test("the whole loop starts offline after one load: onboarding, practice, solo",
   await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
   await expect(page.getByText("Ready offline")).toBeVisible();
 
-  await page.getByRole("link", { name: "Practice" }).click();
+  await page.getByRole("link", { name: /^Stage 1, Move 1/ }).click();
   await answerRight(page);
   await page.getByRole("button", { name: /^Next/ }).click();
 
