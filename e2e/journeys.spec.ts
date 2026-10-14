@@ -24,8 +24,10 @@ const home = (page: Page) => expect(page.getByRole("heading", { name: "Tether" }
 async function toFirstWin(page: Page, nickname = "Amaka") {
   await page.goto("/");
   await page.getByRole("button", { name: "Start" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Nickname").fill(nickname);
   await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Start Move 1" }).click();
   await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();

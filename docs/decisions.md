@@ -246,3 +246,11 @@ These decisions override conflicting text in `requirements.txt`.
 - Source: https://ibass.jamb.gov.ng/static/media/Use-of-English.885e843b1f51e6a3d062.pdf, read 2026-10-14, SHA-256 `f2b6bc4f2c30fc19ecf57bc14778100ce0deca59445beff9f7e10f34cbf7da18` (matches the checksum in Move 1's source). The PDF prints no exam year; the file is dated July 2025.
 - The topic view reuses `ProofCard` (Practise/Continue, recheck, recovery) and the Solo check link. It writes nothing; a test compares saved runs and cycles before and after browsing.
 - Home's map is now bounded: three nodes per page with Previous/Next, art cropped to fit, and a List view (`details`) with every node. With one available stage there is no paging on the course views; add Previous/Next there when a list outgrows a screen.
+
+## 2026-10-14 - Subject-first onboarding (step 22)
+
+- Flow: Welcome, Pick your subjects, Nickname, Your English course, then the unchanged lesson, tutorial, first win and preferences. No diagnostic, profile or eligibility advice.
+- `src/content/subjects.ts` lists the 24 non-English subjects named by the owner (the brief said 23; the names given number 24, so all are kept). They are marked Coming soon; English is fixed. Up to 3 others may be picked. Source line: "Subjects from JAMB's IBASS e-syllabus"; it is a preference only.
+- `Learner.subjects?: string[]` (`["english", ...extras]`). Absent means `["english"]`: no schema bump, no migration, older learners never repeat onboarding.
+- Subjects are held in memory until the nickname is saved (the learner record does not exist before that), so a reload at the subjects step returns to Welcome. A learner with saved subjects and no finished lesson resumes at the course map; one without subjects resumes the lesson.
+- Settings has a Subjects group that saves each change at once with Retry, through the existing `change()` path.

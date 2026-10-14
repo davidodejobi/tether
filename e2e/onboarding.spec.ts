@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { seedRecords } from "./results-helpers";
 import { answerTutorials } from "./tutorial";
 
 const savedLearner = (page: Page) =>
@@ -17,8 +18,10 @@ const savedLearner = (page: Page) =>
 async function toLesson(page: Page, nickname = "Amaka") {
   await page.goto("/");
   await page.getByRole("button", { name: "Start" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Nickname").fill(nickname);
   await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Start Move 1" }).click();
   await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
 }
 
@@ -63,10 +66,11 @@ test("skipping preferences keeps the defaults", async ({ page }) => {
   expect(await savedLearner(page)).toMatchObject({ onboarded: true, coach: "character", lang: "en", readAloud: false, partner: null });
 });
 
-test("a reload mid-lesson resumes the lesson", async ({ page }) => {
+test("a reload before the lesson resumes at the course map; an old learner without subjects resumes the lesson", async ({ page }) => {
   await toLesson(page);
   await page.reload();
-  await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your English course" })).toBeVisible();
+  await page.getByRole("button", { name: "Start Move 1" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: /Got it/ }).click();
@@ -79,6 +83,7 @@ test("an empty or 31-character nickname is refused", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Start" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "1 to 30" })).toBeVisible();
   await page.getByLabel("Nickname").fill("a".repeat(31));
   await page.getByRole("button", { name: "Continue" }).click();
@@ -86,7 +91,7 @@ test("an empty or 31-character nickname is refused", async ({ page }) => {
   expect(await savedLearner(page)).toBeNull();
   await page.getByLabel("Nickname").fill("a".repeat(30));
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your English course" })).toBeVisible();
 });
 
 test("a second tab is read-only", async ({ page, context }) => {
@@ -105,4 +110,58 @@ test("reduced motion shows the static lesson", async ({ page }) => {
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await expect(page.getByRole("button", { name: /Got it/ })).toBeVisible();
+});
+
+const toSubjects = async (page: Page) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start" }).click();
+  await expect(page.getByRole("heading", { name: "Pick your subjects" })).toBeFocused();
+};
+
+test("English is fixed; the other subjects are Coming soon and optional", async ({ page }) => {
+  await toSubjects(page);
+  const english = page.getByRole("checkbox", { name: /Use of English/ });
+  await expect(english).toBeChecked();
+  await expect(english).toBeDisabled();
+  await expect(page.getByText("Everyone takes Use of English")).toBeVisible();
+  await expect(page.getByRole("checkbox")).toHaveCount(25); // English + the 24 listed subjects
+  await expect(page.getByText("Coming soon")).toHaveCount(24);
+  await expect(page.getByText("Subjects from JAMB's IBASS e-syllabus")).toBeVisible();
+  await page.getByRole("button", { name: "Continue" }).click(); // none picked is fine
+  await expect(page.getByRole("heading", { name: "What should we call you?" })).toBeFocused();
+});
+
+test("no more than 3 other subjects; choices and the course map persist across reload", async ({ page }) => {
+  await toSubjects(page);
+  for (const n of ["Biology", "Chemistry", "Physics"]) await page.getByRole("checkbox", { name: new RegExp(n) }).check();
+  await expect(page.getByText(/You picked 3 of 3/)).toBeVisible();
+  const fourth = page.getByRole("checkbox", { name: /Mathematics/ });
+  await expect(fourth).toBeDisabled();
+  await page.getByRole("checkbox", { name: /Physics/ }).uncheck();
+  await expect(fourth).toBeEnabled();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByLabel("Nickname").fill("Amaka");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByRole("heading", { name: "Your English course" })).toBeFocused();
+  for (const name of ["Comprehension and Summary", "Lexis and Structure", "Oral Forms"]) await expect(page.getByText(new RegExp(name)).first()).toBeVisible();
+  await expect(page.getByText("Lexis and Structure → Concord → Move 1: Strip the Disguise")).toBeVisible();
+  expect(await savedLearner(page)).toMatchObject({ subjects: ["english", "biology", "chemistry"] });
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Your English course" })).toBeVisible(); // resumes at the course map
+  await page.getByRole("button", { name: "Start Move 1" }).click();
+  await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeVisible();
+});
+
+test("a reload at the subjects step starts over, because nothing is saved before the nickname", async ({ page }) => {
+  await toSubjects(page);
+  await page.getByRole("checkbox", { name: /Biology/ }).check();
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+  expect(await savedLearner(page)).toBeNull();
+});
+
+test("an existing learner without subjects goes straight to Home and is left unchanged", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
+  expect((await savedLearner(page))?.subjects).toBeUndefined();
 });
