@@ -94,12 +94,12 @@ contract. Bring supporting files into this repository only when needed.
   finish destinations and a list view. Only reviewed Move 1 is available.
   Done: the preview works across devices/offline and preserves every learning record;
   future content is Coming soon, and proof remains scoped to the move.
-- [ ] **18. Verify the whole product.** Run content/logic checks and browser
+- [x] **18. Verify the whole product.** Run content/logic checks and browser
   journeys for onboarding, helped practice, honest answers, solo pass/fail,
   interruptions, sharing, recheck pass/fail/recovery, AI help and offline reopening.
   Check stored pilot measures without adding automatic uploads.
   Done: release checks pass and any remaining limitations are documented.
-- [ ] **19. Deploy and verify the release.** Produce a clean build from this
+- [x] **19. Deploy and verify the release.** Produce a clean build from this
   repository, deploy to the chosen HTTPS host and repeat installation/offline smoke
   checks on the deployed app. Check that no required files point outside the repo.
   Configure the deployed AI endpoint and make a genuine provider call; align the

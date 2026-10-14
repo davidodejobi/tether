@@ -1,5 +1,18 @@
 # Release checks (roadmap step 18)
 
+## Deployed release (step 19), 14 Oct 2026
+
+- URL: https://tether-4cg.pages.dev, deployed from `chore/initial-setup` with `wrangler pages deploy`.
+- `DEPLOY_URL=https://tether-4cg.pages.dev npx playwright test -c playwright.deployed.config.ts`: 48/48 passed
+  (offline install/reopen, update rejection, release journeys, course preview, sounds, and one genuine
+  Still stuck? call through the deployed function: labelled AI help shown and recorded).
+- `/api/explain` on the deployed site: 200 with a genuine explanation (about 1 s), 400 for an extra field,
+  405 for GET. The key is a Pages secret; `dist/` contains no key or key name.
+- Found only on the real host: Cloudflare answers `/index.html` with 308 to `/`. The service worker cached the
+  redirected response and every later navigation failed. Fixed in `src/sw.js` (store a clean copy) with a
+  regression test in `offline.spec.ts` that simulates the redirect.
+- First-load JS: 61.7 KB gzipped (`index-*.js`, 191 KB raw).
+
 ## Destination preview gate
 
 Before submission, complete roadmap step 17a against spec §14b and
@@ -19,7 +32,7 @@ E2E_PORT=4251 npx playwright test   # builds, serves the preview, runs every jou
 ```
 
 First-load app JavaScript must stay under 100 KB gzipped (spec section 14). Measure it after `npm run build`:
-`for f in dist/assets/*.js; do gzip -c $f | wc -c; done`. Last measured: 58 KB gzipped (`index-*.js`, 181 KB raw).
+`for f in dist/assets/*.js; do gzip -c $f | wc -c; done`. Last measured: 61.7 KB gzipped (`index-*.js`, 191 KB raw).
 
 ## Verified automatically
 

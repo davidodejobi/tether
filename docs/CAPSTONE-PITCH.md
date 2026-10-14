@@ -1,5 +1,8 @@
 # Capstone: "Describe what you want to build"
 
+Live demo: https://tether-4cg.pages.dev (installable; works offline after the first load). One reviewed English
+stage is live; the English course view shows the JAMB syllabus plan, with the rest marked Coming soon.
+
 Track: 2, Engagement & Staying in the Learning Journey (with parts of Tracks 1 and 3).
 
 ## Full answer
