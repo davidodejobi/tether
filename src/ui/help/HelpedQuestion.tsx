@@ -66,6 +66,7 @@ function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; que
         coach={coach}
         blocked={blocked}
         onFinish={() => help("goDeeper", () => setTimeout(retry, 0))}
+        onAi={(then) => (attempt.help.includes("ai") ? then() : help("ai", then))}
       />
     );
   if (helped(attempt))

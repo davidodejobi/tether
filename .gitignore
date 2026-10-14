@@ -6,3 +6,5 @@ test-results/
 .DS_Store
 .vitest/
 screenshots/
+.dev.vars
+.wrangler/

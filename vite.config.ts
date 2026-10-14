@@ -28,5 +28,5 @@ function serviceWorker(): Plugin {
 
 export default defineConfig({
   plugins: [preact(), serviceWorker()],
-  test: { include: ["src/**/*.test.ts"] },
+  test: { include: ["src/**/*.test.ts", "server/**/*.test.ts"] },
 });

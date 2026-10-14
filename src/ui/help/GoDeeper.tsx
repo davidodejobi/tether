@@ -1,6 +1,6 @@
 // Go deeper (third miss): tap the subject, pick one or many, pick the verb. A wrong step gets the pack's
 // hint, which never states the answer. Answer tiles stay hidden by the caller until onFinish(), so
-// elimination cannot reveal the answer. onFinish() is where the caller records help("goDeeper").
+// elimination cannot reveal the answer. onFinish() is where the caller records help("goDeeper"); onAi(then) records help("ai").
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Question } from "../../content/generate.ts";
 import type { Lang } from "../../content/types.ts";
@@ -16,7 +16,7 @@ const NOT_SUBJECT: Record<Lang, string> = {
   pcm: "Na no be the subject. Cover the side talk, look again.",
 };
 
-export function GoDeeper({ question: q, lang, coach, blocked, onFinish }: { question: Question; lang: Lang; coach: "character" | "text"; blocked: boolean; onFinish(): void }) {
+export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: { question: Question; lang: Lang; coach: "character" | "text"; blocked: boolean; onFinish(): void; onAi(then: () => void): void }) {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [hint, setHint] = useState("");
   const heading = useRef<HTMLHeadingElement>(null);
@@ -74,7 +74,7 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish }: { ques
       <div role="status" aria-live="polite">
         {hint && <CoachBubble mode={coach} pose="concerned" unreviewed={unreviewed}>{hint}</CoachBubble>}
       </div>
-      <StillStuck question={q} lang={lang} />
+      <StillStuck question={q} lang={lang} blocked={blocked} onAccepted={onAi} />
     </div>
   );
 }

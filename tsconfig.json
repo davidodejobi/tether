@@ -14,5 +14,5 @@
     "allowImportingTsExtensions": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "e2e", "tools", "vite.config.ts", "playwright.config.ts", "playwright.screens.config.ts", "e2e-screens"]
+  "include": ["src", "server", "functions", "e2e", "tools", "vite.config.ts", "playwright.config.ts", "playwright.screens.config.ts", "e2e-screens"]
 }
