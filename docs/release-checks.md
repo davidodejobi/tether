@@ -51,6 +51,21 @@ Rules, storage and content have unit tests next to the code (`src/**/*.test.ts`)
 
 The same journey records every request and fails on any non-localhost origin.
 
+## Real-device evidence
+
+Headless tests cannot prove these. Each row is for the owner to fill in on a real device; "Result" stays "not yet run (needs device)" until someone does.
+
+| Check | Result | Steps (human) |
+|---|---|---|
+| VoiceOver (iPhone, Safari) | not yet run (needs device) | Settings > Accessibility > VoiceOver on. Open the deployed URL. Swipe through onboarding, one practice question (tiles announce as radio buttons with their word, Check, reason choices), Show me, a solo run, Result and Settings. Note anything unlabelled, read in the wrong order, or a focus jump that lands nowhere. |
+| TalkBack (Android, Chrome) | not yet run (needs device) | Settings > Accessibility > TalkBack on. Repeat the VoiceOver route above, including the timer announcement in a solo run ("Time is almost up"). Note the same kinds of problems. |
+| Install | not yet run (needs device) | Android Chrome: open the URL, accept the install prompt (or menu > Install app), launch from the icon, check it opens standalone with the Tether icon. iOS Safari: Share > Add to Home Screen, launch from the icon. Turn on airplane mode and relaunch: Home and practice must open. |
+| Share sheet | not yet run (needs device) | Finish a solo run (or use a saved proof), open Share, tap Share proof. Choose WhatsApp: the card image and message arrive. Also try Cancel (no error shown) and Download card / Copy text. |
+| Voices (read aloud) | not yet run (needs device) | Settings > Read-aloud on. Open a practice question and tap Read aloud in English, then switch to Pidgin. Note which voice each phone used and whether pronunciation is understandable. Note the phone model and OS. |
+| Service worker update between deploys | not yet run (needs device) | Install and open deploy A, go offline once to confirm it works. Deploy B (any visible change). Open the app online: the update prompt appears, Update applies it, the new version shows, and saved progress is still there. Also try Not now and reopen later. |
+
+Also on the integrated build, rerun `node tools/compat-check.ts` (saved-learner compatibility against the previous release) and `tools/qa-capture.sh` (screens at 360, 768 and 1366 in light and dark).
+
 ## Needs real devices
 
 - VoiceOver and TalkBack passes over the whole loop.
