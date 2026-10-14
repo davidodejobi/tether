@@ -19,7 +19,9 @@ async function fill() {
     missing.map(async (url) => {
       const res = await fetch(url, { cache: "reload" });
       if (!res.ok) throw new Error(url);
-      await cache.put(url, res);
+      // Some hosts redirect /index.html to / (Cloudflare Pages does). A redirected response cannot answer a
+      // navigation, so store a fresh copy of the final response instead.
+      await cache.put(url, res.redirected ? new Response(await res.blob(), { status: res.status, statusText: res.statusText, headers: res.headers }) : res);
     }),
   );
 }

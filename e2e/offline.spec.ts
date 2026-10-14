@@ -63,6 +63,21 @@ test("Ready offline appears only after the cache is complete and survives going 
   await expect(page.getByText("Ready offline")).toBeVisible();
 });
 
+// Cloudflare Pages answers /index.html with a 308 to /. A redirected response cannot answer a navigation, so a cached
+// one broke every later load (net::ERR_FAILED), online and offline. This host behaviour is simulated here.
+test("a host that redirects /index.html to / still reloads, online and offline", async ({ page, context }) => {
+  await context.route(/\/index\.html$/, (route) => route.fulfill({ status: 308, headers: { location: "/" } }));
+  await seedHome(page);
+  await expect(page.getByText("Ready offline")).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
+  await page.goto("/settings");
+  await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
+  await context.setOffline(true);
+  await page.goto("/practice");
+  await expect(page.getByRole("radio").first()).toBeVisible();
+});
+
 test("a partly stored cache offers Retry, and Retry completes it", async ({ page }) => {
   await seedHome(page);
   await expect(page.getByText("Ready offline")).toBeVisible();
