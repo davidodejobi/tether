@@ -57,9 +57,9 @@ export function Settings() {
   const partnerDirty = partner !== null && (partner.name.trim() !== savedPartner.name || partner.phone.trim() !== savedPartner.phone);
 
   // Radios and checkboxes are controlled: the saved value decides, so a failed save leaves the old one showing.
-  const choice = <K extends "coach" | "lang">(key: K, value: Learner[K], label: string, extra?: string) => (
+  const choice = <K extends "coach" | "lang" | "theme">(key: K, value: Learner[K], label: string, extra?: string) => (
     <label class="st-choice">
-      <input type="radio" name={key} checked={learner[key] === value} disabled={busy} onChange={() => change({ [key]: value })} /> {label}
+      <input type="radio" name={key} checked={(learner[key] ?? (key === "theme" ? "system" : undefined)) === value} disabled={busy} onChange={() => change({ [key]: value })} /> {label}
       {extra && <span class="st-tag">{extra}</span>}
     </label>
   );
@@ -82,6 +82,14 @@ export function Settings() {
         {choice("coach", "character", "Character")}
         {choice("coach", "text", "Text only")}
         <small>Text only keeps every teaching caption.</small>
+      </fieldset>
+
+      <fieldset class="st-group">
+        <legend>Appearance</legend>
+        {choice("theme", "system", "Match my device")}
+        {choice("theme", "light", "Light")}
+        {choice("theme", "dark", "Dark")}
+        <small>Proof cards stay light in both, so they read well when shared.</small>
       </fieldset>
 
       <fieldset class="st-group">

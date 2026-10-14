@@ -128,3 +128,45 @@ test("subjects: English is fixed, the limit is 3, changes persist, and a failed 
   await expect(alert(page)).toHaveCount(0);
   expect((await learner(page)).subjects).toEqual(["english", "biology", "chemistry"]);
 });
+
+test("Appearance: Light or Dark overrides the device, survives a reload, and Match my device hands back to it", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await seedRecords(page, [], "/settings");
+  const theme = () => page.evaluate(() => document.documentElement.dataset.theme ?? "system");
+  const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await expect(page.getByRole("radio", { name: "Match my device" })).toBeChecked();
+  const deviceDark = await bg();
+
+  await page.getByRole("radio", { name: "Light" }).click();
+  await expect(page.getByRole("radio", { name: "Light" })).toBeChecked();
+  await expect.poll(theme).toBe("light"); // applied just after the save re-renders
+  await expect.poll(bg).not.toBe(deviceDark);
+  expect((await learner(page)).theme).toBe("light");
+  await page.reload();
+  await expect(page.getByRole("radio", { name: "Light" })).toBeChecked();
+  await expect.poll(theme).toBe("light"); // applied just after the save re-renders
+
+  await page.getByRole("radio", { name: "Dark" }).click();
+  await expect(page.getByRole("radio", { name: "Dark" })).toBeChecked();
+  await expect.poll(theme).toBe("dark"); // applied just after the save re-renders
+  await expect.poll(bg).toBe(deviceDark);
+
+  await page.getByRole("radio", { name: "Match my device" }).click();
+  await expect(page.getByRole("radio", { name: "Match my device" })).toBeChecked();
+  await expect.poll(theme).toBe("system"); // applied just after the save re-renders
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect.poll(bg).not.toBe(deviceDark);
+});
+
+test("Appearance: a failed save keeps the old look, and Retry applies the new one", async ({ page }) => {
+  await seedRecords(page, [], "/settings");
+  await failWrites(page, true);
+  await page.getByRole("radio", { name: "Dark" }).click();
+  await expect(alert(page)).toBeVisible();
+  await expect(page.getByRole("radio", { name: "Match my device" })).toBeChecked();
+  expect(await page.evaluate(() => document.documentElement.dataset.theme ?? "system")).toBe("system");
+  await failWrites(page, false);
+  await page.getByRole("button", { name: "Retry" }).click();
+  await expect(page.getByRole("radio", { name: "Dark" })).toBeChecked();
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
+});

@@ -3,6 +3,7 @@ import { createContext, type ComponentChildren } from "preact";
 import { useCallback, useContext, useEffect, useState } from "preact/hooks";
 import { claimWriter } from "../platform/storage.ts";
 import { setSoundsOn } from "../platform/sound.ts";
+import { applyTheme } from "../platform/theme.ts";
 import { memoryKV, openKV } from "../storage/kv.ts";
 import { openProgress, type Batch, type ProgressStore } from "../storage/progress.ts";
 
@@ -53,6 +54,11 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
   useEffect(() => open(), [open]);
   // Sounds follow the saved setting (default off); every save re-renders this, so a change applies at once.
   useEffect(() => setSoundsOn(state.status === "ready" && state.store.progress.learner?.sounds === true), [state]);
+  // Appearance follows the saved learner once there is one; before onboarding the early (localStorage) choice stays.
+  useEffect(() => {
+    const learner = state.status === "ready" ? state.store.progress.learner : null;
+    if (learner) applyTheme(learner.theme ?? "system");
+  }, [state]);
   // Session measure (spec section 15): any tap or key is an interaction; time spent hidden is not counted.
   useEffect(() => {
     if (state.status !== "ready") return;
