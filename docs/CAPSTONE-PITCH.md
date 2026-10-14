@@ -14,4 +14,4 @@ I want to build Tether, a learning app that turns time on the phone into learnin
 
 ## Short answer
 
-Tether turns time on the phone into learning that sticks. The first demo teaches one JAMB English concord move through short game-like rounds and spaced rechecks. It shows two scores, with help and alone. Fixed rules mark answers; online AI explains the reviewed concept when a learner is stuck. The core works offline on cheap phones. What excites me: young people already love gamified apps, and I want to channel that energy into real learning.
+Tether turns time on the phone into learning that sticks. The first demo teaches one JAMB English concord move through short game-like rounds and spaced rechecks. It shows two scores, with help and alone. Fixed rules mark answers; online AI (internet needed; never required) explains the reviewed concept when a learner is stuck. The core works offline on cheap phones. What excites me: young people already love gamified apps, and I want to channel that energy into real learning.
