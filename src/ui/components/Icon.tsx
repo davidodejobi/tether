@@ -8,7 +8,7 @@ const urls = import.meta.glob<string>("../../assets/icons/*.svg", {
 
 export const ICON_NAMES = [
   "back", "calendar", "chat", "check", "chevron-right", "close", "eye-off", "globe",
-  "lightbulb", "lock-open", "map", "play", "replay", "settings", "share", "sparkle",
+  "lightbulb", "lock", "lock-open", "map", "play", "replay", "settings", "share", "sparkle",
   "speaker", "target", "tether", "timer", "warning", "wifi-off", "x",
 ] as const;
 export type IconName = (typeof ICON_NAMES)[number];
