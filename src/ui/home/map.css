@@ -10,12 +10,13 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hm-canvas { background-image: var(--art-night), linear-gradient(var(--bg-primary-container), var(--bg-sunken)); } }
 [data-theme="dark"] .hm-canvas { background-image: var(--art-night), linear-gradient(var(--bg-primary-container), var(--bg-sunken)); }
 
-.hm-pager { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
-.hm-pager .btn { padding: 0 var(--spacing-md); }
+.hm-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
+.hm-pager .btn { min-width: 0; padding: 0 var(--spacing-sm); }
 .hm-page { margin: 0; font: var(--type-label-l); color: var(--text-secondary); }
 .hm-list { margin-top: var(--spacing-sm); font: var(--type-body-l); }
 .hm-list summary { display: flex; align-items: center; min-height: var(--size-touch-target); font: var(--type-label-l); color: var(--text-brand); cursor: pointer; }
 .hm-list summary:focus-visible, .hm-list a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+.hm-list a { display: inline-flex; align-items: center; min-height: var(--size-touch-target); }
 .hm-list ol { display: grid; gap: var(--spacing-xs); margin: 0; padding-left: var(--spacing-xl); }
 .hm-label { padding: 0 var(--spacing-xs); background: var(--bg-surface); border: 2px solid var(--border-strong); border-radius: var(--radius-md); font: var(--type-title-m); }
 
