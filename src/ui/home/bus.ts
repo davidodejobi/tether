@@ -48,9 +48,9 @@ export function hop(el: HTMLElement): Animation {
   );
 }
 
-/** Jump from its resting place onto a stage's disc. */
-export function hopTo(el: HTMLElement, stop: number): Animation {
-  const p = at(parkAt(stop)), n = nodes[stop - 1]!;
+/** Jump from its resting place (below stage `from`, default the stage itself) onto a stage's disc. */
+export function hopTo(el: HTMLElement, stop: number, from = stop): Animation {
+  const p = at(parkAt(from)), n = nodes[stop - 1]!;
   return el.animate(
     [{ transform: pose(p.x, p.y) }, { transform: pose((p.x + n.x) / 2, (p.y + n.y) / 2 - 34) , offset: 0.5 }, { transform: pose(n.x, n.y + 22) }],
     { duration: 420, easing: "ease-in-out", fill: "forwards" },

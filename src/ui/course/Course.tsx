@@ -1,11 +1,12 @@
-// The English destination preview (spec section 14b): course, section and topic views around the one reviewed Move 1.
-// Every view is a plain list; Coming soon items are text, never links or buttons. Move 1's actions are Home's own ProofCard.
+// The English destination preview (spec section 14b): course, section and topic views around the reviewed moves.
+// Every view is a plain list; Coming soon items are text, never links or buttons. Each available stage carries its own actions.
 import type { ComponentChildren } from "preact";
 import { allStages, availableIn, english, plannedIn, sectionById, source, topicById, type Section, type Topic } from "../../content/catalogue.ts";
 import { countStages, groupLine, overviewLine } from "../../rules/course-counts.ts";
-import { proofStatus } from "../../rules/proof.ts";
-import { moveOne } from "../home/view.ts";
-import { ProofCard } from "../proof/ProofCard";
+import { moveById, moveNumber } from "../../content/moves.ts";
+import { recheckAvailable } from "../../rules/proof.ts";
+import { focusMove, moveState } from "../home/view.ts";
+import { withMove } from "../move.ts";
 import { appNow } from "../proof/simulate";
 import { useProgress } from "../progress";
 import { NotFound } from "../screens/NotFound";
@@ -13,7 +14,7 @@ import { CourseProgress, useCounts } from "./CourseProgress";
 import "../components/Button.css";
 import "./course.css";
 
-const WORD = { current: "Current", proved: "Proved", held: "Held", fading: "Fading" } as const;
+const WORD = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", available: "Available", soon: "Coming soon" } as const;
 
 function Crumbs({ section, topic }: { section?: Section; topic?: Topic }) {
   return (
@@ -32,12 +33,21 @@ const Page = ({ crumbs, children }: { crumbs: ComponentChildren; children: Compo
   <main class="page cs">{crumbs}{children}</main>
 );
 
-function usePosition() {
+/** "Move 3: Collective nouns. Current." The focus move is Current until it has proof; the others are Available. */
+function useStatus() {
   const { store } = useProgress();
-  const cycle = store.progress.cycles.get("strip-disguise") ?? null;
-  const { state, due } = moveOne(proofStatus(cycle, appNow(cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)));
-  return `Move 1: Strip the Disguise. ${WORD[state as keyof typeof WORD]}${due ? ", due" : ""}.`;
+  const p = store.progress;
+  const focus = focusMove(p, appNow);
+  return (moveId: string) => {
+    const { state, due } = moveState(p, moveId, focus.moveId, appNow);
+    return `Move ${moveNumber(moveById(moveId)!)}: ${moveById(moveId)!.title}. ${WORD[state]}${due ? ", due" : ""}.`;
+  };
 }
+const usePosition = () => {
+  const status = useStatus();
+  const { store } = useProgress();
+  return status(focusMove(store.progress, appNow).moveId);
+};
 
 const planned = (x: Section | Topic) => `${plannedIn(x)} planned stage${plannedIn(x) === 1 ? "" : "s"} · ${availableIn(x)} available`;
 
@@ -99,8 +109,8 @@ export function CourseTopic({ section: sid, topic: tid }: { section?: string; to
   const here = usePosition();
   const counts = useCounts(t ? t.stages : []);
   const { store } = useProgress();
+  const status = useStatus();
   if (!s || !t) return <NotFound />;
-  const hasAvailable = counts.available > 0;
   return (
     <Page crumbs={<Crumbs section={s} topic={t} />}>
       <h1>{t.name}</h1>
@@ -113,8 +123,9 @@ export function CourseTopic({ section: sid, topic: tid }: { section?: string; to
             <span class="cs-meta">Stage {g.position} of {g.of} planned</span>
             {g.moveId ? (
               <>
-                <span class="cs-meta">{here}</span>
+                <span class="cs-meta">{status(g.moveId)}</span>
                 <span class="cs-meta">{countStages([g], { cycles: store.progress.cycles.values(), runs: store.progress.runs.values() }).completed ? "Completed" : "Not completed yet"}</span>
+                <Actions moveId={g.moveId} />
               </>
             ) : (
               <span class="cs-tag">Coming soon</span>
@@ -122,13 +133,20 @@ export function CourseTopic({ section: sid, topic: tid }: { section?: string; to
           </li>
         ))}
       </ol>
-      {hasAvailable && (
-        <>
-          <ProofCard />
-          <a class="btn btn-secondary cs-solo" href="/solo-entry">Solo check</a>
-          <p class="cs-meta">Ten questions on your own. Always open.</p>
-        </>
-      )}
     </Page>
+  );
+}
+
+/** One available stage's actions, each carrying the move. Start recheck appears while a recheck is due or proof is Fading. */
+function Actions({ moveId }: { moveId: string }) {
+  const { store } = useProgress();
+  const cycle = store.progress.cycles.get(moveId) ?? null;
+  const recheck = recheckAvailable(cycle, appNow(cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone));
+  return (
+    <div class="cs-actions">
+      <a class="btn btn-primary cs-act" href={withMove("/practice", moveId)}>Practise Move {moveNumber(moveById(moveId)!)}</a>
+      <a class="btn btn-secondary cs-act" href={withMove("/solo-entry", moveId)}>Solo check</a>
+      {recheck && <a class="btn btn-secondary cs-act" href={withMove("/recheck-entry", moveId)}>Start recheck</a>}
+    </div>
   );
 }

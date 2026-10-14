@@ -21,6 +21,8 @@
 .page a.cs-name:focus-visible, .page a.cs-solo:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
 .cs-meta { font: var(--type-body-m); color: var(--text-secondary); }
 .cs-tag { padding: 0 var(--spacing-xs); border: 2px solid var(--border-gap); border-radius: var(--radius-full); background: var(--bg-gap-container); color: var(--text-on-gap-container); font: var(--type-label-m); }
+.cs-actions { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); margin-top: var(--spacing-xs); }
+.page a.btn.cs-act { margin: 0; text-decoration: none; }
 .page a.btn.cs-solo { display: flex; margin: 0; text-decoration: none; }
 @media (min-width: 1280px) { .page.cs { max-width: 40rem; } }
 @media (max-width: 767px) { .page.cs { padding: var(--spacing-md); padding-bottom: var(--spacing-xxl); } }

@@ -3,22 +3,26 @@
 // stages are Coming soon markers. A danfo bus drives to the current stage; reduced motion places it instead.
 import { useLayoutEffect, useEffect, useRef, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
-import { availableStages, blueprint } from "../../content/blueprint.ts";
+import { blueprint } from "../../content/blueprint.ts";
+import type { Move } from "../../content/generate.ts";
+import { moveNumber } from "../../content/moves.ts";
 import { Bo } from "../components/Bo";
 import { Icon, type IconName } from "../components/Icon";
+import { withMove } from "../move.ts";
 import type { NodeState } from "./view.ts";
 import { drive, hop, hopTo, lastStop, parked, reduced, remember } from "./bus.ts";
 import { CX, H, W, countLabel, gate, labelSide, nodes, regionOf, regions, roadD } from "./trail.ts";
 import "../components/Button.css";
 import "./map.css";
 
-const WORD: Record<NodeState, string> = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", soon: "Coming soon" };
-const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", soon: "lock" };
-/** The stage the learner is on: the last available one (only stage 1 today). */
-const CURRENT = availableStages.at(-1)!.n;
-const HREF = "/practice";
+const WORD: Record<NodeState, string> = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", available: "Available", soon: "Coming soon" };
+const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", available: "play", soon: "lock" };
+type Status = { state: NodeState; due: boolean };
 
-export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean; coach: "character" | "text" }) {
+/** Every available stage is a link to its own practice; the focus move is the one the learner is on (Home picks it). */
+export function HomeMap({ focus, states, coach }: { focus: Move; states: Record<string, Status>; coach: "character" | "text" }) {
+  const CURRENT = moveNumber(focus);
+  const hrefOf = (moveId: string) => withMove("/practice", moveId);
   const { route } = useLocation();
   const scroll = useRef<HTMLDivElement>(null);
   const bus = useRef<HTMLDivElement>(null);
@@ -71,14 +75,14 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
       }
     });
     return () => (cancelAnimationFrame(id), anim.current?.cancel());
-  }, [list]);
+  }, [list, CURRENT]);
 
   // "Jump to my stage" shows while the current stage is off screen.
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => setAway(!e!.isIntersecting), { root: scroll.current });
     io.observe(here.current!);
     return () => io.disconnect();
-  }, []);
+  }, [CURRENT]);
 
   // The art is generated in its own chunk, after first paint; the plain colour and the road show until then.
   useEffect(() => {
@@ -97,26 +101,26 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
     return () => (clearTimeout(t), io?.disconnect());
   }, []);
 
-  // Tapping the available stage: the bus hops onto it, then we go to practice. The link works on its own without script.
-  const go = (e: MouseEvent) => {
+  // Tapping an available stage: the bus hops onto it, then we go to its practice. The link works on its own without script.
+  const go = (e: MouseEvent, stage: number, href: string) => {
     if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || reduced() || !bus.current) return;
     e.preventDefault();
     anim.current?.cancel();
-    const a = hopTo(bus.current, CURRENT);
+    const a = hopTo(bus.current, stage, CURRENT);
     let gone = false;
-    const leave = () => gone || ((gone = true), route(HREF));
+    const leave = () => gone || ((gone = true), route(href));
     a.finished.then(leave, leave);
     setTimeout(leave, 700);
   };
 
-  const label = (st: (typeof blueprint)[number]) => `Stage ${st.n}, Move ${st.n}: ${st.title}. ${WORD[state]}${due ? ", due" : ""}. Open practice.`;
+  const label = (st: (typeof blueprint)[number], { state, due }: Status) => `Stage ${st.n}, Move ${st.n}: ${st.title}. ${WORD[state]}${due ? ", due" : ""}. Open practice.`;
   const towardsMiddle = cur.x > CX ? "l" : "r";
 
   return (
     <div class="hm-mapwrap" style={`--s:${s};--h:${H}`}>
       <h2 class="sr-only">Your journey</h2>
       <div class="hm-scroll" ref={scroll} role="region" aria-label="Journey map" tabIndex={0}>
-        {list && <StageList state={state} due={due} />}
+        {list && <StageList states={states} hrefOf={hrefOf} />}
         <div class="hm-sizer" hidden={list}>
           <div class="hm-trail">
             <div class="hm-art" ref={art} aria-hidden="true" />
@@ -146,11 +150,13 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
                       </span>
                     </li>
                   );
+                const { state, due } = states[st.moveId]!;
+                const href = hrefOf(st.moveId);
                 return (
                   <li key={st.id} class="hm-pos" style={pos} ref={st.n === CURRENT ? here : undefined}>
-                    <a class={`hm-node hm-${state}`} href={HREF} aria-label={label(st)} onClick={go}>
+                    <a class={`hm-node hm-${state}`} href={href} aria-label={label(st, { state, due })} onClick={(e) => go(e, st.n, href)}>
                       <span class="hm-disc" aria-hidden="true">{st.n}</span>
-                      <span class={`hm-side-${towardsMiddle}`} aria-hidden="true">
+                      <span class={`hm-side-${nodes[st.n - 1]!.x > CX ? "l" : "r"}`} aria-hidden="true">
                         <span class="hm-lab">{st.title}</span>
                         <span class="hm-tags">
                           <span class="hm-tag"><Icon name={ICON[state]} size={16} /> {WORD[state]}</span>
@@ -158,7 +164,7 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
                         </span>
                       </span>
                     </a>
-                    {coach === "character" && <span class={`hm-bo hm-bo-${towardsMiddle === "l" ? "r" : "l"}`} aria-hidden="true"><Bo pose="wave" size={52} /></span>}
+                    {coach === "character" && st.n === CURRENT && <span class={`hm-bo hm-bo-${towardsMiddle === "l" ? "r" : "l"}`} aria-hidden="true"><Bo pose="wave" size={52} /></span>}
                   </li>
                 );
               })}
@@ -176,7 +182,7 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
 }
 
 /** Every stage as an ordered list, one list per region. The only place the 50 stages are plain text. */
-function StageList({ state, due }: { state: NodeState; due: boolean }) {
+function StageList({ states, hrefOf }: { states: Record<string, Status>; hrefOf(moveId: string): string }) {
   return (
     <div class="hm-listview">
       {regions.map((r) => (
@@ -187,7 +193,7 @@ function StageList({ state, due }: { state: NodeState; due: boolean }) {
             {blueprint.filter((st) => regionOf(st.n) === r).map((st) => (
               <li key={st.id}>
                 {st.moveId
-                  ? <a href={HREF}>Stage {st.n}, Move {st.n}: {st.title}. {WORD[state]}{due ? ", due" : ""}.</a>
+                  ? <a href={hrefOf(st.moveId)}>Stage {st.n}, Move {st.n}: {st.title}. {WORD[states[st.moveId]!.state]}{states[st.moveId]!.due ? ", due" : ""}.</a>
                   : <>Stage {st.n}: {st.title}. Coming soon.</>}
               </li>
             ))}

@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
+import { useLocation } from "preact-iso";
+import { moveNumber, moves } from "../../content/moves.ts";
 import { readiness } from "../../rules/practice.ts";
-import { proofStatus } from "../../rules/proof.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
 import { Identity } from "../components/Avatar";
 import { CoachBubble } from "../components/CoachBubble";
@@ -9,7 +10,8 @@ import { Icon } from "../components/Icon";
 import { CourseProgress } from "../course/CourseProgress";
 import { HomeMap } from "../home/HomeMap";
 import { Splitter } from "../home/Splitter";
-import { latestSolo, moveOne } from "../home/view.ts";
+import { focusMove, latestSolo, moveState } from "../home/view.ts";
+import { withMove } from "../move.ts";
 import { OfflineCues } from "../offline/OfflineCues";
 import { ProofCard } from "../proof/ProofCard";
 import { appNow } from "../proof/simulate";
@@ -21,16 +23,19 @@ export function Home() {
   const { store } = useProgress();
   const [more, setMore] = useState(false);
   const p = store.progress;
-  const { dots } = readiness(attemptsOf(p), runStartsOf(p));
-  const cycle = p.cycles.get("strip-disguise") ?? null;
-  const { state, due } = moveOne(proofStatus(cycle, appNow(cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)));
-  const solo = latestSolo(p);
+  const { query } = useLocation();
+  const focus = focusMove(p, appNow, query.move);
+  const n = moveNumber(focus);
+  const { dots } = readiness(attemptsOf(p, focus.moveId), runStartsOf(p, focus.moveId));
+  const states = Object.fromEntries(moves.map((m) => [m.moveId, moveState(p, m.moveId, focus.moveId, appNow)]));
+  const { state, due } = states[focus.moveId]!;
+  const solo = latestSolo(p, focus.moveId);
   const coach = p.learner?.coach ?? "character";
   // Same state as the primary action in ProofCard, so the bubble never contradicts the button.
   const coachLine = due && state !== "fading" ? "Recheck ready: five questions, no help."
     : state === "fading" ? "Your proof needs a quick restore."
     : state === "proved" || state === "held" ? "Proof holding. Practise to stay sharp."
-    : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone.";
+    : dots < 3 ? `Start with Move ${n}.` : `You are ready to try Move ${n} alone.`;
   return (
     <main class={`page hm${more ? " hm-more-open" : ""}`}>
       <div class="hm-main">
@@ -45,12 +50,12 @@ export function Home() {
         </div>
         <div class="hm-act">
           <div class="hm-line">
-            <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
+            <p class="hm-move">JAMB English concord. Move {n}: {focus.title}.</p>
             <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
           </div>
-          <ProofCard />
+          <ProofCard move={focus} />
           <div class="hm-row">
-            <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>
+            <a class="btn btn-secondary hm-solo" href={withMove("/solo-entry", focus.moveId)}>Solo check</a>
             <button class="btn btn-tertiary hm-morebtn" type="button" aria-expanded={more} onClick={() => setMore(!more)}>{more ? "Less" : "More"}</button>
           </div>
           {/* Spec section 8: the latest saved solo decides; without a practice score it shows alone and how to get a first gap. */}
@@ -68,7 +73,7 @@ export function Home() {
           </div>
         </div>
       </div>
-      <HomeMap state={state} due={due} coach={coach} />
+      <HomeMap focus={focus} states={states} coach={coach} />
       <Splitter />
     </main>
   );
