@@ -76,6 +76,7 @@
   .hm-more { display: grid; gap: var(--spacing-md); }
   .hm-top .oc-install { display: flex; flex-direction: column; padding: var(--spacing-md); gap: var(--spacing-sm); }
   .hm-top .oc-install .oc-line { font: var(--type-body-l); }
+  .hm-top .oc-install .oc-row .btn-secondary { display: none; } /* How: the instructions are already shown */
   .hm-morebtn { display: none; }
   .hm-mapwrap { grid-row: auto; height: 100dvh; }
   .page.hm .hm-head h1 { font: var(--type-headline-l); }
