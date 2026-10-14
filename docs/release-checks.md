@@ -2,7 +2,7 @@
 
 ## Deployed release (step 19), 14 Oct 2026
 
-Latest deploy (`1f53264`: subject-first onboarding, 50-stage progress, living map): deployed checks 51/51,
+Builder-reported latest deploy (`1f53264`: subject-first onboarding, 50-stage progress, living map): deployed checks 51/51,
 including one genuine Still stuck? call. First-load JS 67.5 KB gzipped; map art is a separate 3.8 KB chunk.
 
 First deploy:
@@ -20,11 +20,11 @@ First deploy:
 
 ## Destination preview gate
 
-Before submission, complete roadmap step 17a against spec §14b and
-`course-journey.md`. Record evidence for bounded map/list navigation, honest
-planned/available counts, Coming soon controls, preserved Move 1 records,
-target widths/large text and offline reopening. This is new work, not covered
-by the previously passing Home suite until its journeys are added and run.
+The deployed shell includes steps 17a and 22 plus the Home portion of 23:
+subject selection, browsable course/section/topic destinations, 50 planned stages,
+one available stage, first-solo completion counts and the scrolling trail/list.
+Review evidence and open findings are in `reviews/course-release-2026-10-14.md`.
+Learn pages and move-scoped records remain future work; the pilot is unchanged.
 
 ## Run these
 
@@ -97,7 +97,7 @@ Also on the integrated build, rerun `node tools/compat-check.ts` (saved-learner 
 
 ## Known limitations
 
-- AI help (roadmap 9a, Still stuck?) is built and its journeys run against a mocked endpoint. The live provider call and the 20-output human review (`docs/ai-review.md`) are pending.
+- AI help has mocked journey coverage and a verified deployed provider call. The 20-output human review (`docs/ai-review.md`) is still unsigned; roadmap 9a remains open. See the course release review for the accepted-reply/save race.
 - Some Chrome extensions capture single-key shortcuts (1-4, Enter, R, S). Test in a clean profile.
 - Pidgin coach copy is unreviewed by a native speaker.
 - Real retention needs elapsed days; the build proves the workflow only (spec section 15).
@@ -108,5 +108,5 @@ Checked `src`, `public`, `index.html`, `vite.config.ts` and `tools` for paths or
 
 - No absolute paths, no `../` escapes out of the repo, no reference to a planning repo.
 - No remote fonts, scripts, styles or images. Fonts are bundled from `src/styles/fonts`.
-- The only `https://` URLs are the two JAMB source links in `src/content/strip-disguise.ts` (content data shown to the learner, not loaded by the app).
+- JAMB source metadata is bundled locally. Runtime AI uses the same-origin `/api/explain`; the server contacts the provider. Core study assets remain local and usable offline.
 - Nothing needed fixing.

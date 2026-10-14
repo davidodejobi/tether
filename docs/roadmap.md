@@ -90,7 +90,7 @@ contract. Bring supporting files into this repository only when needed.
   Keep download/rendering costs small; inspect real-device behaviour.
   Done: the core loop works on target devices without clipping or inaccessible controls.
 - [x] **17a. Add the English destination preview.** Follow spec §14b and
-  `course-journey.md`: a bounded course/section/topic/stage view, honest counts,
+  `course-journey.md`: course/section/topic/stage destinations, honest counts,
   finish destinations and a list view. Only reviewed Move 1 is available.
   Done: the preview works across devices/offline and preserves every learning record;
   future content is Coming soon, and proof remains scoped to the move.
@@ -115,7 +115,7 @@ Steps 1–19 deliver the application. Step 20 validates it over time and cannot 
 completed within a 24-hour build. Deferred from submission: diagnostic, profiles,
 export/restore, Coach Auto, Proof history and additional working moves/subjects.
 
-## Course expansion after step 19
+## Course expansion (partly delivered with the submission)
 
 Use `course-journey.md`. Step 20 stays unchanged and runs alongside this work;
 finishing the pilot is not a prerequisite for planning the course.
@@ -131,9 +131,12 @@ finishing the pilot is not a prerequisite for planning the course.
   Done: subject preferences persist; existing learners retain their progress and
   new learners finish the original lesson/tutorial without a diagnostic.
 - [ ] **23. Make the syllabus journey Home.** Course/section/topic destinations,
-  numbered stage chapters, Previous/Next and list view; contextual next action.
+  numbered stages and list view; contextual next action. The approved long Home
+  trail and browsable destinations are live (14 Oct 2026); per-move learning states
+  and multiple live stages remain. Home scrolling supersedes its Previous/Next
+  requirement; larger course/section views retain bounded navigation.
   Done: counts, completion and review states are truthful, every available stage
-  is reachable, and maps fit target devices without a scrolling stage trail.
+  is reachable, and navigation meets target-device and accessibility checks.
 - [ ] **24. Build Learn pages.** Reviewed original lessons and examples,
   separate Read/Understood progress, save/retry states and scoped online AI help.
   Done: reading works offline and never changes alone scores or proof; AI remains

@@ -90,8 +90,14 @@ English/Pidgin coach copy, reviewer status and syllabus-source metadata.
 
 ## 4. First visit and lesson
 
-Order: Welcome → Nickname → Learn the move → three tutorial questions →
-first-win moment → skippable Make Tether yours → Home. No diagnostic or target score.
+Order: Welcome → Pick your subjects → Nickname → Your English course →
+Start Move 1 → Learn the move → three tutorial questions → first-win moment →
+skippable Make Tether yours → Home. No diagnostic or target score.
+English is required; choose up to three optional Coming soon subjects. Settings
+can change these preferences. Older learners without a subjects field default to
+English and retain their saved progress without repeating onboarding. The course
+screen distinguishes 50 planned stages (33/9/8 by section) from one live stage;
+`course-journey.md` defines the catalogue and completion contract.
 
 Nickname is trimmed, non-empty and at most 30 characters; it stays editable.
 Setup offers Character/Text only, English/Pidgin and an optional partner.
@@ -476,7 +482,7 @@ References: [Cuelume](https://github.com/danielwh2/cuelume),
 [Blobatar packages](https://blobatar.dev/docs),
 [Blobatar privacy](https://blobatar.dev/privacy).
 
-## 14b. Course destination preview for submission
+## 14b. Course destinations for submission
 
 Implement roadmap step 17a using the contract in `course-journey.md`. Add a
 reachable English course overview with official section names, the recommended
@@ -485,7 +491,10 @@ One stage is one move; only the reviewed Move 1 is currently available. Future
 content is Coming soon. Reuse the working lesson, practice, solo and rechecks;
 this preview creates no new scores, proof claims or learning-record migrations.
 Keep Home's main-action priority, saved scores, solo entry and due rechecks intact.
-The full subject-first onboarding and Learn layer follow in steps 21 onward.
+Subject-first onboarding (step 22), approved 50-stage counts and the scrolling
+Home trail are included. All planned section/topic destinations are browsable;
+only reviewed stages have learning controls. Move-scoped expansion and Learn
+pages remain in steps 21 onward.
 
 ## 15. Measurements and demonstration
 

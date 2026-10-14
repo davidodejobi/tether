@@ -1,9 +1,10 @@
 # Course journeys and destinations
 
 Owner decision: 14 October 2026. This is the contract for the syllabus/stage
-expansion. Spec §14b defines the small preview included in this submission;
-roadmap steps 21 onward deliver the full course after step 19. Step 20's pilot
-continues independently and still requires real elapsed days.
+expansion. Spec §14b defines the deployed course shell included in this submission.
+Subject-first onboarding, planned-stage counts and the Home trail are live;
+remaining roadmap steps 21 onward deliver move-scoped records and reviewed content.
+Step 20's pilot continues independently and still requires real elapsed days.
 
 ## Hierarchy and sources
 
@@ -33,11 +34,12 @@ availability. Separate planned stages, available reviewed stages, completed
 stages and current proof. A planned stage needs an editorially approved identity
 and scope; a published stage also needs its reviewed teaching and assessment pack.
 
-The discussion's 50/100 English stages and 20/15/15 section split were examples,
-not approved totals. Do not hard-code them as a real syllabus or ship anonymous
-placeholder stages to inflate a count. Until a blueprint exists, show the actual
-available count and say more stages are Coming soon. Once a blueprint is approved,
-label its total Planned and show how many stages are available today.
+The owner approved blueprint version 1 on 14 October 2026: 50 planned English
+stages, comprising 33 Lexis and Structure, 9 Comprehension and Summary and 8 Oral
+Forms. `src/content/blueprint.ts` owns the stage identities and order. Only Move 1
+is available today. Labels distinguish planned totals, available stages and first
+solo completions. The earlier 100-stage and 20/15/15 examples are superseded;
+these totals describe Tether's editorial plan, not JAMB question allocations.
 
 Within a section show “Stage n of N”, the section's destination, and a clear next
 action. Number/order comes from the catalogue, never a learner's attempt count.
@@ -71,17 +73,17 @@ focus and concise page-change feedback. Meet spec §14's target sizes, contrast,
 phone/tablet/laptop, keyboard and reduced-motion requirements. Surrounding reading/settings and enlarged text may scroll to preserve
 readability. Never shrink labels or hide actions just to fit a viewport.
 
-## Full onboarding and Learn layer
+## Deployed onboarding and future Learn layer
 
-After step 19: Welcome → subject selection → nickname → English course map →
+The deployed flow is: Welcome → subject selection → nickname → English course map →
 recommended first stage → existing lesson/tutorial → first win → preferences.
 English is compulsory and preselected. Allow up to three other subjects from the
 verified IBASS catalogue, labelled Coming soon and optional to select in Tether
 while their content is unavailable. Keep subject selection editable in Settings.
 This preference is not a profile or a course-eligibility recommendation.
 
-Each topic has concise Learn pages with reviewed original examples. Track Read
-and Understood separately; Understood is a learner claim, not measured mastery.
+Roadmap step 24 will give each topic concise Learn pages with reviewed original
+examples. Track Read and Understood separately; Understood is a learner claim, not measured mastery.
 Pages have Not started, Reading, Read, Understood, Coming soon and save-failure
 states. Online AI may re-explain reviewed lessons within a separately validated
 contract; it never grades. Keep reviewed text available offline.
@@ -107,13 +109,15 @@ by verified exam year; write original material and review rights before publishi
 novel-derived material. Other subject content, profiles, diagnostics, full mock
 exams and course-by-course cutoff marks stay outside this expansion.
 
-## Submission preview acceptance (step 17a)
+## Submission course-shell acceptance (steps 17a, 22 and Home portion of 23)
 
 Provide a course overview/section-topic-stage path around the existing Move 1,
-bounded map navigation, actual availability counts, destination labels and a list
-view. Future topics are Coming soon; they have no working assessment controls.
-Use bundled verified metadata and the current lesson, without adding a new
-reading-progress model or altering onboarding before this submission.
+the approved scrolling Home trail, actual availability counts, destination labels
+and a list view. Future topics are Coming soon; they have no working assessment controls.
+Use bundled source metadata and the current lesson. Subject-first onboarding is
+included; the separate reading-progress model and additional reviewed packs remain
+future work. All section/topic destinations may be browsed; planned stages have
+no working assessment controls.
 
 Done when a new or existing learner can view the English destination, reach and
 resume Move 1, take an early solo check and return to a due recheck with unchanged

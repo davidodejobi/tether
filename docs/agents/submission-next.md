@@ -1,42 +1,28 @@
-# Next work before submission
+# Submission handoff
 
-Read `AGENTS.md`, `docs/spec.md`, `docs/roadmap.md`, `docs/course-journey.md` and
-`docs/release-checks.md`. This handoff prepares the submission in a few hours;
-the full syllabus course is roadmap steps 21 onward, after step 19.
+The course shell is deployed at https://tether-4cg.pages.dev. Review baseline:
+`chore/initial-setup` at `4c57e46` (14 October 2026). Read `docs/spec.md`,
+`docs/course-journey.md`, `docs/roadmap.md` and
+`docs/reviews/course-release-2026-10-14.md` before release work.
 
-## Integration first
+1. Fix the reproduced accepted-AI-reply race during another progress save.
+   Add a regression that delays The move save and delivers the AI reply before
+   it completes; help must save once and resolve, or offer a recoverable fallback.
+2. Complete the named human review of all 20 outputs in `docs/ai-review.md`.
+   A real provider call and automated output checks do not satisfy that review.
+3. Keep the live solo-journey timeout observation in the release review visible;
+   its isolated recheck passed. Rerun affected journeys against HTTPS after the
+   AI fix. Use a fresh local preview port and verify its asset hash: Playwright
+   may reuse an old worktree server.
+4. Record actual phone install/offline/share/voice and VoiceOver/TalkBack checks
+   in `docs/release-checks.md`, or retain their explicit untested status.
 
-`wave5` contains the reviewed steps 11–17 plus newer AI/release work. The main
-`chore/initial-setup` checkout was still at `3a139a6` when this note was written.
-Verify current branches and working trees. Review the changes after `bf031bc`
-before treating the whole branch as signed off, then integrate the approved
-work. Keep the previous solo-speech failure's diagnostic assertion intact.
+Submit the working demo with honest claims: 50 planned English stages, one live
+reviewed move; online AI explains, fixed rules grade, core study works offline.
+The long scrolling Home trail is an approved owner decision. Keep its list view,
+keyboard access and reduced-motion fallback. Preserve the solo-speech diagnostic.
 
-## Parallel tasks with separate file ownership
-
-- Journey agent: implement only step 17a/spec §14b. A reachable English overview,
-  section/topic route to existing Move 1, bounded stage view, destination/count
-  labels and accessible list view. Verify source metadata; omit unsupported
-  counts. Leave onboarding, grading, storage schema and new teaching packs alone.
-- AI agent: complete and verify the existing step 9a implementation; do not rebuild
-  it from scratch. Configure the server-only OpenRouter key/model, verify a real
-  provider call, review 20 plain/analogy outputs and failure/late-response paths.
-  Use spec §5a as the contract. No keys or learner records in browser code/logs.
-- Release agent: own step 18 integration QA, the production preview and device
-  checks. Review new AI/journey diffs, rerun the release journeys after integration,
-  capture phone/tablet/laptop screens and test saved-learner compatibility,
-  keyboard/large text, share/download, update rejection and offline reopening.
-  Record real-device voice/install/share/VoiceOver/TalkBack evidence or explicit
-  limitations. Coordinate shared files with the other agents before editing.
-
-Once those checks pass, step 19 deploys the release to HTTPS and verifies the real
-AI endpoint, installation and offline restart there. Prepare the submission URL,
-short demo and pitch: one reviewed English stage is live; the syllabus journey
-shows the expansion plan; AI explains online, fixed rules grade, and core study
-works offline. Claim retention only when step 20 supplies actual elapsed-day data.
-
-Use isolated branches/worktrees from the integrated approved base. Keep commits
-small and focused. Report the preview URL, changed scope, test evidence, measured
-bundle size and release limitations. Do not tick steps from mock-only checks or
-turn Coming soon stages into fake learning/proof. Tile-flight polish and Figma
-alignment can follow as small visual tasks if the submission checks remain green.
+For later expansion, finish move-scoped records/migration before publishing a
+second move, then implement reviewed Learn pages and further packs. Keep step 20
+as a real elapsed-day pilot. Use small focused commits and coordinate shared
+files when delegating work.
