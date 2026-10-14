@@ -52,8 +52,8 @@ export const collectiveNouns: Move = {
     en: {
       rule: "A group word such as team, choir or committee is one group: singular verb, even with of + many people after it.",
       explanation:
-        "Team, choir, committee, band and club each name one group. When the group acts as one, the verb is singular, even when of eleven players or of five teachers follows. Cover the of or from phrase, read the group word, and match the verb. If the group word is itself plural, like the two teams, the verb is plural.",
-      nudge: "Cover the of or from phrase. Is the group word one group, or more?",
+        "Team, choir, committee, band and club each name one group. When the group acts as one, the verb is singular, even when \"of eleven players\" or \"of five teachers\" follows. Cover the \"of\" or \"from\" phrase, read the group word, and match the verb. If the group word is itself plural, like \"the two teams\", the verb is plural.",
+      nudge: "Cover the \"of\" or \"from\" phrase. Is the group word one group, or more?",
       showMe: ["Cover: {covered}.", "What's left: {subject}. That's {count}.", "{count} → {answer}."],
       goDeeper: {
         subject: "Tap the group word the verb belongs to.",
@@ -68,8 +68,8 @@ export const collectiveNouns: Move = {
     pcm: {
       rule: "Group word like team, choir or committee na one group: singular verb, even if of + plenty people follow am.",
       explanation:
-        "Team, choir, committee, band and club, each one na one group. When the group dey act as one, the verb na singular, even if of eleven players or of five teachers follow am. Cover the of or from part, read the group word, then match the verb. If the group word itself na plenty, like the two teams, the verb na plural.",
-      nudge: "Cover the of or from part. The group word na one group, or plenty?",
+        "Team, choir, committee, band and club, each one na one group. When the group dey act as one, the verb na singular, even if \"of eleven players\" or \"of five teachers\" follow am. Cover the \"of\" or \"from\" part, read the group word, then match the verb. If the group word itself na plenty, like \"the two teams\", the verb na plural.",
+      nudge: "Cover the \"of\" or \"from\" part. The group word na one group, or plenty?",
       showMe: ["Cover: {covered}.", "Wetin remain: {subject}. Na {count}.", "{count} → {answer}."],
       goDeeper: {
         subject: "Tap the group word wey the verb belong to.",

@@ -3,8 +3,13 @@
 Written 14 October 2026 at the owner's request ("make at least five stages work").
 The rule in each move file generates every question and its answer. No AI writes or
 grades them. The moves are **Unreviewed** until a named reviewer signs them off here.
-Until then learners see an Unreviewed tag on their coach copy, and online AI help is
-off for them: the AI function only serves approved packs.
+Until then learners see an Unreviewed tag on their coach copy, results page and share
+card. Online AI help is off for them, because the AI function only serves approved
+packs.
+
+Owner-delegated decision (14 October 2026): these moves can still earn a real
+Proved stamp, so the five stages work like stage 1. The Unreviewed label stays on
+that proof until sign-off.
 
 Each move uses the same JAMB syllabus line as Move 1: Section B (Lexis and
 Structure), (e) agreement/concord. Full question lists are in
@@ -54,8 +59,9 @@ Options are always the singular form, the plural form and two forms that never f
   a singular verb, even with "of + plural" after them. Both, many, several and few
   take a plural verb.
 - Example: "Each of the girls ___ a new bag." → has.
-- Questions: 279. "Either/neither/both of" are used only with pairs (the twins, the
-  captains).
+- Questions: 237. "Either/neither/both of" are used only with pairs (the twins, the
+  captains). Several and few take only "of" phrases; "many in the class" keeps a
+  singular place phrase next to a plural pronoun.
 - "None" is tested only with uncountable words ("None of the water ___ clean." → is).
   With plural nouns, standard English accepts both "none of the boys is" and "none
   of the boys are", so a rule cannot mark either one wrong.
@@ -68,6 +74,8 @@ Options are always the singular form, the plural form and two forms that never f
 - Example: "Bola is one of the girls who ___ in the choir." → are.
 - Questions: 296. There is also a decoy: a singular noun next to the blank ("One of
   the players from our school ___", "one of the players from our school who ___").
+  For this move the run shapes are balanced against "agree with the noun next to the
+  blank". "One means singular" and "always plural" score 5 of 10 by construction.
 - Not tested: "the only one of the … who" (singular), a later refinement.
 - **Reviewer, please confirm the plural after "one of the … who".** It is the
   standard examination answer, but everyday usage often has the singular.

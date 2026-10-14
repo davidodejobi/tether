@@ -1,4 +1,4 @@
-# Each, everyone, none (indefinite-pronouns) v1: 279 questions
+# Each, everyone, none (indefinite-pronouns) v1: 237 questions
 # id	number	pairing	answer	sentence
 indefinite-pronouns.each.of-the-students.in-the-hall	sg	opposite	is	Each of the students ___ in the hall.
 indefinite-pronouns.each.of-the-students.ready-for-the-test	sg	opposite	is	Each of the students ___ ready for the test.
@@ -210,27 +210,6 @@ indefinite-pronouns.several.of-the-prefects.to-school-every-morning	pl	same	walk
 indefinite-pronouns.several.of-the-prefects.near-the-market	pl	same	live	Several of the prefects ___ near the market.
 indefinite-pronouns.several.of-the-prefects.in-the-front-row	pl	same	sit	Several of the prefects ___ in the front row.
 indefinite-pronouns.several.of-the-prefects.early-on-mondays	pl	same	arrive	Several of the prefects ___ early on Mondays.
-indefinite-pronouns.several.in-the-class.in-the-hall	pl	opposite	are	Several in the class ___ in the hall.
-indefinite-pronouns.several.in-the-class.ready-for-the-test	pl	opposite	are	Several in the class ___ ready for the test.
-indefinite-pronouns.several.in-the-class.finished-the-project	pl	opposite	have	Several in the class ___ finished the project.
-indefinite-pronouns.several.in-the-class.to-school-every-morning	pl	opposite	walk	Several in the class ___ to school every morning.
-indefinite-pronouns.several.in-the-class.near-the-market	pl	opposite	live	Several in the class ___ near the market.
-indefinite-pronouns.several.in-the-class.in-the-front-row	pl	opposite	sit	Several in the class ___ in the front row.
-indefinite-pronouns.several.in-the-class.early-on-mondays	pl	opposite	arrive	Several in the class ___ early on Mondays.
-indefinite-pronouns.several.on-the-team.in-the-hall	pl	opposite	are	Several on the team ___ in the hall.
-indefinite-pronouns.several.on-the-team.ready-for-the-test	pl	opposite	are	Several on the team ___ ready for the test.
-indefinite-pronouns.several.on-the-team.finished-the-project	pl	opposite	have	Several on the team ___ finished the project.
-indefinite-pronouns.several.on-the-team.to-school-every-morning	pl	opposite	walk	Several on the team ___ to school every morning.
-indefinite-pronouns.several.on-the-team.near-the-market	pl	opposite	live	Several on the team ___ near the market.
-indefinite-pronouns.several.on-the-team.in-the-front-row	pl	opposite	sit	Several on the team ___ in the front row.
-indefinite-pronouns.several.on-the-team.early-on-mondays	pl	opposite	arrive	Several on the team ___ early on Mondays.
-indefinite-pronouns.several.in-our-street.in-the-hall	pl	opposite	are	Several in our street ___ in the hall.
-indefinite-pronouns.several.in-our-street.ready-for-the-test	pl	opposite	are	Several in our street ___ ready for the test.
-indefinite-pronouns.several.in-our-street.finished-the-project	pl	opposite	have	Several in our street ___ finished the project.
-indefinite-pronouns.several.in-our-street.to-school-every-morning	pl	opposite	walk	Several in our street ___ to school every morning.
-indefinite-pronouns.several.in-our-street.near-the-market	pl	opposite	live	Several in our street ___ near the market.
-indefinite-pronouns.several.in-our-street.in-the-front-row	pl	opposite	sit	Several in our street ___ in the front row.
-indefinite-pronouns.several.in-our-street.early-on-mondays	pl	opposite	arrive	Several in our street ___ early on Mondays.
 indefinite-pronouns.few.of-the-students.in-the-hall	pl	same	are	Few of the students ___ in the hall.
 indefinite-pronouns.few.of-the-students.ready-for-the-test	pl	same	are	Few of the students ___ ready for the test.
 indefinite-pronouns.few.of-the-students.finished-the-project	pl	same	have	Few of the students ___ finished the project.
@@ -252,27 +231,6 @@ indefinite-pronouns.few.of-the-prefects.to-school-every-morning	pl	same	walk	Few
 indefinite-pronouns.few.of-the-prefects.near-the-market	pl	same	live	Few of the prefects ___ near the market.
 indefinite-pronouns.few.of-the-prefects.in-the-front-row	pl	same	sit	Few of the prefects ___ in the front row.
 indefinite-pronouns.few.of-the-prefects.early-on-mondays	pl	same	arrive	Few of the prefects ___ early on Mondays.
-indefinite-pronouns.few.in-the-class.in-the-hall	pl	opposite	are	Few in the class ___ in the hall.
-indefinite-pronouns.few.in-the-class.ready-for-the-test	pl	opposite	are	Few in the class ___ ready for the test.
-indefinite-pronouns.few.in-the-class.finished-the-project	pl	opposite	have	Few in the class ___ finished the project.
-indefinite-pronouns.few.in-the-class.to-school-every-morning	pl	opposite	walk	Few in the class ___ to school every morning.
-indefinite-pronouns.few.in-the-class.near-the-market	pl	opposite	live	Few in the class ___ near the market.
-indefinite-pronouns.few.in-the-class.in-the-front-row	pl	opposite	sit	Few in the class ___ in the front row.
-indefinite-pronouns.few.in-the-class.early-on-mondays	pl	opposite	arrive	Few in the class ___ early on Mondays.
-indefinite-pronouns.few.on-the-team.in-the-hall	pl	opposite	are	Few on the team ___ in the hall.
-indefinite-pronouns.few.on-the-team.ready-for-the-test	pl	opposite	are	Few on the team ___ ready for the test.
-indefinite-pronouns.few.on-the-team.finished-the-project	pl	opposite	have	Few on the team ___ finished the project.
-indefinite-pronouns.few.on-the-team.to-school-every-morning	pl	opposite	walk	Few on the team ___ to school every morning.
-indefinite-pronouns.few.on-the-team.near-the-market	pl	opposite	live	Few on the team ___ near the market.
-indefinite-pronouns.few.on-the-team.in-the-front-row	pl	opposite	sit	Few on the team ___ in the front row.
-indefinite-pronouns.few.on-the-team.early-on-mondays	pl	opposite	arrive	Few on the team ___ early on Mondays.
-indefinite-pronouns.few.in-our-street.in-the-hall	pl	opposite	are	Few in our street ___ in the hall.
-indefinite-pronouns.few.in-our-street.ready-for-the-test	pl	opposite	are	Few in our street ___ ready for the test.
-indefinite-pronouns.few.in-our-street.finished-the-project	pl	opposite	have	Few in our street ___ finished the project.
-indefinite-pronouns.few.in-our-street.to-school-every-morning	pl	opposite	walk	Few in our street ___ to school every morning.
-indefinite-pronouns.few.in-our-street.near-the-market	pl	opposite	live	Few in our street ___ near the market.
-indefinite-pronouns.few.in-our-street.in-the-front-row	pl	opposite	sit	Few in our street ___ in the front row.
-indefinite-pronouns.few.in-our-street.early-on-mondays	pl	opposite	arrive	Few in our street ___ early on Mondays.
 indefinite-pronouns.none.of-the-food.left	sg	same	is	None of the food ___ left.
 indefinite-pronouns.none.of-the-food.ready	sg	same	is	None of the food ___ ready.
 indefinite-pronouns.none.of-the-water.left	sg	same	is	None of the water ___ left.

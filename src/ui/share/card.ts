@@ -1,6 +1,6 @@
 // What a share card says (spec section 11). Pure text: the canvas draws it, the preview and the message reuse it.
 // No Bo here. A gap appears only when the saved result holds both practice and alone scores.
-import { moveOrFirst, stripDisguiseMove } from "../../content/moves.ts";
+import { moveOrFirst, stripDisguiseMove, unreviewed } from "../../content/moves.ts";
 import { moveLabel } from "../move.ts";
 import { snapshotOf, type Snapshot } from "../../rules/gap.ts";
 import { inOrder } from "../../rules/moment.ts";
@@ -39,7 +39,7 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
   const name = learner.partner?.name?.trim();
   const base = {
     move: pack === stripDisguiseMove ? null : moveLabel(pack),
-    kind, nickname: learner.nickname, exam: `JAMB English · ${moveLabel(pack)}`, date, source: `Source: ${pack.source.line}`,
+    kind, nickname: learner.nickname, exam: `JAMB English · ${moveLabel(pack)}${unreviewed(pack, "en") ? " · Unreviewed content" : ""}`, date, source: `Source: ${pack.source.line}`,
     support: name ? `Ask ${name} how it went` : "One move at a time. Small steps hold.",
   };
   const at = base.move ? ` (${base.move})` : "";

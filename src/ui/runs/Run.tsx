@@ -41,7 +41,9 @@ const clock = (ms: number) => {
 };
 
 export function RunScreen({ kind }: { kind?: string }) {
-  return kind === "solo" || kind === "recheck" ? <Runner kind={kind} /> : <NotFound />;
+  // Keyed by kind and move, so a redirect to a recovered run of another kind or move starts the runner afresh.
+  const moveId = useMove().moveId;
+  return kind === "solo" || kind === "recheck" ? <Runner key={`${kind}:${moveId}`} kind={kind} /> : <NotFound />;
 }
 
 function Runner({ kind }: { kind: RunKind }) {

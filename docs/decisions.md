@@ -282,6 +282,8 @@ These decisions override conflicting text in `requirements.txt`.
 - Move flows carry `?move=<id>` (`/practice`, `/solo-entry`, `/run/solo`, `/run/recheck`, `/recheck-entry`); absent means Move 1, so Move 1 links are unchanged. Results and Share take the move from the saved run.
 - Home shows one focus move: `?move=` if given, else a move with a recheck due, else the most recently practised move, else Move 1. On the map, stages 1–5 are links with their own state; an available move with no proof yet is "Available". Nothing is locked; the recommended order is the journey order.
 - A first visit to Moves 2–5 opens a short Show me on the move's example before the first question; it records nothing.
+- Unreviewed Moves 2–5 can earn a real proof (owner asked for five stages that work like stage 1, and delegated the decision). Their results page and share card say Unreviewed until sign-off. Move 5's run shapes are balanced against "agree with the noun next to the blank", the shortcut for that move. "One means singular" and "always plural" score 5 of 10.
+- Rolling back below wave 7 after learners use Moves 2–5 would read their records as Move 1, so fix forward (docs/release-checks.md).
 
 ## Desktop panel resize and early theme (14 Oct 2026)
 

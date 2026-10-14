@@ -23,8 +23,8 @@ const PRONOUNS: { word: string; number: NumberTag; phrases: string[] }[] = [
   { word: "No one", number: "sg", phrases: IN_PLACE },
   { word: "Both", number: "pl", phrases: OF_TWO },
   { word: "Many", number: "pl", phrases: [...OF_GROUP, ...IN_PLACE] },
-  { word: "Several", number: "pl", phrases: [...OF_GROUP, ...IN_PLACE] },
-  { word: "Few", number: "pl", phrases: [...OF_GROUP, ...IN_PLACE] },
+  { word: "Several", number: "pl", phrases: OF_GROUP },
+  { word: "Few", number: "pl", phrases: OF_GROUP },
 ];
 const phraseNumber = (phrase: string): NumberTag => (IN_PLACE.includes(phrase) ? "sg" : "pl");
 
@@ -64,8 +64,8 @@ export const indefinitePronouns: Move = {
     en: {
       rule: "Each, every one, either, neither, everyone, no one: singular. Both, many, few, several: plural.",
       explanation:
-        "Each, every one, either, neither, everyone, everybody, no one and nobody take one person at a time, so the verb is singular, even when of the students follows. Both, many, few and several always mean more than one, so the verb is plural. None with a word like food or money is singular. Cover the of or in phrase, read the first word, and match the verb.",
-      nudge: "Cover the of or in phrase. Read the first word again.",
+        "Each, every one, either, neither, everyone, everybody, no one and nobody take one person at a time, so the verb is singular, even when \"of the students\" follows. Both, many, few and several always mean more than one, so the verb is plural. None with a word like food or money is singular. Cover the \"of\" or \"in\" phrase, read the first word, and match the verb.",
+      nudge: "Cover the \"of\" or \"in\" phrase. Read the first word again.",
       showMe: ["Cover: {covered}.", "What's left: {subject}. That's {count}.", "{count} → {answer}."],
       goDeeper: {
         subject: "Tap the word the verb belongs to.",
@@ -80,8 +80,8 @@ export const indefinitePronouns: Move = {
     pcm: {
       rule: "Each, every one, either, neither, everyone, no one: singular. Both, many, few, several: plural.",
       explanation:
-        "Each, every one, either, neither, everyone, everybody, no one and nobody dey take one person at a time, so the verb na singular, even if of the students follow am. Both, many, few and several always mean plenty, so the verb na plural. None with word like food or money na singular. Cover the of or in part, read the first word, then match the verb.",
-      nudge: "Cover the of or in part. Read the first word again.",
+        "Each, every one, either, neither, everyone, everybody, no one and nobody dey take one person at a time, so the verb na singular, even if \"of the students\" follow am. Both, many, few and several always mean plenty, so the verb na plural. None with word like food or money na singular. Cover the \"of\" or \"in\" part, read the first word, then match the verb.",
+      nudge: "Cover the \"of\" or \"in\" part. Read the first word again.",
       showMe: ["Cover: {covered}.", "Wetin remain: {subject}. Na {count}.", "{count} → {answer}."],
       goDeeper: {
         subject: "Tap the word wey the verb belong to.",

@@ -35,8 +35,10 @@ export const predicatesOf = (verbs: Verb[]) => verbs.flatMap((v) => v.predicates
 
 /**
  * One question. `parts` are the words before the blank; the "subject" part decides the verb, which takes `number`.
- * `decoy` is the number the covered words suggest: a question is "same" when that shortcut happens to give the right
- * answer and "opposite" when it misleads, so proof runs keep the shortcut below the pass mark.
+ * `decoy` is the number a learner who skips the move would pick: the covered words for moves 2 to 4 (the far subject,
+ * the "of" or "from" phrase), and the noun next to the blank for move 5. A question is "same" when that shortcut
+ * happens to give the right answer and "opposite" when it misleads, so the run shapes keep the shortcut and its
+ * opposite below the pass mark.
  */
 export function combo(id: string, parts: Part[], v: Verb, predicate: string, number: NumberTag, decoy: NumberTag): Combo {
   const of = (role: Part["role"]) => parts.filter((p) => p.role === role).map((p) => p.text).join(" … ");

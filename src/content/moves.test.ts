@@ -1,6 +1,7 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { availableStages } from "./blueprint.ts";
-import { drawRun, practicePool, RECHECK_SHAPES, sentence, SOLO_SHAPE, type Question, type Rng } from "./generate.ts";
+import { drawRun, practicePool, questionListing, RECHECK_SHAPES, sentence, SOLO_SHAPE, type Question, type Rng } from "./generate.ts";
 import { moveById, moves } from "./moves.ts";
 import { validateMove } from "./validate.ts";
 
@@ -54,6 +55,21 @@ describe.each(later.map((m) => [m.moveId, m] as const))("%s", (_, move) => {
         const run = drawRun(move, rng, shape);
         expect(Math.max(score(run, true), score(run, false))).toBeLessThan(4);
       }
+    }
+  });
+
+  test("the committed review listing matches the move (run npm run content:list after edits)", () => {
+    const n = moves.indexOf(move) + 1;
+    expect(readFileSync(`docs/content/move-${n}-questions.txt`, "utf8")).toBe(questionListing(move));
+  });
+
+  // A learner who ignores the sentence and always picks the same number can never pass either.
+  test("always singular and always plural fail every proof run", () => {
+    const rng = seeded(13);
+    for (const shape of [SOLO_SHAPE, ...RECHECK_SHAPES]) {
+      const run = drawRun(move, rng, shape);
+      const pass = run.length === 10 ? 8 : 4;
+      for (const n of ["sg", "pl"]) expect(run.filter((q) => q.number === n).length).toBeLessThan(pass);
     }
   });
 

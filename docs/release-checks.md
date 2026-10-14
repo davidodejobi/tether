@@ -110,3 +110,12 @@ Checked `src`, `public`, `index.html`, `vite.config.ts` and `tools` for paths or
 - No remote fonts, scripts, styles or images. Fonts are bundled from `src/styles/fonts`.
 - JAMB source metadata is bundled locally. Runtime AI uses the same-origin `/api/explain`; the server contacts the provider. Core study assets remain local and usable offline.
 - Nothing needed fixing.
+
+## Rollback note (wave 7, five stages)
+
+Once learners have practised Moves 2–5, do not roll the deploy back to a build from
+before wave 7. Those builds read every saved record as Move 1, so they would mix
+moves in dots, rounds and the resume point, and could save a wrong practice snapshot.
+Fix forward instead. The saved schema version is unchanged, because the newer build
+reads all older records as they are.
+

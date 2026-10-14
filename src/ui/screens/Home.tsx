@@ -73,8 +73,8 @@ export function Home() {
           </div>
         </div>
       </div>
-      <HomeMap focus={focus} states={states} coach={coach} />
       <Splitter />
+      <HomeMap focus={focus} states={states} coach={coach} />
     </main>
   );
 }

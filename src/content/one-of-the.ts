@@ -1,6 +1,8 @@
 // Move 5: one of the … who/that. In "One of the students is late" the verb belongs to "one": singular. In "Tunde is one
 // of the students who are late", "who" points back to "the students": plural. The noun nearest the blank is a decoy:
 // it is singular in "One of the players from our school is" and in "one of the players from our school who are".
+// So for this move a question's decoy (see concord.ts) is the number of the noun next to the blank, the shortcut a
+// learner who skips the move would take; "one → singular" and "always plural" score 5 of 10 by the run shapes.
 import type { Combo, Move } from "./generate.ts";
 import { combo, CONCORD_SOURCE, COUNT_WORDS, covered, plain, predicatesOf, subject, UNREVIEWED, verb } from "./concord.ts";
 
@@ -57,10 +59,10 @@ export const oneOfThe: Move = {
   tutorialIds: [],
   coach: {
     en: {
-      rule: "One of the … takes a singular verb. One of the … who or that takes a plural verb: who points back to the group.",
+      rule: "\"One of the …\" takes a singular verb. \"One of the … who\" or \"that\" takes a plural verb: who points back to the group.",
       explanation:
-        "In One of the students is late, the verb belongs to one, so it is singular. In Tunde is one of the students who are late, who points back to the students, more than one, so its verb is plural. Ask what the verb belongs to: one, or the group that who or that points back to.",
-      nudge: "Is there a who or that right before the blank? Find what the verb belongs to.",
+        "In \"One of the students is late\", the verb belongs to \"one\", so it is singular. In \"Tunde is one of the students who are late\", \"who\" points back to \"the students\", more than one, so its verb is plural. Ask what the verb belongs to: \"one\", or the group that \"who\" or \"that\" points back to.",
+      nudge: "Is there a \"who\" or \"that\" right before the blank? Find what the verb belongs to.",
       showMe: ["Cover: {covered}.", "The verb belongs to: {subject}. That's {count}.", "{count} → {answer}."],
       goDeeper: {
         subject: "Tap the word the verb belongs to.",
@@ -73,10 +75,10 @@ export const oneOfThe: Move = {
       verify: "Tap the part you covered.",
     },
     pcm: {
-      rule: "One of the … dey take singular verb. One of the … who or that dey take plural verb: who dey point back to the group.",
+      rule: "\"One of the …\" dey take singular verb. \"One of the … who\" or \"that\" dey take plural verb: who dey point back to the group.",
       explanation:
-        "For One of the students is late, the verb belong to one, so e na singular. For Tunde is one of the students who are late, who dey point back to the students, wey be plenty, so the verb na plural. Ask yourself: the verb belong to one, or to the group wey who or that dey point back to?",
-      nudge: "Who or that dey before the blank? Find wetin the verb belong to.",
+        "For \"One of the students is late\", the verb belong to \"one\", so e na singular. For \"Tunde is one of the students who are late\", \"who\" dey point back to \"the students\", wey be plenty, so the verb na plural. Ask yourself: the verb belong to \"one\", or to the group wey \"who\" or \"that\" dey point back to?",
+      nudge: "\"Who\" or \"that\" dey before the blank? Find wetin the verb belong to.",
       showMe: ["Cover: {covered}.", "The verb belong to: {subject}. Na {count}.", "{count} → {answer}."],
       goDeeper: {
         subject: "Tap the word wey the verb belong to.",

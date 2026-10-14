@@ -52,7 +52,7 @@ export const nearestSubject: Move = {
     en: {
       rule: "Either…or, neither…nor: the verb matches the subject nearest to it.",
       explanation:
-        "When either…or or neither…nor joins two subjects, only the one nearer the blank controls the verb. Cover the first part, read the nearest subject, and match the verb to it.",
+        "When \"either…or\" or \"neither…nor\" joins two subjects, only the one nearer the blank controls the verb. Cover the first part, read the nearest subject, and match the verb to it.",
       nudge: "Look at the subject right next to the blank.",
       showMe: ["Cover the far part: {covered}.", "Nearest subject: {subject}. That's {count}.", "{count} → {answer}."],
       goDeeper: {
@@ -68,7 +68,7 @@ export const nearestSubject: Move = {
     pcm: {
       rule: "Either…or, neither…nor: the verb go follow the subject wey near am pass.",
       explanation:
-        "When either…or or neither…nor join two subjects, na only the one wey near the blank dey control the verb. Cover the first part, read the subject wey near, then match the verb.",
+        "When \"either…or\" or \"neither…nor\" join two subjects, na only the one wey near the blank dey control the verb. Cover the first part, read the subject wey near, then match the verb.",
       nudge: "Look the subject wey dey near the blank.",
       showMe: ["Cover the far part: {covered}.", "The one wey near: {subject}. Na {count}.", "{count} → {answer}."],
       goDeeper: {

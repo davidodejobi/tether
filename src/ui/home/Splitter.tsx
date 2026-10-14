@@ -47,7 +47,7 @@ export function Splitter() {
       class={`hm-split${drag ? " hm-split-on" : ""}`}
       style={{ left: `${shown}px` }}
       role="separator" aria-orientation="vertical" aria-label="Resize panel"
-      aria-valuenow={shown} aria-valuemin={min} aria-valuemax={max} tabIndex={0}
+      aria-valuenow={shown} aria-valuemin={min} aria-valuemax={max} aria-valuetext={`Panel ${shown} pixels wide`} tabIndex={0}
       onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDrag(true); }}
       onPointerMove={(e) => { if (drag) { const g = e.currentTarget.parentElement!.getBoundingClientRect(); setW(clamp(e.clientX - g.left, total)); } }}
       onPointerUp={(e) => { e.currentTarget.releasePointerCapture(e.pointerId); setDrag(false); set(w); }}
