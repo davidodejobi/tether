@@ -105,6 +105,7 @@ test("1. a new learner: onboarding, lesson, tutorials, first win, settings, Home
 
   // Tutorials are saved, but as tutorial attempts: they add no practice score, dots or claim measurements.
   expect((await records(page)).filter((r) => r.attempt.origin !== "tutorial")).toHaveLength(0);
+  await page.getByRole("button", { name: "More" }).click(); // the placeholder lives in More on phone
   await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible();
 
   await page.getByRole("link", { name: "Practise Move 1" }).click();

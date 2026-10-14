@@ -29,8 +29,43 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   // A real long trail that scrolls inside the map, with the current stage in view on load.
   expect(await map.evaluate((el) => el.scrollHeight > el.clientHeight * 4)).toBe(true);
   await expect(map.getByRole("link", { name: /Move 1: Strip/ })).toBeInViewport();
+  await expect(page.getByText("No gap yet. Take your first solo check.")).toBeHidden(); // lives in More on phone
+  await page.getByRole("button", { name: "More" }).click();
   await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible();
 });
+
+test("progress is always on Home, and the phone map keeps most of the screen", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  await expect(page.getByText("English · 1 of 50 stages available · 0 completed")).toBeVisible(); // not behind More
+  await expect(page.getByText("JAMB English concord. Move 1: Strip the Disguise.")).toBeVisible();
+  const share = await page.locator(".hm-scroll").evaluate((el) => el.getBoundingClientRect().height / innerHeight);
+  expect(share).toBeGreaterThanOrEqual(0.55);
+  // The install card is one short line; the instructions open on tap.
+  await expect(page.getByText("In your browser menu, choose Install app")).toBeHidden();
+  await page.getByRole("button", { name: "How" }).click();
+  await expect(page.getByText("In your browser menu, choose Install app")).toBeVisible();
+});
+
+test("Coming soon nodes show a number and lock on phone, with the full title in their name and in List view", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  const map = page.getByRole("region", { name: "Journey map" });
+  await expect(map.locator(".hm-soon .hm-lab").first()).toBeHidden();
+  await expect(map.getByText("Stage 7: There is, there are. Coming soon")).toHaveCount(1);
+  await expect(map.getByText("Strip the Disguise")).toBeVisible(); // the current stage keeps its title
+});
+
+for (const [name, width, height] of [["phone", 360, 800], ["tablet", 768, 1024], ["laptop", 1366, 768]] as const)
+  test(`the bus and the current stage are in view on first load on ${name}, clear of the controls`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await seedRecords(page, [], "/");
+    const node = page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: /Move 1: Strip/ });
+    await expect(node).toBeInViewport({ ratio: 0.99 });
+    await expect(page.locator(".hm-bus")).toBeInViewport({ ratio: 0.99 });
+    const box = async (l: ReturnType<typeof page.locator>) => (await l.boundingBox())!;
+    const [n, b, c] = [await box(node), await box(page.locator(".hm-bus")), await box(page.locator(".hm-ctl-list"))];
+    for (const o of [n, b]) expect(o.x + o.width <= c.x || o.y + o.height <= c.y || o.x >= c.x + c.width || o.y >= c.y + c.height).toBe(true);
+  });
 
 test("List view shows all 50 stages as an ordered list, and Map view brings the trail back", async ({ page }) => {
   await seedRecords(page, [], "/");
