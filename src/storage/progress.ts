@@ -27,6 +27,8 @@ export interface Learner {
   honestyIntroSeen?: boolean;
   /** Interaction sounds (spec section 14a). Absent on older records, read as off. */
   sounds?: boolean;
+  /** Subjects the learner prefers: "english" plus up to three more ids from src/content/subjects.ts. Absent on older records, read as ["english"], so no migration. */
+  subjects?: string[];
   /** Random avatar identity, independent of nickname, phone, email or device. Absent on older records until the first successful save backfills it. */
   avatarSeed?: string;
   /** Blobatar generation the seed was made for; an unsupported one shows initials instead. */

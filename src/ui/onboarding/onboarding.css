@@ -146,3 +146,31 @@
   .ob-lesson .ob-body > .ls-rule { grid-column: 2; grid-row: 1 / span 5; align-self: start; }
   .ob-lesson .ob-actions { grid-column: 1; }
 }
+
+/* Pick your subjects, Your English course */
+.sub { display: grid; gap: var(--spacing-xs); }
+.sub-row {
+  display: flex; align-items: center; gap: var(--spacing-sm);
+  min-height: var(--size-touch-target); padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); cursor: pointer;
+}
+.sub-row:has(input:checked) { border-color: var(--border-selected); background: var(--bg-primary-container); color: var(--text-on-primary-container); }
+.sub-row:has(input:focus-visible) { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+.sub-row:has(input:disabled:not(:checked)) { cursor: default; }
+.sub-row input { flex: none; width: var(--spacing-xl); height: var(--spacing-xl); accent-color: var(--bg-primary); }
+.sub-row strong { display: block; font: var(--type-title-m); }
+.sub-row small { display: block; font: var(--type-body-s); color: var(--text-secondary); }
+.sub-row:has(input:checked) small { color: var(--text-on-primary-container); }
+.ob-sticky { position: sticky; bottom: 0; margin: 0 calc(var(--spacing-md) * -1); padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-page); border-top: 2px solid var(--border-subtle); }
+.crs { display: grid; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; }
+.crs li { display: flex; justify-content: space-between; align-items: baseline; gap: var(--spacing-sm); padding: var(--spacing-xs) var(--spacing-sm); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.crs strong { font: var(--type-title-m); }
+.crs span { font: var(--type-body-s); color: var(--text-secondary); text-align: right; }
+.crs li.start { border-color: var(--border-selected); background: var(--bg-primary-container); color: var(--text-on-primary-container); }
+.crs li.start span { color: var(--text-on-primary-container); }
+.crs-route { margin: 0; font: var(--type-body-m); }
+@media (min-width: 768px) {
+  .sub { grid-template-columns: 1fr 1fr; }
+  .sub-fixed, .sub > .ob-note { grid-column: 1 / -1; }
+  .ob-sticky { margin: 0; border: 0; padding: 0; position: static; }
+}

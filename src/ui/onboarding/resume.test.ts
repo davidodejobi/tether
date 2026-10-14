@@ -4,5 +4,6 @@ import { resumeStep } from "./resume.ts";
 test("resume step follows saved fields", () => {
   expect(resumeStep(null)).toBe("welcome");
   expect(resumeStep({ lessonDone: false })).toBe("lesson");
-  expect(resumeStep({ lessonDone: true })).toBe("questions");
+  expect(resumeStep({ lessonDone: false, subjects: ["english"] })).toBe("course");
+  expect(resumeStep({ lessonDone: true, subjects: ["english"] })).toBe("questions");
 });
