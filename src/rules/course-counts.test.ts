@@ -10,6 +10,14 @@ const solo = (id: string, passed: boolean, status: Run["status"] = "completed"):
 });
 const cycle = (state: ProofCycle["state"]): ProofCycle => ({ moveId: "m1", timeZone: "UTC", state, earnedOn: "d", anchor: "d", entries: [], history: [{ runId: "a", kind: "solo", on: "d", passed: true, entryIds: [] }] });
 const count = (i: Partial<CountInput>) => countStages(stages, { cycles: [], runs: [], ...i });
+it("counts each move's own first passing solo", () => {
+  const two = [{ moveId: "m1" }, { moveId: "m2" }, {}];
+  const m2 = solo("b", true);
+  m2.questions = [{ moveId: "m2" }];
+  expect(countStages(two, { cycles: [], runs: [solo("a", true), solo("a2", true)] }).completed).toBe(1);
+  expect(countStages(two, { cycles: [], runs: [solo("a", true), m2] })).toMatchObject({ available: 2, completed: 2 });
+  expect(countStages(two, { cycles: [], runs: [solo("a", true), { ...m2, run: { ...m2.run, result: { ...m2.run.result!, passed: false } } }] }).completed).toBe(1);
+});
 it("reads one-shot iterators (Map.values) correctly", () => {
   const m = new Map([["m1", cycle("fading")]]);
   expect(countStages(stages, { cycles: m.values(), runs: [].values() })).toMatchObject({ completed: 1, needsReview: 1 });

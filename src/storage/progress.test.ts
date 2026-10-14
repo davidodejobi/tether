@@ -1,7 +1,10 @@
 import "fake-indexeddb/auto";
 import { describe, expect, test, vi } from "vitest";
 import { drawRun, nextPracticeQuestion, SOLO_SHAPE, type Question } from "../content/generate.ts";
+import { collectiveNouns } from "../content/collective-nouns.ts";
 import { stripDisguiseMove as stripDisguise } from "../content/moves.ts";
+import { readiness } from "../rules/practice.ts";
+import { doneInRound } from "../rules/round.ts";
 import { check, giveReason, startAttempt } from "../rules/practice.ts";
 import { seen, startRun, submit } from "../rules/runs.ts";
 import { idbKV, memoryKV, openKV, type KV } from "./kv.ts";
@@ -15,6 +18,8 @@ import {
   ProgressStore,
   recoverRun,
   resumePoint,
+  runsOf,
+  runStartsOf,
   SCHEMA_VERSION,
   StorageError,
   type SavedRun,
@@ -406,5 +411,51 @@ describe("AI help uses (spec section 5a)", () => {
     const other = await reopen(kv, false);
     await other.recordAiUse({ at: T0 + 9, result: "rate" });
     expect((await reopen(kv)).aiUseLog).toHaveLength(2);
+  });
+});
+
+describe("progress is scoped per move", () => {
+  const q1 = () => practiceQuestion();
+  const q3 = () => nextPracticeQuestion(collectiveNouns, rng);
+  const done = (store: ProgressStore, id: string, q: Question, at: number) =>
+    ({ attempt: check(startAttempt(id, q.id, "practice", store.moment(at)), true, store.moment(at + 1)), question: q });
+
+  test("attemptsOf, runStartsOf and runsOf filter by move; absent means all", async () => {
+    const store = await reopen(idbKV(freshDb()));
+    const m3 = drawRun(collectiveNouns, rng, SOLO_SHAPE);
+    const run3 = startRun({ id: "r3", kind: "solo", questionIds: m3.map((q) => q.id), practiceSnapshot: null }, store.moment(T0 + 10));
+    const run1 = await startedSolo(store, T0 + 20);
+    await store.save({ attempts: [done(store, "a1", q1(), T0), done(store, "a3", q3(), T0 + 2)], runs: [{ run: run3, questions: m3 }] });
+    const p = store.progress;
+    expect(attemptsOf(p).map((a) => a.id).sort()).toEqual(["a1", "a3"]);
+    expect(attemptsOf(p, "collective-nouns").map((a) => a.id)).toEqual(["a3"]);
+    expect(attemptsOf(p, "strip-disguise").map((a) => a.id)).toEqual(["a1"]);
+    expect(runsOf(p).map((r) => r.run.id).sort()).toEqual(["r3", run1.run.id].sort());
+    expect(runsOf(p, "collective-nouns").map((r) => r.run.id)).toEqual(["r3"]);
+    expect(runStartsOf(p, "strip-disguise")).toEqual([run1.run.started]);
+  });
+
+  test("rounds and dots count only the move asked for", async () => {
+    const store = await reopen(idbKV(freshDb()));
+    const attempts = [1, 2, 3].map((i) => done(store, `m1-${i}`, q1(), T0 + i * 10));
+    attempts.push(done(store, "m3-1", q3(), T0 + 100));
+    await store.save({ attempts });
+    const p = store.progress;
+    expect(doneInRound(attemptsOf(p, "strip-disguise"))).toBe(3);
+    expect(doneInRound(attemptsOf(p, "collective-nouns"))).toBe(1);
+    // A reason claimed on a move-3 question gives move 3 a dot and leaves move 1 alone.
+    const claimed = giveReason(attempts[3]!.attempt, "move", () => 0.9, store.moment(T0 + 200));
+    await store.save({ attempts: [{ attempt: claimed, question: attempts[3]!.question }] });
+    expect(readiness(attemptsOf(store.progress, "collective-nouns"), runStartsOf(store.progress, "collective-nouns")).dots).toBe(1);
+    expect(readiness(attemptsOf(store.progress, "strip-disguise"), runStartsOf(store.progress, "strip-disguise")).dots).toBe(0);
+  });
+
+  test("an unfinished question resumes only in its own move", async () => {
+    const store = await reopen(idbKV(freshDb()));
+    const q = q3();
+    await store.save({ attempts: [{ attempt: check(startAttempt("open3", q.id, "practice", store.moment(T0)), false, store.moment(T0 + 1)), question: q }] });
+    expect(resumePoint(store.progress)?.saved.attempt.id).toBe("open3");
+    expect(resumePoint(store.progress, "strip-disguise")).toBeNull();
+    expect(resumePoint(store.progress, "collective-nouns")?.kind).toBe("question");
   });
 });

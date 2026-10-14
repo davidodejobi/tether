@@ -4,7 +4,7 @@ import type { ProofCycle } from "./proof.ts";
 
 export interface CountInput {
   cycles: Iterable<ProofCycle>;
-  /** Saved runs with the move their questions belong to (records are not move-scoped yet; see decisions). */
+  /** Saved runs with the move their questions belong to (each move counts its own passes). */
   runs: Iterable<{ run: Run; questions: readonly { moveId: string }[] }>;
 }
 

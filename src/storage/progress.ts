@@ -326,9 +326,9 @@ export function convertBatch(saved: SavedRun, now: number, status: "converted" |
 }
 
 /** Where practice or the tutorial left off: an unfinished question, a pending How did you know, or a pending verification. */
-export function resumePoint(p: Progress): { kind: "question" | "reason" | "verify"; saved: SavedAttempt } | null {
+export function resumePoint(p: Progress, moveId?: string): { kind: "question" | "reason" | "verify"; saved: SavedAttempt } | null {
   const latest = [...p.attempts.values()]
-    .filter((s) => s.attempt.origin !== "converted")
+    .filter((s) => s.attempt.origin !== "converted" && (!moveId || s.question.moveId === moveId))
     .sort((x, y) => inOrder(x.attempt.startedAt, y.attempt.startedAt))
     .at(-1);
   if (!latest) return null;
@@ -339,9 +339,16 @@ export function resumePoint(p: Progress): { kind: "question" | "reason" | "verif
   return null;
 }
 
-/** Inputs for the rules: every attempt, and the start of every solo or recheck (dots reset when a run begins). */
-export const attemptsOf = (p: Progress) => [...p.attempts.values()].map((s) => s.attempt);
-export const runStartsOf = (p: Progress) => [...p.runs.values()].map((s) => s.run.started);
+/** The move a saved run was drawn from (all its questions share one). */
+export const runMove = (s: SavedRun) => s.questions[0]?.moveId;
+
+/** Saved runs, only those of one move when `moveId` is given (absent means all moves). */
+export const runsOf = (p: Progress, moveId?: string) => [...p.runs.values()].filter((s) => !moveId || runMove(s) === moveId);
+
+/** Inputs for the rules: every attempt, and the start of every solo or recheck (dots reset when a run begins). Pass `moveId` for one move's records. */
+export const attemptsOf = (p: Progress, moveId?: string) =>
+  [...p.attempts.values()].filter((s) => !moveId || s.question.moveId === moveId).map((s) => s.attempt);
+export const runStartsOf = (p: Progress, moveId?: string) => runsOf(p, moveId).map((s) => s.run.started);
 
 /** Opens this device's progress: IndexedDB if it works, the single-writer lock, then the saved records. */
 /** Throws StorageError("timedOut") when storage did not answer: offer retry rather than starting empty. */
