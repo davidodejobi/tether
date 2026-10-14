@@ -144,11 +144,12 @@ test.describe("offline reopening", () => {
 });
 
 test.describe("pilot measures", () => {
-  test("every spec section 15 measure is stored on this device, and nothing leaves it", async ({ page }) => {
+  test("every spec section 15 measure is stored on this device, and nothing leaves it", async ({ page, baseURL }) => {
     const outside: string[] = [];
+    const own = new URL(baseURL!).origin; // the app's own origin: localhost here, the HTTPS host when run against a deployment
     page.on("request", (r) => {
       const u = new URL(r.url());
-      if (!["data:", "blob:", "about:"].includes(u.protocol) && u.hostname !== "localhost") outside.push(r.url());
+      if (!["data:", "blob:", "about:"].includes(u.protocol) && u.origin !== own) outside.push(r.url());
     });
     await page.addInitScript(() => {
       const real = Math.random;
@@ -241,6 +242,6 @@ test.describe("pilot measures", () => {
     expect(byKey["meta:calendarUses"]).toEqual([expect.any(Number)]);
     expect(byKey["meta:sessions"]).toEqual([expect.objectContaining({ end: "done", activeMs: expect.any(Number) }), expect.anything()]);
 
-    expect(outside, "requests to non-localhost origins").toEqual([]);
+    expect(outside, "requests to other origins").toEqual([]);
   });
 });

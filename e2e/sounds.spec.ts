@@ -251,17 +251,18 @@ test("the avatar is decorative, falls back to initials, and stays out of practic
   await expect(page.locator(".identity-name")).toHaveText("Amaka");
 });
 
-test("with every external request blocked, the toggle, the avatar and a saved answer still work", async ({ page }) => {
+test("with every external request blocked, the toggle, the avatar and a saved answer still work", async ({ page, baseURL }) => {
   const external: string[] = [];
+  const own = new URL(baseURL!).origin;
   await page.route("**/*", (route) => {
     const url = new URL(route.request().url());
-    if (url.hostname === "localhost" || url.protocol === "data:" || url.protocol === "blob:") return route.continue();
+    if (url.origin === own || url.protocol === "data:" || url.protocol === "blob:") return route.continue();
     external.push(route.request().url());
     return route.abort();
   });
   page.on("request", (r) => {
     const u = new URL(r.url());
-    if (u.hostname !== "localhost" && u.protocol.startsWith("http")) external.push(r.url());
+    if (u.origin !== own && u.protocol.startsWith("http")) external.push(r.url());
   });
   await seed(page);
   await page.goto("/settings");
