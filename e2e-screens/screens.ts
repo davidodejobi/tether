@@ -357,3 +357,16 @@ for (const [name, actions] of shareScreens)
 const courseScreens: [string, string][] = [["course-overview", "/course"], ["course-section", "/course/lexis-and-structure"], ["course-topic", "/course/lexis-and-structure/concord"]];
 for (const [name, path] of courseScreens)
   for (const [suffix, width, height] of [["-360", 360, 800], ["-768", 768, 1024], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions: (p) => seedRecords(p, [], path) });
+// Step 23: Home's long journey map at phone, tablet and laptop widths. `where` scrolls the map: at the learner's stage (default), the top, or a fraction down.
+const mapAt = (where: "stage" | "top" | number) => async (page: Page) => {
+  await seedRecords(page, [], "/");
+  const map = page.getByRole("region", { name: "Journey map" });
+  await map.getByRole("link").waitFor();
+  // Let the lazy art and the bus drive finish before the capture.
+  await page.waitForTimeout(3500);
+  if (where !== "stage") await map.evaluate((el, w) => el.scrollTo(0, w === "top" ? 0 : (el.scrollHeight - el.clientHeight) * (w as number)), where);
+  await page.waitForTimeout(300);
+};
+for (const [suffix, width, height] of [["360", 360, 800], ["768", 768, 1024], ["1366", 1366, 768]] as const)
+  for (const [name, where] of [["map", "stage"], ["map-top", "top"], ["map-region2", 0.42], ["map-region3", 0.17]] as const)
+    SCREENS.push({ name: `${name}-${suffix}`, path: "/", width, height, actions: mapAt(where) });
