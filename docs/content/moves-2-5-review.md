@@ -85,6 +85,32 @@ Options are always the singular form, the plural form and two forms that never f
 Each move has Pidgin coach copy in the same voice as Move 1's. Like Move 1's Pidgin,
 it is Unreviewed. Exam sentences stay in English.
 
+## Learn the move lessons (`src/content/learn.ts`)
+
+Before a move's first practice, and from onboarding for Move 1, learners get a short
+animated lesson. It has one idea per screen and nothing in it is scored:
+
+- **Basics**, shared by every move: what a subject is, what a verb is, and how they
+  agree ("The girl sings" → "The girls sing").
+- **The move:** a contrasting pair of sentences.
+- Two worked examples played step by step.
+- A **why** check: pick the reason the answer is right, and each wrong reason
+  explains its trap.
+- One try: tap the subject, then pick the verb.
+
+Lesson sentences never repeat a practice or proof question
+(`src/content/learn.test.ts`). The lesson text is English only, and all five lessons,
+Move 1's included, are Unreviewed until signed here.
+
+| Lesson | Reviewer | Date | Verdict and changes asked for |
+| --- | --- | --- | --- |
+| Basics | | | |
+| Move 1 | | | |
+| Move 2 | | | |
+| Move 3 | | | |
+| Move 4 | | | |
+| Move 5 | | | |
+
 ## Sign-off
 
 To approve a move:

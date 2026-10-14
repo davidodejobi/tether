@@ -290,3 +290,8 @@ These decisions override conflicting text in `requirements.txt`.
 - Owner request: from 768 px the Home info panel and the map are split by a draggable separator (pointer, keyboard, double-click or Enter resets). The width is a per-device convenience in localStorage (`tether:panelWidth`), clamped so the map keeps at least 45% or 420 px.
 - Codex P3: a few lines in `index.html` apply the saved Light or Dark choice before the app's code loads, so a slow load never flashes the device theme.
 
+## Learn the move and a road-facing bus (owner request, 14 Oct 2026)
+
+- The owner found one example too thin: learners would copy a pattern without being able to explain it. Each move now opens with a short animated "Learn the move" lesson (Brilliant-style, one idea per screen). It covers basics (subject, verb, agreement), a contrasting pair, two worked examples, a "why" check whose wrong reasons explain their trap, and one try. It replaces the one-example intro before a move's first practice and Move 1's onboarding lesson. It can be replayed from The move sheet and the course page (`/learn?move=`). It records nothing, is English only for now, and stays Unreviewed until signed.
+- The danfo bus on the Home map is drawn from above and turns to follow the road as it drives between stages, instead of sitting side-on across the road.
+
