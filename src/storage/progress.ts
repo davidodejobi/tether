@@ -1,5 +1,6 @@
 // Learner progress on this device (spec sections 2 and 13). The rules decide; this module saves their
 // results atomically and restores them on reopen.
+import { endSession, touch, type Session } from "../rules/session.ts";
 import type { Question } from "../content/generate.ts";
 import { inOrder, nextMoment, type Moment } from "../rules/moment.ts";
 import { asksReason, type PracticeAttempt } from "../rules/practice.ts";
@@ -92,6 +93,7 @@ const KEY = {
   schema: "meta:schema",
   lastMoment: "meta:lastMoment",
   calendarUses: "meta:calendarUses",
+  sessions: "meta:sessions",
 };
 
 function highestMoment(p: Progress, stored: Moment | null): Moment | null {
@@ -124,6 +126,7 @@ export class ProgressStore {
     private state: Progress,
     lastMoment: Moment | null,
     private calendarUses: number[],
+    private sessions: Session[],
     /** False when progress lives only in memory and disappears on reload. */
     readonly durable: boolean,
     /** Set when this tab must not write: another tab owns the session, or the data is from a newer app. */
@@ -146,7 +149,8 @@ export class ProgressStore {
     const readOnly: ReadOnlyReason | null = schema > SCHEMA_VERSION ? "newerSchema" : opts.writer ? null : "otherTab";
     const last = highestMoment(p, (records.get(KEY.lastMoment) as Moment | undefined) ?? null);
     const uses = records.get(KEY.calendarUses);
-    return new ProgressStore(kv, p, last, Array.isArray(uses) ? (uses as number[]) : [], opts.durable, readOnly);
+    const sessions = records.get(KEY.sessions);
+    return new ProgressStore(kv, p, last, Array.isArray(uses) ? (uses as number[]) : [], Array.isArray(sessions) ? (sessions as Session[]) : [], opts.durable, readOnly);
   }
 
   get progress(): Readonly<Progress> {
@@ -164,6 +168,27 @@ export class ProgressStore {
     const next = [...this.calendarUses, at];
     await this.kv.setMany([[KEY.calendarUses, next]]);
     this.calendarUses = next;
+  }
+
+  /** Local session log for the pilot (spec section 15); never uploaded. */
+  get sessionLog(): readonly Session[] {
+    return this.sessions;
+  }
+
+  /** An interaction happened. Best effort: a failure never blocks the learner. */
+  async recordActivity(at: number, hiddenMs = 0): Promise<void> {
+    await this.saveSessions(touch(this.sessions, at, hiddenMs));
+  }
+
+  /** Done for today. */
+  async endSession(): Promise<void> {
+    await this.saveSessions(endSession(this.sessions));
+  }
+
+  private async saveSessions(next: Session[]): Promise<void> {
+    if (this.readOnly) return;
+    await this.kv.setMany([[KEY.sessions, next]]);
+    this.sessions = next;
   }
 
   /** The next moment in this learner's timeline. Saved with the next batch; never repeats, even after a failed save. */

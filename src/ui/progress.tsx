@@ -53,6 +53,30 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
   useEffect(() => open(), [open]);
   // Sounds follow the saved setting (default off); every save re-renders this, so a change applies at once.
   useEffect(() => setSoundsOn(state.status === "ready" && state.store.progress.learner?.sounds === true), [state]);
+  // Session measure (spec section 15): any tap or key is an interaction; time spent hidden is not counted.
+  useEffect(() => {
+    if (state.status !== "ready") return;
+    const { store } = state;
+    let hiddenAt: number | null = null;
+    let hiddenMs = 0;
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") hiddenAt = Date.now();
+      else if (hiddenAt !== null) (hiddenMs += Date.now() - hiddenAt), (hiddenAt = null);
+    };
+    const onTouch = () => {
+      const h = hiddenMs;
+      hiddenMs = 0;
+      store.recordActivity(Date.now(), h).catch(() => {}); // ponytail: a metric, not a promise
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    addEventListener("pointerdown", onTouch, true);
+    addEventListener("keydown", onTouch, true);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      removeEventListener("pointerdown", onTouch, true);
+      removeEventListener("keydown", onTouch, true);
+    };
+  }, [state.status === "ready" ? state.store : null]);
   return <ProgressContext.Provider value={state}>{children}</ProgressContext.Provider>;
 }
 

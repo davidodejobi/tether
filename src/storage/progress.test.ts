@@ -360,3 +360,20 @@ describe("calendar uses (spec section 11)", () => {
     expect((await reopen(kv)).calendarUseTimes).toEqual([T0, T0 + 5]);
   });
 });
+
+describe("sessions (spec section 15)", () => {
+  test("are kept locally across reopen, end on Done for today, and are not written by a read-only tab", async () => {
+    const kv = idbKV(freshDb());
+    const store = await reopen(kv);
+    await store.recordActivity(T0);
+    await store.recordActivity(T0 + 5000);
+    await store.endSession();
+    await store.recordActivity(T0 + 9000);
+    expect((await reopen(kv)).sessionLog).toEqual([
+      { start: T0, last: T0 + 5000, activeMs: 5000, end: "done" },
+      { start: T0 + 9000, last: T0 + 9000, activeMs: 0 },
+    ]);
+    await (await reopen(kv, false)).recordActivity(T0 + 99);
+    expect((await reopen(kv)).sessionLog).toHaveLength(2);
+  });
+});
