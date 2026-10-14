@@ -9,7 +9,7 @@ const EXTRA = 90; // extra space where a region changes (it holds the banner)
 const AMP = 95; // how far the road swings from the middle
 const TOP = 560; // y of stage 50; the JAMB Day hall sits above it
 /** The road passes this far below a stage before the bus rests on it. */
-export const PARK = 62;
+export const PARK = 72;
 
 export interface Region { id: SectionId; name: string; first: number; last: number; bannerY: number; scene: "village" | "river" | "city" }
 const REGIONS: [SectionId, string, Region["scene"]][] = [
@@ -30,7 +30,7 @@ export const H = gate.y + 120;
 export const regions: Region[] = REGIONS.map(([id, name, scene]) => {
   const list = stagesInSection(id);
   const first = list[0]!.n;
-  return { id, name, scene, first, last: list.at(-1)!.n, bannerY: stageY(first) + (56 + SP + EXTRA) / 2 };
+  return { id, name, scene, first, last: list.at(-1)!.n, bannerY: stageY(first) + (first === 1 ? 130 : 100) };
 });
 export const regionOf = (n: number) => regions.find((r) => n >= r.first && n <= r.last)!;
 export const countLabel = (n: number) => `Stage ${positionInSection(blueprint[n - 1]!)} of ${regionOf(n).last - regionOf(n).first + 1}`;
@@ -91,4 +91,25 @@ export function roadX(y: number): number {
   let lo = 0, hi = p.length - 1; // y decreases with index
   while (hi - lo > 1) { const m = (lo + hi) >> 1; if (p[m]!.y >= y) lo = m; else hi = m; }
   return p[lo]!.x;
+}
+
+/** Soon-label box: 104 wide, up to 4 lines (about 84 high), 8 beyond the disc. */
+const LAB = { gap: 36, w: 104, h: 42 };
+/** Smallest distance from the road's edge to a label box beside stage n on side "l" or "r" (negative when it touches the road). */
+export function labelClearance(n: number, side: "l" | "r"): number {
+  const { x, y } = nodes[n - 1]!;
+  const x0 = side === "r" ? x + LAB.gap : x - LAB.gap - LAB.w, x1 = x0 + LAB.w;
+  let best = Infinity;
+  for (const q of road().p) {
+    if (Math.abs(q.y - y) > LAB.h + 60) continue;
+    const dx = Math.max(x0 - q.x, 0, q.x - x1), dy = Math.max(y - LAB.h - q.y, 0, q.y - (y + LAB.h));
+    best = Math.min(best, Math.hypot(dx, dy) - 25); // 25 = half the road's edge width
+  }
+  return best;
+}
+/** Side of the node for its label, away from the road's curve: the outer side, unless the road bends there. */
+export function labelSide(n: number): "l" | "r" {
+  const outer = nodes[n - 1]!.x >= CX ? "r" : "l";
+  const inner = outer === "r" ? "l" : "r";
+  return labelClearance(n, outer) >= 4 || labelClearance(n, outer) >= labelClearance(n, inner) ? outer : inner;
 }

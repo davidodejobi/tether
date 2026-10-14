@@ -8,7 +8,7 @@ import { Bo } from "../components/Bo";
 import { Icon, type IconName } from "../components/Icon";
 import type { NodeState } from "./view.ts";
 import { drive, hop, hopTo, lastStop, parked, reduced, remember } from "./bus.ts";
-import { CX, H, W, countLabel, gate, nodes, regionOf, regions, roadD } from "./trail.ts";
+import { CX, H, W, countLabel, gate, labelSide, nodes, regionOf, regions, roadD } from "./trail.ts";
 import "../components/Button.css";
 import "./map.css";
 
@@ -118,7 +118,7 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
             <div class="hm-amb" ref={amb} aria-hidden="true" />
             <div class="hm-gate" aria-hidden="true" style={`top:${gate.y}px`}>START</div>
             {regions.map((r) => (
-              <div key={r.id} class="hm-banner" style={`top:${r.bannerY}px`}>
+              <div key={r.id} class="hm-banner" style={`top:${r.bannerY - 30}px`}>
                 <h3>{r.name}</h3>
                 <p>{CURRENT >= r.first && CURRENT <= r.last ? countLabel(CURRENT) : `${r.last - r.first + 1} stages`}</p>
               </div>
@@ -134,7 +134,7 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
                       <span class="hm-node hm-soon" aria-hidden="true">
                         <span class="hm-disc">{st.n}</span>
                         <span class="hm-lock"><Icon name="lock" size={14} /></span>
-                        <span class="hm-lab">{st.title}</span>
+                        <span class={`hm-lab hm-lab-${labelSide(st.n)}`}>{st.title}</span>
                       </span>
                     </li>
                   );
@@ -161,8 +161,8 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
           </div>
         </div>
       </div>
-      <button class="btn btn-secondary hm-ctl hm-ctl-list" type="button" onClick={() => setList(!list)}>{list ? "Map view" : "List view"}</button>
-      {away && !list && <button class="btn btn-primary hm-ctl hm-ctl-jump" type="button" onClick={() => centre(true)}><Icon name="target" size={20} /> Jump to my stage</button>}
+      <button class="btn btn-secondary hm-ctl hm-ctl-list" type="button" onClick={() => setList(!list)}>{list ? <>Map<span class="hm-ctl-more"> view</span></> : <>List<span class="hm-ctl-more"> view</span></>}</button>
+      {away && !list && <button class="btn btn-primary hm-ctl hm-ctl-jump" type="button" title="Jump to my stage" onClick={() => centre(true)}><Icon name="target" size={20} /><span class="hm-ctl-txt">Jump to my stage</span></button>}
     </div>
   );
 }

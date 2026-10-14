@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CX, H, W, along, at, countLabel, gate, nodes, parkAt, regions, roadX } from "./trail.ts";
+import { CX, H, W, along, at, countLabel, gate, labelClearance, labelSide, nodes, parkAt, regions, roadX } from "./trail.ts";
 
 describe("trail geometry", () => {
   it("has 50 stages climbing from the Start gate, inside the screen", () => {
@@ -24,11 +24,20 @@ describe("trail geometry", () => {
 
   it("parks the bus on the road just below a stage, and the Start gate drive follows the road", () => {
     const park = at(parkAt(1));
-    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeGreaterThan(50);
-    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeLessThan(70);
+    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeGreaterThan(55);
+    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeLessThan(80);
     const drive = along(parkAt(0), parkAt(1));
     expect(drive[0]).toMatchObject({ x: gate.x, y: gate.y });
     expect(drive.length).toBeGreaterThan(10);
     for (const p of drive) expect(Math.abs(p.x - roadX(p.y))).toBeLessThan(15);
+  });
+
+  it("puts every Coming soon label on the side where the road crowds it least, inside the 720-wide stage", () => {
+    for (const n of nodes) {
+      const side = labelSide(n.n);
+      expect(labelClearance(n.n, side), `stage ${n.n}`).toBeGreaterThanOrEqual(Math.min(labelClearance(n.n, side === "r" ? "l" : "r"), 4));
+      expect(side === "r" ? n.x + 36 + 104 : n.x - 36 - 104).toBeGreaterThan(0);
+      expect(side === "r" ? n.x + 36 + 104 : n.x - 36 - 104).toBeLessThan(W);
+    }
   });
 });
