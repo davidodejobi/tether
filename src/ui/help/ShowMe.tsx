@@ -23,6 +23,7 @@ import { Icon } from "../components/Icon";
 import { Key } from "../components/Key";
 import { useReducedMotion } from "../onboarding/parts";
 import { useProgressState } from "../progress";
+import { BeatSentence, beatPlain, type Beat } from "./BeatSentence";
 import { fill } from "./steps.ts";
 import "../onboarding/onboarding.css";
 import "./help.css";
@@ -38,34 +39,12 @@ export interface ShowMeProps {
 }
 
 const BEAT_MS = 2600;
-type Beat = 1 | 2 | 3;
 
-function Sentence({ q, beat }: { q: Question; beat: Beat }) {
-  const cls = (n: number, base: string) => `${base}${beat >= n ? ` on${beat === n ? " new" : ""}` : ""}`;
-  return (
-    <p class="ls-sentence" aria-hidden="true">
-      {partsOf(q).map((p, i) =>
-        p.role === "subject" ? (
-          <>
-            <span key={i} class={cls(2, "ls-subject")}>
-              {p.text}{beat >= 2 && <span class="ls-badge">{q.number === "sg" ? "1" : "2+"}</span>}
-            </span>{" "}
-          </>
-        ) : p.role === "covered" ? (
-          <>
-            <span key={i} class={cls(1, "ls-covered")}>{p.text}</span>{" "}
-          </>
-        ) : (
-          <>{p.text}{" "}</>
-        ),
-      )}
-      <span class={cls(3, "ls-blank")}>{beat >= 3 ? q.answer : ""}</span> {q.predicate}
-    </p>
-  );
-}
+const Sentence = ({ q, beat }: { q: Question; beat: Beat }) => (
+  <BeatSentence parts={partsOf(q)} predicate={q.predicate} answer={q.answer} number={q.number} beat={beat} />
+);
 
-const plain = (q: Question, beat: Beat) =>
-  `${partsOf(q).map((p) => (p.role === "covered" && beat < 3 ? `(${p.text})` : p.text)).join(" ")} ${beat === 3 ? q.answer : "blank"} ${q.predicate}`;
+const plain = (q: Question, beat: Beat) => beatPlain(partsOf(q), q.predicate, q.answer, beat);
 
 // Tablet and up: true from 768 px, following the viewport.
 function useWide() {
