@@ -1,3 +1,4 @@
+import { finishLesson } from "./learn-helpers";
 import { expect, test } from "@playwright/test";
 import { answerRight, current, lastAttempt, next, records } from "./practice-helpers";
 import { cycle, finishedRun, seedRecords } from "./results-helpers";
@@ -41,7 +42,8 @@ for (const [id, n, title] of MOVES)
       if (from === "the map") await page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: new RegExp(`^Stage ${n}, Move ${n}:.*Available`) }).click();
       else await page.getByRole("link", { name: `Practise Move ${n}` }).click();
       await expect(page).toHaveURL(new RegExp(`/practice\\?move=${id}$`));
-      // The intro is the move's own example; it records nothing.
+      // The intro is Learn the move; it records nothing.
+      await finishLesson(page);
       await page.getByRole("button", { name: "Start practising" }).click();
       const q = await current(page);
       expect((await records(page)).length).toBe(1);
@@ -82,6 +84,7 @@ test("dots and rounds are per move", async ({ page }) => {
 test("an unfinished question comes back in its own move only", async ({ page }) => {
   const m1 = attempt("strip-disguise", 1);
   await seedRecords(page, [m1], "/practice?move=nearest-subject");
+  await finishLesson(page);
   await page.getByRole("button", { name: "Start practising" }).click();
   await current(page);
   const open = async (moveId: string) => (await records(page)).filter((r) => r.question.moveId === moveId && r.attempt.completedAt === undefined);
@@ -193,8 +196,9 @@ test("the map's stages 1 to 5 are links with their own states, 6 to 50 stay Comi
   await page.getByRole("button", { name: "Map view" }).click();
   await map.getByRole("link", { name: /^Stage 2, Move 2:/ }).click();
   await expect(page).toHaveURL(/\/practice\?move=nearest-subject$/);
-  // The intro plays three beats before its button appears.
-  await expect(page.getByRole("button", { name: "Start practising" })).toBeVisible({ timeout: 15_000 });
+  // The intro is Learn the move; its last card has the button.
+  await finishLesson(page);
+  await expect(page.getByRole("button", { name: "Start practising" })).toBeVisible();
 });
 
 for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const)

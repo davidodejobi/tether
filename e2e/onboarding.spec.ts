@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { seedRecords } from "./results-helpers";
+import { finishLesson } from "./learn-helpers";
 import { answerTutorials } from "./tutorial";
 
 const savedLearner = (page: Page) =>
@@ -22,13 +23,11 @@ async function toLesson(page: Page, nickname = "Amaka") {
   await page.getByLabel("Nickname").fill(nickname);
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Start Move 1" }).click();
-  await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Strip the Disguise" })).toBeFocused();
 }
 
 async function throughLesson(page: Page) {
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByRole("heading", { name: /What's left/ })).toBeFocused();
-  await page.getByRole("button", { name: "Next" }).click();
+  await finishLesson(page);
   await page.getByRole("button", { name: /Got it/ }).click();
   await answerTutorials(page);
   await expect(page.getByRole("heading", { name: "First win" })).toBeFocused();
@@ -71,8 +70,7 @@ test("a reload before the lesson resumes at the course map; an old learner witho
   await page.reload();
   await expect(page.getByRole("heading", { name: "Your English course" })).toBeVisible();
   await page.getByRole("button", { name: "Start Move 1" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
+  await finishLesson(page);
   await page.getByRole("button", { name: /Got it/ }).click();
   await expect(page.getByText("1 of 3")).toBeVisible(); // saved before the step changes
   await page.reload();
@@ -106,10 +104,9 @@ test("a second tab is read-only", async ({ page, context }) => {
 test("reduced motion shows the static lesson", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await toLesson(page);
-  await expect(page.getByText("No animation")).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
+  await finishLesson(page);
   await expect(page.getByRole("button", { name: /Got it/ })).toBeVisible();
+  expect(await page.evaluate(() => document.querySelector(".ln")!.getAnimations({ subtree: true }).length)).toBe(0);
 });
 
 const toSubjects = async (page: Page) => {

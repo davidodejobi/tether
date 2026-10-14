@@ -1,3 +1,4 @@
+import { finishLesson } from "./learn-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { point } from "../src/rules/practice.ts";
 import { stripDisguise as pack } from "../src/content/strip-disguise.ts";
@@ -28,9 +29,8 @@ async function toFirstWin(page: Page, nickname = "Amaka") {
   await page.getByLabel("Nickname").fill(nickname);
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Start Move 1" }).click();
-  await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByRole("heading", { name: "Strip the Disguise" })).toBeFocused();
+  await finishLesson(page);
   await page.getByRole("button", { name: /Got it/ }).click();
   await answerTutorials(page);
   await expect(page.getByRole("heading", { name: "First win" })).toBeFocused();

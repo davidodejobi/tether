@@ -1,3 +1,4 @@
+import { finishLesson } from "./learn-helpers";
 import { expect, test } from "@playwright/test";
 import { answerTutorials } from "./tutorial";
 
@@ -8,8 +9,7 @@ test("home, settings and unknown routes render once onboarded", async ({ page })
   await page.getByLabel("Nickname").fill("Amaka");
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Start Move 1" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
+  await finishLesson(page);
   await page.getByRole("button", { name: /Got it/ }).click();
   await answerTutorials(page);
   await page.getByRole("button", { name: "Skip for now" }).click();

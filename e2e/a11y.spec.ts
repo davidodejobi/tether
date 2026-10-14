@@ -1,3 +1,4 @@
+import { finishLesson } from "./learn-helpers";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import { LEARNER, current, seed, tile } from "./practice-helpers";
@@ -84,7 +85,7 @@ for (const [w, h] of SIZES)
         await expect(page.getByRole("heading", { name: "Your English course" })).toBeFocused();
         await scan(page);
         await page.getByRole("button", { name: "Start Move 1" }).click();
-        await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
+        await expect(page.getByRole("heading", { name: "Strip the Disguise" })).toBeFocused();
         await scan(page);
       });
 
@@ -228,7 +229,7 @@ for (const [w, h] of SIZES)
     await page.getByRole("button", { name: "Continue" }).click();
     expect(await sizes(page), "course").toEqual([]);
     await page.getByRole("button", { name: "Start Move 1" }).click();
-    await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
+    await expect(page.getByRole("heading", { name: "Strip the Disguise" })).toBeFocused();
     expect(await sizes(page), "lesson").toEqual([]);
   });
 
