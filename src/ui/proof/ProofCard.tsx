@@ -13,7 +13,8 @@ import { useProgress } from "../progress";
 import { appNow, demoOn, demoQuery, simulatedDate } from "./simulate";
 import "./proof.css";
 
-export function ProofCard({ move }: { move: Move }) {
+/** `done` shows only the stamp, dates and calendar: the stage Home has just moved on from, with no actions of its own. */
+export function ProofCard({ move, done = false }: { move: Move; done?: boolean }) {
   const { store } = useProgress();
   const { route } = useLocation();
   const cycle = store.progress.cycles.get(move.moveId) ?? null;
@@ -27,7 +28,8 @@ export function ProofCard({ move }: { move: Move }) {
   const recheck = withMove(`/recheck-entry${q}`, move.moveId);
 
   return (
-    <section class="pc" aria-label="Your proof">
+    <section class={done ? "pc pc-done" : "pc"} aria-label={done ? `Move ${moveNumber(move)} proof` : "Your proof"}>
+      {done && <p class="pc-line"><strong>Move {moveNumber(move)}: {move.title}</strong></p>}
       {sim && <p class="pc-sim" role="status">Simulated date: {day(sim)}. Demo only; your saved progress is not changed.</p>}
       {status && (
         <div class="pc-stamp">
@@ -41,7 +43,7 @@ export function ProofCard({ move }: { move: Move }) {
         </div>
       )}
       <AddToCalendar move={move} />
-      <div class="pc-actions">
+      {!done && <div class="pc-actions">
         {sim && (action === "recheck" || action === "recover") ? (
           // Read-only preview: nothing here starts a run, so a simulated day cannot change saved progress.
           <>
@@ -62,8 +64,8 @@ export function ProofCard({ move }: { move: Move }) {
         )}
         {action === "practice" && <a class="btn btn-primary" href={practise}>Practise Move {moveNumber(move)}</a>}
         {action === "continue" && <a class="btn btn-primary" href={practise}>Continue where you stopped</a>}
-      </div>
-      {demoOn() && (
+      </div>}
+      {!done && demoOn() && (
         <form class="pc-demo" onSubmit={(e) => {
           e.preventDefault();
           const v = new FormData(e.currentTarget as HTMLFormElement).get("date");

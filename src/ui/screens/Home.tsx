@@ -29,11 +29,11 @@ export function Home() {
   const { dots } = readiness(attemptsOf(p, focus.moveId), runStartsOf(p, focus.moveId));
   const states = Object.fromEntries(moves.map((m) => [m.moveId, moveState(p, m.moveId, focus.moveId, appNow)]));
   const { state, due } = states[focus.moveId]!;
-  const solo = latestSolo(p, focus.moveId);
   const coach = p.learner?.coach ?? "character";
   // Same state as the primary action in ProofCard, so the bubble never contradicts the button.
   // Just driven on from a finished stage: say so, like a game unlocking its next level.
   const from = attemptsOf(p, focus.moveId).length ? null : movedOnFrom(p, focus, appNow);
+  const solo = latestSolo(p, focus.moveId) ?? (from && latestSolo(p, from.moveId));
   const coachLine = from ? `Move ${moveNumber(from)} done. On to Move ${n}!`
     : due && state !== "fading" ? "Recheck ready: five questions, no help."
     : state === "fading" ? "Your proof needs a quick restore."
@@ -56,6 +56,7 @@ export function Home() {
             <p class="hm-move">JAMB English concord. Move {n}: {focus.title}.</p>
             <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
           </div>
+          {from && <ProofCard move={from} done />}
           <ProofCard move={focus} />
           <div class="hm-row">
             <a class="btn btn-secondary hm-solo" href={withMove("/solo-entry", focus.moveId)}>Solo check</a>

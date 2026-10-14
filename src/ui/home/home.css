@@ -35,6 +35,13 @@
 .hm-solo { grid-row: 3; grid-column: 1; } .hm-ready { grid-row: 3; grid-column: 2; } .hm-morebtn { grid-row: 3; grid-column: 3; }
 .hm-act .pc { padding: 0; border: 0; background: none; gap: var(--spacing-xs); }
 .hm-act .pc-stamp { gap: var(--spacing-sm); }
+/* A stage just finished (Home has moved on from it) sits above the new stage's line in the phone sheet. */
+@media (max-width: 767px) {
+  .hm-act .pc-done { grid-row: 1; padding-bottom: var(--spacing-xs); border-bottom: 1px solid var(--border-subtle); }
+  .hm-act:has(.pc-done) .hm-move { grid-row: 2; }
+  .hm-act:has(.pc-done) .pc:not(.pc-done) { grid-row: 3; }
+  .hm-act:has(.pc-done) :is(.hm-solo, .hm-ready, .hm-morebtn) { grid-row: 4; }
+}
 .page p.hm-move { margin: 0; font: var(--type-label-m); color: var(--text-secondary); }
 .page a.btn.hm-solo { display: flex; margin: 0; text-decoration: none; }
 .hm-gap { margin: 0; padding: var(--spacing-xs) var(--spacing-sm); background: var(--bg-gap-container); color: var(--text-on-gap-container); border: 2px solid var(--border-gap); border-radius: var(--radius-md); font: var(--type-body-m); }

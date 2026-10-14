@@ -122,13 +122,16 @@ test("a solo check of Move 3 is all Move 3, earns its own proof and leaves Move 
   await expect(page.getByRole("img", { name: /Share card:.*Move 3: Collective nouns/ })).toBeVisible();
   await expect(page.getByRole("textbox")).toHaveValue(/Move 3: Collective nouns/);
 
-  // Home follows the latest activity: Move 3 is Proved, Move 1 is untouched.
+  // Like a game level, Home moves on to Move 4 and keeps Move 3's proof in view; Move 1 is untouched.
   await page.goto("/");
-  await expect(page.getByText("JAMB English concord. Move 3: Collective nouns.")).toBeVisible();
+  await expect(page.getByText("Move 3 done. On to Move 4!")).toBeVisible();
+  await expect(page.getByText("JAMB English concord. Move 4: Each, everyone, none.")).toBeVisible();
+  await expect(page.getByRole("region", { name: "Move 3 proof" }).getByRole("img", { name: "Proved" })).toBeVisible();
   const map = page.getByRole("region", { name: "Journey map" });
   await expect(map.getByRole("link", { name: /^Stage 3, Move 3: Collective nouns\. Proved\./ })).toBeVisible();
+  await expect(map.getByRole("link", { name: /^Stage 4, Move 4: .*Current\./ })).toBeVisible();
   await expect(map.getByRole("link", { name: /^Stage 1, Move 1: .*Available\./ })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Practise Move 3" })).toHaveAttribute("href", "/practice?move=collective-nouns");
+  await expect(page.getByRole("link", { name: "Practise Move 4" })).toHaveAttribute("href", "/practice?move=indefinite-pronouns");
   await page.goto("/?move=strip-disguise");
   await expect(page.getByText("JAMB English concord. Move 1: Strip the Disguise.")).toBeVisible();
   await expect(page.getByRole("link", { name: "Practise Move 1" })).toHaveAttribute("href", "/practice");

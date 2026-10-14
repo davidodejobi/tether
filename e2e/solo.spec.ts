@@ -199,7 +199,8 @@ test("journey: a passed solo shows its result, then Home shows the proof and its
   await expect(page.getByText("Passed. You are Proved.")).toBeVisible();
   await page.getByRole("button", { name: "Back to Home" }).or(page.getByRole("link", { name: "Back to Home" })).first().click();
   await expect(page).toHaveURL(/\/$/);
-  const proof = page.getByRole("region", { name: "Your proof" });
+  // Home moves on to Move 2 and keeps Move 1's proof and its next check in view.
+  const proof = page.getByRole("region", { name: "Move 1 proof" });
   await expect(proof.getByRole("img", { name: "Proved" })).toBeVisible();
   await expect(proof.getByText(/First recheck:/)).toBeVisible();
 });

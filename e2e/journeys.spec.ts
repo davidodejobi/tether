@@ -213,7 +213,9 @@ test("4. solo pass: build readiness, 8 of 10, Proved on the result, stamp and fi
   await expect(page.getByText("Next check: 17 Oct 2026.")).toBeVisible();
   await toHome(page);
 
-  const proof = page.getByRole("region", { name: "Your proof" });
+  // Like a game level, Home moves on to Move 2 and keeps Move 1's stamp and first recheck in view.
+  await expect(page.getByText("Move 1 done. On to Move 2!")).toBeVisible();
+  const proof = page.getByRole("region", { name: "Move 1 proof" });
   await expect(proof.getByRole("img", { name: "Proved" })).toBeVisible();
   await expect(proof.getByText("First recheck: 17 Oct 2026")).toBeVisible();
   await expect(page.getByText("Latest gap: 2")).toBeVisible();
@@ -300,7 +302,8 @@ test.describe("rechecks", () => {
     for (let n = 1; n <= 5; n++) await answer(page, n <= rights, n, 5);
     await expect(page).toHaveURL(/\/result\/run-/);
   }
-  const proof = (page: Page) => page.getByRole("region", { name: "Your proof" });
+  // Move 1's proof: in its own card once Home has moved on to Move 2, in "Your proof" while a recheck is due.
+  const proof = (page: Page) => page.getByRole("region", { name: /^(Your|Move 1) proof$/ });
 
   test("7a. recheck pass on the due day: not before, then Held with the next date", async ({ page }) => {
     await proved(page);
