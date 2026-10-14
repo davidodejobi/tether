@@ -16,7 +16,6 @@
     "screens": "playwright test -c playwright.screens.config.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.133.0",
     "blobatar": "2.7.0",
     "cuelume": "0.2.8",
     "idb-keyval": "^6.3.0",
