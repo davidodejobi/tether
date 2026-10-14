@@ -5,6 +5,7 @@ import { Identity } from "../components/Avatar";
 import { CoachBubble } from "../components/CoachBubble";
 import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
+import { CourseProgress } from "../course/CourseProgress";
 import { HomeMap } from "../home/HomeMap";
 import { latestSolo, moveOne } from "../home/view.ts";
 import { OfflineCues } from "../offline/OfflineCues";
@@ -38,6 +39,7 @@ export function Home() {
         <div class="hm-status"><OfflineCues /></div>
         <CoachBubble mode={coach}>{coachLine}</CoachBubble>
         <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
+        <CourseProgress />
         <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
         <ProofCard />
         <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>

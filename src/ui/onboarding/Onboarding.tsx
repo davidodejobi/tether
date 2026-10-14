@@ -1,6 +1,6 @@
 import { useRef, useState } from "preact/hooks";
 import { requestPersistentStorage } from "../../platform/storage.ts";
-import { english, sectionById, topicById, availability } from "../../content/catalogue.ts";
+import { allStages, availableIn, english, plannedIn, sectionById, topicById } from "../../content/catalogue.ts";
 import { extrasOf, SUBJECT_SOURCE, withEnglish } from "../../content/subjects.ts";
 import { cleanNickname, newLearner, type Learner } from "../../storage/progress.ts";
 import { Bo } from "../components/Bo";
@@ -55,12 +55,12 @@ function CourseMap({ onStart }: { onStart: () => void }) {
     <>
       <div class="ob-body">
         <StepHeading>Your English course</StepHeading>
-        <p class="ob-lead">Three official sections. Start where it helps most.</p>
+        <p class="ob-lead">Three official sections, {allStages(english).length} planned stages. Start where it helps most.</p>
         <ul class="crs">
           {english.sections.map((s) => (
             <li key={s.id} class={s.id === section.id ? "start" : ""}>
               <strong>{s.letter}. {s.name}</strong>
-              <span>{availability(s)}</span>
+              <span>{plannedIn(s)} planned stages · {availableIn(s)} available</span>
             </li>
           ))}
         </ul>

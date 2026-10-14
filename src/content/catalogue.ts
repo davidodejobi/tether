@@ -1,5 +1,6 @@
 // The English destination, as far as it is verified (spec section 14b). Question counts appear only where the
 // source quantifies a category; a topic or move never inherits one. Stage counts are Tether units, not exam weights.
+import { positionInSection, stagesInSection, type SectionId } from "./blueprint.ts";
 import { stripDisguise } from "./strip-disguise.ts";
 
 export const CATALOGUE_VERSION = 1;
@@ -12,44 +13,45 @@ export const source = {
   sha256: stripDisguise.source.pdfSha256,
 };
 
-export interface Stage { id: string; title: string; moveId: string }
+/** A planned stage; it is available only when `moveId` is set. `position` is its place in the section, `of` the section size. */
+export interface Stage { n: number; id: string; title: string; moveId?: string; position: number; of: number }
 export interface Topic { id: string; name: string; /** Only where the source quantifies this category. */ questions?: number; stages: Stage[] }
-export interface Section { id: string; letter: string; name: string; questions: number; topics: Topic[] }
+export interface Section { id: SectionId; letter: string; name: string; questions: number; topics: Topic[] }
 
-const soon = (id: string, name: string, questions?: number): Topic => ({ id, name, questions, stages: [] });
+/** Official categories that carry source question counts, by blueprint topic id. Tether teaching groups have none. */
+const QUESTIONS: Record<string, number> = {
+  "comprehension-passage": 5, "summary-passage": 5, cloze: 10, "reading-text": 5,
+  "sentence-interpretation": 5, antonyms: 5, synonyms: 5,
+  vowels: 2, consonants: 2, rhymes: 2, "word-stress": 2, "emphatic-stress": 2,
+};
+
+function topicsOf(section: SectionId): Topic[] {
+  const topics: Topic[] = [];
+  for (const b of stagesInSection(section)) {
+    let t = topics.find((x) => x.id === b.topic);
+    if (!t) topics.push((t = { id: b.topic, name: b.topicName, questions: QUESTIONS[b.topic], stages: [] }));
+    t.stages.push({ n: b.n, id: b.id, title: b.title, moveId: b.moveId, position: positionInSection(b), of: stagesInSection(section).length });
+  }
+  return topics;
+}
+
+const section = (id: SectionId, letter: string, name: string, questions: number): Section => ({ id, letter, name, questions, topics: topicsOf(id) });
 
 export const english = {
   id: "english",
   name: "English",
   sections: [
-    {
-      id: "comprehension-and-summary", letter: "A", name: "Comprehension and Summary", questions: 25,
-      topics: [soon("comprehension-passage", "Comprehension passage", 5), soon("summary-passage", "Summary passage", 5), soon("cloze", "Cloze", 10), soon("reading-text", "Approved reading text", 5)],
-    },
-    {
-      id: "lexis-and-structure", letter: "B", name: "Lexis and Structure", questions: 25,
-      topics: [
-        { id: "concord", name: "Concord", stages: [{ id: "strip-disguise", title: "Strip the Disguise", moveId: stripDisguise.moveId }] },
-        soon("sentence-interpretation", "Sentence interpretation", 5),
-        soon("antonyms", "Antonyms", 5),
-        soon("synonyms", "Synonyms", 5),
-        soon("other-grammar", "Other basic grammar topics"),
-      ],
-    },
-    {
-      id: "oral-forms", letter: "C", name: "Oral Forms", questions: 10,
-      topics: [soon("vowels", "Vowels", 2), soon("consonants", "Consonants", 2), soon("rhymes", "Rhymes", 2), soon("word-stress", "Word stress", 2), soon("emphatic-stress", "Emphatic stress", 2)],
-    },
+    section("comprehension-and-summary", "A", "Comprehension and Summary", 25),
+    section("lexis-and-structure", "B", "Lexis and Structure", 25),
+    section("oral-forms", "C", "Oral Forms", 10),
   ] satisfies Section[],
 };
 
-export const stagesIn = (x: Section | Topic): number => ("topics" in x ? x.topics.reduce((n, t) => n + t.stages.length, 0) : x.stages.length);
+export const allStages = (x: Section | Topic | typeof english): Stage[] =>
+  "sections" in x ? x.sections.flatMap(allStages) : "topics" in x ? x.topics.flatMap((t) => t.stages) : x.stages;
 
-/** "1 stage available · more Coming soon", or just "Coming soon" when nothing is available. */
-export function availability(x: Section | Topic): string {
-  const n = stagesIn(x);
-  return n === 0 ? "Coming soon" : `${n} stage${n === 1 ? "" : "s"} available · more Coming soon`;
-}
+export const plannedIn = (x: Section | Topic): number => allStages(x).length;
+export const availableIn = (x: Section | Topic): number => allStages(x).filter((s) => s.moveId).length;
 
 export const sectionById = (id?: string) => english.sections.find((s) => s.id === id);
 export const topicById = (s: Section, id?: string) => s.topics.find((t) => t.id === id);

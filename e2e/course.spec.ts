@@ -37,17 +37,20 @@ test("a new learner sees the English destination and reaches Move 1 from the top
   // Official counts on the sections; only Lexis and Structure has anything available.
   await expect(page.getByText("25 questions in the exam")).toHaveCount(2);
   await expect(page.getByText("10 questions in the exam")).toHaveCount(1);
-  await expect(page.getByText("1 stage available · more Coming soon")).toHaveCount(1);
+  await expect(page.getByText("English · 50 planned stages · 1 available · 0 completed")).toBeVisible();
+  await expect(page.getByText("English · 1 of 50 stages available · 0 completed")).toBeVisible();
+  await expect(page.getByText("33 planned stages · 1 available")).toBeVisible();
 
   await page.getByRole("link", { name: "B. Lexis and Structure" }).click();
   await expect(page.getByRole("heading", { name: "Lexis and Structure" })).toBeVisible();
+  await expect(page.getByText("Lexis and Structure: 33 planned stages · 1 available · 0 completed")).toBeVisible();
   // Concord inherits no question count, even though Basic grammar has 10.
   const concord = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: "Concord" }) });
   await expect(concord).not.toContainText("questions");
   await expect(page.getByText("5 exam questions in this category")).toHaveCount(3);
   await page.getByRole("link", { name: "Concord" }).click();
 
-  await expect(page.getByText("Stage 1 of 1 available")).toBeVisible();
+  await expect(page.getByText("Stage 1 of 33")).toBeVisible();
   await expect(page.getByRole("link", { name: "English course" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Lexis and Structure" })).toBeVisible();
   await page.getByRole("link", { name: "Practise Move 1" }).click();
@@ -76,22 +79,54 @@ test("a due recheck is offered on the topic, and browsing changes no score or sc
   expect(await learningRecords(page)).toBe(before);
 });
 
-test("Coming soon items are plain text with no actionable controls", async ({ page }) => {
+test("every planned topic is reachable, and planned stages are plain text with no controls", async ({ page }) => {
   await seedRecords(page, [], "/course");
-  const sections = page.getByRole("list", { name: "Sections" });
-  await expect(sections.getByRole("link")).toHaveCount(1);
-  await expect(sections.getByRole("button")).toHaveCount(0);
-  await expect(sections.getByText("Coming soon", { exact: true })).toHaveCount(2);
+  await expect(page.getByRole("list", { name: "Sections" }).getByRole("link")).toHaveCount(3);
   await page.goto(SECTION);
   const topics = page.getByRole("list", { name: "Topics" });
-  await expect(topics.getByRole("link")).toHaveCount(1);
+  await expect(topics.getByRole("link")).toHaveCount(11);
   await expect(topics.getByRole("button")).toHaveCount(0);
-  await expect(topics.getByText("Coming soon", { exact: true })).toHaveCount(4);
-  // Nothing exists for a Coming soon section or topic.
+  await page.getByRole("link", { name: "Antonyms" }).click();
+  const stages = page.getByRole("list", { name: "Stages" });
+  await expect(stages.getByRole("listitem")).toHaveCount(2);
+  await expect(stages.getByText("Coming soon", { exact: true })).toHaveCount(2);
+  await expect(stages.getByRole("link")).toHaveCount(0);
+  await expect(stages.getByRole("button")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Practise Move 1" })).toHaveCount(0);
+  await expect(stages.getByText("Stage 28 of 33 planned")).toBeVisible();
+  await page.goto("/course/oral-forms/emphatic-stress");
+  await expect(page.getByText("Stage 8 of 8 planned")).toBeVisible();
   await page.goto("/course/oral-forms");
+  await expect(page.getByText("Oral Forms: 8 planned stages · 0 available · 0 completed")).toBeVisible();
+  await page.goto("/course/oral-forms/nope");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
-  await page.goto(`${SECTION}/antonyms`);
+  await page.goto("/course/nope");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+});
+
+test("completed counts once per move after repeat solo passes, and never claims the course is done", async ({ page }) => {
+  const p1 = finishedRun("p1", "solo", 9, { n: 1, practice: 9, daysAgo: 2 });
+  const p2 = finishedRun("p2", "solo", 10, { n: 2, practice: 10 });
+  await seedRecords(page, [p1, p2, cycle("proved", "p1", "2026-10-12", "2026-10-15")], "/course");
+  await expect(page.getByText("English · 1 of 50 stages available · 1 completed")).toBeVisible();
+  await expect(page.getByText("English · 50 planned stages · 1 available · 1 completed")).toBeVisible();
+  await page.goto(TOPIC);
+  await expect(page.getByText("Concord: 8 planned stages · 1 available · 1 completed")).toBeVisible();
+  await expect(page.getByText("Completed", { exact: true })).toHaveCount(1);
+  await expect(page.getByText(/course (is )?complete/i)).toHaveCount(0);
+  await page.goto("/");
+  await expect(page.getByText("English · 1 of 50 stages available · 1 completed")).toBeVisible();
+});
+
+test("a Fading move stays completed and needs review", async ({ page }) => {
+  const g = finishedRun("p1", "solo", 9, { n: 1, practice: 9, daysAgo: 20 });
+  await seedRecords(page, [g, cycle("fading", "p1", "2026-09-20", "2026-09-23")], "/course");
+  await expect(page.getByText("English · 1 of 50 stages available · 1 completed · 1 needs review")).toBeVisible();
+});
+
+test("a failed solo leaves completed at 0", async ({ page }) => {
+  await seedRecords(page, [finishedRun("f1", "solo", 4, { n: 1, practice: 9 })], "/course");
+  await expect(page.getByText("English · 1 of 50 stages available · 0 completed")).toBeVisible();
 });
 
 test("the whole path works from the keyboard", async ({ page }) => {
@@ -108,7 +143,7 @@ test("the whole path works from the keyboard", async ({ page }) => {
   await page.keyboard.press("Enter");
   await tabTo("Concord");
   await page.keyboard.press("Enter");
-  await expect(page.getByText("Stage 1 of 1 available")).toBeVisible();
+  await expect(page.getByText("Stage 1 of 33")).toBeVisible();
   await tabTo("Practise Move 1");
 });
 
@@ -117,7 +152,7 @@ for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const)
     await page.setViewportSize({ width: w, height: h });
     await seedRecords(page, [gap, due], "/");
     for (const size of ["16px", "32px"]) {
-      for (const path of ["/", "/course", SECTION, TOPIC]) {
+      for (const path of ["/", "/course", SECTION, TOPIC, "/course/lexis-and-structure/tense-and-mood"]) {
         await page.goto(path);
         await page.addStyleTag({ content: `html{font-size:${size} !important}` });
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${path} ${w}px @${size}`).toBe(true);
@@ -148,5 +183,5 @@ test("the course page reloads offline once Ready offline shows", async ({ page, 
   await page.reload();
   await expect(page.getByRole("heading", { name: "English course" })).toBeVisible();
   await page.goto(TOPIC);
-  await expect(page.getByText("Stage 1 of 1 available")).toBeVisible();
+  await expect(page.getByText("Stage 1 of 33")).toBeVisible();
 });

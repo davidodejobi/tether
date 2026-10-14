@@ -254,3 +254,10 @@ These decisions override conflicting text in `requirements.txt`.
 - `Learner.subjects?: string[]` (`["english", ...extras]`). Absent means `["english"]`: no schema bump, no migration, older learners never repeat onboarding.
 - Subjects are held in memory until the nickname is saved (the learner record does not exist before that), so a reload at the subjects step returns to Welcome. A learner with saved subjects and no finished lesson resumes at the course map; one without subjects resumes the lesson.
 - Settings has a Subjects group that saves each change at once with Retry, through the existing `change()` path.
+
+## 2026-10-14 - 50-stage English blueprint and honest counts (step 21, catalogue and counts)
+
+- Owner approved the 50-stage English blueprint on 14 Oct 2026 (`src/content/blueprint.ts`); counts are planned / available / completed. Today: 50 planned (33 Lexis and Structure, 9 Comprehension and Summary, 8 Oral Forms), 1 available, completed from saved records.
+- The catalogue is derived from the blueprint. Official categories keep their source question counts; Tether teaching groups (concord, tense and mood, question tags and so on) have none, and "Basic grammar 10" is never shown on one group. Planned stages and topics are read-only text with "Coming soon"; every topic page is reachable as section, then topic.
+- Completed = an available stage whose move has ever had a passed solo run (a proof cycle with a passed solo, or a saved passed solo run). Counted once per move; repeat passes add nothing. A Fading move stays completed and adds a "needs review" count. Nothing is called complete while unpublished stages remain. No storage schema change (`src/rules/course-counts.ts`).
+- Still needed before a second move ships: scope runs, attempts, dots and learner fields by move. Today runs and attempts carry no move ID, so completion reads the move from a run's questions and the cycle's `moveId`.

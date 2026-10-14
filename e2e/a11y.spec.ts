@@ -31,6 +31,7 @@ const SCREENS: [string, (page: Page) => Promise<void>][] = [
   ["home fading with a gap", async (p) => (await seedRecords(p, [gapRun, cyc("fading", "2026-10-04", "paused")], "/"), await homeReady(p), await expect(p.getByText("Latest gap: 2")).toBeVisible())],
   ["course overview", async (p) => (await seedRecords(p, [], "/course"), await expect(p.getByRole("heading", { name: "English course" })).toBeVisible())],
   ["course section", async (p) => (await seedRecords(p, [], "/course/lexis-and-structure"), await expect(p.getByRole("heading", { name: "Lexis and Structure" })).toBeVisible())],
+  ["course planned topic", async (p) => (await seedRecords(p, [], "/course/lexis-and-structure/tense-and-mood"), await expect(p.getByRole("heading", { name: "Tense and mood" })).toBeVisible())],
   ["course topic with a due recheck", async (p) => (await seedRecords(p, [gapRun, cyc("held", "2026-10-04")], "/course/lexis-and-structure/concord"), await expect(p.getByRole("link", { name: "Start recheck" })).toBeVisible())],
   ["settings", async (p) => (await seedRecords(p, [], "/settings"), await expect(p.getByRole("heading", { name: "Settings" })).toBeVisible())],
   ["share preview", async (p) => (await seedRecords(p, [finishedRun("a", "solo", 9, { n: 1, practice: 9 }), proofCycle("proved", "a", "2026-10-13", "2026-10-16")], "/share/a?kind=proof"), await expect(p.locator("img.sh-card")).toBeVisible())],

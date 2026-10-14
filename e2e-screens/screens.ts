@@ -369,6 +369,6 @@ const shareScreens: [string, (page: Page) => Promise<void>][] = [
 for (const [name, actions] of shareScreens)
   for (const [suffix, width, height] of [["", 360, 800], ["-768", 768, 1024], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions });
 // Step 17a: the English destination preview, at phone, tablet and laptop widths.
-const courseScreens: [string, string][] = [["course-overview", "/course"], ["course-section", "/course/lexis-and-structure"], ["course-topic", "/course/lexis-and-structure/concord"]];
+const courseScreens: [string, string][] = [["course-overview", "/course"], ["course-section", "/course/lexis-and-structure"], ["course-topic", "/course/lexis-and-structure/concord"], ["course-topic-planned", "/course/lexis-and-structure/tense-and-mood"]];
 for (const [name, path] of courseScreens)
   for (const [suffix, width, height] of [["-360", 360, 800], ["-768", 768, 1024], ["-1366", 1366, 768]] as const) SCREENS.push({ name: `${name}${suffix}`, path: "/", width, height, actions: (p) => seedRecords(p, [], path) });
