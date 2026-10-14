@@ -87,11 +87,12 @@ test.describe("sharing", () => {
   });
 
   test("cancelling the share sheet leaves progress intact", async ({ page }) => {
-    await page.addInitScript(() => Object.assign(navigator, { canShare: () => true, share: () => Promise.reject(new DOMException("cancelled", "AbortError")) }));
+    await page.addInitScript(() => Object.assign(navigator, { canShare: () => true, share: () => { const p = Promise.reject(new DOMException("cancelled", "AbortError")); p.catch(() => ((window as unknown as { shareSettled: boolean }).shareSettled = true)); return p; } }));
     await seedRecords(page, [finishedRun("a", "solo", 9, { n: 1, practice: 9 }), cycle("proved", "a", iso(0), iso(3))], "/share/a?kind=proof");
     const progress = async () => (await rows(page)).filter(([k]) => /^(run|cycle|attempt):/.test(k));
     const before = await progress();
     await page.getByRole("button", { name: "Share", exact: true }).click();
+    await page.waitForFunction(() => (window as unknown as { shareSettled?: boolean }).shareSettled === true); // the stubbed share has rejected
     await expect(page.getByRole("status")).toHaveText("");
     expect(await progress()).toEqual(before);
     await page.getByRole("button", { name: "Back to result" }).click();
