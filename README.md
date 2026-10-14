@@ -13,3 +13,5 @@ npm test             # unit tests (Vitest)
 npx playwright install chromium   # once
 npm run test:e2e     # browser tests against the preview build
 ```
+
+Before a release, follow `docs/release-checks.md`.

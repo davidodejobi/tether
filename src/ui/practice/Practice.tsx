@@ -75,7 +75,7 @@ function Round() {
     return dotsNow([...others, a]) === 3 && dotsNow(others) < 3;
   };
 
-  if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => route("/")} />;
+  if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => (store.endSession().catch(() => {}), route("/"))} />;
   if (step.kind === "ready") return <SoloEntry dots={3} onStart={() => route("/run/solo")} onPractise={after} />;
   return (
     <HelpedQuestion
