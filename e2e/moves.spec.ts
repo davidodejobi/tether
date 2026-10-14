@@ -67,6 +67,7 @@ test("dots and rounds are per move", async ({ page }) => {
   // One move-2 question is done, so move 2's round is on question 2 (and skips the intro: it has an attempt); move 1's would be 4.
   await page.goto("/practice?move=nearest-subject");
   await expect(page.getByRole("progressbar", { name: "Question 2 of 5" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Readiness 1 of 3" })).toBeVisible(); // the question's header counts its own move
   await answerRight(page);
   await next(page);
   await expect(page.getByRole("progressbar", { name: "Question 3 of 5" })).toBeVisible();

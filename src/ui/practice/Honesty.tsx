@@ -41,8 +41,8 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
   const first = move === stripDisguiseMove;
   const bo = learner.coach === "character"; // Text only shows no Bo anywhere
   // Readiness counts this attempt as it is now, so the message never waits for the save to land.
-  const attempts = attemptsOf(store.progress).filter((a) => a.id !== attempt.id).concat(attempt);
-  const { dots, offerMove } = readiness(attempts, runStartsOf(store.progress));
+  const attempts = attemptsOf(store.progress, q.moveId).filter((a) => a.id !== attempt.id).concat(attempt);
+  const { dots, offerMove } = readiness(attempts, runStartsOf(store.progress, q.moveId));
   const [tapped, setTapped] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);

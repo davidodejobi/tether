@@ -233,7 +233,7 @@ export function QuestionView(props: QuestionViewProps) {
     return () => window.removeEventListener("keydown", h);
   }, []);
 
-  const dots = readiness(attemptsOf(store.progress), runStartsOf(store.progress)).dots as 0 | 1 | 2 | 3;
+  const dots = readiness(attemptsOf(store.progress, q.moveId), runStartsOf(store.progress, q.moveId)).dots as 0 | 1 | 2 | 3;
   const filled = done ? q.answer : selected === null ? undefined : q.options[selected];
   const lang = learner.lang;
   const move = moveOrFirst(q.moveId);
