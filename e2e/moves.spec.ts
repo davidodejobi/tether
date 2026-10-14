@@ -59,6 +59,13 @@ for (const [id, n, title] of MOVES)
       expect(title.length).toBeGreaterThan(0);
     });
 
+test("closing the first-visit lesson goes Home and starts no question", async ({ page }) => {
+  await seedRecords(page, unlockedTo(2), "/practice?move=nearest-subject");
+  await page.getByRole("button", { name: "Close the lesson" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  expect(await records(page)).toHaveLength(0);
+});
+
 test("dots and rounds are per move", async ({ page }) => {
   const m1 = [1, 2, 3].map((i) => attempt("strip-disguise", i));
   await seedRecords(page, [...m1, attempt("nearest-subject", 4)], "/?move=strip-disguise");

@@ -46,7 +46,7 @@
 .page a.btn.hm-solo { display: flex; margin: 0; text-decoration: none; }
 .hm-gap { margin: 0; padding: var(--spacing-xs) var(--spacing-sm); background: var(--bg-gap-container); color: var(--text-on-gap-container); border: 2px solid var(--border-gap); border-radius: var(--radius-md); font: var(--type-body-m); }
 .page p.hm-gap { font: var(--type-body-m); }
-.hm-gap-none { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-subtle); }
+.hm-gap-none { background: none; color: var(--text-secondary); border: 0; padding: 0 var(--spacing-sm); font: var(--type-body-s); }
 .hm-more { display: none; gap: var(--spacing-xs); }
 .hm-more-open .hm-more { display: grid; }
 .hm-morebtn { min-height: var(--size-touch-target); padding: 0 var(--spacing-md); }

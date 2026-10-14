@@ -2,7 +2,7 @@ import { useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { moveNumber, moves } from "../../content/moves.ts";
 import { readiness } from "../../rules/practice.ts";
-import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
+import { attemptsOf, resumePoint, runStartsOf } from "../../storage/progress.ts";
 import { Identity } from "../components/Avatar";
 import { CoachBubble } from "../components/CoachBubble";
 import { Dots } from "../components/Dots";
@@ -33,10 +33,11 @@ export function Home() {
   // Same state as the primary action in ProofCard, so the bubble never contradicts the button.
   // Just driven on from a finished stage: say so, like a game unlocking its next level.
   const from = attemptsOf(p, focus.moveId).length ? null : movedOnFrom(p, focus, appNow);
-  const solo = latestSolo(p, focus.moveId) ?? (from && latestSolo(p, from.moveId));
+  const solo = latestSolo(p, focus.moveId);
   const coachLine = from ? `Move ${moveNumber(from)} done. On to Move ${n}!`
     : due && state !== "fading" ? "Recheck ready: five questions, no help."
     : state === "fading" ? "Your proof needs a quick restore."
+    : resumePoint(p, focus.moveId) ? "Continue where you stopped."
     : state === "proved" || state === "held" ? "Proof holding. Practise to stay sharp."
     : dots < 3 ? `Start with Move ${n}.` : `You are ready to try Move ${n} alone.`;
   return (
@@ -69,9 +70,9 @@ export function Home() {
             <p class="hm-gap"><strong>{solo.raw! <= 0 ? "No help gap on your latest solo check" : `Latest gap: ${solo.gap}`}</strong> (with help {solo.practice}, alone {solo.alone}) on {when(solo.at)}</p>
           ))}
           {/* Measurable progress is never behind More (spec section 10). */}
+          {!solo && <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>}
           <CourseProgress link={false} />
           <div class="hm-more">
-            {!solo && <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>}
             <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
             <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>
           </div>

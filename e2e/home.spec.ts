@@ -31,9 +31,7 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   // A real long trail that scrolls inside the map, with the current stage in view on load.
   expect(await map.evaluate((el) => el.scrollHeight > el.clientHeight * 4)).toBe(true);
   await expect(map.getByRole("link", { name: /Move 1: Strip/ })).toBeInViewport();
-  await expect(page.getByText("No gap yet. Take your first solo check.")).toBeHidden(); // lives in More on phone
-  await page.getByRole("button", { name: "More" }).click();
-  await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible();
+  await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible(); // measurable progress is never behind More
 });
 
 test("progress is always on Home, and the phone map keeps most of the screen", async ({ page }) => {
@@ -41,7 +39,7 @@ test("progress is always on Home, and the phone map keeps most of the screen", a
   await expect(page.getByText("English · 5 of 50 stages available · 0 completed")).toBeVisible(); // not behind More
   await expect(page.getByText("JAMB English concord. Move 1: Strip the Disguise.")).toBeVisible();
   const share = await page.locator(".hm-scroll").evaluate((el) => el.getBoundingClientRect().height / innerHeight);
-  expect(share).toBeGreaterThanOrEqual(0.55);
+  expect(share).toBeGreaterThanOrEqual(0.5); // was 0.55 before the no-gap line moved out of More
   // The install card is one short line; the instructions open on tap.
   await expect(page.getByText("In your browser menu, choose Install app")).toBeHidden();
   await page.getByRole("button", { name: "How" }).click();

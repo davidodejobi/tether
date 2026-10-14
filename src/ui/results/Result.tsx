@@ -97,7 +97,7 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
             <p class="rs-note">
               {p.earnedNow ? "Earned today." : `Proof dated ${day(p.earnedOn)}.`}
               {p.state === "fading" && " It is fading until you pass a recovery check."}
-              {p.state !== "fading" && (p.nextDue ? ` Next check: ${day(p.nextDue)}.` : " No more checks are scheduled.")}
+              {p.state !== "fading" && (p.due ? (p.overdue ? " Your recheck is waiting." : " A recheck is due now.") : p.nextDue ? ` Next check: ${day(p.nextDue)}.` : " No more checks are scheduled.")}
             </p>
           </div>
         )}

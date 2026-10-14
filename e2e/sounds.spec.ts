@@ -61,12 +61,14 @@ const check = (page: Page) => page.getByRole("button", { name: "Check" }).click(
 test("Sounds is on by default and an explicit off stays off after a reload", async ({ page }) => {
   await seed(page); // a record that never set the preference
   await page.goto("/settings");
+  await openRow(page, "Sounds");
   await expect(sounds(page)).toBeChecked();
   await sounds(page).focus();
   await page.keyboard.press("Space");
   await expect(sounds(page)).not.toBeChecked();
   expect((await stored(page)).sounds).toBe(false);
   await page.reload();
+  await openRow(page, "Sounds");
   await expect(sounds(page)).not.toBeChecked();
 });
 

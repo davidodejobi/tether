@@ -30,6 +30,15 @@ function progress(runs: SavedRun[]): Progress {
 }
 
 describe("resultView", () => {
+  test("earnedNow only on the day it was earned; due recheck is reported", () => {
+    const p = progress([solo(1, 9, 9)]);
+    const earnedAt = T0 + DAY + 1000;
+    expect(resultView(p, "s1", earnedAt)!.proof).toMatchObject({ earnedNow: true, due: false });
+    const late = resultView(p, "s1", earnedAt + 3 * DAY)!.proof!;
+    expect(late).toMatchObject({ earnedNow: false, due: true, overdue: false });
+    expect(resultView(p, "s1", earnedAt + 5 * DAY)!.proof).toMatchObject({ earnedNow: false, due: true, overdue: true });
+  });
+
   test("unknown or unfinished run is null", () => {
     expect(resultView(progress([]), "nope", T0)).toBeNull();
     const s = solo(1, 5, 5);
@@ -79,7 +88,7 @@ describe("resultView", () => {
 
   test("a pass earns Proved with a next check date; a failed repeat keeps old proof un-earned", () => {
     const p = progress([solo(1, 8, 9), solo(2, 6, 9)]);
-    const pass = resultView(p, "s1", T0)!;
+    const pass = resultView(p, "s1", T0 + DAY + 2000)!; // the day it was earned
     expect(pass).toMatchObject({ passed: true, shares: ["proof"] });
     expect(pass.proof).toMatchObject({ state: "proved", earnedNow: true, nextDue: "2026-10-05" });
     const repeat = resultView(p, "s2", T0)!;

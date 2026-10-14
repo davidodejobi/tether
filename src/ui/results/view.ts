@@ -1,7 +1,7 @@
 // What a saved run's result page shows (spec sections 8 and 9). Pure: reads saved progress, decides nothing new.
 import { compare, snapshotOf, type Comparison, type Snapshot } from "../../rules/gap.ts";
 import { inOrder } from "../../rules/moment.ts";
-import { proofStatus, type ProofState } from "../../rules/proof.ts";
+import { civilDate, proofStatus, type ProofState } from "../../rules/proof.ts";
 import { RUN_RULES } from "../../rules/runs.ts";
 import type { Question } from "../../content/generate.ts";
 import { runMove, runsOf, type Progress, type SavedRun } from "../../storage/progress.ts";
@@ -15,6 +15,9 @@ export interface Proof {
   earnedOn: string;
   /** YYYY-MM-DD of the next scheduled check, or null (Held with nothing left, or Fading). */
   nextDue: string | null;
+  /** A recheck can be taken now (due today or overdue). */
+  due: boolean;
+  overdue: boolean;
 }
 
 export interface ResultView {
@@ -65,8 +68,10 @@ export function resultView(p: Progress, runId: string, now: number): ResultView 
   const cycle = moveId ? (p.cycles.get(moveId) ?? null) : null;
   let proof: Proof | null = null;
   if (cycle) {
-    const earnedNow = kind === "solo" && passed && cycle.history[0]?.runId === run.id;
-    proof = { state: cycle.state, earnedNow, earnedOn: cycle.earnedOn, nextDue: proofStatus(cycle, now)?.nextDue ?? null };
+    // "Earned today" is only true on the day it was earned; a revisited old result reads as past tense.
+    const earnedNow = kind === "solo" && passed && cycle.history[0]?.runId === run.id && cycle.earnedOn === civilDate(now, cycle.timeZone);
+    const st = proofStatus(cycle, now)!;
+    proof = { state: cycle.state, earnedNow, earnedOn: cycle.earnedOn, nextDue: st.nextDue, due: st.due, overdue: st.overdue };
   }
 
   const improved = gap?.comparison.kind === "later" && gap.comparison.improved;

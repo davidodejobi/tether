@@ -20,7 +20,7 @@ describe("buildIcs", () => {
   });
   it("escapes text", () => {
     const ics = buildIcs({ ...base, summary: "a, b; c\\d", description: "one\ntwo" });
-    expect(ics).toContain("SUMMARY:a\\, b\; c\\\\d");
+    expect(ics).toContain("SUMMARY:a\\, b\\; c\\\\d");
     expect(ics).toContain("DESCRIPTION:one\\ntwo");
   });
   it("folds long lines at 75 octets without splitting a character", () => {

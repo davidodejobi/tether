@@ -97,7 +97,7 @@ function Round() {
         doneLabel="Start practising"
         skippableBasics={moves.some((m) => attemptsOf(store.progress, m.moveId).length > 0)}
         onDone={() => setStep(begin(store, pack))}
-        onClose={() => setStep(begin(store, pack))}
+        onClose={() => route("/")}
       />
     );
   if (step.kind === "summary") return <Summary pack={pack} onAnother={() => setStep(begin(store, pack))} onDone={() => (store.endSession().catch(() => {}), route("/"))} />;

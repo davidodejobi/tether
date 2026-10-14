@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { LEARNER } from "./practice-helpers";
+import { LEARNER, records } from "./practice-helpers";
 
 // Cycles are seeded in the stored shape (src/storage/progress.ts: key cycle:<moveId>); dates come from ?demo=.
 const entry = (day: number, due: string, status: string) => ({ id: `2026-10-13+${day}`, day, due, status });
@@ -118,6 +118,17 @@ test("a demo date is a read-only preview: nothing reaches /run/recheck and the c
   await expect(page.getByRole("link", { name: "Practise to recover" })).toBeVisible();
   await page.getByRole("link", { name: "Try anyway" }).click();
   await expect(page.getByRole("link", { name: "Start recheck" })).toHaveAttribute("href", "/run/recheck");
+});
+
+test("an unfinished question still leaves the recheck entry on Home", async ({ page }) => {
+  await seedCycle(page, cycle("fading", ["missed", "paused", "paused"]));
+  await page.goto("/practice");
+  await expect(page.getByRole("button", { name: "Check" })).toBeVisible();
+  await expect.poll(async () => (await records(page)).length).toBe(1); // the question is saved before leaving
+  await page.goto("/");
+  await expect(page.getByText("Your proof needs a quick restore.")).toBeVisible(); // a recheck is available, so its line stays
+  await expect(page.getByRole("link", { name: "Continue where you stopped" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Try anyway" })).toHaveAttribute("href", "/recheck-entry");
 });
 
 for (const [name, width, height] of [["phone", 360, 800], ["laptop", 1366, 768]] as const)

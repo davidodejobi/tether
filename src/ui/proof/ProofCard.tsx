@@ -2,7 +2,7 @@
 import { useLocation } from "preact-iso";
 import type { Move } from "../../content/generate.ts";
 import { moveNumber } from "../../content/moves.ts";
-import { homeAction, proofStatus } from "../../rules/proof.ts";
+import { homeAction, proofStatus, recheckAvailable } from "../../rules/proof.ts";
 import { resumePoint } from "../../storage/progress.ts";
 import "../components/Button.css";
 import { Stamp } from "../components/Stamp";
@@ -22,6 +22,7 @@ export function ProofCard({ move, done = false }: { move: Move; done?: boolean }
   const now = appNow(zone);
   const status = proofStatus(cycle, now);
   const action = homeAction(cycle, now, resumePoint(store.progress, move.moveId) !== null);
+  const avail = recheckAvailable(cycle, now);
   const q = demoQuery();
   const sim = simulatedDate();
   const practise = withMove("/practice", move.moveId);
@@ -64,6 +65,7 @@ export function ProofCard({ move, done = false }: { move: Move; done?: boolean }
         )}
         {action === "practice" && <a class="btn btn-primary" href={practise}>Practise Move {moveNumber(move)}</a>}
         {action === "continue" && <a class="btn btn-primary" href={practise}>Continue where you stopped</a>}
+        {action === "continue" && avail && !sim && <a class="btn btn-secondary" href={recheck}>{avail.purpose === "recovery" ? "Try anyway" : "Start recheck"}</a>}
       </div>}
       {!done && demoOn() && (
         <form class="pc-demo" onSubmit={(e) => {

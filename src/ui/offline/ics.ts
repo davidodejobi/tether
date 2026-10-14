@@ -1,6 +1,6 @@
 // An all-day iCalendar event for the next scheduled recheck (spec section 11). Pure, so it works offline.
 
-const esc = (t: string) => t.replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+const esc = (t: string) => t.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 const compact = (date: string) => date.replaceAll("-", "");
 const nextDay = (date: string) => {
   const [y, m, d] = date.split("-").map(Number) as [number, number, number];

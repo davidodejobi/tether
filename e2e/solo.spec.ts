@@ -52,7 +52,7 @@ test("the deadline scores unanswered questions as wrong and dates the run at the
   await answer(page, true, 1);
   await answer(page, true, 2);
   await expect(heading(page, 3)).toBeVisible();
-  await page.clock.fastForward("10:30");
+  await page.clock.runFor("10:30");
   await expect(page).toHaveURL(/\/result\/run-/);
   const [r] = await runs(page);
   expect(r.run.result).toMatchObject({ score: 2, passed: false, timedOut: true });
@@ -63,7 +63,7 @@ test("time almost up is announced in words, and the timer counts down", async ({
   await page.clock.install();
   await start(page);
   await expect(page.getByRole("timer")).toContainText("10:00");
-  await page.clock.fastForward("09:45");
+  await page.clock.runFor("09:45");
   await expect(page.getByText("Time is almost up")).toBeVisible();
   await expect(page.getByRole("timer")).toContainText("00:1");
 });
@@ -186,7 +186,7 @@ test("screenshots: running, time almost up, welcome back at 360 and 1366", async
     await hide(page, false);
     await expect(page.getByText("Welcome back")).toBeVisible();
     await page.screenshot({ path: `screenshots/step11-welcome-back-${w}.png` });
-    await page.clock.fastForward("09:40");
+    for (let i = 0; i < 116; i++) await page.clock.fastForward(5000); // steps under the 10 s absence limit
     await expect(page.getByText("Time is almost up")).toBeVisible();
     await page.screenshot({ path: `screenshots/step11-time-almost-up-${w}.png` });
   }
@@ -229,13 +229,23 @@ test("a run hidden past its deadline converts on return instead of finishing whi
   await answer(page, true, 1);
   await expect(heading(page, 2)).toBeVisible();
   await hide(page, true);
-  await page.clock.fastForward("10:30");
+  await page.clock.runFor("10:30");
   await hide(page, false);
   await expect(page.getByRole("heading", { name: "You were away too long" })).toBeVisible();
   const [r] = await runs(page);
   expect(r.run.status).toBe("converted");
   expect(r.run.result).toBeUndefined();
   expect(await idb(page, (rows) => rows.filter(([k]) => String(k).startsWith("cycle:")))).toHaveLength(0);
+});
+
+test("a long gap between ticks (sleep, no visibility event) converts instead of scoring a timeout", async ({ page }) => {
+  await page.clock.install();
+  await start(page);
+  await answer(page, true, 1);
+  await expect(heading(page, 2)).toBeVisible();
+  await page.clock.fastForward("10:30");
+  await expect(page.getByRole("heading", { name: "You were away too long" })).toBeVisible();
+  expect((await runs(page))[0].run.status).toBe("converted");
 });
 
 test("a deadline passing while an answer awaits Retry waits; Retry then finishes the run with that answer", async ({ page }) => {
@@ -248,7 +258,7 @@ test("a deadline passing while an answer awaits Retry waits; Retry then finishes
   await page.getByRole("button", { name: "Next" }).click();
   await expect(page.getByRole("alert")).toContainText("Couldn't save");
   await page.evaluate(() => ((window as any).__failWrites = false));
-  await page.clock.fastForward("10:30");
+  await page.clock.runFor("10:30");
   await page.clock.fastForward(1000);
   await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();
   await expect(page).toHaveURL(/\/run\/solo/);

@@ -5,7 +5,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { before, sentence, type Question } from "../../content/generate.ts";
-import { clockWentBack, finish, lowTime, RUN_RULES, seen, submit, type Run as RunState, type RunKind } from "../../rules/runs.ts";
+import { ABSENCE_LIMIT_MS, clockWentBack, finish, lowTime, RUN_RULES, seen, submit, type Run as RunState, type RunKind } from "../../rules/runs.ts";
 import { onReturn } from "../../rules/runs.ts";
 import { cue, setProofMode } from "../../platform/sound.ts";
 import { speak, useCanSpeak } from "../../platform/speech.ts";
@@ -66,6 +66,7 @@ function Runner({ kind }: { kind: RunKind }) {
   const blocked = useRef({ pending: 0, failed: false }); // saves in flight / awaiting Retry, readable from timers
   const chain = useRef<Promise<void>>(Promise.resolve());
   const hiddenAt = useRef<number | null>(null);
+  const lastTick = useRef(Date.now()); // a long gap between ticks (sleep) is an absence even without a visibility event
   const ended = useRef(false); // finishing or converting has begun: timers stop
   // A conversion decided while an answer was still saving or awaiting Retry: it runs once that save lands, so it includes the answer.
   const deferred = useRef<(() => void) | null>(null);
@@ -172,8 +173,9 @@ function Runner({ kind }: { kind: RunKind }) {
       const t = Date.now();
       const r = recoverRun(store.progress, t, zone());
       if (!r) return begin();
+      // Whatever the outcome, the recovered run belongs to its own kind and move, not the URL's.
+      if (r.saved.run.kind !== kind || r.saved.questions[0]!.moveId !== pack.moveId) return route(withMove(`/run/${r.saved.run.kind}`, r.saved.questions[0]!.moveId), true);
       if (r.outcome === "continue") {
-        if (r.saved.run.kind !== kind || r.saved.questions[0]!.moveId !== pack.moveId) return route(withMove(`/run/${r.saved.run.kind}`, r.saved.questions[0]!.moveId), true);
         setSaved(seen(r.saved.run, t) === r.saved.run ? r.saved : { ...r.saved, run: seen(r.saved.run, t) });
         setToast(true);
         return setView({ t: "play" });
@@ -201,13 +203,17 @@ function Runner({ kind }: { kind: RunKind }) {
   // Clock tick: the deadline is real; heartbeat: saves "seen" so a reload within ten seconds can resume.
   useEffect(() => {
     if (!playing) return;
+    lastTick.current = Date.now();
     const tick = setInterval(() => {
       const t = Date.now();
+      const slept = t - lastTick.current >= ABSENCE_LIMIT_MS;
+      lastTick.current = t;
       setNow(t);
       const cur = live.current;
       // While hidden nothing is decided: coming back judges the absence first, then the deadline (as recoverRun does).
       if (!cur || ended.current || cur.run.status !== "active" || hiddenAt.current !== null || document.visibilityState === "hidden") return;
       if (clockWentBack(cur.run, t)) return convertRun("converted", "clock");
+      if (slept) return convertRun("converted", "away");
       // A saving or failed answer is never finalised over: the deadline waits for it, and Retry then finishes the run with it.
       if (t >= cur.run.deadline && !blocked.current.pending && !blocked.current.failed) finishRun(t);
     }, TICK_MS);
@@ -233,7 +239,7 @@ function Runner({ kind }: { kind: RunKind }) {
         beatSave(t);
         return;
       }
-      const since = hiddenAt.current;
+      const since = hiddenAt.current ?? cur.run.lastSeenAt; // hidden before play began: count from the last time seen
       hiddenAt.current = null;
       void acquireWake().then(setAwake);
       const out = onReturn(cur.run, t, since);

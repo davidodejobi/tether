@@ -218,7 +218,8 @@ test("4. solo pass: build readiness, 8 of 10, Proved on the result, stamp and fi
   const proof = page.getByRole("region", { name: "Move 1 proof" });
   await expect(proof.getByRole("img", { name: "Proved" })).toBeVisible();
   await expect(proof.getByText("First recheck: 17 Oct 2026")).toBeVisible();
-  await expect(page.getByText("Latest gap: 2")).toBeVisible();
+  await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible(); // Move 2's own line, never Move 1's gap
+  await expect(page.getByText("Latest gap")).toHaveCount(0);
   await dots(page, 0); // dots reset when the genuine run began
 });
 
