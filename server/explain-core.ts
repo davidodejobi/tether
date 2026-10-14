@@ -56,13 +56,13 @@ export function checkOutput(text: unknown, p: Pack = pack): string | null {
   const t = text.trim();
   if (!t) return "empty";
   if (/[*#`_<>|]|^\s*[-•\d]+[.)]?\s/m.test(t) || /\n/.test(t)) return "not plain text";
-  const sentences = t.split(/[.!?]+(?:\s+|$)/).filter((s) => s.trim());
+  const sentences = t.replace(/\b(?:Mr|Mrs|Ms|Dr|Prof|e\.g|i\.e)\./gi, "_").split(/[.!?]+(?:\s+|$)/).filter((s) => s.trim());
   if (sentences.length > MAX_SENTENCES) return "too many sentences";
   if (t.split(/\s+/).length > MAX_WORDS) return "too many words";
   const verbs = verbWords(p).map(esc).join("|");
   const instruction = new RegExp(`\\b(?:use|pick|choose|select|write|put|type|go with|tick|circle)\\s+(?:the\\s+|a\\s+)?(?:verb\\s+|word\\s+)?["'‘“]?(?:${verbs})\\b`, "i");
   if (instruction.test(t)) return "instructs a verb";
-  if (/\b(the answer is|answer is|correct (?:option|answer|choice)|right (?:option|answer|choice)|choose|you (?:should|must|need to) (?:pick|choose|select)|you are (?:right|wrong|correct)|well done|you got)\b/i.test(t)) return "answer-giving or grading";
+  if (/\b(the answer is|answer is|correct (?:option|answer|choice|verb)|verb (?:should|must) be|(?:is|are|was|were|has|have) correct|right (?:option|answer|choice)|choose|you (?:should|must|need to) (?:pick|choose|select)|you are (?:right|wrong|correct)|well done|you got)\b/i.test(t)) return "answer-giving or grading";
   return null;
 }
 

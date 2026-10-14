@@ -68,6 +68,17 @@ describe("checkOutput", () => {
   });
 });
 
+describe("checkOutput gaps", () => {
+  it("rejects answer-like phrasings", () => {
+    for (const t of ["The correct verb here is is.", "So the verb should be are.", "The verb must be has.", "Here, is is correct."]) expect(checkOutput(t)).not.toBeNull();
+  });
+  it("does not count abbreviations as sentence ends", () => {
+    expect(checkOutput("Mr. Okafor and his team is a good sample. Cover the extra words. Read what is left.")).toBeNull();
+    expect(checkOutput("Dr. Eze e.g. a doctor. Cover the phrase. Read the rest.")).toBeNull();
+    expect(checkOutput("One. Two. Three. Mr. Four.")).toBe("too many sentences");
+  });
+});
+
 describe("limited", () => {
   it("allows ten per minute per client, then recovers", () => {
     for (let i = 0; i < 10; i++) expect(limited("a", 1000 + i)).toBe(false);
