@@ -1,5 +1,13 @@
 # Release checks (roadmap step 18)
 
+## Destination preview gate
+
+Before submission, complete roadmap step 17a against spec §14b and
+`course-journey.md`. Record evidence for bounded map/list navigation, honest
+planned/available counts, Coming soon controls, preserved Move 1 records,
+target widths/large text and offline reopening. This is new work, not covered
+by the previously passing Home suite until its journeys are added and run.
+
 ## Run these
 
 ```

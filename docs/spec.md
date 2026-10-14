@@ -1,10 +1,12 @@
 # Tether MVP build spec
 
-Version 1.2 — 13 October 2026. This is the implementation source of truth.
+Version 1.3 — 14 October 2026. This is the implementation source of truth.
 It consolidates `requirements.txt` and `decisions.md`; conflicting historical
 copy and priorities in those documents are superseded by this spec.
 Revision 1.1 restores online AI explanations as required capstone-demo scope.
 Revision 1.2 adds local interaction sounds and generated learner avatars (§14a).
+Revision 1.3 adds the destination preview (§14b); the full course expansion is
+defined in `course-journey.md` for roadmap steps 21 onward.
 
 ## 1. Outcome and scope
 
@@ -25,7 +27,8 @@ Proof is for this move, never for all English or a predicted JAMB score.
 Include onboarding, the lesson, five-question practice, the help ladder,
 honesty/readiness, solo checks, results, rechecks/recovery, Home, Settings,
 read-aloud, English/Pidgin coach text, online AI explanations, optional sharing, offline installation,
-calendar cues, local interaction sounds/generated avatars and usable phone/tablet/laptop layouts.
+calendar cues, local interaction sounds/generated avatars, the English destination
+preview (§14b) and usable phone/tablet/laptop layouts.
 
 Exclude diagnostic, profiles/PINs, export/restore, Coach Auto,
 separate Proof history, accounts, payments, mock exams, other working subjects,
@@ -336,8 +339,9 @@ also provides Try anyway. Move 1 always has a visible solo entry, independent of
 dots. Show offline/readiness status and the latest saved gap when available.
 
 Map states: Current, Proved, Held, Fading and Coming soon; Due is an extra badge.
-Nodes are accessible HTML controls above decorative art. Keep the map scrollable,
-initially centred on Move 1; use clear words/icons and a plain path fallback.
+Nodes are accessible HTML controls above decorative art. Use bounded, interactive
+map pages with Previous/Next when needed, rather than a long scrolling stage map.
+Use clear words/icons and an accessible list view; keep actions usable with large text.
 Future exam-day art is decorative, not a working mock exam or proof claim.
 
 Settings includes nickname, Character/Text only, English/Pidgin, read-aloud and
@@ -471,6 +475,17 @@ Preserve required third-party licence notices and pin the selected package versi
 References: [Cuelume](https://github.com/danielwh2/cuelume),
 [Blobatar packages](https://blobatar.dev/docs),
 [Blobatar privacy](https://blobatar.dev/privacy).
+
+## 14b. Course destination preview for submission
+
+Implement roadmap step 17a using the contract in `course-journey.md`. Add a
+reachable English course overview with official section names, the recommended
+Lexis and Structure → Concord → Strip the Disguise route, and honest stage counts.
+One stage is one move; only the reviewed Move 1 is currently available. Future
+content is Coming soon. Reuse the working lesson, practice, solo and rechecks;
+this preview creates no new scores, proof claims or learning-record migrations.
+Keep Home's main-action priority, saved scores, solo entry and due rechecks intact.
+The full subject-first onboarding and Learn layer follow in steps 21 onward.
 
 ## 15. Measurements and demonstration
 

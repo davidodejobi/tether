@@ -89,6 +89,11 @@ contract. Bring supporting files into this repository only when needed.
   48 px targets, contrast, large text, reduced motion and read-aloud with fallbacks.
   Keep download/rendering costs small; inspect real-device behaviour.
   Done: the core loop works on target devices without clipping or inaccessible controls.
+- [ ] **17a. Add the English destination preview.** Follow spec §14b and
+  `course-journey.md`: a bounded course/section/topic/stage view, honest counts,
+  finish destinations and a list view. Only reviewed Move 1 is available.
+  Done: the preview works across devices/offline and preserves every learning record;
+  future content is Coming soon, and proof remains scoped to the move.
 - [ ] **18. Verify the whole product.** Run content/logic checks and browser
   journeys for onboarding, helped practice, honest answers, solo pass/fail,
   interruptions, sharing, recheck pass/fail/recovery, AI help and offline reopening.
@@ -107,5 +112,44 @@ contract. Bring supporting files into this repository only when needed.
   Done: learning claims are supported by actual elapsed-time evidence.
 
 Steps 1–19 deliver the application. Step 20 validates it over time and cannot be
-completed within a 24-hour build. Deferred: diagnostic, profiles, export/restore,
-Coach Auto, Proof history and working content for other moves/exams.
+completed within a 24-hour build. Deferred from submission: diagnostic, profiles,
+export/restore, Coach Auto, Proof history and additional working moves/subjects.
+
+## Course expansion after step 19
+
+Use `course-journey.md`. Step 20 stays unchanged and runs alongside this work;
+finishing the pilot is not a prerequisite for planning the course.
+
+- [ ] **21. Catalogue the syllabus and migrate safely.** Verify subjects,
+  sections, topics and source weights; define reviewed stage identities, order,
+  planned/available totals and stable IDs. Scope records by move before adding
+  another pack. Migrate existing learner/proof/reading fields idempotently.
+  Done: the catalogue has sourced metadata and honest totals; old records and
+  day-3/7/14 schedules survive, and moves cannot mix scores or dots.
+- [ ] **22. Add subject-first onboarding.** English preselected, optional other
+  subjects marked Coming soon, course map and recommended Concord start.
+  Done: subject preferences persist; existing learners retain their progress and
+  new learners finish the original lesson/tutorial without a diagnostic.
+- [ ] **23. Make the syllabus journey Home.** Course/section/topic destinations,
+  numbered stage chapters, Previous/Next and list view; contextual next action.
+  Done: counts, completion and review states are truthful, every available stage
+  is reachable, and maps fit target devices without a scrolling stage trail.
+- [ ] **24. Build Learn pages.** Reviewed original lessons and examples,
+  separate Read/Understood progress, save/retry states and scoped online AI help.
+  Done: reading works offline and never changes alone scores or proof; AI remains
+  optional and re-explains only reviewed teaching.
+- [ ] **25. Expand grammar.** Reviewed tense and question-tag moves with their
+  own generators/validators and full learning loops.
+  Done: each pack is human-approved and independently earns/rechecks proof.
+- [ ] **26. Add synonyms and antonyms.** Review meanings in context and every
+  distractor; use the correct pack-specific answer validation.
+  Done: each stage has one defensible answer per item and independent progress.
+- [ ] **27. Add cloze and sentence interpretation.** Original passages/items,
+  reviewed context and explanations, deterministic scoring.
+  Done: stage assessment tests the technique and proof never leaks between moves.
+- [ ] **28. Add vowels and consonants.** Reviewed pronunciation teaching and
+  local audio/phonetic assets with accessibility fallbacks.
+  Done: pronunciation exercises remain valid offline across device voices.
+- [ ] **29. Expand reading and set-text coverage.** Original comprehension and
+  summary teaching; sourced exam-year title configuration and rights review.
+  Done: published stages have reviewed assessments and no reproduced novel text.
