@@ -372,7 +372,9 @@ function Try({ card, reduced, solved }: { card: Extract<LessonCard, { kind: "try
             <button key={i} type="button" class="ln-cw" onClick={() => tap(w)}>{w.text}</button>
           ))}
           <span class="ln-gap" aria-label="blank" role="img" />
-          {after.map((w, i) => <span key={i} class="ln-cw ln-cw-fixed">{w}</span>)}
+          {after.map((w, i) => (
+            <button key={i} type="button" class="ln-cw" onClick={() => tap({ text: w, kind: "other" })}>{w}</button>
+          ))}
         </div>
       ) : (
         <div class="ln-stage ln-try-stage">
@@ -431,7 +433,8 @@ export function Learn({ move, lang, coach, doneLabel, onDone, onClose, skippable
   useKeys((e) => {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     if (e.key === "Escape" && onClose) onClose();
-    else if (e.key === "Enter" && !(e.target as HTMLElement).closest?.("button, a, input, textarea, select")) {
+    // Enter on a plain button or link does that button's own job; on the answer buttons or elsewhere it presses Continue.
+    else if (e.key === "Enter" && !(e.target as HTMLElement).closest?.("input, textarea, select, a, button:not(.ln-opt, [role=radio])")) {
       e.preventDefault();
       if (last) void run(async () => void (await onDone()));
       else advance();

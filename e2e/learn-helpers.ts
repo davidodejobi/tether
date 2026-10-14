@@ -6,7 +6,7 @@ export const whys = ALL.filter((c): c is Extract<LessonCard, { kind: "why" }> =>
 export const tries = ALL.filter((c): c is Extract<LessonCard, { kind: "try" }> => c.kind === "try");
 
 /** The subject word chips on a Try card whose sentence is `chips` (the buttons' texts). */
-const trySubject = (chips: string[]) => tries.find((t) => t.sentence.parts.flatMap((p) => p.text.split(" ")).join("|") === chips.join("|"))!;
+export const tryFor = (chips: string[]) => tries.find((t) => [...t.sentence.parts.flatMap((p) => p.text.split(" ")), ...t.sentence.predicate.split(" ")].join("|") === chips.join("|"))!;
 
 /** Answers the current why card correctly (by its question) and leaves Continue enabled. */
 export async function answerWhy(page: Page) {
@@ -18,29 +18,37 @@ export async function answerWhy(page: Page) {
 /** Taps the subject, then the right verb, on the current try card. */
 export async function answerTry(page: Page) {
   const chips = (await page.locator(".ln-chips button").allInnerTexts()).map((t) => t.trim());
-  const card = trySubject(chips);
+  const card = tryFor(chips);
   const subject = card.sentence.parts.find((p) => p.role === "subject")!.text.split(" ")[0]!;
-  await page.locator(".ln-chips button", { hasText: subject }).first().click();
+  await page.getByRole("button", { name: subject, exact: true }).first().click();
   await page.getByRole("radio", { name: new RegExp(`: ${answerOf(card.sentence)}$`) }).click();
 }
 
-/**
- * Walks the whole Learn the move lesson: Continue on every card, the why and try cards answered correctly,
- * beat cards stepped through with reduced motion. Stops on the last card, with its button still to press.
- */
-export async function finishLesson(page: Page) {
-  const last = page.getByRole("heading", { name: "The move in one line" });
-  for (let i = 0; i < 30 && !(await last.isVisible()); i++) {
-    const kind = ((await page.locator(".ln-card").getAttribute("class")) ?? "").split(" ").at(-1);
-    if (kind === "ln-why") await answerWhy(page);
-    else if (kind === "ln-try") await answerTry(page);
-    else {
-      const step = page.getByRole("button", { name: "Next step" });
-      while (await step.isVisible()) await step.click();
-    }
-    const go = page.getByRole("button", { name: "Continue" });
-    await expect(go).toBeEnabled();
-    await go.click();
+const kindOf = async (page: Page) => ((await page.locator(".ln-card").getAttribute("class")) ?? "").split(" ").at(-1)!.slice(3);
+
+/** Does what the current card asks (why and try answered correctly, beat cards stepped through), then presses Continue. */
+export async function step(page: Page) {
+  const now = await kindOf(page);
+  if (now === "why") await answerWhy(page);
+  else if (now === "try") await answerTry(page);
+  else {
+    const next = page.getByRole("button", { name: "Next step" });
+    while (await next.isVisible()) await next.click();
   }
-  await expect(last).toBeVisible();
+  const go = page.getByRole("button", { name: "Continue" });
+  await expect(go).toBeEnabled();
+  await go.click();
 }
+
+/** Walks the lesson until the card of `kind` (intro, define, agree, pair, worked, why, try, summary) is showing. */
+export async function advanceTo(page: Page, kind: string) {
+  for (let i = 0; i < 30 && (await kindOf(page)) !== kind; i++) await step(page);
+  await expect.poll(() => kindOf(page)).toBe(kind);
+}
+
+/** Walks the whole lesson. Stops on the last card, with its button still to press. */
+export async function finishLesson(page: Page) {
+  await advanceTo(page, "summary");
+  await expect(page.getByRole("heading", { name: "The move in one line" })).toBeVisible();
+}
+export { kindOf };
