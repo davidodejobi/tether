@@ -5,8 +5,8 @@ import { startAttempt } from "../src/rules/practice.ts";
 import { chips, fill } from "../src/ui/help/steps.ts";
 import { LEARNER, lastAttempt, tile } from "./practice-helpers";
 
-// Question-level help for moves 2 to 5. Practice for those moves is not reachable by navigation yet, but /practice resumes
-// the newest unfinished practice attempt, so each test saves one built from that move's combo and opens it.
+// Question-level help for moves 2 to 5. /practice?move=<id> resumes that move's newest unfinished practice attempt,
+// so each test saves one built from the move's combo and opens it.
 const WHO = "one-of-the.tunde.the-students.from-our-school.who.always-early";
 const CASES = [
   { move: moves[1]!, combo: undefined },
@@ -37,7 +37,7 @@ async function seedQuestion(page: Page, q: Question) {
       }),
     [LEARNER, attempt, q] as const,
   );
-  await page.goto("/practice");
+  await page.goto(`/practice?move=${q.moveId}`);
 }
 const wrong = (q: Question, n: number) => q.options.filter((o) => o !== q.answer)[n]!;
 const miss = async (page: Page, q: Question, n: number) => {
