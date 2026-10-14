@@ -1,3 +1,3 @@
 # Copy to .dev.vars (gitignored). Placeholder values only.
-ANTHROPIC_API_KEY=replace-with-your-key
-# AI_MODEL=claude-haiku-5-5
+OPENROUTER_API_KEY=replace-with-your-key
+# AI_MODEL=google/gemini-3.5-flash-lite

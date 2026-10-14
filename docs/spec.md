@@ -168,7 +168,7 @@ appear in solo, rechecks, results or sharing.
   model/provider configuration and request limits live on the server, not in the
   browser bundle. Select and verify a supported provider/model during step 9a.
   Validate request shape, permit only approved content versions, enforce a limit
-  of ten requests per minute per client, and configure a provider spending limit.
+  of ten requests per minute per client, and set a credit limit on the OpenRouter key.
   Do not log learner records or expose provider error details to the learner.
 - The action is unavailable offline with Online AI help needs internet and an
   immediate path to the local lesson/Show me/Go deeper. Connectivity detection is
