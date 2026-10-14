@@ -104,3 +104,7 @@
   .qv-has-panel:has(.qv-focus) .qv-main .hn-bo { grid-column: 2; grid-row: 1 / span 8; align-self: center; justify-self: center; }
 }
 @media (prefers-reduced-motion: reduce) { .qv-miss, .qv-correct, .qv-sheet[open] { animation: none; } .qv-progress span { transition: none; } }
+
+/* The sticky Show me / Check bar is about 80 px tall. Keyboard or focus scrolling keeps its target clear of it. */
+:root:has(.qv-bar) { scroll-padding-bottom: calc(var(--size-button) + var(--spacing-sm) + var(--spacing-md) + var(--spacing-xl)); }
+.qv-main { padding-bottom: calc(var(--spacing-md) + var(--spacing-sm)); }

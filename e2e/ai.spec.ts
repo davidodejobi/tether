@@ -252,3 +252,25 @@ test("a recheck has no AI UI and makes no AI request", async ({ page }) =>
   noAi(page, "/run/recheck", /^Question 1 of 5/, () =>
     put(page, "cycle:strip-disguise", { moveId: "strip-disguise", timeZone: "UTC", state: "fading", earnedOn: "2026-01-01", anchor: "2026-01-01", entries: [], history: [] }),
   ));
+
+test("Still stuck: the AI buttons and note sit fully above the sticky Check/Show me footer", async ({ page }) => {
+  await page.route("**/api/explain", ok);
+  await seed(page);
+  await goDeeper(page);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const box = async (l: ReturnType<Page["locator"]>) => (await l.boundingBox())!;
+  const bar = await box(page.locator(".qv-bar"));
+  const last = async () => {
+    const parts = [page.getByRole("button", { name: "In plain words" }), page.getByRole("button", { name: "With an example" }), page.locator(".hp-ai-note, .hp-ai-card").last()];
+    for (const part of parts) { const b = await box(part); expect(b.y + b.height).toBeLessThanOrEqual(bar.y + 0.5); }
+  };
+  await last();
+  await ask(page);
+  await expect(page.getByText(TEXT)).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await last();
+  // Focus-scrolling a button into view must not leave it behind the footer.
+  await page.getByRole("button", { name: "With an example" }).focus();
+  const f = await box(page.getByRole("button", { name: "With an example" }));
+  expect(f.y + f.height).toBeLessThanOrEqual((await box(page.locator(".qv-bar"))).y + 0.5);
+});
