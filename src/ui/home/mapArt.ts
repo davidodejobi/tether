@@ -89,8 +89,8 @@ ${Array.from({ length: 70 }, () => `<ellipse cx="${between(0, W).toFixed(0)}" cy
   const zn0 = nodes.slice(43, 48).reduce((m, n) => (n.x > m.x ? n : m));
   zumaBox = { x: zn0.x - 175, y: zn0.y + 70 };
   const scene: Item[] = [
-    ...scatter(["m-palm", "m-hut", "m-bush", "m-stall", "m-hut", "m-rock"], b12 + 30, village.bannerY + 340, 20, [0.9, 1.15]),
-    ...scatter(["m-palm", "m-hut", "m-bush", "m-stall", "m-hut", "m-rock"], village.bannerY + 340, bottom - 150, 66, [0.9, 1.2]),
+    ...scatter(["m-palm", "m-hut", "m-bush", "m-stall", "m-hut", "m-rock", "m-palm"], b12 + 30, village.bannerY - 50, 140, [0.9, 1.2]),
+    ...scatter(["m-palm", "m-hut", "m-bush", "m-stall", "m-hut"], village.bannerY + 60, bottom - 10, 12, [0.9, 1.2]),
     ...scatter(["m-baobab", "m-acacia", "m-bush", "m-rock", "m-acacia"], b23 + 40, riverY - 70, 22, [0.95, 1.25]),
     ...scatter(["m-baobab", "m-acacia", "m-bush", "m-reed", "m-acacia"], riverY + 70, b12 - 30, 18, [0.95, 1.25]),
     ...scatter(["m-reed", "m-reed", "m-bush"], riverY - 50, riverY + 60, 8, [1, 1.4], 90),
@@ -110,7 +110,7 @@ ${Array.from({ length: 70 }, () => `<ellipse cx="${between(0, W).toFixed(0)}" cy
 ${[-62, -36, -10, 16, 42].map((px) => `<rect x="${px}" y="4" width="16" height="52" rx="3" ${f("hallPillar")}/>`).join("")}
 <path d="M-16 56V34Q0 16 16 34V56Z" ${f("hallDoor")}/><path d="M70-4V-70" ${st("trunk", 3)}/>
 <g transform="translate(0 -78)"><path d="M-22 10L-26-12L-12 0L0-16L12 0L26-12L22 10Z" ${f("crown")} style="stroke:var(--map-crownEdge);stroke-width:3;stroke-linejoin:round;fill:var(--map-crown)"/><circle cx="0" cy="-16" r="4" ${f("accent2")}/></g>
-<rect x="-64" y="62" width="128" height="30" rx="15" ${f("bossBanner")}/><text x="0" y="83" text-anchor="middle" font-family="inherit" font-weight="800" font-size="16" letter-spacing="1" ${f("bossText")}>JAMB DAY</text></g>`;
+<rect x="-46" y="-30" width="92" height="22" rx="11" ${f("bossBanner")}/><text x="0" y="-14.5" text-anchor="middle" font-family="inherit" font-weight="800" font-size="13" letter-spacing="1" ${f("bossText")}>JAMB DAY</text></g>`;
 
   // Cut the scenery into tiles so each is a modest SVG.
   const TILES = 6, per = H / TILES;
