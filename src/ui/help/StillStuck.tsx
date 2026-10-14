@@ -43,6 +43,21 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
 
   const note = (result: AiResult) => void store.recordAiUse({ at: Date.now(), result }).catch(() => {});
 
+  // An accepted reply waits until no other save is running or waiting for Retry: the question drops a save asked for
+  // while blocked, which would leave Loading stuck. It then records help("ai") on the attempt as it is by then.
+  const [pending, setPending] = useState<{ text: string; mine: number } | null>(null);
+  useEffect(() => {
+    if (!pending || blocked) return;
+    const { text, mine } = pending;
+    setPending(null);
+    accepted.current(() => {
+      if (!live.current || gen.current !== mine) return;
+      setSaving(false);
+      note("genuine");
+      setView({ s: "text", text });
+    });
+  }, [pending, blocked]);
+
   const ask = async (style: Style) => {
     if (run.current || blocked) return;
     if (!navigator.onLine) return note("offline"), setView({ s: "offline" });
@@ -69,14 +84,8 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
       if (!live.current) return;
       if (ac.signal.aborted) return void (timedOut && end("timeout", { s: "timeout" })); // a stalled body is a timeout, a Cancel is not
       if (res.ok && body?.ok === true && typeof body.text === "string") {
-        const text = body.text;
         setSaving(true);
-        accepted.current(() => {
-          if (!live.current || gen.current !== mine) return;
-          setSaving(false);
-          note("genuine");
-          setView({ s: "text", text });
-        });
+        setPending({ text: body.text, mine });
       } else if (res.status === 429) end("rate", { s: "rate" });
       else if (res.status === 504 || body?.reason === "timeout") end("timeout", { s: "timeout" });
       else if (body?.reason === "invalid") end("invalid", { s: "invalid" });

@@ -183,30 +183,64 @@ test("a late AI save keeps what the learner did meanwhile (The move stays opened
   expect(a.moveSheetOpened).toBe(true);
 });
 
-test("once accepted and saving, Cancel is gone, so it never claims nothing changed", async ({ page }) => {
-  await page.route("**/api/explain", ok);
-  await seed(page);
-  await goDeeper(page);
-  await page.evaluate(() => {
-    // Hold every save's transaction open until released, so the "accepted, not yet recorded" window can be seen.
-    const w = window as unknown as { slow: boolean };
+/** Saves wait while window.slow is true (their transaction is held open) and throw while window.fail is true. */
+const gateSaves = (page: Page) =>
+  page.evaluate(() => {
+    const w = window as unknown as { slow: boolean; fail: boolean };
     const put = IDBObjectStore.prototype.put;
     IDBObjectStore.prototype.put = function (...a) {
+      if (w.fail) throw new DOMException("simulated write failure", "QuotaExceededError");
       const hold = () => {
         if (w.slow) this.get("x").onsuccess = hold;
       };
       hold();
       return put.apply(this, a as never);
     };
-    w.slow = true;
   });
+const setGate = (page: Page, gate: { slow?: boolean; fail?: boolean }) => page.evaluate((g) => void Object.assign(window, g), gate);
+
+test("once accepted and saving, Cancel is gone, so it never claims nothing changed", async ({ page }) => {
+  await page.route("**/api/explain", ok);
+  await seed(page);
+  await goDeeper(page);
+  await gateSaves(page);
+  await setGate(page, { slow: true });
   await ask(page);
   await expect(page.getByText("Asking for an explanation.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0);
-  await page.evaluate(() => ((window as unknown as { slow: boolean }).slow = false));
+  await setGate(page, { slow: false });
   await expect(page.getByText(TEXT)).toBeVisible();
   expect(await aiHelped(page)).toBe(true);
 });
+
+for (const fails of [false, true])
+  test(`a reply accepted while another save runs is recorded once and shown${fails ? ", after its own save fails and is retried" : ""}`, async ({ page }) => {
+    const late = lateRoute(page);
+    await seed(page);
+    await goDeeper(page);
+    await gateSaves(page);
+    await ask(page);
+    await setGate(page, { slow: true });
+    await page.getByRole("button", { name: /^The move:/ }).click(); // its save is held open
+    late.release();
+    await late.outcome;
+    await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0); // accepted while The move's save is pending
+    await setGate(page, { slow: false, fail: fails });
+    await page.getByRole("button", { name: "Got it" }).click();
+    if (fails) {
+      await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();
+      await expect(page.getByText(TEXT)).toHaveCount(0);
+      expect(await aiHelped(page)).toBe(false);
+      await setGate(page, { fail: false });
+      await page.getByRole("button", { name: "Retry" }).click();
+    }
+    await expect(page.getByText(TEXT)).toBeVisible();
+    await expect(page.getByText("Asking for an explanation.")).toHaveCount(0);
+    const a = (await lastAttempt(page, (x) => x.help.includes("ai"))).attempt;
+    expect(a.help.filter((h: string) => h === "ai")).toHaveLength(1);
+    expect(a.moveSheetOpened).toBe(true);
+    await expect.poll(async () => (await uses(page)).map((u) => u.result)).toEqual(["genuine"]);
+  });
 
 test("a response body that stalls ends as a timeout, not a stuck spinner", async ({ page }) => {
   await page.addInitScript(() => {

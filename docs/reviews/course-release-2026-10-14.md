@@ -22,7 +22,7 @@ marked superseded rather than erased.
 
 ## Spec
 
-### Open P2: accepted AI reply can leave loading permanently stuck
+### Fixed P2: accepted AI reply can leave loading permanently stuck
 
 Locations: `src/ui/help/StillStuck.tsx:73` and
 `src/ui/practice/QuestionView.tsx:181`.
@@ -46,6 +46,12 @@ before delivering the reply, so it misses this ordering. Queue acceptance after
 pending saves using the latest attempt, or restore a recoverable fallback. The
 regression must prove help is recorded once and the UI resolves after this exact
 ordering, including a save failure and Retry.
+
+Fixed on branch `fix-ai-save-race`: `StillStuck` holds an accepted reply until no
+save is running or waiting for Retry, then records `help("ai")` on the attempt as
+it is by then. Two regressions in `e2e/ai.spec.ts` replay this exact ordering, one
+with the AI save failing and retried; both failed before the fix. Help is recorded
+once and The move stays opened.
 
 No concrete defect found in first-solo completion deduplication, Fading retaining
 completion, English defaults for older learners, subject limits or section stage
@@ -74,7 +80,6 @@ an official JAMB stage count. Only one stage is available.
 
 ## Remaining release and expansion work
 
-- Fix the AI/save race above and rerun its regression and affected journeys.
 - `docs/ai-review.md` contains 20 generated outputs but every human verdict is
   blank. Finish that named review before claiming roadmap 9a or the AI content
   acceptance check is complete. Automated filters and a provider call are

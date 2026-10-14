@@ -97,7 +97,7 @@ Also on the integrated build, rerun `node tools/compat-check.ts` (saved-learner 
 
 ## Known limitations
 
-- AI help has mocked journey coverage and a verified deployed provider call. The 20-output human review (`docs/ai-review.md`) is still unsigned; roadmap 9a remains open. See the course release review for the accepted-reply/save race.
+- AI help has mocked journey coverage and a verified deployed provider call. The 20-output human review (`docs/ai-review.md`) is still unsigned; roadmap 9a remains open. The accepted-reply/save race from the course release review is fixed, with regressions.
 - Some Chrome extensions capture single-key shortcuts (1-4, Enter, R, S). Test in a clean profile.
 - Pidgin coach copy is unreviewed by a native speaker.
 - Real retention needs elapsed days; the build proves the workflow only (spec section 15).
