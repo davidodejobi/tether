@@ -2,6 +2,11 @@
 
 ## Deployed release (step 19), 14 Oct 2026
 
+Latest deploy (`1f53264`: subject-first onboarding, 50-stage progress, living map): deployed checks 51/51,
+including one genuine Still stuck? call. First-load JS 67.5 KB gzipped; map art is a separate 3.8 KB chunk.
+
+First deploy:
+
 - URL: https://tether-4cg.pages.dev, deployed from `chore/initial-setup` with `wrangler pages deploy`.
 - `DEPLOY_URL=https://tether-4cg.pages.dev npx playwright test -c playwright.deployed.config.ts`: 48/48 passed
   (offline install/reopen, update rejection, release journeys, course preview, sounds, and one genuine
@@ -32,7 +37,7 @@ E2E_PORT=4251 npx playwright test   # builds, serves the preview, runs every jou
 ```
 
 First-load app JavaScript must stay under 100 KB gzipped (spec section 14). Measure it after `npm run build`:
-`for f in dist/assets/*.js; do gzip -c $f | wc -c; done`. Last measured: 61.7 KB gzipped (`index-*.js`, 191 KB raw).
+`for f in dist/assets/*.js; do gzip -c $f | wc -c; done`. Last measured: 67.5 KB gzipped (`index-*.js`, 208 KB raw), plus the lazy `mapArt` chunk (3.8 KB gzipped).
 
 ## Verified automatically
 
