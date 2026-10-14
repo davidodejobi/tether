@@ -21,9 +21,8 @@ import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { cue } from "../../platform/sound.ts";
 import { speak, useCanSpeak, useVoiceNote } from "../../platform/speech.ts";
-import { stripDisguise } from "../../content/strip-disguise.ts";
-import type { Pack } from "../../content/types.ts";
-import { sentence, type Question } from "../../content/generate.ts";
+import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
+import { before, sentence, type Question } from "../../content/generate.ts";
 import { check, openMoveSheet, startAttempt, useHelp, readiness, type AnswerHelp, type Origin, type PracticeAttempt } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf, type Batch, type Learner, type SavedAttempt } from "../../storage/progress.ts";
 import { Bo } from "../components/Bo";
@@ -86,11 +85,6 @@ export interface QuestionViewProps {
   suspended?: boolean;
 }
 
-const pack: Pack = stripDisguise;
-// The move sheet's own example (spec section 5). Its sentence is outside the question space (validatePack rejects a repeat),
-// so it is never the current sentence. Its verb is hidden when this question uses the same verb, so it cannot hint at the answer.
-const ex = pack.lessonExample;
-const exVerb = pack.verbs.find((v) => v.id === ex.verbId)!;
 // Not crypto.randomUUID: it needs a secure context, and plain-http LAN testing must work.
 const newId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 const LADDER = [
@@ -242,7 +236,12 @@ export function QuestionView(props: QuestionViewProps) {
   const dots = readiness(attemptsOf(store.progress), runStartsOf(store.progress)).dots as 0 | 1 | 2 | 3;
   const filled = done ? q.answer : selected === null ? undefined : q.options[selected];
   const lang = learner.lang;
-  const coach = pack.coach[lang];
+  const move = moveOrFirst(q.moveId);
+  const coach = move.coach[lang];
+  // The move sheet's own example (spec section 5). Its sentence is outside the question space, so it is never the current sentence.
+  // Its verb is hidden when this question uses the same verb, so it cannot hint at the answer.
+  const ex = move.example;
+  const exVerb = q.options.some((o) => o === ex.verb.sg || o === ex.verb.pl) ? "___" : ex.verb[ex.number];
   const canSpeak = useCanSpeak();
   const voiceNote = useVoiceNote(lang); // set when Pidgin would be read by an English voice
 
@@ -275,12 +274,12 @@ export function QuestionView(props: QuestionViewProps) {
       <main class="qv-main">
         <button ref={moveBtn} type="button" class="qv-move" disabled={blocked} onClick={openSheet}>
           <Icon name="lightbulb" size={20} />
-          <span>The move: {pack.title}</span>
+          <span>The move: {move.title}</span>
           <Icon name="chevron-right" size={20} />
         </button>
         <h1 class="qv-prompt">Pick the verb that fits.</h1>
         <div class="qv-sentence">
-          <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={filled} correct={done} />
+          <SentenceCard before={before(q)} after={q.predicate} filled={filled} correct={done} />
           {bo && <span class="qv-bo-side"><Bo pose={done ? "pleased" : misses > 1 ? "concerned" : "idle"} size={72} /></span>}
         </div>
         {canSpeak && (
@@ -336,7 +335,7 @@ export function QuestionView(props: QuestionViewProps) {
           {rung > 0 && <p class="qv-panel-help">Help used. Your streak starts again. That's fine.</p>}
           {rung > 0 && (
             <section class="qv-panel-move" aria-label="The move">
-              <h2><Icon name="lightbulb" size={20} /> {pack.title}</h2>
+              <h2><Icon name="lightbulb" size={20} /> {move.title}</h2>
               <p>{coach.rule}</p>
             </section>
           )}
@@ -357,15 +356,15 @@ export function QuestionView(props: QuestionViewProps) {
 
       <dialog ref={dialog} class="qv-sheet" aria-labelledby="qv-sheet-title" onClose={() => moveBtn.current?.focus()}>
         <Icon name="lightbulb" size={32} />
-        <h2 id="qv-sheet-title">The move: {pack.title}</h2>
-        <CoachBubble mode={learner.coach} pose="idle" unreviewed={lang === "pcm" && pack.review.pcm.status !== "approved"}>
+        <h2 id="qv-sheet-title">The move: {move.title}</h2>
+        <CoachBubble mode={learner.coach} pose="idle" unreviewed={isUnreviewed(move, lang)}>
           {coach.rule}
         </CoachBubble>
         <p>{coach.explanation} Opening this is not help.</p>
         <p class="qv-example">
-          <strong>Example:</strong> {ex.subject}, {ex.sidePhrase}, {q.options.some((o) => o === exVerb.sg || o === exVerb.pl) ? "___" : exVerb[ex.number]} {ex.predicate}
+          <strong>Example:</strong> {sentence(ex, exVerb)}
         </p>
-        <p class="qv-source">Rule source: {pack.source.line}</p>
+        <p class="qv-source">Rule source: {move.source.line}</p>
         <Button onClick={closeSheet}>Got it</Button>
         {canSpeak && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`, lang)}>Read it to me</Button>}
         {canSpeak && voiceNote && <p class="qv-source">{voiceNote}</p>}

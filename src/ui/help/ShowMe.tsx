@@ -13,7 +13,8 @@
 // Normal motion plays the beats on a timer with Pause/Play and Replay. With reduced motion nothing plays or
 // advances by itself: beats are static cards revealed by Next. It records nothing; the caller owns help marking.
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { Question } from "../../content/generate.ts";
+import { partsOf, type Question } from "../../content/generate.ts";
+import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
 import type { Lang } from "../../content/types.ts";
 import { autoLine, speak, speechOk, useCanSpeak } from "../../platform/speech.ts";
 import { Button } from "../components/Button";
@@ -22,7 +23,7 @@ import { Icon } from "../components/Icon";
 import { Key } from "../components/Key";
 import { useReducedMotion } from "../onboarding/parts";
 import { useProgressState } from "../progress";
-import { fill, pack } from "./steps.ts";
+import { fill } from "./steps.ts";
 import "../onboarding/onboarding.css";
 import "./help.css";
 
@@ -43,17 +44,28 @@ function Sentence({ q, beat }: { q: Question; beat: Beat }) {
   const cls = (n: number, base: string) => `${base}${beat >= n ? ` on${beat === n ? " new" : ""}` : ""}`;
   return (
     <p class="ls-sentence" aria-hidden="true">
-      <span class={cls(2, "ls-subject")}>
-        {q.subject},{beat >= 2 && <span class="ls-badge">{q.number === "sg" ? "1" : "2+"}</span>}
-      </span>{" "}
-      <span class={cls(1, "ls-covered")}>{q.covered},</span>{" "}
+      {partsOf(q).map((p, i) =>
+        p.role === "subject" ? (
+          <>
+            <span key={i} class={cls(2, "ls-subject")}>
+              {p.text}{beat >= 2 && <span class="ls-badge">{q.number === "sg" ? "1" : "2+"}</span>}
+            </span>{" "}
+          </>
+        ) : p.role === "covered" ? (
+          <>
+            <span key={i} class={cls(1, "ls-covered")}>{p.text}</span>{" "}
+          </>
+        ) : (
+          <>{p.text}{" "}</>
+        ),
+      )}
       <span class={cls(3, "ls-blank")}>{beat >= 3 ? q.answer : ""}</span> {q.predicate}
     </p>
   );
 }
 
 const plain = (q: Question, beat: Beat) =>
-  beat === 3 ? `${q.subject}, ${q.covered}, ${q.answer} ${q.predicate}` : `${q.subject}, (${q.covered},) blank ${q.predicate}`;
+  `${partsOf(q).map((p) => (p.role === "covered" && beat < 3 ? `(${p.text})` : p.text)).join(" ")} ${beat === 3 ? q.answer : "blank"} ${q.predicate}`;
 
 // Tablet and up: true from 768 px, following the viewport.
 function useWide() {
@@ -77,7 +89,8 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
   const [beat, setBeat] = useState<Beat>(1);
   const [playing, setPlaying] = useState(!reduced);
   const [run, setRun] = useState(0);
-  const captions = pack.coach[lang].showMe.map((t, i) => fill(pack, t, q, lang, i === 2));
+  const move = moveOrFirst(q.moveId);
+  const captions = move.coach[lang].showMe.map((t, i) => fill(move, t, q, lang, i === 2));
   const progress = useProgressState();
   const canSpeak = useCanSpeak();
   const on = canSpeak && progress.status === "ready" && progress.store.progress.learner?.readAloud === true;
@@ -131,7 +144,7 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
     return () => window.removeEventListener("keydown", h);
   }, []);
   const pose = beat < 3 ? "thinking" : "pleased";
-  const unreviewed = lang === "pcm" && pack.review.pcm.status !== "approved";
+  const unreviewed = isUnreviewed(move, lang);
 
   const inner = (
     <>
@@ -175,9 +188,9 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
         {page && <p class="qv-keys" aria-hidden="true"><Key k="R">Replay</Key><Key k="Enter">{beat < 3 ? "Next" : doneLabel}</Key><Key k="S">Show me</Key></p>}
         {note && <p class="sm-chip">{note}</p>}
         <aside class="ls-rule">
-          <Icon name="lightbulb" size={20} /> <strong>{pack.title}</strong>
+          <Icon name="lightbulb" size={20} /> <strong>{move.title}</strong>
           {unreviewed && <span class="coach-tag">Unreviewed</span>}
-          <p>{pack.coach[lang].rule}</p>
+          <p>{move.coach[lang].rule}</p>
         </aside>
       </div>
       <footer class="sm-bar">

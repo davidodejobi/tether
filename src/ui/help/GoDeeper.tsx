@@ -2,11 +2,12 @@
 // hint, which never states the answer. Answer tiles stay hidden by the caller until onFinish(), so
 // elimination cannot reveal the answer. onFinish() is where the caller records help("goDeeper"); onAi(then) records help("ai").
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { Question } from "../../content/generate.ts";
+import { sentence, type Question } from "../../content/generate.ts";
+import { moveOrFirst, stripDisguiseMove, unreviewed as isUnreviewed } from "../../content/moves.ts";
 import type { Lang } from "../../content/types.ts";
 import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
-import { chips, countOk, fill, pack, verbOk } from "./steps.ts";
+import { chips, countOk, fill, verbOk } from "./steps.ts";
 import { StillStuck } from "./StillStuck";
 import "../onboarding/onboarding.css";
 import "./help.css";
@@ -20,14 +21,15 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [hint, setHint] = useState("");
   const heading = useRef<HTMLHeadingElement>(null);
-  const c = pack.coach[lang].goDeeper;
-  const unreviewed = lang === "pcm" && pack.review.pcm.status !== "approved";
+  const move = moveOrFirst(q.moveId);
+  const c = move.coach[lang].goDeeper;
+  const unreviewed = isUnreviewed(move, lang);
   useEffect(() => heading.current?.focus({ preventScroll: true }), [step]);
 
   const go = (ok: boolean, wrong: string, to: 2 | 3 | 4) => (ok ? (setHint(""), setStep(to)) : setHint(wrong));
   const { before, after } = chips(q);
   const chip = (x: { text: string; kind: string }, i: number) => (
-    <button key={i} type="button" class="hp-chip" onClick={() => go(x.kind === "subject", x.kind === "side" ? c.subjectHint : NOT_SUBJECT[lang], 2)}>
+    <button key={i} type="button" class="hp-chip" onClick={() => go(x.kind === "subject", x.kind === "side" || move !== stripDisguiseMove ? c.subjectHint : NOT_SUBJECT[lang], 2)}>
       {x.text}
     </button>
   );
@@ -36,7 +38,7 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: 
     return (
       <div class="hp" aria-live="off">
         <CoachBubble mode={coach} pose="pleased">You rebuilt it yourself. That still counts as with help.</CoachBubble>
-        <h2 class="hp-prompt" ref={heading} tabIndex={-1}>{q.subject}, {q.covered}, {q.answer} {q.predicate}</h2>
+        <h2 class="hp-prompt" ref={heading} tabIndex={-1}>{sentence(q, q.answer)}</h2>
         <Button disabled={blocked} onClick={onFinish}>Back to the question</Button>
       </div>
     );
@@ -67,14 +69,14 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: 
       {step === 3 && (
         <div class="hp-two">
           {q.options.map((o) => (
-            <Button key={o} variant="secondary" onClick={() => go(verbOk(q, o), fill(pack, c.verbHint, q, lang), 4)}>{o}</Button>
+            <Button key={o} variant="secondary" onClick={() => go(verbOk(q, o), fill(move, c.verbHint, q, lang), 4)}>{o}</Button>
           ))}
         </div>
       )}
       <div role="status" aria-live="polite">
         {hint && <CoachBubble mode={coach} pose="concerned" unreviewed={unreviewed}>{hint}</CoachBubble>}
       </div>
-      <StillStuck question={q} lang={lang} blocked={blocked} onAccepted={onAi} />
+      {move.review.en.status === "approved" && <StillStuck question={q} lang={lang} blocked={blocked} onAccepted={onAi} />}
     </div>
   );
 }

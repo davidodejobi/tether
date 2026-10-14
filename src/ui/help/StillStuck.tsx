@@ -8,7 +8,7 @@ import type { Lang } from "../../content/types.ts";
 import type { AiResult } from "../../storage/progress.ts";
 import { Button } from "../components/Button";
 import { useProgress } from "../progress";
-import { pack } from "./steps.ts";
+import { moveOrFirst } from "../../content/moves.ts";
 import "./help.css";
 
 const TIMEOUT_MS = 15_000;
@@ -140,7 +140,7 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
             <p class="hp-ai-note">{NOTE[view.s as Failure]}</p>
             <div class="hp-ai-card">
               <p class="hp-ai-label">The move</p>
-              <p class="hp-ai-text">{pack.coach[lang].explanation}</p>
+              <p class="hp-ai-text">{moveOrFirst(q.moveId).coach[lang].explanation}</p>
             </div>
           </>
         )}

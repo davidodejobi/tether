@@ -2,7 +2,8 @@
 // Plugs into QuestionView's afterCorrect slot. Everything it shows comes from the saved attempt,
 // so a reload on a pending reason or verification brings the same prompt back.
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
-import type { Question } from "../../content/generate.ts";
+import { partsOf, type Question } from "../../content/generate.ts";
+import { moveOrFirst, stripDisguiseMove } from "../../content/moves.ts";
 import { asksReason, giveReason, readiness, verify, type Reason } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
 import { Bo } from "../components/Bo";
@@ -21,18 +22,23 @@ const CHOICES: { reason: Reason; label: string }[] = [
   { reason: "guessed", label: "I guessed" },
 ];
 
-type Chip = { word: string; part: "subject" | "covered" | "other" };
-/** The sentence as tappable words, each tagged by whether it belongs to the covered side phrase. */
+type Chip = { word: string; part: "covered" | "other" };
+/** The sentence as tappable words, each tagged by whether it belongs to a covered part. */
 function chips(q: Question): Chip[] {
-  const words = (text: string, part: Chip["part"], comma = false) =>
-    text.split(" ").map((word, i, all) => ({ word: comma && i === all.length - 1 ? `${word},` : word, part }));
-  return [...words(q.subject, "subject", true), ...words(q.covered, "covered", true), ...words(q.answer, "other"), ...words(q.predicate, "other")];
+  const words = (text: string, part: Chip["part"]) => text.split(" ").map((word) => ({ word, part }));
+  return [
+    ...partsOf(q).flatMap((p) => words(p.text, p.role === "covered" ? "covered" : "other")),
+    ...words(q.answer, "other"),
+    ...words(q.predicate, "other"),
+  ];
 }
 
 export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Question }) {
   const { attempt, next, update, saveLearner, help, openMove, blocked } = ctx;
   const { store } = useProgress();
   const learner = store.progress.learner!;
+  const move = moveOrFirst(q.moveId);
+  const first = move === stripDisguiseMove;
   const bo = learner.coach === "character"; // Text only shows no Bo anywhere
   // Readiness counts this attempt as it is now, so the message never waits for the save to land.
   const attempts = attemptsOf(store.progress).filter((a) => a.id !== attempt.id).concat(attempt);
@@ -125,9 +131,9 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
         <>
           <div class="hn-ask">
             {bo && <Bo pose={phase === "verify" ? "thinking" : "idle"} size={48} />}
-            <h3 tabIndex={-1} ref={heading}>Show us. Tap the part you covered.</h3>
+            <h3 tabIndex={-1} ref={heading}>Show us. {move.coach.en.verify}</h3>
           </div>
-          <div class="hn-words" role="group" aria-label="The sentence. Tap the part you covered.">
+          <div class="hn-words" role="group" aria-label={`The sentence. ${move.coach.en.verify}`}>
             {words.map((w, i) => {
               const result = phase === "done" ? (w.part === "covered" ? "covered" : tapped === i ? "wrong" : "") : "";
               return (
@@ -157,14 +163,14 @@ export function Honesty({ ctx, question: q }: { ctx: CorrectContext; question: Q
                 {earned
                   ? `${attempt.verifySampled ? "You showed it. " : ""}${dots} of 3 dots now.`
                   : moveClaim
-                    ? "That wasn't the side phrase. No dot this time, and nothing is lost."
+                    ? `That wasn't the ${first ? "side phrase" : "part you covered"}. No dot this time, and nothing is lost.`
                     : "Your dots stay as they are. Nothing is lost."}
               </span>
             </p>
           </div>
           {offerMove && !moveClaim && (
             <div class="hn-hint">
-              <p>Try the move next time: cover the side phrase, find the subject, match its verb.</p>
+              <p>Try the move next time: {first ? "cover the side phrase, find the subject, match its verb." : move.coach.en.rule}</p>
               <Button variant="secondary" icon="lightbulb" disabled={blocked} onClick={openMove}>Open The move</Button>
             </div>
           )}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { stripDisguiseMove as pack } from "../../content/moves.ts";
+import { moves, stripDisguiseMove as pack, unreviewed } from "../../content/moves.ts";
 import { buildQuestion } from "../../content/generate.ts";
 import { chips, countOk, fill, verbOk } from "./steps.ts";
 
@@ -31,5 +31,23 @@ describe("help steps", () => {
     const c = chips(q);
     expect(c.before.filter((x) => x.kind === "subject").map((x) => x.text).join(" ")).toBe(`${q.subject},`);
     expect(c.before.some((x) => x.kind === "side")).toBe(true);
+  });
+  it("chips follow the question's parts", () => {
+    const move = moves.find((m) => m.moveId === "nearest-subject")!;
+    const q2 = buildQuestion(move, move.combos.find((c) => c.id === "nearest-subject.tunde.amina.in-the-hall")!, () => 0.5);
+    const c = chips(q2);
+    expect(c.before.map((x) => `${x.text}:${x.kind}`)).toEqual(["Either:side", "Tunde:side", "or:side", "Amina:subject"]);
+    expect(c.after.every((x) => x.kind === "other")).toBe(true);
+  });
+  it("chips of a multi-part who sentence mark covered, subject and plain words", () => {
+    const move = moves.find((m) => m.moveId === "one-of-the")!;
+    const q5 = buildQuestion(move, move.combos.find((c) => c.id === "one-of-the.tunde.the-students.from-our-school.who.always-early")!, () => 0.5);
+    expect(chips(q5).before.map((x) => `${x.text}:${x.kind}`)).toEqual([
+      "Tunde:side", "is:side", "one:side", "of:side", "the:subject", "students:subject", "from:side", "our:side", "school:side", "who:other",
+    ]);
+  });
+  it("unreviewed tags every non-approved move copy", () => {
+    expect(unreviewed(pack, "en")).toBe(false);
+    for (const m of moves.slice(1)) expect(unreviewed(m, "en")).toBe(true);
   });
 });
