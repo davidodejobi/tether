@@ -1,6 +1,6 @@
 // Builds a fresh solo check or recheck (spec section 7). Pure: the screen supplies time, ids and randomness.
 import { drawRun, RECHECK_SHAPES, SOLO_SHAPE, type Question, type Rng } from "../../content/generate.ts";
-import { stripDisguise as pack } from "../../content/strip-disguise.ts";
+import { stripDisguiseMove as pack } from "../../content/moves.ts";
 import type { Moment } from "../../rules/moment.ts";
 import { practiceScore } from "../../rules/practice.ts";
 import { recheckAvailable, recheckShapeIndex } from "../../rules/proof.ts";

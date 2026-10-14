@@ -2,7 +2,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { cue } from "../../platform/sound.ts";
-import { stripDisguise as pack } from "../../content/strip-disguise.ts";
+import { stripDisguiseMove as pack } from "../../content/moves.ts";
 import { nextPracticeQuestion, type Question } from "../../content/generate.ts";
 import { inOrder } from "../../rules/moment.ts";
 import { readiness, type PracticeAttempt } from "../../rules/practice.ts";

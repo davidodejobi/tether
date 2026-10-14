@@ -1,14 +1,17 @@
-// Writes every Move 1 question to docs/content/move-1-questions.txt for human review.
+// Writes every move's questions to docs/content/move-N-questions.txt for human review.
 // Run: npm run content:list
 import { writeFileSync } from "node:fs";
 import { questionListing } from "../src/content/generate.ts";
-import { stripDisguise as pack } from "../src/content/strip-disguise.ts";
-import { validatePack } from "../src/content/validate.ts";
+import { moves } from "../src/content/moves.ts";
+import { stripDisguise } from "../src/content/strip-disguise.ts";
+import { validateMove, validatePack } from "../src/content/validate.ts";
 
-const { errors, releaseBlockers } = validatePack(pack);
-if (errors.length) {
-  console.error(errors.join("\n"));
-  process.exit(1);
-}
-writeFileSync("docs/content/move-1-questions.txt", questionListing(pack));
-console.log(`Wrote the question list. Release blockers: ${releaseBlockers.join("; ") || "none"}`);
+moves.forEach((move, i) => {
+  const { errors, releaseBlockers } = i === 0 ? validatePack(stripDisguise) : validateMove(move);
+  if (errors.length) {
+    console.error(`${move.moveId}:\n${errors.join("\n")}`);
+    process.exit(1);
+  }
+  writeFileSync(`docs/content/move-${i + 1}-questions.txt`, questionListing(move));
+  console.log(`Move ${i + 1} (${move.moveId}): ${move.combos.length} questions. Release blockers: ${releaseBlockers.join("; ") || "none"}`);
+});

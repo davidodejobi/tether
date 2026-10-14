@@ -1,0 +1,202 @@
+# Collective nouns (collective-nouns) v1: 200 questions
+# id	number	pairing	answer	sentence
+collective-nouns.team-sg.of-eleven-players.ready-to-start	sg	opposite	is	The team of eleven players ___ ready to start.
+collective-nouns.team-sg.of-eleven-players.on-the-bus-now	sg	opposite	is	The team of eleven players ___ on the bus now.
+collective-nouns.team-sg.of-eleven-players.arrived-at-the-hall	sg	opposite	has	The team of eleven players ___ arrived at the hall.
+collective-nouns.team-sg.of-eleven-players.every-friday	sg	opposite	meets	The team of eleven players ___ every Friday.
+collective-nouns.team-sg.of-eleven-players.to-abuja-next-week	sg	opposite	travels	The team of eleven players ___ to Abuja next week.
+collective-nouns.team-sg.of-young-players.ready-to-start	sg	opposite	is	The team of young players ___ ready to start.
+collective-nouns.team-sg.of-young-players.on-the-bus-now	sg	opposite	is	The team of young players ___ on the bus now.
+collective-nouns.team-sg.of-young-players.arrived-at-the-hall	sg	opposite	has	The team of young players ___ arrived at the hall.
+collective-nouns.team-sg.of-young-players.every-friday	sg	opposite	meets	The team of young players ___ every Friday.
+collective-nouns.team-sg.of-young-players.to-abuja-next-week	sg	opposite	travels	The team of young players ___ to Abuja next week.
+collective-nouns.team-sg.from-our-school.ready-to-start	sg	same	is	The team from our school ___ ready to start.
+collective-nouns.team-sg.from-our-school.on-the-bus-now	sg	same	is	The team from our school ___ on the bus now.
+collective-nouns.team-sg.from-our-school.arrived-at-the-hall	sg	same	has	The team from our school ___ arrived at the hall.
+collective-nouns.team-sg.from-our-school.every-friday	sg	same	meets	The team from our school ___ every Friday.
+collective-nouns.team-sg.from-our-school.to-abuja-next-week	sg	same	travels	The team from our school ___ to Abuja next week.
+collective-nouns.team-sg.from-the-next-town.ready-to-start	sg	same	is	The team from the next town ___ ready to start.
+collective-nouns.team-sg.from-the-next-town.on-the-bus-now	sg	same	is	The team from the next town ___ on the bus now.
+collective-nouns.team-sg.from-the-next-town.arrived-at-the-hall	sg	same	has	The team from the next town ___ arrived at the hall.
+collective-nouns.team-sg.from-the-next-town.every-friday	sg	same	meets	The team from the next town ___ every Friday.
+collective-nouns.team-sg.from-the-next-town.to-abuja-next-week	sg	same	travels	The team from the next town ___ to Abuja next week.
+collective-nouns.team-pl.of-eleven-players.ready-to-start	pl	same	are	The two teams of eleven players ___ ready to start.
+collective-nouns.team-pl.of-eleven-players.on-the-bus-now	pl	same	are	The two teams of eleven players ___ on the bus now.
+collective-nouns.team-pl.of-eleven-players.arrived-at-the-hall	pl	same	have	The two teams of eleven players ___ arrived at the hall.
+collective-nouns.team-pl.of-eleven-players.every-friday	pl	same	meet	The two teams of eleven players ___ every Friday.
+collective-nouns.team-pl.of-eleven-players.to-abuja-next-week	pl	same	travel	The two teams of eleven players ___ to Abuja next week.
+collective-nouns.team-pl.of-young-players.ready-to-start	pl	same	are	The two teams of young players ___ ready to start.
+collective-nouns.team-pl.of-young-players.on-the-bus-now	pl	same	are	The two teams of young players ___ on the bus now.
+collective-nouns.team-pl.of-young-players.arrived-at-the-hall	pl	same	have	The two teams of young players ___ arrived at the hall.
+collective-nouns.team-pl.of-young-players.every-friday	pl	same	meet	The two teams of young players ___ every Friday.
+collective-nouns.team-pl.of-young-players.to-abuja-next-week	pl	same	travel	The two teams of young players ___ to Abuja next week.
+collective-nouns.team-pl.from-our-school.ready-to-start	pl	opposite	are	The two teams from our school ___ ready to start.
+collective-nouns.team-pl.from-our-school.on-the-bus-now	pl	opposite	are	The two teams from our school ___ on the bus now.
+collective-nouns.team-pl.from-our-school.arrived-at-the-hall	pl	opposite	have	The two teams from our school ___ arrived at the hall.
+collective-nouns.team-pl.from-our-school.every-friday	pl	opposite	meet	The two teams from our school ___ every Friday.
+collective-nouns.team-pl.from-our-school.to-abuja-next-week	pl	opposite	travel	The two teams from our school ___ to Abuja next week.
+collective-nouns.team-pl.from-the-next-town.ready-to-start	pl	opposite	are	The two teams from the next town ___ ready to start.
+collective-nouns.team-pl.from-the-next-town.on-the-bus-now	pl	opposite	are	The two teams from the next town ___ on the bus now.
+collective-nouns.team-pl.from-the-next-town.arrived-at-the-hall	pl	opposite	have	The two teams from the next town ___ arrived at the hall.
+collective-nouns.team-pl.from-the-next-town.every-friday	pl	opposite	meet	The two teams from the next town ___ every Friday.
+collective-nouns.team-pl.from-the-next-town.to-abuja-next-week	pl	opposite	travel	The two teams from the next town ___ to Abuja next week.
+collective-nouns.choir-sg.of-forty-singers.ready-to-start	sg	opposite	is	The choir of forty singers ___ ready to start.
+collective-nouns.choir-sg.of-forty-singers.on-the-bus-now	sg	opposite	is	The choir of forty singers ___ on the bus now.
+collective-nouns.choir-sg.of-forty-singers.arrived-at-the-hall	sg	opposite	has	The choir of forty singers ___ arrived at the hall.
+collective-nouns.choir-sg.of-forty-singers.every-friday	sg	opposite	meets	The choir of forty singers ___ every Friday.
+collective-nouns.choir-sg.of-forty-singers.to-abuja-next-week	sg	opposite	travels	The choir of forty singers ___ to Abuja next week.
+collective-nouns.choir-sg.of-young-singers.ready-to-start	sg	opposite	is	The choir of young singers ___ ready to start.
+collective-nouns.choir-sg.of-young-singers.on-the-bus-now	sg	opposite	is	The choir of young singers ___ on the bus now.
+collective-nouns.choir-sg.of-young-singers.arrived-at-the-hall	sg	opposite	has	The choir of young singers ___ arrived at the hall.
+collective-nouns.choir-sg.of-young-singers.every-friday	sg	opposite	meets	The choir of young singers ___ every Friday.
+collective-nouns.choir-sg.of-young-singers.to-abuja-next-week	sg	opposite	travels	The choir of young singers ___ to Abuja next week.
+collective-nouns.choir-sg.from-our-church.ready-to-start	sg	same	is	The choir from our church ___ ready to start.
+collective-nouns.choir-sg.from-our-church.on-the-bus-now	sg	same	is	The choir from our church ___ on the bus now.
+collective-nouns.choir-sg.from-our-church.arrived-at-the-hall	sg	same	has	The choir from our church ___ arrived at the hall.
+collective-nouns.choir-sg.from-our-church.every-friday	sg	same	meets	The choir from our church ___ every Friday.
+collective-nouns.choir-sg.from-our-church.to-abuja-next-week	sg	same	travels	The choir from our church ___ to Abuja next week.
+collective-nouns.choir-sg.from-our-school.ready-to-start	sg	same	is	The choir from our school ___ ready to start.
+collective-nouns.choir-sg.from-our-school.on-the-bus-now	sg	same	is	The choir from our school ___ on the bus now.
+collective-nouns.choir-sg.from-our-school.arrived-at-the-hall	sg	same	has	The choir from our school ___ arrived at the hall.
+collective-nouns.choir-sg.from-our-school.every-friday	sg	same	meets	The choir from our school ___ every Friday.
+collective-nouns.choir-sg.from-our-school.to-abuja-next-week	sg	same	travels	The choir from our school ___ to Abuja next week.
+collective-nouns.choir-pl.of-forty-singers.ready-to-start	pl	same	are	The two choirs of forty singers ___ ready to start.
+collective-nouns.choir-pl.of-forty-singers.on-the-bus-now	pl	same	are	The two choirs of forty singers ___ on the bus now.
+collective-nouns.choir-pl.of-forty-singers.arrived-at-the-hall	pl	same	have	The two choirs of forty singers ___ arrived at the hall.
+collective-nouns.choir-pl.of-forty-singers.every-friday	pl	same	meet	The two choirs of forty singers ___ every Friday.
+collective-nouns.choir-pl.of-forty-singers.to-abuja-next-week	pl	same	travel	The two choirs of forty singers ___ to Abuja next week.
+collective-nouns.choir-pl.of-young-singers.ready-to-start	pl	same	are	The two choirs of young singers ___ ready to start.
+collective-nouns.choir-pl.of-young-singers.on-the-bus-now	pl	same	are	The two choirs of young singers ___ on the bus now.
+collective-nouns.choir-pl.of-young-singers.arrived-at-the-hall	pl	same	have	The two choirs of young singers ___ arrived at the hall.
+collective-nouns.choir-pl.of-young-singers.every-friday	pl	same	meet	The two choirs of young singers ___ every Friday.
+collective-nouns.choir-pl.of-young-singers.to-abuja-next-week	pl	same	travel	The two choirs of young singers ___ to Abuja next week.
+collective-nouns.choir-pl.from-our-church.ready-to-start	pl	opposite	are	The two choirs from our church ___ ready to start.
+collective-nouns.choir-pl.from-our-church.on-the-bus-now	pl	opposite	are	The two choirs from our church ___ on the bus now.
+collective-nouns.choir-pl.from-our-church.arrived-at-the-hall	pl	opposite	have	The two choirs from our church ___ arrived at the hall.
+collective-nouns.choir-pl.from-our-church.every-friday	pl	opposite	meet	The two choirs from our church ___ every Friday.
+collective-nouns.choir-pl.from-our-church.to-abuja-next-week	pl	opposite	travel	The two choirs from our church ___ to Abuja next week.
+collective-nouns.choir-pl.from-our-school.ready-to-start	pl	opposite	are	The two choirs from our school ___ ready to start.
+collective-nouns.choir-pl.from-our-school.on-the-bus-now	pl	opposite	are	The two choirs from our school ___ on the bus now.
+collective-nouns.choir-pl.from-our-school.arrived-at-the-hall	pl	opposite	have	The two choirs from our school ___ arrived at the hall.
+collective-nouns.choir-pl.from-our-school.every-friday	pl	opposite	meet	The two choirs from our school ___ every Friday.
+collective-nouns.choir-pl.from-our-school.to-abuja-next-week	pl	opposite	travel	The two choirs from our school ___ to Abuja next week.
+collective-nouns.committee-sg.of-five-teachers.ready-to-start	sg	opposite	is	The committee of five teachers ___ ready to start.
+collective-nouns.committee-sg.of-five-teachers.on-the-bus-now	sg	opposite	is	The committee of five teachers ___ on the bus now.
+collective-nouns.committee-sg.of-five-teachers.arrived-at-the-hall	sg	opposite	has	The committee of five teachers ___ arrived at the hall.
+collective-nouns.committee-sg.of-five-teachers.every-friday	sg	opposite	meets	The committee of five teachers ___ every Friday.
+collective-nouns.committee-sg.of-five-teachers.to-abuja-next-week	sg	opposite	travels	The committee of five teachers ___ to Abuja next week.
+collective-nouns.committee-sg.of-seven-parents.ready-to-start	sg	opposite	is	The committee of seven parents ___ ready to start.
+collective-nouns.committee-sg.of-seven-parents.on-the-bus-now	sg	opposite	is	The committee of seven parents ___ on the bus now.
+collective-nouns.committee-sg.of-seven-parents.arrived-at-the-hall	sg	opposite	has	The committee of seven parents ___ arrived at the hall.
+collective-nouns.committee-sg.of-seven-parents.every-friday	sg	opposite	meets	The committee of seven parents ___ every Friday.
+collective-nouns.committee-sg.of-seven-parents.to-abuja-next-week	sg	opposite	travels	The committee of seven parents ___ to Abuja next week.
+collective-nouns.committee-sg.from-our-school.ready-to-start	sg	same	is	The committee from our school ___ ready to start.
+collective-nouns.committee-sg.from-our-school.on-the-bus-now	sg	same	is	The committee from our school ___ on the bus now.
+collective-nouns.committee-sg.from-our-school.arrived-at-the-hall	sg	same	has	The committee from our school ___ arrived at the hall.
+collective-nouns.committee-sg.from-our-school.every-friday	sg	same	meets	The committee from our school ___ every Friday.
+collective-nouns.committee-sg.from-our-school.to-abuja-next-week	sg	same	travels	The committee from our school ___ to Abuja next week.
+collective-nouns.committee-sg.from-our-street.ready-to-start	sg	same	is	The committee from our street ___ ready to start.
+collective-nouns.committee-sg.from-our-street.on-the-bus-now	sg	same	is	The committee from our street ___ on the bus now.
+collective-nouns.committee-sg.from-our-street.arrived-at-the-hall	sg	same	has	The committee from our street ___ arrived at the hall.
+collective-nouns.committee-sg.from-our-street.every-friday	sg	same	meets	The committee from our street ___ every Friday.
+collective-nouns.committee-sg.from-our-street.to-abuja-next-week	sg	same	travels	The committee from our street ___ to Abuja next week.
+collective-nouns.committee-pl.of-five-teachers.ready-to-start	pl	same	are	The two committees of five teachers ___ ready to start.
+collective-nouns.committee-pl.of-five-teachers.on-the-bus-now	pl	same	are	The two committees of five teachers ___ on the bus now.
+collective-nouns.committee-pl.of-five-teachers.arrived-at-the-hall	pl	same	have	The two committees of five teachers ___ arrived at the hall.
+collective-nouns.committee-pl.of-five-teachers.every-friday	pl	same	meet	The two committees of five teachers ___ every Friday.
+collective-nouns.committee-pl.of-five-teachers.to-abuja-next-week	pl	same	travel	The two committees of five teachers ___ to Abuja next week.
+collective-nouns.committee-pl.of-seven-parents.ready-to-start	pl	same	are	The two committees of seven parents ___ ready to start.
+collective-nouns.committee-pl.of-seven-parents.on-the-bus-now	pl	same	are	The two committees of seven parents ___ on the bus now.
+collective-nouns.committee-pl.of-seven-parents.arrived-at-the-hall	pl	same	have	The two committees of seven parents ___ arrived at the hall.
+collective-nouns.committee-pl.of-seven-parents.every-friday	pl	same	meet	The two committees of seven parents ___ every Friday.
+collective-nouns.committee-pl.of-seven-parents.to-abuja-next-week	pl	same	travel	The two committees of seven parents ___ to Abuja next week.
+collective-nouns.committee-pl.from-our-school.ready-to-start	pl	opposite	are	The two committees from our school ___ ready to start.
+collective-nouns.committee-pl.from-our-school.on-the-bus-now	pl	opposite	are	The two committees from our school ___ on the bus now.
+collective-nouns.committee-pl.from-our-school.arrived-at-the-hall	pl	opposite	have	The two committees from our school ___ arrived at the hall.
+collective-nouns.committee-pl.from-our-school.every-friday	pl	opposite	meet	The two committees from our school ___ every Friday.
+collective-nouns.committee-pl.from-our-school.to-abuja-next-week	pl	opposite	travel	The two committees from our school ___ to Abuja next week.
+collective-nouns.committee-pl.from-our-street.ready-to-start	pl	opposite	are	The two committees from our street ___ ready to start.
+collective-nouns.committee-pl.from-our-street.on-the-bus-now	pl	opposite	are	The two committees from our street ___ on the bus now.
+collective-nouns.committee-pl.from-our-street.arrived-at-the-hall	pl	opposite	have	The two committees from our street ___ arrived at the hall.
+collective-nouns.committee-pl.from-our-street.every-friday	pl	opposite	meet	The two committees from our street ___ every Friday.
+collective-nouns.committee-pl.from-our-street.to-abuja-next-week	pl	opposite	travel	The two committees from our street ___ to Abuja next week.
+collective-nouns.band-sg.of-young-drummers.ready-to-start	sg	opposite	is	The band of young drummers ___ ready to start.
+collective-nouns.band-sg.of-young-drummers.on-the-bus-now	sg	opposite	is	The band of young drummers ___ on the bus now.
+collective-nouns.band-sg.of-young-drummers.arrived-at-the-hall	sg	opposite	has	The band of young drummers ___ arrived at the hall.
+collective-nouns.band-sg.of-young-drummers.every-friday	sg	opposite	meets	The band of young drummers ___ every Friday.
+collective-nouns.band-sg.of-young-drummers.to-abuja-next-week	sg	opposite	travels	The band of young drummers ___ to Abuja next week.
+collective-nouns.band-sg.of-twelve-musicians.ready-to-start	sg	opposite	is	The band of twelve musicians ___ ready to start.
+collective-nouns.band-sg.of-twelve-musicians.on-the-bus-now	sg	opposite	is	The band of twelve musicians ___ on the bus now.
+collective-nouns.band-sg.of-twelve-musicians.arrived-at-the-hall	sg	opposite	has	The band of twelve musicians ___ arrived at the hall.
+collective-nouns.band-sg.of-twelve-musicians.every-friday	sg	opposite	meets	The band of twelve musicians ___ every Friday.
+collective-nouns.band-sg.of-twelve-musicians.to-abuja-next-week	sg	opposite	travels	The band of twelve musicians ___ to Abuja next week.
+collective-nouns.band-sg.from-our-school.ready-to-start	sg	same	is	The band from our school ___ ready to start.
+collective-nouns.band-sg.from-our-school.on-the-bus-now	sg	same	is	The band from our school ___ on the bus now.
+collective-nouns.band-sg.from-our-school.arrived-at-the-hall	sg	same	has	The band from our school ___ arrived at the hall.
+collective-nouns.band-sg.from-our-school.every-friday	sg	same	meets	The band from our school ___ every Friday.
+collective-nouns.band-sg.from-our-school.to-abuja-next-week	sg	same	travels	The band from our school ___ to Abuja next week.
+collective-nouns.band-sg.from-the-next-town.ready-to-start	sg	same	is	The band from the next town ___ ready to start.
+collective-nouns.band-sg.from-the-next-town.on-the-bus-now	sg	same	is	The band from the next town ___ on the bus now.
+collective-nouns.band-sg.from-the-next-town.arrived-at-the-hall	sg	same	has	The band from the next town ___ arrived at the hall.
+collective-nouns.band-sg.from-the-next-town.every-friday	sg	same	meets	The band from the next town ___ every Friday.
+collective-nouns.band-sg.from-the-next-town.to-abuja-next-week	sg	same	travels	The band from the next town ___ to Abuja next week.
+collective-nouns.band-pl.of-young-drummers.ready-to-start	pl	same	are	The two bands of young drummers ___ ready to start.
+collective-nouns.band-pl.of-young-drummers.on-the-bus-now	pl	same	are	The two bands of young drummers ___ on the bus now.
+collective-nouns.band-pl.of-young-drummers.arrived-at-the-hall	pl	same	have	The two bands of young drummers ___ arrived at the hall.
+collective-nouns.band-pl.of-young-drummers.every-friday	pl	same	meet	The two bands of young drummers ___ every Friday.
+collective-nouns.band-pl.of-young-drummers.to-abuja-next-week	pl	same	travel	The two bands of young drummers ___ to Abuja next week.
+collective-nouns.band-pl.of-twelve-musicians.ready-to-start	pl	same	are	The two bands of twelve musicians ___ ready to start.
+collective-nouns.band-pl.of-twelve-musicians.on-the-bus-now	pl	same	are	The two bands of twelve musicians ___ on the bus now.
+collective-nouns.band-pl.of-twelve-musicians.arrived-at-the-hall	pl	same	have	The two bands of twelve musicians ___ arrived at the hall.
+collective-nouns.band-pl.of-twelve-musicians.every-friday	pl	same	meet	The two bands of twelve musicians ___ every Friday.
+collective-nouns.band-pl.of-twelve-musicians.to-abuja-next-week	pl	same	travel	The two bands of twelve musicians ___ to Abuja next week.
+collective-nouns.band-pl.from-our-school.ready-to-start	pl	opposite	are	The two bands from our school ___ ready to start.
+collective-nouns.band-pl.from-our-school.on-the-bus-now	pl	opposite	are	The two bands from our school ___ on the bus now.
+collective-nouns.band-pl.from-our-school.arrived-at-the-hall	pl	opposite	have	The two bands from our school ___ arrived at the hall.
+collective-nouns.band-pl.from-our-school.every-friday	pl	opposite	meet	The two bands from our school ___ every Friday.
+collective-nouns.band-pl.from-our-school.to-abuja-next-week	pl	opposite	travel	The two bands from our school ___ to Abuja next week.
+collective-nouns.band-pl.from-the-next-town.ready-to-start	pl	opposite	are	The two bands from the next town ___ ready to start.
+collective-nouns.band-pl.from-the-next-town.on-the-bus-now	pl	opposite	are	The two bands from the next town ___ on the bus now.
+collective-nouns.band-pl.from-the-next-town.arrived-at-the-hall	pl	opposite	have	The two bands from the next town ___ arrived at the hall.
+collective-nouns.band-pl.from-the-next-town.every-friday	pl	opposite	meet	The two bands from the next town ___ every Friday.
+collective-nouns.band-pl.from-the-next-town.to-abuja-next-week	pl	opposite	travel	The two bands from the next town ___ to Abuja next week.
+collective-nouns.club-sg.of-young-readers.ready-to-start	sg	opposite	is	The club of young readers ___ ready to start.
+collective-nouns.club-sg.of-young-readers.on-the-bus-now	sg	opposite	is	The club of young readers ___ on the bus now.
+collective-nouns.club-sg.of-young-readers.arrived-at-the-hall	sg	opposite	has	The club of young readers ___ arrived at the hall.
+collective-nouns.club-sg.of-young-readers.every-friday	sg	opposite	meets	The club of young readers ___ every Friday.
+collective-nouns.club-sg.of-young-readers.to-abuja-next-week	sg	opposite	travels	The club of young readers ___ to Abuja next week.
+collective-nouns.club-sg.of-thirty-members.ready-to-start	sg	opposite	is	The club of thirty members ___ ready to start.
+collective-nouns.club-sg.of-thirty-members.on-the-bus-now	sg	opposite	is	The club of thirty members ___ on the bus now.
+collective-nouns.club-sg.of-thirty-members.arrived-at-the-hall	sg	opposite	has	The club of thirty members ___ arrived at the hall.
+collective-nouns.club-sg.of-thirty-members.every-friday	sg	opposite	meets	The club of thirty members ___ every Friday.
+collective-nouns.club-sg.of-thirty-members.to-abuja-next-week	sg	opposite	travels	The club of thirty members ___ to Abuja next week.
+collective-nouns.club-sg.from-our-street.ready-to-start	sg	same	is	The club from our street ___ ready to start.
+collective-nouns.club-sg.from-our-street.on-the-bus-now	sg	same	is	The club from our street ___ on the bus now.
+collective-nouns.club-sg.from-our-street.arrived-at-the-hall	sg	same	has	The club from our street ___ arrived at the hall.
+collective-nouns.club-sg.from-our-street.every-friday	sg	same	meets	The club from our street ___ every Friday.
+collective-nouns.club-sg.from-our-street.to-abuja-next-week	sg	same	travels	The club from our street ___ to Abuja next week.
+collective-nouns.club-sg.from-our-school.ready-to-start	sg	same	is	The club from our school ___ ready to start.
+collective-nouns.club-sg.from-our-school.on-the-bus-now	sg	same	is	The club from our school ___ on the bus now.
+collective-nouns.club-sg.from-our-school.arrived-at-the-hall	sg	same	has	The club from our school ___ arrived at the hall.
+collective-nouns.club-sg.from-our-school.every-friday	sg	same	meets	The club from our school ___ every Friday.
+collective-nouns.club-sg.from-our-school.to-abuja-next-week	sg	same	travels	The club from our school ___ to Abuja next week.
+collective-nouns.club-pl.of-young-readers.ready-to-start	pl	same	are	The two clubs of young readers ___ ready to start.
+collective-nouns.club-pl.of-young-readers.on-the-bus-now	pl	same	are	The two clubs of young readers ___ on the bus now.
+collective-nouns.club-pl.of-young-readers.arrived-at-the-hall	pl	same	have	The two clubs of young readers ___ arrived at the hall.
+collective-nouns.club-pl.of-young-readers.every-friday	pl	same	meet	The two clubs of young readers ___ every Friday.
+collective-nouns.club-pl.of-young-readers.to-abuja-next-week	pl	same	travel	The two clubs of young readers ___ to Abuja next week.
+collective-nouns.club-pl.of-thirty-members.ready-to-start	pl	same	are	The two clubs of thirty members ___ ready to start.
+collective-nouns.club-pl.of-thirty-members.on-the-bus-now	pl	same	are	The two clubs of thirty members ___ on the bus now.
+collective-nouns.club-pl.of-thirty-members.arrived-at-the-hall	pl	same	have	The two clubs of thirty members ___ arrived at the hall.
+collective-nouns.club-pl.of-thirty-members.every-friday	pl	same	meet	The two clubs of thirty members ___ every Friday.
+collective-nouns.club-pl.of-thirty-members.to-abuja-next-week	pl	same	travel	The two clubs of thirty members ___ to Abuja next week.
+collective-nouns.club-pl.from-our-street.ready-to-start	pl	opposite	are	The two clubs from our street ___ ready to start.
+collective-nouns.club-pl.from-our-street.on-the-bus-now	pl	opposite	are	The two clubs from our street ___ on the bus now.
+collective-nouns.club-pl.from-our-street.arrived-at-the-hall	pl	opposite	have	The two clubs from our street ___ arrived at the hall.
+collective-nouns.club-pl.from-our-street.every-friday	pl	opposite	meet	The two clubs from our street ___ every Friday.
+collective-nouns.club-pl.from-our-street.to-abuja-next-week	pl	opposite	travel	The two clubs from our street ___ to Abuja next week.
+collective-nouns.club-pl.from-our-school.ready-to-start	pl	opposite	are	The two clubs from our school ___ ready to start.
+collective-nouns.club-pl.from-our-school.on-the-bus-now	pl	opposite	are	The two clubs from our school ___ on the bus now.
+collective-nouns.club-pl.from-our-school.arrived-at-the-hall	pl	opposite	have	The two clubs from our school ___ arrived at the hall.
+collective-nouns.club-pl.from-our-school.every-friday	pl	opposite	meet	The two clubs from our school ___ every Friday.
+collective-nouns.club-pl.from-our-school.to-abuja-next-week	pl	opposite	travel	The two clubs from our school ___ to Abuja next week.

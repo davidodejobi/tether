@@ -1,4 +1,4 @@
-import type { NumberTag, Pack, Verb } from "./types.ts";
+import type { CoachCopy, Lang, NumberTag, Pack, Review, Verb } from "./types.ts";
 
 /** The only rule this generator implements; a pack must name it. */
 export const RULE_ID = "verb-matches-subject-before-side-phrase";
@@ -8,10 +8,18 @@ export type Rng = () => number;
 
 export type Pairing = "same" | "opposite";
 
+/** One piece of the sentence before the blank: the subject decides the verb, the covered part is what the move hides. */
+export interface Part {
+  text: string;
+  role: "subject" | "covered" | "plain";
+}
+
 export interface Combo {
   id: string;
   subject: string;
   covered: string;
+  /** The words before the blank, in order. Absent for Strip the Disguise, whose layout is "subject, covered,". */
+  parts?: Part[];
   verb: Verb;
   predicate: string;
   number: NumberTag;
@@ -39,8 +47,10 @@ export interface Question {
   moveId: string;
   contentVersion: number;
   subject: string;
-  /** The side phrase Strip the Disguise covers. */
+  /** The part the move covers (Strip the Disguise: the side phrase). */
   covered: string;
+  /** See Combo.parts. Absent on Strip the Disguise questions, including every saved one. */
+  parts?: Part[];
   predicate: string;
   number: NumberTag;
   pairing: Pairing;
@@ -48,6 +58,35 @@ export interface Question {
   options: string[];
   answer: string;
 }
+
+/** A playable move: its reviewed copy and every question its rule produces (src/content/moves.ts lists them). */
+export interface Move {
+  moveId: string;
+  /** Bump when any list or copy changes; stored questions keep the version they were built with. */
+  version: number;
+  ruleId: string;
+  title: string;
+  source: Pack["source"];
+  review: Record<Lang, Review>;
+  countWords: Record<Lang, Record<NumberTag, string>>;
+  coach: Record<Lang, CoachCopy>;
+  /** The lesson and move-sheet example. Its sentence is outside the question space, so it never appears in practice or proof. */
+  example: Combo;
+  /** Every question, its answer decided by the rule: the verb takes `number`. */
+  combos: Combo[];
+  /** Questions kept for the onboarding tutorial; excluded from practice and proof. */
+  tutorialIds: readonly string[];
+}
+
+/** The words before the blank. */
+export const partsOf = (q: Pick<Question, "subject" | "covered" | "parts">): Part[] =>
+  q.parts ?? [
+    { text: `${q.subject},`, role: "subject" },
+    { text: `${q.covered},`, role: "covered" },
+  ];
+
+/** The sentence up to the blank, as one string. */
+export const before = (q: Pick<Question, "subject" | "covered" | "parts">) => partsOf(q).map((p) => p.text).join(" ");
 
 /**
  * Every question the pack can produce: each subject with each opposite-number side phrase, plus each
@@ -78,8 +117,8 @@ export function lessonCombo(pack: Pack): Combo {
   return { id: "lesson", subject: e.subject, covered: e.sidePhrase, verb, predicate: e.predicate, number: e.number, pairing: "opposite" };
 }
 
-export function sentence(q: Pick<Question, "subject" | "covered" | "predicate">, blank = "___"): string {
-  return `${q.subject}, ${q.covered}, ${blank} ${q.predicate}`;
+export function sentence(q: Pick<Question, "subject" | "covered" | "parts" | "predicate">, blank = "___"): string {
+  return `${before(q)} ${blank} ${q.predicate}`;
 }
 
 export function shuffle<T>(items: readonly T[], rng: Rng): T[] {
@@ -91,14 +130,15 @@ export function shuffle<T>(items: readonly T[], rng: Rng): T[] {
   return a;
 }
 
-export function buildQuestion(pack: Pack, c: Combo, rng: Rng): Question {
-  const answer = c.verb[c.number]; // the rule: the verb takes the number of the subject before the side phrase
+export function buildQuestion(move: Move, c: Combo, rng: Rng): Question {
+  const answer = c.verb[c.number]; // the rule: the verb takes the number of the subject that decides it
   return {
     id: c.id,
-    moveId: pack.moveId,
-    contentVersion: pack.version,
+    moveId: move.moveId,
+    contentVersion: move.version,
     subject: c.subject,
     covered: c.covered,
+    ...(c.parts && { parts: c.parts }),
     predicate: c.predicate,
     number: c.number,
     pairing: c.pairing,
@@ -108,36 +148,36 @@ export function buildQuestion(pack: Pack, c: Combo, rng: Rng): Question {
 }
 
 /** Practice and proof never use the lesson example or the tutorial questions. */
-export function practicePool(pack: Pack): Combo[] {
-  const reserved = new Set<string>(pack.tutorialIds);
-  return allCombos(pack).filter((c) => !reserved.has(c.id));
+export function practicePool(move: Move): Combo[] {
+  const reserved = new Set<string>(move.tutorialIds);
+  return move.combos.filter((c) => !reserved.has(c.id));
 }
 
-export function tutorialQuestions(pack: Pack, rng: Rng): Question[] {
-  const byId = new Map(allCombos(pack).map((c) => [c.id, c]));
-  return pack.tutorialIds.map((id) => {
+export function tutorialQuestions(move: Move, rng: Rng): Question[] {
+  const byId = new Map(move.combos.map((c) => [c.id, c]));
+  return move.tutorialIds.map((id) => {
     const c = byId.get(id);
     if (!c) throw new Error(`Unknown tutorial question ${id}`);
-    return buildQuestion(pack, c, rng);
+    return buildQuestion(move, c, rng);
   });
 }
 
 /** One practice question, never the same as the previous one; about 40% same-number pairings. */
-export function nextPracticeQuestion(pack: Pack, rng: Rng, previousId?: string): Question {
+export function nextPracticeQuestion(move: Move, rng: Rng, previousId?: string): Question {
   const pairing: Pairing = rng() < PRACTICE_SAME_SHARE ? "same" : "opposite";
-  const pool = practicePool(pack).filter((c) => c.id !== previousId);
+  const pool = practicePool(move).filter((c) => c.id !== previousId);
   const preferred = pool.filter((c) => c.pairing === pairing);
   const from = preferred.length ? preferred : pool;
-  return buildQuestion(pack, from[Math.floor(rng() * from.length)]!, rng);
+  return buildQuestion(move, from[Math.floor(rng() * from.length)]!, rng);
 }
 
 /**
  * Distinct questions for a solo check or recheck, with exactly the counts in `shape`, in shuffled order.
  * Questions in `avoid` (the previous proof run) are used only if the pool runs out.
  */
-export function drawRun(pack: Pack, rng: Rng, shape: RunShape, avoid: ReadonlySet<string> = new Set()): Question[] {
+export function drawRun(move: Move, rng: Rng, shape: RunShape, avoid: ReadonlySet<string> = new Set()): Question[] {
   const picked: Combo[] = [];
-  const pool = practicePool(pack);
+  const pool = practicePool(move);
   for (const n of ["sg", "pl"] as const)
     for (const pairing of ["same", "opposite"] as const) {
       const want = shape[n][pairing];
@@ -148,15 +188,15 @@ export function drawRun(pack: Pack, rng: Rng, shape: RunShape, avoid: ReadonlySe
       if (chosen.length < want) throw new Error(`Only ${cell.length} ${n} ${pairing} questions; ${want} needed`);
       picked.push(...chosen);
     }
-  return shuffle(picked, rng).map((c) => buildQuestion(pack, c, rng));
+  return shuffle(picked, rng).map((c) => buildQuestion(move, c, rng));
 }
 
-/** The full question list David reviews (docs/content/move-1-questions.txt). */
-export function questionListing(pack: Pack): string {
-  const reserved = new Set<string>(pack.tutorialIds);
-  const lines = allCombos(pack).map(
+/** The full question list David reviews (docs/content/move-N-questions.txt). */
+export function questionListing(move: Move): string {
+  const reserved = new Set<string>(move.tutorialIds);
+  const lines = move.combos.map(
     (c) => `${c.id}\t${c.number}\t${c.pairing}\t${c.verb[c.number]}\t${sentence(c)}${reserved.has(c.id) ? "\t[tutorial]" : ""}`,
   );
-  const header = [`# ${pack.title} (${pack.moveId}) v${pack.version}: ${lines.length} questions`, "# id\tnumber\tpairing\tanswer\tsentence"];
+  const header = [`# ${move.title} (${move.moveId}) v${move.version}: ${lines.length} questions`, "# id\tnumber\tpairing\tanswer\tsentence"];
   return [...header, ...lines, ""].join("\n");
 }

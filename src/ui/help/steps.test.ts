@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { stripDisguise as pack } from "../../content/strip-disguise.ts";
-import { buildQuestion, allCombos } from "../../content/generate.ts";
+import { stripDisguiseMove as pack } from "../../content/moves.ts";
+import { buildQuestion } from "../../content/generate.ts";
 import { chips, countOk, fill, verbOk } from "./steps.ts";
 
-const q = buildQuestion(pack, allCombos(pack)[0]!, () => 0.5);
+const q = buildQuestion(pack, pack.combos[0]!, () => 0.5);
 
 describe("help steps", () => {
   it("fills beats and only beat 3 may carry the answer", () => {

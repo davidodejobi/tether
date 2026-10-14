@@ -18,8 +18,8 @@ describe("English catalogue", () => {
   });
   it("counts planned and available stages", () => {
     expect(english.sections.map(plannedIn)).toEqual([9, 33, 8]);
-    expect(english.sections.map(availableIn)).toEqual([0, 1, 0]);
-    expect(allStages(section("lexis-and-structure")).filter((g) => g.moveId).map((g) => g.id)).toEqual(["strip-disguise"]);
+    expect(english.sections.map(availableIn)).toEqual([0, 5, 0]);
+    expect(allStages(section("lexis-and-structure")).filter((g) => g.moveId).map((g) => g.id)).toEqual(["strip-disguise", "nearest-subject", "collective-nouns", "indefinite-pronouns", "one-of-the"]);
   });
   it("numbers stages by position in the section", () => {
     const first = topic("lexis-and-structure", "concord").stages[0]!;

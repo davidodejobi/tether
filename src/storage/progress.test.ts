@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto";
 import { describe, expect, test, vi } from "vitest";
 import { drawRun, nextPracticeQuestion, SOLO_SHAPE, type Question } from "../content/generate.ts";
-import { stripDisguise } from "../content/strip-disguise.ts";
+import { stripDisguiseMove as stripDisguise } from "../content/moves.ts";
 import { check, giveReason, startAttempt } from "../rules/practice.ts";
 import { seen, startRun, submit } from "../rules/runs.ts";
 import { idbKV, memoryKV, openKV, type KV } from "./kv.ts";

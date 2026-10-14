@@ -2,7 +2,6 @@
 // One stage is one move: a teachable technique with its own reviewed pack, lesson, practice, solo proof and rechecks.
 // Order is the recommended journey. Only stages with a `moveId` are available; the rest are planned and Coming soon.
 // Planned stages carry an approved identity and scope only; they never show progress, proof or assessment controls.
-import { stripDisguise } from "./strip-disguise.ts";
 
 export const BLUEPRINT_VERSION = 1;
 export const BLUEPRINT_APPROVED = "2026-10-14";
@@ -26,11 +25,11 @@ const B = "lexis-and-structure", A = "comprehension-and-summary", C = "oral-form
 
 const rows: [string, string, SectionId, string, string, string?][] = [
   // B. Lexis and Structure
-  ["strip-disguise", "Strip the Disguise", B, "concord", "Concord", stripDisguise.moveId],
-  ["nearest-subject", "Either…or, neither…nor: the nearest subject", B, "concord", "Concord"],
-  ["collective-nouns", "Collective nouns", B, "concord", "Concord"],
-  ["indefinite-pronouns", "Each, everyone, none", B, "concord", "Concord"],
-  ["one-of-the", "One of the … who/that", B, "concord", "Concord"],
+  ["strip-disguise", "Strip the Disguise", B, "concord", "Concord", "strip-disguise"],
+  ["nearest-subject", "Either…or, neither…nor: the nearest subject", B, "concord", "Concord", "nearest-subject"],
+  ["collective-nouns", "Collective nouns", B, "concord", "Concord", "collective-nouns"],
+  ["indefinite-pronouns", "Each, everyone, none", B, "concord", "Concord", "indefinite-pronouns"],
+  ["one-of-the", "One of the … who/that", B, "concord", "Concord", "one-of-the"],
   ["plural-looking-singulars", "Plural-looking singulars", B, "concord", "Concord"],
   ["there-is-there-are", "There is, there are", B, "concord", "Concord"],
   ["a-number-the-number", "A number of, the number of", B, "concord", "Concord"],

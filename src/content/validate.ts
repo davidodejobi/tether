@@ -1,4 +1,4 @@
-import { allCombos, buildQuestion, lessonCombo, practicePool, RULE_ID, sentence, SOLO_SHAPE } from "./generate.ts";
+import { allCombos, buildQuestion, lessonCombo, practicePool, RULE_ID, sentence, SOLO_SHAPE, type Move } from "./generate.ts";
 import type { CoachCopy, Lang, Linker, Pack } from "./types.ts";
 
 export interface ValidationResult {
@@ -98,28 +98,52 @@ export function validatePack(pack: Pack): ValidationResult {
     }
   }
 
+  // The lesson example must use one of the pack's verbs; the rest of the checks apply to every move.
+  const lessonOk = pack.verbs.some((v) => v.id === pack.lessonExample.verbId);
+  if (!lessonOk) err(`Lesson example uses unknown verb ${pack.lessonExample.verbId}`);
+  const move: Move = { ...pack, combos: allCombos(pack), example: lessonOk ? lessonCombo(pack) : { ...allCombos(pack)[0]!, id: "lesson" } };
+  return { errors: [...errors, ...checkMove(move, lessonOk)], releaseBlockers: blockers(move) };
+}
+
+/** Checks any move: its question space, run shapes, coach copy, source and review. */
+export function validateMove(move: Move): ValidationResult {
+  return { errors: checkMove(move, true), releaseBlockers: blockers(move) };
+}
+
+function blockers(move: Move): string[] {
+  return move.review.en?.status === "approved" ? [] : ["English word lists, sentences and coach copy need a named reviewer's approval"];
+}
+
+function checkMove(move: Move, withExample: boolean): string[] {
+  const errors: string[] = [];
+  const err = (m: string) => errors.push(m);
+
   // The whole question space, plus the lesson example
-  const combos = allCombos(pack);
   const sentences = new Map<string, string>();
   const fixed = () => 0; // option order is irrelevant to these checks
-  for (const c of [...combos, ...(pack.verbs.some((v) => v.id === pack.lessonExample.verbId) ? [lessonCombo(pack)] : [])]) {
-    const q = buildQuestion(pack, c, fixed);
+  const ids = new Set<string>();
+  for (const c of [...move.combos, ...(withExample ? [move.example] : [])]) {
+    if (ids.has(c.id)) err(`Duplicate question ID ${c.id}`);
+    ids.add(c.id);
+    const q = buildQuestion(move, c, fixed);
     const text = sentence(q);
     if (/[{}]/.test(text)) err(`${c.id}: unfilled placeholder`);
+    if (!/^[A-Z]/.test(text) || !text.endsWith(".") || /\s{2,}/.test(text)) err(`${c.id}: "${text}" must start with a capital, end with a full stop and have single spaces`);
+    if (c.parts && c.parts.filter((p) => p.role === "subject").length !== 1) err(`${c.id}: needs exactly one subject part`);
+    if (c.parts && !c.parts.some((p) => p.role === "covered")) err(`${c.id}: needs a covered part`);
     const dup = sentences.get(text);
     if (dup) err(`${c.id} repeats the sentence of ${dup}`);
     sentences.set(text, c.id);
-    if (q.options.length !== 4 || new Set(q.options).size !== 4) err(`${c.id}: needs four distinct options`);
+    if (q.options.length !== 4 || new Set(q.options.map((o) => o.toLowerCase())).size !== 4) err(`${c.id}: needs four distinct options`);
     if (q.options.filter((o) => o === q.answer).length !== 1) err(`${c.id}: needs exactly one correct option`);
     if (q.answer !== c.verb[c.number]) err(`${c.id}: answer does not follow the rule`);
   }
-  if (!pack.verbs.some((v) => v.id === pack.lessonExample.verbId)) err(`Lesson example uses unknown verb ${pack.lessonExample.verbId}`);
 
-  const comboIds = new Set(combos.map((c) => c.id));
-  for (const id of pack.tutorialIds) if (!comboIds.has(id)) err(`Tutorial question ${id} is not in the question space`);
-  if (new Set(pack.tutorialIds).size !== pack.tutorialIds.length) err("Tutorial questions repeat");
+  const comboIds = new Set(move.combos.map((c) => c.id));
+  for (const id of move.tutorialIds) if (!comboIds.has(id)) err(`Tutorial question ${id} is not in the question space`);
+  if (new Set(move.tutorialIds).size !== move.tutorialIds.length) err("Tutorial questions repeat");
 
-  const pool = practicePool(pack);
+  const pool = practicePool(move);
   if (pool.length < MIN_SENTENCES) err(`Only ${pool.length} practice sentences; at least ${MIN_SENTENCES} required`);
   // Two back-to-back solo runs must be able to use different questions in every cell of the run shape.
   for (const n of ["sg", "pl"] as const)
@@ -130,13 +154,13 @@ export function validatePack(pack: Pack): ValidationResult {
     }
 
   // Coach copy: the required keys in every language, same placeholders as English; only the last Show me beat may state the answer
-  const en = pack.coach.en ? flatten(pack.coach.en) : {};
+  const en = move.coach.en ? flatten(move.coach.en) : {};
   for (const lang of LANGS) {
-    if (!pack.coach[lang]) {
+    if (!move.coach[lang]) {
       err(`coach.${lang} is missing`);
       continue;
     }
-    const copy = flatten(pack.coach[lang]);
+    const copy = flatten(move.coach[lang]);
     for (const k of COACH_KEYS) {
       if (!copy[k]?.trim()) err(`coach.${lang}.${k} is missing`);
       else if (en[k] !== undefined && placeholders(copy[k]).join() !== placeholders(en[k]).join())
@@ -150,25 +174,21 @@ export function validatePack(pack: Pack): ValidationResult {
     // Go deeper steps must not hand over what the learner is being asked to find.
     for (const k of ["goDeeper.subject", "goDeeper.subjectHint"]) if (copy[k]?.includes("{subject}")) err(`coach.${lang}.${k} gives the subject away`);
     for (const k of ["goDeeper.count", "goDeeper.countHint"]) if (copy[k]?.includes("{count}")) err(`coach.${lang}.${k} gives the count away`);
-    for (const n of ["sg", "pl"] as const) if (!pack.countWords[lang]?.[n]) err(`countWords.${lang}.${n} is missing`);
+    for (const n of ["sg", "pl"] as const) if (!move.countWords[lang]?.[n]) err(`countWords.${lang}.${n} is missing`);
   }
 
   // Source
-  for (const [k, v] of Object.entries(pack.source)) if (!v.trim()) err(`source.${k} is empty`);
+  for (const [k, v] of Object.entries(move.source)) if (!v.trim()) err(`source.${k} is empty`);
   for (const k of ["portalUrl", "pdfUrl"] as const)
-    if (!pack.source[k].startsWith("https://")) err(`source.${k} must be an https URL`);
+    if (!move.source[k].startsWith("https://")) err(`source.${k} must be an https URL`);
 
   // Review: an approval must name who approved it and when. Unreviewed Pidgin is allowed (shown as Unreviewed).
   for (const lang of LANGS) {
-    const r = pack.review[lang];
+    const r = move.review[lang];
     if (!r) err(`review.${lang} is missing`);
     else if (r.status === "approved" && (!r.reviewer?.trim() || !r.date?.trim()))
       err(`review.${lang} is approved without a reviewer and date`);
   }
 
-  const releaseBlockers: string[] = [];
-  if (pack.review.en?.status !== "approved")
-    releaseBlockers.push("English word lists, sentences and coach copy need a named reviewer's approval");
-
-  return { errors, releaseBlockers };
+  return errors;
 }

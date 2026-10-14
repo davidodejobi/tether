@@ -9,7 +9,7 @@ export const pack: Pack = stripDisguise;
  * Fills {covered} {subject} {count}. {answer} is filled only when `withAnswer` is true (Show me beat 3);
  * otherwise a stray {answer} stays as it is, so it can never leak early.
  */
-export function fill(pack: Pack, text: string, q: Question, lang: Lang, withAnswer = false): string {
+export function fill(pack: Pick<Pack, "countWords">, text: string, q: Question, lang: Lang, withAnswer = false): string {
   return text
     .replaceAll("{covered}", q.covered)
     .replaceAll("{subject}", q.subject)

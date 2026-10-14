@@ -1,0 +1,298 @@
+# One of the … who/that (one-of-the) v1: 296 questions
+# id	number	pairing	answer	sentence
+one-of-the.one.the-students.always-early	sg	opposite	is	One of the students ___ always early.
+one-of-the.one.the-students.from-our-school.always-early	sg	same	is	One of the students from our school ___ always early.
+one-of-the.one.the-students.in-my-class.always-early	sg	same	is	One of the students in my class ___ always early.
+one-of-the.one.the-students.from-the-next-street.always-early	sg	same	is	One of the students from the next street ___ always early.
+one-of-the.tunde.the-students.who.always-early	pl	same	are	Tunde is one of the students who ___ always early.
+one-of-the.tunde.the-students.from-our-school.who.always-early	pl	opposite	are	Tunde is one of the students from our school who ___ always early.
+one-of-the.amina.the-students.who.always-early	pl	same	are	Amina is one of the students who ___ always early.
+one-of-the.amina.the-students.in-my-class.who.always-early	pl	opposite	are	Amina is one of the students in my class who ___ always early.
+one-of-the.emeka.the-students.who.always-early	pl	same	are	Emeka is one of the students who ___ always early.
+one-of-the.emeka.the-students.from-the-next-street.who.always-early	pl	opposite	are	Emeka is one of the students from the next street who ___ always early.
+one-of-the.ngozi.the-students.who.always-early	pl	same	are	Ngozi is one of the students who ___ always early.
+one-of-the.ngozi.the-students.from-our-school.who.always-early	pl	opposite	are	Ngozi is one of the students from our school who ___ always early.
+one-of-the.one.the-students.in-the-school-choir	sg	opposite	is	One of the students ___ in the school choir.
+one-of-the.one.the-students.from-our-school.in-the-school-choir	sg	same	is	One of the students from our school ___ in the school choir.
+one-of-the.one.the-students.in-my-class.in-the-school-choir	sg	same	is	One of the students in my class ___ in the school choir.
+one-of-the.one.the-students.from-the-next-street.in-the-school-choir	sg	same	is	One of the students from the next street ___ in the school choir.
+one-of-the.tunde.the-students.who.in-the-school-choir	pl	same	are	Tunde is one of the students who ___ in the school choir.
+one-of-the.tunde.the-students.from-our-school.who.in-the-school-choir	pl	opposite	are	Tunde is one of the students from our school who ___ in the school choir.
+one-of-the.amina.the-students.who.in-the-school-choir	pl	same	are	Amina is one of the students who ___ in the school choir.
+one-of-the.amina.the-students.in-my-class.who.in-the-school-choir	pl	opposite	are	Amina is one of the students in my class who ___ in the school choir.
+one-of-the.emeka.the-students.who.in-the-school-choir	pl	same	are	Emeka is one of the students who ___ in the school choir.
+one-of-the.emeka.the-students.from-the-next-street.who.in-the-school-choir	pl	opposite	are	Emeka is one of the students from the next street who ___ in the school choir.
+one-of-the.ngozi.the-students.who.in-the-school-choir	pl	same	are	Ngozi is one of the students who ___ in the school choir.
+one-of-the.ngozi.the-students.from-our-school.who.in-the-school-choir	pl	opposite	are	Ngozi is one of the students from our school who ___ in the school choir.
+one-of-the.one.the-students.finished-the-project	sg	opposite	has	One of the students ___ finished the project.
+one-of-the.one.the-students.from-our-school.finished-the-project	sg	same	has	One of the students from our school ___ finished the project.
+one-of-the.one.the-students.in-my-class.finished-the-project	sg	same	has	One of the students in my class ___ finished the project.
+one-of-the.one.the-students.from-the-next-street.finished-the-project	sg	same	has	One of the students from the next street ___ finished the project.
+one-of-the.tunde.the-students.who.finished-the-project	pl	same	have	Tunde is one of the students who ___ finished the project.
+one-of-the.tunde.the-students.from-our-school.who.finished-the-project	pl	opposite	have	Tunde is one of the students from our school who ___ finished the project.
+one-of-the.amina.the-students.who.finished-the-project	pl	same	have	Amina is one of the students who ___ finished the project.
+one-of-the.amina.the-students.in-my-class.who.finished-the-project	pl	opposite	have	Amina is one of the students in my class who ___ finished the project.
+one-of-the.emeka.the-students.who.finished-the-project	pl	same	have	Emeka is one of the students who ___ finished the project.
+one-of-the.emeka.the-students.from-the-next-street.who.finished-the-project	pl	opposite	have	Emeka is one of the students from the next street who ___ finished the project.
+one-of-the.ngozi.the-students.who.finished-the-project	pl	same	have	Ngozi is one of the students who ___ finished the project.
+one-of-the.ngozi.the-students.from-our-school.who.finished-the-project	pl	opposite	have	Ngozi is one of the students from our school who ___ finished the project.
+one-of-the.one.the-students.to-school-every-morning	sg	opposite	walks	One of the students ___ to school every morning.
+one-of-the.one.the-students.from-our-school.to-school-every-morning	sg	same	walks	One of the students from our school ___ to school every morning.
+one-of-the.one.the-students.in-my-class.to-school-every-morning	sg	same	walks	One of the students in my class ___ to school every morning.
+one-of-the.one.the-students.from-the-next-street.to-school-every-morning	sg	same	walks	One of the students from the next street ___ to school every morning.
+one-of-the.tunde.the-students.who.to-school-every-morning	pl	same	walk	Tunde is one of the students who ___ to school every morning.
+one-of-the.tunde.the-students.from-our-school.who.to-school-every-morning	pl	opposite	walk	Tunde is one of the students from our school who ___ to school every morning.
+one-of-the.amina.the-students.who.to-school-every-morning	pl	same	walk	Amina is one of the students who ___ to school every morning.
+one-of-the.amina.the-students.in-my-class.who.to-school-every-morning	pl	opposite	walk	Amina is one of the students in my class who ___ to school every morning.
+one-of-the.emeka.the-students.who.to-school-every-morning	pl	same	walk	Emeka is one of the students who ___ to school every morning.
+one-of-the.emeka.the-students.from-the-next-street.who.to-school-every-morning	pl	opposite	walk	Emeka is one of the students from the next street who ___ to school every morning.
+one-of-the.ngozi.the-students.who.to-school-every-morning	pl	same	walk	Ngozi is one of the students who ___ to school every morning.
+one-of-the.ngozi.the-students.from-our-school.who.to-school-every-morning	pl	opposite	walk	Ngozi is one of the students from our school who ___ to school every morning.
+one-of-the.one.the-students.near-the-market	sg	opposite	lives	One of the students ___ near the market.
+one-of-the.one.the-students.from-our-school.near-the-market	sg	same	lives	One of the students from our school ___ near the market.
+one-of-the.one.the-students.in-my-class.near-the-market	sg	same	lives	One of the students in my class ___ near the market.
+one-of-the.one.the-students.from-the-next-street.near-the-market	sg	same	lives	One of the students from the next street ___ near the market.
+one-of-the.tunde.the-students.who.near-the-market	pl	same	live	Tunde is one of the students who ___ near the market.
+one-of-the.tunde.the-students.from-our-school.who.near-the-market	pl	opposite	live	Tunde is one of the students from our school who ___ near the market.
+one-of-the.amina.the-students.who.near-the-market	pl	same	live	Amina is one of the students who ___ near the market.
+one-of-the.amina.the-students.in-my-class.who.near-the-market	pl	opposite	live	Amina is one of the students in my class who ___ near the market.
+one-of-the.emeka.the-students.who.near-the-market	pl	same	live	Emeka is one of the students who ___ near the market.
+one-of-the.emeka.the-students.from-the-next-street.who.near-the-market	pl	opposite	live	Emeka is one of the students from the next street who ___ near the market.
+one-of-the.ngozi.the-students.who.near-the-market	pl	same	live	Ngozi is one of the students who ___ near the market.
+one-of-the.ngozi.the-students.from-our-school.who.near-the-market	pl	opposite	live	Ngozi is one of the students from our school who ___ near the market.
+one-of-the.one.the-students.in-the-front-row	sg	opposite	sits	One of the students ___ in the front row.
+one-of-the.one.the-students.from-our-school.in-the-front-row	sg	same	sits	One of the students from our school ___ in the front row.
+one-of-the.one.the-students.in-my-class.in-the-front-row	sg	same	sits	One of the students in my class ___ in the front row.
+one-of-the.one.the-students.from-the-next-street.in-the-front-row	sg	same	sits	One of the students from the next street ___ in the front row.
+one-of-the.tunde.the-students.who.in-the-front-row	pl	same	sit	Tunde is one of the students who ___ in the front row.
+one-of-the.tunde.the-students.from-our-school.who.in-the-front-row	pl	opposite	sit	Tunde is one of the students from our school who ___ in the front row.
+one-of-the.amina.the-students.who.in-the-front-row	pl	same	sit	Amina is one of the students who ___ in the front row.
+one-of-the.amina.the-students.in-my-class.who.in-the-front-row	pl	opposite	sit	Amina is one of the students in my class who ___ in the front row.
+one-of-the.emeka.the-students.who.in-the-front-row	pl	same	sit	Emeka is one of the students who ___ in the front row.
+one-of-the.emeka.the-students.from-the-next-street.who.in-the-front-row	pl	opposite	sit	Emeka is one of the students from the next street who ___ in the front row.
+one-of-the.ngozi.the-students.who.in-the-front-row	pl	same	sit	Ngozi is one of the students who ___ in the front row.
+one-of-the.ngozi.the-students.from-our-school.who.in-the-front-row	pl	opposite	sit	Ngozi is one of the students from our school who ___ in the front row.
+one-of-the.one.the-players.always-early	sg	opposite	is	One of the players ___ always early.
+one-of-the.one.the-players.from-our-school.always-early	sg	same	is	One of the players from our school ___ always early.
+one-of-the.one.the-players.in-my-class.always-early	sg	same	is	One of the players in my class ___ always early.
+one-of-the.one.the-players.from-the-next-street.always-early	sg	same	is	One of the players from the next street ___ always early.
+one-of-the.tunde.the-players.who.always-early	pl	same	are	Tunde is one of the players who ___ always early.
+one-of-the.tunde.the-players.in-my-class.who.always-early	pl	opposite	are	Tunde is one of the players in my class who ___ always early.
+one-of-the.amina.the-players.who.always-early	pl	same	are	Amina is one of the players who ___ always early.
+one-of-the.amina.the-players.from-the-next-street.who.always-early	pl	opposite	are	Amina is one of the players from the next street who ___ always early.
+one-of-the.emeka.the-players.who.always-early	pl	same	are	Emeka is one of the players who ___ always early.
+one-of-the.emeka.the-players.from-our-school.who.always-early	pl	opposite	are	Emeka is one of the players from our school who ___ always early.
+one-of-the.ngozi.the-players.who.always-early	pl	same	are	Ngozi is one of the players who ___ always early.
+one-of-the.ngozi.the-players.in-my-class.who.always-early	pl	opposite	are	Ngozi is one of the players in my class who ___ always early.
+one-of-the.one.the-players.in-the-school-choir	sg	opposite	is	One of the players ___ in the school choir.
+one-of-the.one.the-players.from-our-school.in-the-school-choir	sg	same	is	One of the players from our school ___ in the school choir.
+one-of-the.one.the-players.in-my-class.in-the-school-choir	sg	same	is	One of the players in my class ___ in the school choir.
+one-of-the.one.the-players.from-the-next-street.in-the-school-choir	sg	same	is	One of the players from the next street ___ in the school choir.
+one-of-the.tunde.the-players.who.in-the-school-choir	pl	same	are	Tunde is one of the players who ___ in the school choir.
+one-of-the.tunde.the-players.in-my-class.who.in-the-school-choir	pl	opposite	are	Tunde is one of the players in my class who ___ in the school choir.
+one-of-the.amina.the-players.who.in-the-school-choir	pl	same	are	Amina is one of the players who ___ in the school choir.
+one-of-the.amina.the-players.from-the-next-street.who.in-the-school-choir	pl	opposite	are	Amina is one of the players from the next street who ___ in the school choir.
+one-of-the.emeka.the-players.who.in-the-school-choir	pl	same	are	Emeka is one of the players who ___ in the school choir.
+one-of-the.emeka.the-players.from-our-school.who.in-the-school-choir	pl	opposite	are	Emeka is one of the players from our school who ___ in the school choir.
+one-of-the.ngozi.the-players.who.in-the-school-choir	pl	same	are	Ngozi is one of the players who ___ in the school choir.
+one-of-the.ngozi.the-players.in-my-class.who.in-the-school-choir	pl	opposite	are	Ngozi is one of the players in my class who ___ in the school choir.
+one-of-the.one.the-players.finished-the-project	sg	opposite	has	One of the players ___ finished the project.
+one-of-the.one.the-players.from-our-school.finished-the-project	sg	same	has	One of the players from our school ___ finished the project.
+one-of-the.one.the-players.in-my-class.finished-the-project	sg	same	has	One of the players in my class ___ finished the project.
+one-of-the.one.the-players.from-the-next-street.finished-the-project	sg	same	has	One of the players from the next street ___ finished the project.
+one-of-the.tunde.the-players.who.finished-the-project	pl	same	have	Tunde is one of the players who ___ finished the project.
+one-of-the.tunde.the-players.in-my-class.who.finished-the-project	pl	opposite	have	Tunde is one of the players in my class who ___ finished the project.
+one-of-the.amina.the-players.who.finished-the-project	pl	same	have	Amina is one of the players who ___ finished the project.
+one-of-the.amina.the-players.from-the-next-street.who.finished-the-project	pl	opposite	have	Amina is one of the players from the next street who ___ finished the project.
+one-of-the.emeka.the-players.who.finished-the-project	pl	same	have	Emeka is one of the players who ___ finished the project.
+one-of-the.emeka.the-players.from-our-school.who.finished-the-project	pl	opposite	have	Emeka is one of the players from our school who ___ finished the project.
+one-of-the.ngozi.the-players.who.finished-the-project	pl	same	have	Ngozi is one of the players who ___ finished the project.
+one-of-the.ngozi.the-players.in-my-class.who.finished-the-project	pl	opposite	have	Ngozi is one of the players in my class who ___ finished the project.
+one-of-the.one.the-players.to-school-every-morning	sg	opposite	walks	One of the players ___ to school every morning.
+one-of-the.one.the-players.from-our-school.to-school-every-morning	sg	same	walks	One of the players from our school ___ to school every morning.
+one-of-the.one.the-players.in-my-class.to-school-every-morning	sg	same	walks	One of the players in my class ___ to school every morning.
+one-of-the.one.the-players.from-the-next-street.to-school-every-morning	sg	same	walks	One of the players from the next street ___ to school every morning.
+one-of-the.tunde.the-players.who.to-school-every-morning	pl	same	walk	Tunde is one of the players who ___ to school every morning.
+one-of-the.tunde.the-players.in-my-class.who.to-school-every-morning	pl	opposite	walk	Tunde is one of the players in my class who ___ to school every morning.
+one-of-the.amina.the-players.who.to-school-every-morning	pl	same	walk	Amina is one of the players who ___ to school every morning.
+one-of-the.amina.the-players.from-the-next-street.who.to-school-every-morning	pl	opposite	walk	Amina is one of the players from the next street who ___ to school every morning.
+one-of-the.emeka.the-players.who.to-school-every-morning	pl	same	walk	Emeka is one of the players who ___ to school every morning.
+one-of-the.emeka.the-players.from-our-school.who.to-school-every-morning	pl	opposite	walk	Emeka is one of the players from our school who ___ to school every morning.
+one-of-the.ngozi.the-players.who.to-school-every-morning	pl	same	walk	Ngozi is one of the players who ___ to school every morning.
+one-of-the.ngozi.the-players.in-my-class.who.to-school-every-morning	pl	opposite	walk	Ngozi is one of the players in my class who ___ to school every morning.
+one-of-the.one.the-players.near-the-market	sg	opposite	lives	One of the players ___ near the market.
+one-of-the.one.the-players.from-our-school.near-the-market	sg	same	lives	One of the players from our school ___ near the market.
+one-of-the.one.the-players.in-my-class.near-the-market	sg	same	lives	One of the players in my class ___ near the market.
+one-of-the.one.the-players.from-the-next-street.near-the-market	sg	same	lives	One of the players from the next street ___ near the market.
+one-of-the.tunde.the-players.who.near-the-market	pl	same	live	Tunde is one of the players who ___ near the market.
+one-of-the.tunde.the-players.in-my-class.who.near-the-market	pl	opposite	live	Tunde is one of the players in my class who ___ near the market.
+one-of-the.amina.the-players.who.near-the-market	pl	same	live	Amina is one of the players who ___ near the market.
+one-of-the.amina.the-players.from-the-next-street.who.near-the-market	pl	opposite	live	Amina is one of the players from the next street who ___ near the market.
+one-of-the.emeka.the-players.who.near-the-market	pl	same	live	Emeka is one of the players who ___ near the market.
+one-of-the.emeka.the-players.from-our-school.who.near-the-market	pl	opposite	live	Emeka is one of the players from our school who ___ near the market.
+one-of-the.ngozi.the-players.who.near-the-market	pl	same	live	Ngozi is one of the players who ___ near the market.
+one-of-the.ngozi.the-players.in-my-class.who.near-the-market	pl	opposite	live	Ngozi is one of the players in my class who ___ near the market.
+one-of-the.one.the-players.in-the-front-row	sg	opposite	sits	One of the players ___ in the front row.
+one-of-the.one.the-players.from-our-school.in-the-front-row	sg	same	sits	One of the players from our school ___ in the front row.
+one-of-the.one.the-players.in-my-class.in-the-front-row	sg	same	sits	One of the players in my class ___ in the front row.
+one-of-the.one.the-players.from-the-next-street.in-the-front-row	sg	same	sits	One of the players from the next street ___ in the front row.
+one-of-the.tunde.the-players.who.in-the-front-row	pl	same	sit	Tunde is one of the players who ___ in the front row.
+one-of-the.tunde.the-players.in-my-class.who.in-the-front-row	pl	opposite	sit	Tunde is one of the players in my class who ___ in the front row.
+one-of-the.amina.the-players.who.in-the-front-row	pl	same	sit	Amina is one of the players who ___ in the front row.
+one-of-the.amina.the-players.from-the-next-street.who.in-the-front-row	pl	opposite	sit	Amina is one of the players from the next street who ___ in the front row.
+one-of-the.emeka.the-players.who.in-the-front-row	pl	same	sit	Emeka is one of the players who ___ in the front row.
+one-of-the.emeka.the-players.from-our-school.who.in-the-front-row	pl	opposite	sit	Emeka is one of the players from our school who ___ in the front row.
+one-of-the.ngozi.the-players.who.in-the-front-row	pl	same	sit	Ngozi is one of the players who ___ in the front row.
+one-of-the.ngozi.the-players.in-my-class.who.in-the-front-row	pl	opposite	sit	Ngozi is one of the players in my class who ___ in the front row.
+one-of-the.one.the-prefects.always-early	sg	opposite	is	One of the prefects ___ always early.
+one-of-the.one.the-prefects.from-our-school.always-early	sg	same	is	One of the prefects from our school ___ always early.
+one-of-the.one.the-prefects.in-my-class.always-early	sg	same	is	One of the prefects in my class ___ always early.
+one-of-the.one.the-prefects.from-the-next-street.always-early	sg	same	is	One of the prefects from the next street ___ always early.
+one-of-the.tunde.the-prefects.who.always-early	pl	same	are	Tunde is one of the prefects who ___ always early.
+one-of-the.tunde.the-prefects.from-the-next-street.who.always-early	pl	opposite	are	Tunde is one of the prefects from the next street who ___ always early.
+one-of-the.amina.the-prefects.who.always-early	pl	same	are	Amina is one of the prefects who ___ always early.
+one-of-the.amina.the-prefects.from-our-school.who.always-early	pl	opposite	are	Amina is one of the prefects from our school who ___ always early.
+one-of-the.emeka.the-prefects.who.always-early	pl	same	are	Emeka is one of the prefects who ___ always early.
+one-of-the.emeka.the-prefects.in-my-class.who.always-early	pl	opposite	are	Emeka is one of the prefects in my class who ___ always early.
+one-of-the.ngozi.the-prefects.who.always-early	pl	same	are	Ngozi is one of the prefects who ___ always early.
+one-of-the.ngozi.the-prefects.from-the-next-street.who.always-early	pl	opposite	are	Ngozi is one of the prefects from the next street who ___ always early.
+one-of-the.one.the-prefects.in-the-school-choir	sg	opposite	is	One of the prefects ___ in the school choir.
+one-of-the.one.the-prefects.from-our-school.in-the-school-choir	sg	same	is	One of the prefects from our school ___ in the school choir.
+one-of-the.one.the-prefects.in-my-class.in-the-school-choir	sg	same	is	One of the prefects in my class ___ in the school choir.
+one-of-the.one.the-prefects.from-the-next-street.in-the-school-choir	sg	same	is	One of the prefects from the next street ___ in the school choir.
+one-of-the.tunde.the-prefects.who.in-the-school-choir	pl	same	are	Tunde is one of the prefects who ___ in the school choir.
+one-of-the.tunde.the-prefects.from-the-next-street.who.in-the-school-choir	pl	opposite	are	Tunde is one of the prefects from the next street who ___ in the school choir.
+one-of-the.amina.the-prefects.who.in-the-school-choir	pl	same	are	Amina is one of the prefects who ___ in the school choir.
+one-of-the.amina.the-prefects.from-our-school.who.in-the-school-choir	pl	opposite	are	Amina is one of the prefects from our school who ___ in the school choir.
+one-of-the.emeka.the-prefects.who.in-the-school-choir	pl	same	are	Emeka is one of the prefects who ___ in the school choir.
+one-of-the.emeka.the-prefects.in-my-class.who.in-the-school-choir	pl	opposite	are	Emeka is one of the prefects in my class who ___ in the school choir.
+one-of-the.ngozi.the-prefects.who.in-the-school-choir	pl	same	are	Ngozi is one of the prefects who ___ in the school choir.
+one-of-the.ngozi.the-prefects.from-the-next-street.who.in-the-school-choir	pl	opposite	are	Ngozi is one of the prefects from the next street who ___ in the school choir.
+one-of-the.one.the-prefects.finished-the-project	sg	opposite	has	One of the prefects ___ finished the project.
+one-of-the.one.the-prefects.from-our-school.finished-the-project	sg	same	has	One of the prefects from our school ___ finished the project.
+one-of-the.one.the-prefects.in-my-class.finished-the-project	sg	same	has	One of the prefects in my class ___ finished the project.
+one-of-the.one.the-prefects.from-the-next-street.finished-the-project	sg	same	has	One of the prefects from the next street ___ finished the project.
+one-of-the.tunde.the-prefects.who.finished-the-project	pl	same	have	Tunde is one of the prefects who ___ finished the project.
+one-of-the.tunde.the-prefects.from-the-next-street.who.finished-the-project	pl	opposite	have	Tunde is one of the prefects from the next street who ___ finished the project.
+one-of-the.amina.the-prefects.who.finished-the-project	pl	same	have	Amina is one of the prefects who ___ finished the project.
+one-of-the.amina.the-prefects.from-our-school.who.finished-the-project	pl	opposite	have	Amina is one of the prefects from our school who ___ finished the project.
+one-of-the.emeka.the-prefects.who.finished-the-project	pl	same	have	Emeka is one of the prefects who ___ finished the project.
+one-of-the.emeka.the-prefects.in-my-class.who.finished-the-project	pl	opposite	have	Emeka is one of the prefects in my class who ___ finished the project.
+one-of-the.ngozi.the-prefects.who.finished-the-project	pl	same	have	Ngozi is one of the prefects who ___ finished the project.
+one-of-the.ngozi.the-prefects.from-the-next-street.who.finished-the-project	pl	opposite	have	Ngozi is one of the prefects from the next street who ___ finished the project.
+one-of-the.one.the-prefects.to-school-every-morning	sg	opposite	walks	One of the prefects ___ to school every morning.
+one-of-the.one.the-prefects.from-our-school.to-school-every-morning	sg	same	walks	One of the prefects from our school ___ to school every morning.
+one-of-the.one.the-prefects.in-my-class.to-school-every-morning	sg	same	walks	One of the prefects in my class ___ to school every morning.
+one-of-the.one.the-prefects.from-the-next-street.to-school-every-morning	sg	same	walks	One of the prefects from the next street ___ to school every morning.
+one-of-the.tunde.the-prefects.who.to-school-every-morning	pl	same	walk	Tunde is one of the prefects who ___ to school every morning.
+one-of-the.tunde.the-prefects.from-the-next-street.who.to-school-every-morning	pl	opposite	walk	Tunde is one of the prefects from the next street who ___ to school every morning.
+one-of-the.amina.the-prefects.who.to-school-every-morning	pl	same	walk	Amina is one of the prefects who ___ to school every morning.
+one-of-the.amina.the-prefects.from-our-school.who.to-school-every-morning	pl	opposite	walk	Amina is one of the prefects from our school who ___ to school every morning.
+one-of-the.emeka.the-prefects.who.to-school-every-morning	pl	same	walk	Emeka is one of the prefects who ___ to school every morning.
+one-of-the.emeka.the-prefects.in-my-class.who.to-school-every-morning	pl	opposite	walk	Emeka is one of the prefects in my class who ___ to school every morning.
+one-of-the.ngozi.the-prefects.who.to-school-every-morning	pl	same	walk	Ngozi is one of the prefects who ___ to school every morning.
+one-of-the.ngozi.the-prefects.from-the-next-street.who.to-school-every-morning	pl	opposite	walk	Ngozi is one of the prefects from the next street who ___ to school every morning.
+one-of-the.one.the-prefects.near-the-market	sg	opposite	lives	One of the prefects ___ near the market.
+one-of-the.one.the-prefects.from-our-school.near-the-market	sg	same	lives	One of the prefects from our school ___ near the market.
+one-of-the.one.the-prefects.in-my-class.near-the-market	sg	same	lives	One of the prefects in my class ___ near the market.
+one-of-the.one.the-prefects.from-the-next-street.near-the-market	sg	same	lives	One of the prefects from the next street ___ near the market.
+one-of-the.tunde.the-prefects.who.near-the-market	pl	same	live	Tunde is one of the prefects who ___ near the market.
+one-of-the.tunde.the-prefects.from-the-next-street.who.near-the-market	pl	opposite	live	Tunde is one of the prefects from the next street who ___ near the market.
+one-of-the.amina.the-prefects.who.near-the-market	pl	same	live	Amina is one of the prefects who ___ near the market.
+one-of-the.amina.the-prefects.from-our-school.who.near-the-market	pl	opposite	live	Amina is one of the prefects from our school who ___ near the market.
+one-of-the.emeka.the-prefects.who.near-the-market	pl	same	live	Emeka is one of the prefects who ___ near the market.
+one-of-the.emeka.the-prefects.in-my-class.who.near-the-market	pl	opposite	live	Emeka is one of the prefects in my class who ___ near the market.
+one-of-the.ngozi.the-prefects.who.near-the-market	pl	same	live	Ngozi is one of the prefects who ___ near the market.
+one-of-the.ngozi.the-prefects.from-the-next-street.who.near-the-market	pl	opposite	live	Ngozi is one of the prefects from the next street who ___ near the market.
+one-of-the.one.the-prefects.in-the-front-row	sg	opposite	sits	One of the prefects ___ in the front row.
+one-of-the.one.the-prefects.from-our-school.in-the-front-row	sg	same	sits	One of the prefects from our school ___ in the front row.
+one-of-the.one.the-prefects.in-my-class.in-the-front-row	sg	same	sits	One of the prefects in my class ___ in the front row.
+one-of-the.one.the-prefects.from-the-next-street.in-the-front-row	sg	same	sits	One of the prefects from the next street ___ in the front row.
+one-of-the.tunde.the-prefects.who.in-the-front-row	pl	same	sit	Tunde is one of the prefects who ___ in the front row.
+one-of-the.tunde.the-prefects.from-the-next-street.who.in-the-front-row	pl	opposite	sit	Tunde is one of the prefects from the next street who ___ in the front row.
+one-of-the.amina.the-prefects.who.in-the-front-row	pl	same	sit	Amina is one of the prefects who ___ in the front row.
+one-of-the.amina.the-prefects.from-our-school.who.in-the-front-row	pl	opposite	sit	Amina is one of the prefects from our school who ___ in the front row.
+one-of-the.emeka.the-prefects.who.in-the-front-row	pl	same	sit	Emeka is one of the prefects who ___ in the front row.
+one-of-the.emeka.the-prefects.in-my-class.who.in-the-front-row	pl	opposite	sit	Emeka is one of the prefects in my class who ___ in the front row.
+one-of-the.ngozi.the-prefects.who.in-the-front-row	pl	same	sit	Ngozi is one of the prefects who ___ in the front row.
+one-of-the.ngozi.the-prefects.from-the-next-street.who.in-the-front-row	pl	opposite	sit	Ngozi is one of the prefects from the next street who ___ in the front row.
+one-of-the.one.the-new-pupils.always-early	sg	opposite	is	One of the new pupils ___ always early.
+one-of-the.one.the-new-pupils.from-our-school.always-early	sg	same	is	One of the new pupils from our school ___ always early.
+one-of-the.one.the-new-pupils.in-my-class.always-early	sg	same	is	One of the new pupils in my class ___ always early.
+one-of-the.one.the-new-pupils.from-the-next-street.always-early	sg	same	is	One of the new pupils from the next street ___ always early.
+one-of-the.tunde.the-new-pupils.who.always-early	pl	same	are	Tunde is one of the new pupils who ___ always early.
+one-of-the.tunde.the-new-pupils.from-our-school.who.always-early	pl	opposite	are	Tunde is one of the new pupils from our school who ___ always early.
+one-of-the.amina.the-new-pupils.who.always-early	pl	same	are	Amina is one of the new pupils who ___ always early.
+one-of-the.amina.the-new-pupils.in-my-class.who.always-early	pl	opposite	are	Amina is one of the new pupils in my class who ___ always early.
+one-of-the.emeka.the-new-pupils.who.always-early	pl	same	are	Emeka is one of the new pupils who ___ always early.
+one-of-the.emeka.the-new-pupils.from-the-next-street.who.always-early	pl	opposite	are	Emeka is one of the new pupils from the next street who ___ always early.
+one-of-the.ngozi.the-new-pupils.who.always-early	pl	same	are	Ngozi is one of the new pupils who ___ always early.
+one-of-the.ngozi.the-new-pupils.from-our-school.who.always-early	pl	opposite	are	Ngozi is one of the new pupils from our school who ___ always early.
+one-of-the.one.the-new-pupils.in-the-school-choir	sg	opposite	is	One of the new pupils ___ in the school choir.
+one-of-the.one.the-new-pupils.from-our-school.in-the-school-choir	sg	same	is	One of the new pupils from our school ___ in the school choir.
+one-of-the.one.the-new-pupils.in-my-class.in-the-school-choir	sg	same	is	One of the new pupils in my class ___ in the school choir.
+one-of-the.one.the-new-pupils.from-the-next-street.in-the-school-choir	sg	same	is	One of the new pupils from the next street ___ in the school choir.
+one-of-the.tunde.the-new-pupils.who.in-the-school-choir	pl	same	are	Tunde is one of the new pupils who ___ in the school choir.
+one-of-the.tunde.the-new-pupils.from-our-school.who.in-the-school-choir	pl	opposite	are	Tunde is one of the new pupils from our school who ___ in the school choir.
+one-of-the.amina.the-new-pupils.who.in-the-school-choir	pl	same	are	Amina is one of the new pupils who ___ in the school choir.
+one-of-the.amina.the-new-pupils.in-my-class.who.in-the-school-choir	pl	opposite	are	Amina is one of the new pupils in my class who ___ in the school choir.
+one-of-the.emeka.the-new-pupils.who.in-the-school-choir	pl	same	are	Emeka is one of the new pupils who ___ in the school choir.
+one-of-the.emeka.the-new-pupils.from-the-next-street.who.in-the-school-choir	pl	opposite	are	Emeka is one of the new pupils from the next street who ___ in the school choir.
+one-of-the.ngozi.the-new-pupils.who.in-the-school-choir	pl	same	are	Ngozi is one of the new pupils who ___ in the school choir.
+one-of-the.ngozi.the-new-pupils.from-our-school.who.in-the-school-choir	pl	opposite	are	Ngozi is one of the new pupils from our school who ___ in the school choir.
+one-of-the.one.the-new-pupils.finished-the-project	sg	opposite	has	One of the new pupils ___ finished the project.
+one-of-the.one.the-new-pupils.from-our-school.finished-the-project	sg	same	has	One of the new pupils from our school ___ finished the project.
+one-of-the.one.the-new-pupils.in-my-class.finished-the-project	sg	same	has	One of the new pupils in my class ___ finished the project.
+one-of-the.one.the-new-pupils.from-the-next-street.finished-the-project	sg	same	has	One of the new pupils from the next street ___ finished the project.
+one-of-the.tunde.the-new-pupils.who.finished-the-project	pl	same	have	Tunde is one of the new pupils who ___ finished the project.
+one-of-the.tunde.the-new-pupils.from-our-school.who.finished-the-project	pl	opposite	have	Tunde is one of the new pupils from our school who ___ finished the project.
+one-of-the.amina.the-new-pupils.who.finished-the-project	pl	same	have	Amina is one of the new pupils who ___ finished the project.
+one-of-the.amina.the-new-pupils.in-my-class.who.finished-the-project	pl	opposite	have	Amina is one of the new pupils in my class who ___ finished the project.
+one-of-the.emeka.the-new-pupils.who.finished-the-project	pl	same	have	Emeka is one of the new pupils who ___ finished the project.
+one-of-the.emeka.the-new-pupils.from-the-next-street.who.finished-the-project	pl	opposite	have	Emeka is one of the new pupils from the next street who ___ finished the project.
+one-of-the.ngozi.the-new-pupils.who.finished-the-project	pl	same	have	Ngozi is one of the new pupils who ___ finished the project.
+one-of-the.ngozi.the-new-pupils.from-our-school.who.finished-the-project	pl	opposite	have	Ngozi is one of the new pupils from our school who ___ finished the project.
+one-of-the.one.the-new-pupils.to-school-every-morning	sg	opposite	walks	One of the new pupils ___ to school every morning.
+one-of-the.one.the-new-pupils.from-our-school.to-school-every-morning	sg	same	walks	One of the new pupils from our school ___ to school every morning.
+one-of-the.one.the-new-pupils.in-my-class.to-school-every-morning	sg	same	walks	One of the new pupils in my class ___ to school every morning.
+one-of-the.one.the-new-pupils.from-the-next-street.to-school-every-morning	sg	same	walks	One of the new pupils from the next street ___ to school every morning.
+one-of-the.tunde.the-new-pupils.who.to-school-every-morning	pl	same	walk	Tunde is one of the new pupils who ___ to school every morning.
+one-of-the.tunde.the-new-pupils.from-our-school.who.to-school-every-morning	pl	opposite	walk	Tunde is one of the new pupils from our school who ___ to school every morning.
+one-of-the.amina.the-new-pupils.who.to-school-every-morning	pl	same	walk	Amina is one of the new pupils who ___ to school every morning.
+one-of-the.amina.the-new-pupils.in-my-class.who.to-school-every-morning	pl	opposite	walk	Amina is one of the new pupils in my class who ___ to school every morning.
+one-of-the.emeka.the-new-pupils.who.to-school-every-morning	pl	same	walk	Emeka is one of the new pupils who ___ to school every morning.
+one-of-the.emeka.the-new-pupils.from-the-next-street.who.to-school-every-morning	pl	opposite	walk	Emeka is one of the new pupils from the next street who ___ to school every morning.
+one-of-the.ngozi.the-new-pupils.who.to-school-every-morning	pl	same	walk	Ngozi is one of the new pupils who ___ to school every morning.
+one-of-the.ngozi.the-new-pupils.from-our-school.who.to-school-every-morning	pl	opposite	walk	Ngozi is one of the new pupils from our school who ___ to school every morning.
+one-of-the.one.the-new-pupils.near-the-market	sg	opposite	lives	One of the new pupils ___ near the market.
+one-of-the.one.the-new-pupils.from-our-school.near-the-market	sg	same	lives	One of the new pupils from our school ___ near the market.
+one-of-the.one.the-new-pupils.in-my-class.near-the-market	sg	same	lives	One of the new pupils in my class ___ near the market.
+one-of-the.one.the-new-pupils.from-the-next-street.near-the-market	sg	same	lives	One of the new pupils from the next street ___ near the market.
+one-of-the.tunde.the-new-pupils.who.near-the-market	pl	same	live	Tunde is one of the new pupils who ___ near the market.
+one-of-the.tunde.the-new-pupils.from-our-school.who.near-the-market	pl	opposite	live	Tunde is one of the new pupils from our school who ___ near the market.
+one-of-the.amina.the-new-pupils.who.near-the-market	pl	same	live	Amina is one of the new pupils who ___ near the market.
+one-of-the.amina.the-new-pupils.in-my-class.who.near-the-market	pl	opposite	live	Amina is one of the new pupils in my class who ___ near the market.
+one-of-the.emeka.the-new-pupils.who.near-the-market	pl	same	live	Emeka is one of the new pupils who ___ near the market.
+one-of-the.emeka.the-new-pupils.from-the-next-street.who.near-the-market	pl	opposite	live	Emeka is one of the new pupils from the next street who ___ near the market.
+one-of-the.ngozi.the-new-pupils.who.near-the-market	pl	same	live	Ngozi is one of the new pupils who ___ near the market.
+one-of-the.ngozi.the-new-pupils.from-our-school.who.near-the-market	pl	opposite	live	Ngozi is one of the new pupils from our school who ___ near the market.
+one-of-the.one.the-new-pupils.in-the-front-row	sg	opposite	sits	One of the new pupils ___ in the front row.
+one-of-the.one.the-new-pupils.from-our-school.in-the-front-row	sg	same	sits	One of the new pupils from our school ___ in the front row.
+one-of-the.one.the-new-pupils.in-my-class.in-the-front-row	sg	same	sits	One of the new pupils in my class ___ in the front row.
+one-of-the.one.the-new-pupils.from-the-next-street.in-the-front-row	sg	same	sits	One of the new pupils from the next street ___ in the front row.
+one-of-the.tunde.the-new-pupils.who.in-the-front-row	pl	same	sit	Tunde is one of the new pupils who ___ in the front row.
+one-of-the.tunde.the-new-pupils.from-our-school.who.in-the-front-row	pl	opposite	sit	Tunde is one of the new pupils from our school who ___ in the front row.
+one-of-the.amina.the-new-pupils.who.in-the-front-row	pl	same	sit	Amina is one of the new pupils who ___ in the front row.
+one-of-the.amina.the-new-pupils.in-my-class.who.in-the-front-row	pl	opposite	sit	Amina is one of the new pupils in my class who ___ in the front row.
+one-of-the.emeka.the-new-pupils.who.in-the-front-row	pl	same	sit	Emeka is one of the new pupils who ___ in the front row.
+one-of-the.emeka.the-new-pupils.from-the-next-street.who.in-the-front-row	pl	opposite	sit	Emeka is one of the new pupils from the next street who ___ in the front row.
+one-of-the.ngozi.the-new-pupils.who.in-the-front-row	pl	same	sit	Ngozi is one of the new pupils who ___ in the front row.
+one-of-the.ngozi.the-new-pupils.from-our-school.who.in-the-front-row	pl	opposite	sit	Ngozi is one of the new pupils from our school who ___ in the front row.
+one-of-the.one.the-books.missing	sg	opposite	is	One of the books ___ missing.
+one-of-the.one.the-books.from-the-library.missing	sg	same	is	One of the books from the library ___ missing.
+one-of-the.this.the-books.that.missing	pl	same	are	This is one of the books that ___ missing.
+one-of-the.this.the-books.from-the-library.that.missing	pl	opposite	are	This is one of the books from the library that ___ missing.
+one-of-the.one.the-books.on-the-reading-list	sg	opposite	is	One of the books ___ on the reading list.
+one-of-the.one.the-books.from-the-library.on-the-reading-list	sg	same	is	One of the books from the library ___ on the reading list.
+one-of-the.this.the-books.that.on-the-reading-list	pl	same	are	This is one of the books that ___ on the reading list.
+one-of-the.this.the-books.from-the-library.that.on-the-reading-list	pl	opposite	are	This is one of the books from the library that ___ on the reading list.

@@ -1,12 +1,12 @@
 import { useState } from "preact/hooks";
 import { tutorialQuestions } from "../../content/generate.ts";
-import { stripDisguise } from "../../content/strip-disguise.ts";
+import { stripDisguiseMove } from "../../content/moves.ts";
 import { HelpedQuestion } from "../help/HelpedQuestion";
 
 // The three tutorial questions run through the normal question view with origin "tutorial",
 // so the rules give them no scores, dots or claims (spec section 4).
 export function TutorialQuestions({ onDone }: { onDone: () => void }) {
-  const [questions] = useState(() => tutorialQuestions(stripDisguise, Math.random));
+  const [questions] = useState(() => tutorialQuestions(stripDisguiseMove, Math.random));
   const [n, setN] = useState(0);
   const q = questions[n]!;
   return (

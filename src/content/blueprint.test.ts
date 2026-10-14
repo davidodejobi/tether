@@ -10,8 +10,8 @@ describe("English stage blueprint", () => {
   it("splits 33 / 9 / 8 across the official sections", () => {
     expect([stagesInSection("lexis-and-structure").length, stagesInSection("comprehension-and-summary").length, stagesInSection("oral-forms").length]).toEqual([33, 9, 8]);
   });
-  it("only the reviewed Move 1 is available, as stage 1 of Lexis and Structure", () => {
-    expect(availableStages.map((s) => s.id)).toEqual(["strip-disguise"]);
-    expect(positionInSection(availableStages[0]!)).toBe(1);
+  it("the first five concord stages are available, as stages 1 to 5 of Lexis and Structure", () => {
+    expect(availableStages.map((s) => s.id)).toEqual(["strip-disguise", "nearest-subject", "collective-nouns", "indefinite-pronouns", "one-of-the"]);
+    expect(availableStages.map(positionInSection)).toEqual([1, 2, 3, 4, 5]);
   });
 });

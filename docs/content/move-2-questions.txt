@@ -1,0 +1,272 @@
+# Either…or, neither…nor: the nearest subject (nearest-subject) v1: 270 questions
+# id	number	pairing	answer	sentence
+nearest-subject.tunde.amina.in-the-hall	sg	same	is	Either Tunde or Amina ___ in the hall.
+nearest-subject.tunde.amina.finished-the-project	sg	same	has	Either Tunde or Amina ___ finished the project.
+nearest-subject.tunde.amina.near-the-market	sg	same	lives	Either Tunde or Amina ___ near the market.
+nearest-subject.tunde.emeka.ready-for-the-test	sg	same	is	Neither Tunde nor Emeka ___ ready for the test.
+nearest-subject.tunde.emeka.to-school-every-morning	sg	same	walks	Neither Tunde nor Emeka ___ to school every morning.
+nearest-subject.tunde.emeka.in-the-front-row	sg	same	sits	Neither Tunde nor Emeka ___ in the front row.
+nearest-subject.tunde.head-boy.finished-the-project	sg	same	has	Either Tunde or the head boy ___ finished the project.
+nearest-subject.tunde.head-boy.near-the-market	sg	same	lives	Either Tunde or the head boy ___ near the market.
+nearest-subject.tunde.head-boy.early-on-mondays	sg	same	arrives	Either Tunde or the head boy ___ early on Mondays.
+nearest-subject.tunde.class-captain.to-school-every-morning	sg	same	walks	Neither Tunde nor the class captain ___ to school every morning.
+nearest-subject.tunde.class-captain.in-the-front-row	sg	same	sits	Neither Tunde nor the class captain ___ in the front row.
+nearest-subject.tunde.class-captain.in-the-hall	sg	same	is	Neither Tunde nor the class captain ___ in the hall.
+nearest-subject.tunde.students.near-the-market	pl	opposite	live	Either Tunde or the students ___ near the market.
+nearest-subject.tunde.students.early-on-mondays	pl	opposite	arrive	Either Tunde or the students ___ early on Mondays.
+nearest-subject.tunde.students.ready-for-the-test	pl	opposite	are	Either Tunde or the students ___ ready for the test.
+nearest-subject.tunde.prefects.in-the-front-row	pl	opposite	sit	Neither Tunde nor the prefects ___ in the front row.
+nearest-subject.tunde.prefects.in-the-hall	pl	opposite	are	Neither Tunde nor the prefects ___ in the hall.
+nearest-subject.tunde.prefects.finished-the-project	pl	opposite	have	Neither Tunde nor the prefects ___ finished the project.
+nearest-subject.tunde.players.early-on-mondays	pl	opposite	arrive	Either Tunde or the players ___ early on Mondays.
+nearest-subject.tunde.players.ready-for-the-test	pl	opposite	are	Either Tunde or the players ___ ready for the test.
+nearest-subject.tunde.players.to-school-every-morning	pl	opposite	walk	Either Tunde or the players ___ to school every morning.
+nearest-subject.tunde.twins.in-the-hall	pl	opposite	are	Neither Tunde nor the twins ___ in the hall.
+nearest-subject.tunde.twins.finished-the-project	pl	opposite	have	Neither Tunde nor the twins ___ finished the project.
+nearest-subject.tunde.twins.near-the-market	pl	opposite	live	Neither Tunde nor the twins ___ near the market.
+nearest-subject.tunde.teachers.ready-for-the-test	pl	opposite	are	Either Tunde or the teachers ___ ready for the test.
+nearest-subject.tunde.teachers.to-school-every-morning	pl	opposite	walk	Either Tunde or the teachers ___ to school every morning.
+nearest-subject.tunde.teachers.in-the-front-row	pl	opposite	sit	Either Tunde or the teachers ___ in the front row.
+nearest-subject.amina.tunde.finished-the-project	sg	same	has	Neither Amina nor Tunde ___ finished the project.
+nearest-subject.amina.tunde.near-the-market	sg	same	lives	Neither Amina nor Tunde ___ near the market.
+nearest-subject.amina.tunde.early-on-mondays	sg	same	arrives	Neither Amina nor Tunde ___ early on Mondays.
+nearest-subject.amina.emeka.to-school-every-morning	sg	same	walks	Either Amina or Emeka ___ to school every morning.
+nearest-subject.amina.emeka.in-the-front-row	sg	same	sits	Either Amina or Emeka ___ in the front row.
+nearest-subject.amina.emeka.in-the-hall	sg	same	is	Either Amina or Emeka ___ in the hall.
+nearest-subject.amina.head-boy.near-the-market	sg	same	lives	Neither Amina nor the head boy ___ near the market.
+nearest-subject.amina.head-boy.early-on-mondays	sg	same	arrives	Neither Amina nor the head boy ___ early on Mondays.
+nearest-subject.amina.head-boy.ready-for-the-test	sg	same	is	Neither Amina nor the head boy ___ ready for the test.
+nearest-subject.amina.class-captain.in-the-front-row	sg	same	sits	Either Amina or the class captain ___ in the front row.
+nearest-subject.amina.class-captain.in-the-hall	sg	same	is	Either Amina or the class captain ___ in the hall.
+nearest-subject.amina.class-captain.finished-the-project	sg	same	has	Either Amina or the class captain ___ finished the project.
+nearest-subject.amina.students.early-on-mondays	pl	opposite	arrive	Neither Amina nor the students ___ early on Mondays.
+nearest-subject.amina.students.ready-for-the-test	pl	opposite	are	Neither Amina nor the students ___ ready for the test.
+nearest-subject.amina.students.to-school-every-morning	pl	opposite	walk	Neither Amina nor the students ___ to school every morning.
+nearest-subject.amina.prefects.in-the-hall	pl	opposite	are	Either Amina or the prefects ___ in the hall.
+nearest-subject.amina.prefects.finished-the-project	pl	opposite	have	Either Amina or the prefects ___ finished the project.
+nearest-subject.amina.prefects.near-the-market	pl	opposite	live	Either Amina or the prefects ___ near the market.
+nearest-subject.amina.players.ready-for-the-test	pl	opposite	are	Neither Amina nor the players ___ ready for the test.
+nearest-subject.amina.players.to-school-every-morning	pl	opposite	walk	Neither Amina nor the players ___ to school every morning.
+nearest-subject.amina.players.in-the-front-row	pl	opposite	sit	Neither Amina nor the players ___ in the front row.
+nearest-subject.amina.twins.finished-the-project	pl	opposite	have	Either Amina or the twins ___ finished the project.
+nearest-subject.amina.twins.near-the-market	pl	opposite	live	Either Amina or the twins ___ near the market.
+nearest-subject.amina.twins.early-on-mondays	pl	opposite	arrive	Either Amina or the twins ___ early on Mondays.
+nearest-subject.amina.teachers.to-school-every-morning	pl	opposite	walk	Neither Amina nor the teachers ___ to school every morning.
+nearest-subject.amina.teachers.in-the-front-row	pl	opposite	sit	Neither Amina nor the teachers ___ in the front row.
+nearest-subject.amina.teachers.in-the-hall	pl	opposite	are	Neither Amina nor the teachers ___ in the hall.
+nearest-subject.emeka.tunde.near-the-market	sg	same	lives	Either Emeka or Tunde ___ near the market.
+nearest-subject.emeka.tunde.early-on-mondays	sg	same	arrives	Either Emeka or Tunde ___ early on Mondays.
+nearest-subject.emeka.tunde.ready-for-the-test	sg	same	is	Either Emeka or Tunde ___ ready for the test.
+nearest-subject.emeka.amina.in-the-front-row	sg	same	sits	Neither Emeka nor Amina ___ in the front row.
+nearest-subject.emeka.amina.in-the-hall	sg	same	is	Neither Emeka nor Amina ___ in the hall.
+nearest-subject.emeka.amina.finished-the-project	sg	same	has	Neither Emeka nor Amina ___ finished the project.
+nearest-subject.emeka.head-boy.early-on-mondays	sg	same	arrives	Either Emeka or the head boy ___ early on Mondays.
+nearest-subject.emeka.head-boy.ready-for-the-test	sg	same	is	Either Emeka or the head boy ___ ready for the test.
+nearest-subject.emeka.head-boy.to-school-every-morning	sg	same	walks	Either Emeka or the head boy ___ to school every morning.
+nearest-subject.emeka.class-captain.in-the-hall	sg	same	is	Neither Emeka nor the class captain ___ in the hall.
+nearest-subject.emeka.class-captain.finished-the-project	sg	same	has	Neither Emeka nor the class captain ___ finished the project.
+nearest-subject.emeka.class-captain.near-the-market	sg	same	lives	Neither Emeka nor the class captain ___ near the market.
+nearest-subject.emeka.students.ready-for-the-test	pl	opposite	are	Either Emeka or the students ___ ready for the test.
+nearest-subject.emeka.students.to-school-every-morning	pl	opposite	walk	Either Emeka or the students ___ to school every morning.
+nearest-subject.emeka.students.in-the-front-row	pl	opposite	sit	Either Emeka or the students ___ in the front row.
+nearest-subject.emeka.prefects.finished-the-project	pl	opposite	have	Neither Emeka nor the prefects ___ finished the project.
+nearest-subject.emeka.prefects.near-the-market	pl	opposite	live	Neither Emeka nor the prefects ___ near the market.
+nearest-subject.emeka.prefects.early-on-mondays	pl	opposite	arrive	Neither Emeka nor the prefects ___ early on Mondays.
+nearest-subject.emeka.players.to-school-every-morning	pl	opposite	walk	Either Emeka or the players ___ to school every morning.
+nearest-subject.emeka.players.in-the-front-row	pl	opposite	sit	Either Emeka or the players ___ in the front row.
+nearest-subject.emeka.players.in-the-hall	pl	opposite	are	Either Emeka or the players ___ in the hall.
+nearest-subject.emeka.twins.near-the-market	pl	opposite	live	Neither Emeka nor the twins ___ near the market.
+nearest-subject.emeka.twins.early-on-mondays	pl	opposite	arrive	Neither Emeka nor the twins ___ early on Mondays.
+nearest-subject.emeka.twins.ready-for-the-test	pl	opposite	are	Neither Emeka nor the twins ___ ready for the test.
+nearest-subject.emeka.teachers.in-the-front-row	pl	opposite	sit	Either Emeka or the teachers ___ in the front row.
+nearest-subject.emeka.teachers.in-the-hall	pl	opposite	are	Either Emeka or the teachers ___ in the hall.
+nearest-subject.emeka.teachers.finished-the-project	pl	opposite	have	Either Emeka or the teachers ___ finished the project.
+nearest-subject.head-boy.tunde.early-on-mondays	sg	same	arrives	Neither the head boy nor Tunde ___ early on Mondays.
+nearest-subject.head-boy.tunde.ready-for-the-test	sg	same	is	Neither the head boy nor Tunde ___ ready for the test.
+nearest-subject.head-boy.tunde.to-school-every-morning	sg	same	walks	Neither the head boy nor Tunde ___ to school every morning.
+nearest-subject.head-boy.amina.in-the-hall	sg	same	is	Either the head boy or Amina ___ in the hall.
+nearest-subject.head-boy.amina.finished-the-project	sg	same	has	Either the head boy or Amina ___ finished the project.
+nearest-subject.head-boy.amina.near-the-market	sg	same	lives	Either the head boy or Amina ___ near the market.
+nearest-subject.head-boy.emeka.ready-for-the-test	sg	same	is	Neither the head boy nor Emeka ___ ready for the test.
+nearest-subject.head-boy.emeka.to-school-every-morning	sg	same	walks	Neither the head boy nor Emeka ___ to school every morning.
+nearest-subject.head-boy.emeka.in-the-front-row	sg	same	sits	Neither the head boy nor Emeka ___ in the front row.
+nearest-subject.head-boy.class-captain.finished-the-project	sg	same	has	Either the head boy or the class captain ___ finished the project.
+nearest-subject.head-boy.class-captain.near-the-market	sg	same	lives	Either the head boy or the class captain ___ near the market.
+nearest-subject.head-boy.class-captain.early-on-mondays	sg	same	arrives	Either the head boy or the class captain ___ early on Mondays.
+nearest-subject.head-boy.students.to-school-every-morning	pl	opposite	walk	Neither the head boy nor the students ___ to school every morning.
+nearest-subject.head-boy.students.in-the-front-row	pl	opposite	sit	Neither the head boy nor the students ___ in the front row.
+nearest-subject.head-boy.students.in-the-hall	pl	opposite	are	Neither the head boy nor the students ___ in the hall.
+nearest-subject.head-boy.prefects.near-the-market	pl	opposite	live	Either the head boy or the prefects ___ near the market.
+nearest-subject.head-boy.prefects.early-on-mondays	pl	opposite	arrive	Either the head boy or the prefects ___ early on Mondays.
+nearest-subject.head-boy.prefects.ready-for-the-test	pl	opposite	are	Either the head boy or the prefects ___ ready for the test.
+nearest-subject.head-boy.players.in-the-front-row	pl	opposite	sit	Neither the head boy nor the players ___ in the front row.
+nearest-subject.head-boy.players.in-the-hall	pl	opposite	are	Neither the head boy nor the players ___ in the hall.
+nearest-subject.head-boy.players.finished-the-project	pl	opposite	have	Neither the head boy nor the players ___ finished the project.
+nearest-subject.head-boy.twins.early-on-mondays	pl	opposite	arrive	Either the head boy or the twins ___ early on Mondays.
+nearest-subject.head-boy.twins.ready-for-the-test	pl	opposite	are	Either the head boy or the twins ___ ready for the test.
+nearest-subject.head-boy.twins.to-school-every-morning	pl	opposite	walk	Either the head boy or the twins ___ to school every morning.
+nearest-subject.head-boy.teachers.in-the-hall	pl	opposite	are	Neither the head boy nor the teachers ___ in the hall.
+nearest-subject.head-boy.teachers.finished-the-project	pl	opposite	have	Neither the head boy nor the teachers ___ finished the project.
+nearest-subject.head-boy.teachers.near-the-market	pl	opposite	live	Neither the head boy nor the teachers ___ near the market.
+nearest-subject.class-captain.tunde.ready-for-the-test	sg	same	is	Either the class captain or Tunde ___ ready for the test.
+nearest-subject.class-captain.tunde.to-school-every-morning	sg	same	walks	Either the class captain or Tunde ___ to school every morning.
+nearest-subject.class-captain.tunde.in-the-front-row	sg	same	sits	Either the class captain or Tunde ___ in the front row.
+nearest-subject.class-captain.amina.finished-the-project	sg	same	has	Neither the class captain nor Amina ___ finished the project.
+nearest-subject.class-captain.amina.near-the-market	sg	same	lives	Neither the class captain nor Amina ___ near the market.
+nearest-subject.class-captain.amina.early-on-mondays	sg	same	arrives	Neither the class captain nor Amina ___ early on Mondays.
+nearest-subject.class-captain.emeka.to-school-every-morning	sg	same	walks	Either the class captain or Emeka ___ to school every morning.
+nearest-subject.class-captain.emeka.in-the-front-row	sg	same	sits	Either the class captain or Emeka ___ in the front row.
+nearest-subject.class-captain.emeka.in-the-hall	sg	same	is	Either the class captain or Emeka ___ in the hall.
+nearest-subject.class-captain.head-boy.near-the-market	sg	same	lives	Neither the class captain nor the head boy ___ near the market.
+nearest-subject.class-captain.head-boy.early-on-mondays	sg	same	arrives	Neither the class captain nor the head boy ___ early on Mondays.
+nearest-subject.class-captain.head-boy.ready-for-the-test	sg	same	is	Neither the class captain nor the head boy ___ ready for the test.
+nearest-subject.class-captain.students.in-the-front-row	pl	opposite	sit	Either the class captain or the students ___ in the front row.
+nearest-subject.class-captain.students.in-the-hall	pl	opposite	are	Either the class captain or the students ___ in the hall.
+nearest-subject.class-captain.students.finished-the-project	pl	opposite	have	Either the class captain or the students ___ finished the project.
+nearest-subject.class-captain.prefects.early-on-mondays	pl	opposite	arrive	Neither the class captain nor the prefects ___ early on Mondays.
+nearest-subject.class-captain.prefects.ready-for-the-test	pl	opposite	are	Neither the class captain nor the prefects ___ ready for the test.
+nearest-subject.class-captain.prefects.to-school-every-morning	pl	opposite	walk	Neither the class captain nor the prefects ___ to school every morning.
+nearest-subject.class-captain.players.in-the-hall	pl	opposite	are	Either the class captain or the players ___ in the hall.
+nearest-subject.class-captain.players.finished-the-project	pl	opposite	have	Either the class captain or the players ___ finished the project.
+nearest-subject.class-captain.players.near-the-market	pl	opposite	live	Either the class captain or the players ___ near the market.
+nearest-subject.class-captain.twins.ready-for-the-test	pl	opposite	are	Neither the class captain nor the twins ___ ready for the test.
+nearest-subject.class-captain.twins.to-school-every-morning	pl	opposite	walk	Neither the class captain nor the twins ___ to school every morning.
+nearest-subject.class-captain.twins.in-the-front-row	pl	opposite	sit	Neither the class captain nor the twins ___ in the front row.
+nearest-subject.class-captain.teachers.finished-the-project	pl	opposite	have	Either the class captain or the teachers ___ finished the project.
+nearest-subject.class-captain.teachers.near-the-market	pl	opposite	live	Either the class captain or the teachers ___ near the market.
+nearest-subject.class-captain.teachers.early-on-mondays	pl	opposite	arrive	Either the class captain or the teachers ___ early on Mondays.
+nearest-subject.students.tunde.to-school-every-morning	sg	opposite	walks	Neither the students nor Tunde ___ to school every morning.
+nearest-subject.students.tunde.in-the-front-row	sg	opposite	sits	Neither the students nor Tunde ___ in the front row.
+nearest-subject.students.tunde.in-the-hall	sg	opposite	is	Neither the students nor Tunde ___ in the hall.
+nearest-subject.students.amina.near-the-market	sg	opposite	lives	Either the students or Amina ___ near the market.
+nearest-subject.students.amina.early-on-mondays	sg	opposite	arrives	Either the students or Amina ___ early on Mondays.
+nearest-subject.students.amina.ready-for-the-test	sg	opposite	is	Either the students or Amina ___ ready for the test.
+nearest-subject.students.emeka.in-the-front-row	sg	opposite	sits	Neither the students nor Emeka ___ in the front row.
+nearest-subject.students.emeka.in-the-hall	sg	opposite	is	Neither the students nor Emeka ___ in the hall.
+nearest-subject.students.emeka.finished-the-project	sg	opposite	has	Neither the students nor Emeka ___ finished the project.
+nearest-subject.students.head-boy.early-on-mondays	sg	opposite	arrives	Either the students or the head boy ___ early on Mondays.
+nearest-subject.students.head-boy.ready-for-the-test	sg	opposite	is	Either the students or the head boy ___ ready for the test.
+nearest-subject.students.head-boy.to-school-every-morning	sg	opposite	walks	Either the students or the head boy ___ to school every morning.
+nearest-subject.students.class-captain.in-the-hall	sg	opposite	is	Neither the students nor the class captain ___ in the hall.
+nearest-subject.students.class-captain.finished-the-project	sg	opposite	has	Neither the students nor the class captain ___ finished the project.
+nearest-subject.students.class-captain.near-the-market	sg	opposite	lives	Neither the students nor the class captain ___ near the market.
+nearest-subject.students.prefects.ready-for-the-test	pl	same	are	Either the students or the prefects ___ ready for the test.
+nearest-subject.students.prefects.to-school-every-morning	pl	same	walk	Either the students or the prefects ___ to school every morning.
+nearest-subject.students.prefects.in-the-front-row	pl	same	sit	Either the students or the prefects ___ in the front row.
+nearest-subject.students.players.finished-the-project	pl	same	have	Neither the students nor the players ___ finished the project.
+nearest-subject.students.players.near-the-market	pl	same	live	Neither the students nor the players ___ near the market.
+nearest-subject.students.players.early-on-mondays	pl	same	arrive	Neither the students nor the players ___ early on Mondays.
+nearest-subject.students.twins.to-school-every-morning	pl	same	walk	Either the students or the twins ___ to school every morning.
+nearest-subject.students.twins.in-the-front-row	pl	same	sit	Either the students or the twins ___ in the front row.
+nearest-subject.students.twins.in-the-hall	pl	same	are	Either the students or the twins ___ in the hall.
+nearest-subject.students.teachers.near-the-market	pl	same	live	Neither the students nor the teachers ___ near the market.
+nearest-subject.students.teachers.early-on-mondays	pl	same	arrive	Neither the students nor the teachers ___ early on Mondays.
+nearest-subject.students.teachers.ready-for-the-test	pl	same	are	Neither the students nor the teachers ___ ready for the test.
+nearest-subject.prefects.tunde.in-the-front-row	sg	opposite	sits	Either the prefects or Tunde ___ in the front row.
+nearest-subject.prefects.tunde.in-the-hall	sg	opposite	is	Either the prefects or Tunde ___ in the hall.
+nearest-subject.prefects.tunde.finished-the-project	sg	opposite	has	Either the prefects or Tunde ___ finished the project.
+nearest-subject.prefects.amina.early-on-mondays	sg	opposite	arrives	Neither the prefects nor Amina ___ early on Mondays.
+nearest-subject.prefects.amina.ready-for-the-test	sg	opposite	is	Neither the prefects nor Amina ___ ready for the test.
+nearest-subject.prefects.amina.to-school-every-morning	sg	opposite	walks	Neither the prefects nor Amina ___ to school every morning.
+nearest-subject.prefects.emeka.in-the-hall	sg	opposite	is	Either the prefects or Emeka ___ in the hall.
+nearest-subject.prefects.emeka.finished-the-project	sg	opposite	has	Either the prefects or Emeka ___ finished the project.
+nearest-subject.prefects.emeka.near-the-market	sg	opposite	lives	Either the prefects or Emeka ___ near the market.
+nearest-subject.prefects.head-boy.ready-for-the-test	sg	opposite	is	Neither the prefects nor the head boy ___ ready for the test.
+nearest-subject.prefects.head-boy.to-school-every-morning	sg	opposite	walks	Neither the prefects nor the head boy ___ to school every morning.
+nearest-subject.prefects.head-boy.in-the-front-row	sg	opposite	sits	Neither the prefects nor the head boy ___ in the front row.
+nearest-subject.prefects.class-captain.finished-the-project	sg	opposite	has	Either the prefects or the class captain ___ finished the project.
+nearest-subject.prefects.class-captain.near-the-market	sg	opposite	lives	Either the prefects or the class captain ___ near the market.
+nearest-subject.prefects.class-captain.early-on-mondays	sg	opposite	arrives	Either the prefects or the class captain ___ early on Mondays.
+nearest-subject.prefects.students.to-school-every-morning	pl	same	walk	Neither the prefects nor the students ___ to school every morning.
+nearest-subject.prefects.students.in-the-front-row	pl	same	sit	Neither the prefects nor the students ___ in the front row.
+nearest-subject.prefects.students.in-the-hall	pl	same	are	Neither the prefects nor the students ___ in the hall.
+nearest-subject.prefects.players.near-the-market	pl	same	live	Either the prefects or the players ___ near the market.
+nearest-subject.prefects.players.early-on-mondays	pl	same	arrive	Either the prefects or the players ___ early on Mondays.
+nearest-subject.prefects.players.ready-for-the-test	pl	same	are	Either the prefects or the players ___ ready for the test.
+nearest-subject.prefects.twins.in-the-front-row	pl	same	sit	Neither the prefects nor the twins ___ in the front row.
+nearest-subject.prefects.twins.in-the-hall	pl	same	are	Neither the prefects nor the twins ___ in the hall.
+nearest-subject.prefects.twins.finished-the-project	pl	same	have	Neither the prefects nor the twins ___ finished the project.
+nearest-subject.prefects.teachers.early-on-mondays	pl	same	arrive	Either the prefects or the teachers ___ early on Mondays.
+nearest-subject.prefects.teachers.ready-for-the-test	pl	same	are	Either the prefects or the teachers ___ ready for the test.
+nearest-subject.prefects.teachers.to-school-every-morning	pl	same	walk	Either the prefects or the teachers ___ to school every morning.
+nearest-subject.players.tunde.in-the-hall	sg	opposite	is	Neither the players nor Tunde ___ in the hall.
+nearest-subject.players.tunde.finished-the-project	sg	opposite	has	Neither the players nor Tunde ___ finished the project.
+nearest-subject.players.tunde.near-the-market	sg	opposite	lives	Neither the players nor Tunde ___ near the market.
+nearest-subject.players.amina.ready-for-the-test	sg	opposite	is	Either the players or Amina ___ ready for the test.
+nearest-subject.players.amina.to-school-every-morning	sg	opposite	walks	Either the players or Amina ___ to school every morning.
+nearest-subject.players.amina.in-the-front-row	sg	opposite	sits	Either the players or Amina ___ in the front row.
+nearest-subject.players.emeka.finished-the-project	sg	opposite	has	Neither the players nor Emeka ___ finished the project.
+nearest-subject.players.emeka.near-the-market	sg	opposite	lives	Neither the players nor Emeka ___ near the market.
+nearest-subject.players.emeka.early-on-mondays	sg	opposite	arrives	Neither the players nor Emeka ___ early on Mondays.
+nearest-subject.players.head-boy.to-school-every-morning	sg	opposite	walks	Either the players or the head boy ___ to school every morning.
+nearest-subject.players.head-boy.in-the-front-row	sg	opposite	sits	Either the players or the head boy ___ in the front row.
+nearest-subject.players.head-boy.in-the-hall	sg	opposite	is	Either the players or the head boy ___ in the hall.
+nearest-subject.players.class-captain.near-the-market	sg	opposite	lives	Neither the players nor the class captain ___ near the market.
+nearest-subject.players.class-captain.early-on-mondays	sg	opposite	arrives	Neither the players nor the class captain ___ early on Mondays.
+nearest-subject.players.class-captain.ready-for-the-test	sg	opposite	is	Neither the players nor the class captain ___ ready for the test.
+nearest-subject.players.students.in-the-front-row	pl	same	sit	Either the players or the students ___ in the front row.
+nearest-subject.players.students.in-the-hall	pl	same	are	Either the players or the students ___ in the hall.
+nearest-subject.players.students.finished-the-project	pl	same	have	Either the players or the students ___ finished the project.
+nearest-subject.players.prefects.early-on-mondays	pl	same	arrive	Neither the players nor the prefects ___ early on Mondays.
+nearest-subject.players.prefects.ready-for-the-test	pl	same	are	Neither the players nor the prefects ___ ready for the test.
+nearest-subject.players.prefects.to-school-every-morning	pl	same	walk	Neither the players nor the prefects ___ to school every morning.
+nearest-subject.players.twins.in-the-hall	pl	same	are	Either the players or the twins ___ in the hall.
+nearest-subject.players.twins.finished-the-project	pl	same	have	Either the players or the twins ___ finished the project.
+nearest-subject.players.twins.near-the-market	pl	same	live	Either the players or the twins ___ near the market.
+nearest-subject.players.teachers.ready-for-the-test	pl	same	are	Neither the players nor the teachers ___ ready for the test.
+nearest-subject.players.teachers.to-school-every-morning	pl	same	walk	Neither the players nor the teachers ___ to school every morning.
+nearest-subject.players.teachers.in-the-front-row	pl	same	sit	Neither the players nor the teachers ___ in the front row.
+nearest-subject.twins.tunde.finished-the-project	sg	opposite	has	Either the twins or Tunde ___ finished the project.
+nearest-subject.twins.tunde.near-the-market	sg	opposite	lives	Either the twins or Tunde ___ near the market.
+nearest-subject.twins.tunde.early-on-mondays	sg	opposite	arrives	Either the twins or Tunde ___ early on Mondays.
+nearest-subject.twins.amina.to-school-every-morning	sg	opposite	walks	Neither the twins nor Amina ___ to school every morning.
+nearest-subject.twins.amina.in-the-front-row	sg	opposite	sits	Neither the twins nor Amina ___ in the front row.
+nearest-subject.twins.amina.in-the-hall	sg	opposite	is	Neither the twins nor Amina ___ in the hall.
+nearest-subject.twins.emeka.near-the-market	sg	opposite	lives	Either the twins or Emeka ___ near the market.
+nearest-subject.twins.emeka.early-on-mondays	sg	opposite	arrives	Either the twins or Emeka ___ early on Mondays.
+nearest-subject.twins.emeka.ready-for-the-test	sg	opposite	is	Either the twins or Emeka ___ ready for the test.
+nearest-subject.twins.head-boy.in-the-front-row	sg	opposite	sits	Neither the twins nor the head boy ___ in the front row.
+nearest-subject.twins.head-boy.in-the-hall	sg	opposite	is	Neither the twins nor the head boy ___ in the hall.
+nearest-subject.twins.head-boy.finished-the-project	sg	opposite	has	Neither the twins nor the head boy ___ finished the project.
+nearest-subject.twins.class-captain.early-on-mondays	sg	opposite	arrives	Either the twins or the class captain ___ early on Mondays.
+nearest-subject.twins.class-captain.ready-for-the-test	sg	opposite	is	Either the twins or the class captain ___ ready for the test.
+nearest-subject.twins.class-captain.to-school-every-morning	sg	opposite	walks	Either the twins or the class captain ___ to school every morning.
+nearest-subject.twins.students.in-the-hall	pl	same	are	Neither the twins nor the students ___ in the hall.
+nearest-subject.twins.students.finished-the-project	pl	same	have	Neither the twins nor the students ___ finished the project.
+nearest-subject.twins.students.near-the-market	pl	same	live	Neither the twins nor the students ___ near the market.
+nearest-subject.twins.prefects.ready-for-the-test	pl	same	are	Either the twins or the prefects ___ ready for the test.
+nearest-subject.twins.prefects.to-school-every-morning	pl	same	walk	Either the twins or the prefects ___ to school every morning.
+nearest-subject.twins.prefects.in-the-front-row	pl	same	sit	Either the twins or the prefects ___ in the front row.
+nearest-subject.twins.players.finished-the-project	pl	same	have	Neither the twins nor the players ___ finished the project.
+nearest-subject.twins.players.near-the-market	pl	same	live	Neither the twins nor the players ___ near the market.
+nearest-subject.twins.players.early-on-mondays	pl	same	arrive	Neither the twins nor the players ___ early on Mondays.
+nearest-subject.twins.teachers.to-school-every-morning	pl	same	walk	Either the twins or the teachers ___ to school every morning.
+nearest-subject.twins.teachers.in-the-front-row	pl	same	sit	Either the twins or the teachers ___ in the front row.
+nearest-subject.twins.teachers.in-the-hall	pl	same	are	Either the twins or the teachers ___ in the hall.
+nearest-subject.teachers.tunde.near-the-market	sg	opposite	lives	Neither the teachers nor Tunde ___ near the market.
+nearest-subject.teachers.tunde.early-on-mondays	sg	opposite	arrives	Neither the teachers nor Tunde ___ early on Mondays.
+nearest-subject.teachers.tunde.ready-for-the-test	sg	opposite	is	Neither the teachers nor Tunde ___ ready for the test.
+nearest-subject.teachers.amina.in-the-front-row	sg	opposite	sits	Either the teachers or Amina ___ in the front row.
+nearest-subject.teachers.amina.in-the-hall	sg	opposite	is	Either the teachers or Amina ___ in the hall.
+nearest-subject.teachers.amina.finished-the-project	sg	opposite	has	Either the teachers or Amina ___ finished the project.
+nearest-subject.teachers.emeka.early-on-mondays	sg	opposite	arrives	Neither the teachers nor Emeka ___ early on Mondays.
+nearest-subject.teachers.emeka.ready-for-the-test	sg	opposite	is	Neither the teachers nor Emeka ___ ready for the test.
+nearest-subject.teachers.emeka.to-school-every-morning	sg	opposite	walks	Neither the teachers nor Emeka ___ to school every morning.
+nearest-subject.teachers.head-boy.in-the-hall	sg	opposite	is	Either the teachers or the head boy ___ in the hall.
+nearest-subject.teachers.head-boy.finished-the-project	sg	opposite	has	Either the teachers or the head boy ___ finished the project.
+nearest-subject.teachers.head-boy.near-the-market	sg	opposite	lives	Either the teachers or the head boy ___ near the market.
+nearest-subject.teachers.class-captain.ready-for-the-test	sg	opposite	is	Neither the teachers nor the class captain ___ ready for the test.
+nearest-subject.teachers.class-captain.to-school-every-morning	sg	opposite	walks	Neither the teachers nor the class captain ___ to school every morning.
+nearest-subject.teachers.class-captain.in-the-front-row	sg	opposite	sits	Neither the teachers nor the class captain ___ in the front row.
+nearest-subject.teachers.students.finished-the-project	pl	same	have	Either the teachers or the students ___ finished the project.
+nearest-subject.teachers.students.near-the-market	pl	same	live	Either the teachers or the students ___ near the market.
+nearest-subject.teachers.students.early-on-mondays	pl	same	arrive	Either the teachers or the students ___ early on Mondays.
+nearest-subject.teachers.prefects.to-school-every-morning	pl	same	walk	Neither the teachers nor the prefects ___ to school every morning.
+nearest-subject.teachers.prefects.in-the-front-row	pl	same	sit	Neither the teachers nor the prefects ___ in the front row.
+nearest-subject.teachers.prefects.in-the-hall	pl	same	are	Neither the teachers nor the prefects ___ in the hall.
+nearest-subject.teachers.players.near-the-market	pl	same	live	Either the teachers or the players ___ near the market.
+nearest-subject.teachers.players.early-on-mondays	pl	same	arrive	Either the teachers or the players ___ early on Mondays.
+nearest-subject.teachers.players.ready-for-the-test	pl	same	are	Either the teachers or the players ___ ready for the test.
+nearest-subject.teachers.twins.in-the-front-row	pl	same	sit	Neither the teachers nor the twins ___ in the front row.
+nearest-subject.teachers.twins.in-the-hall	pl	same	are	Neither the teachers nor the twins ___ in the hall.
+nearest-subject.teachers.twins.finished-the-project	pl	same	have	Neither the teachers nor the twins ___ finished the project.

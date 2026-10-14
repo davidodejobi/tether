@@ -1,0 +1,281 @@
+# Each, everyone, none (indefinite-pronouns) v1: 279 questions
+# id	number	pairing	answer	sentence
+indefinite-pronouns.each.of-the-students.in-the-hall	sg	opposite	is	Each of the students ___ in the hall.
+indefinite-pronouns.each.of-the-students.ready-for-the-test	sg	opposite	is	Each of the students ___ ready for the test.
+indefinite-pronouns.each.of-the-students.finished-the-project	sg	opposite	has	Each of the students ___ finished the project.
+indefinite-pronouns.each.of-the-students.to-school-every-morning	sg	opposite	walks	Each of the students ___ to school every morning.
+indefinite-pronouns.each.of-the-students.near-the-market	sg	opposite	lives	Each of the students ___ near the market.
+indefinite-pronouns.each.of-the-students.in-the-front-row	sg	opposite	sits	Each of the students ___ in the front row.
+indefinite-pronouns.each.of-the-students.early-on-mondays	sg	opposite	arrives	Each of the students ___ early on Mondays.
+indefinite-pronouns.each.of-the-players.in-the-hall	sg	opposite	is	Each of the players ___ in the hall.
+indefinite-pronouns.each.of-the-players.ready-for-the-test	sg	opposite	is	Each of the players ___ ready for the test.
+indefinite-pronouns.each.of-the-players.finished-the-project	sg	opposite	has	Each of the players ___ finished the project.
+indefinite-pronouns.each.of-the-players.to-school-every-morning	sg	opposite	walks	Each of the players ___ to school every morning.
+indefinite-pronouns.each.of-the-players.near-the-market	sg	opposite	lives	Each of the players ___ near the market.
+indefinite-pronouns.each.of-the-players.in-the-front-row	sg	opposite	sits	Each of the players ___ in the front row.
+indefinite-pronouns.each.of-the-players.early-on-mondays	sg	opposite	arrives	Each of the players ___ early on Mondays.
+indefinite-pronouns.each.of-the-prefects.in-the-hall	sg	opposite	is	Each of the prefects ___ in the hall.
+indefinite-pronouns.each.of-the-prefects.ready-for-the-test	sg	opposite	is	Each of the prefects ___ ready for the test.
+indefinite-pronouns.each.of-the-prefects.finished-the-project	sg	opposite	has	Each of the prefects ___ finished the project.
+indefinite-pronouns.each.of-the-prefects.to-school-every-morning	sg	opposite	walks	Each of the prefects ___ to school every morning.
+indefinite-pronouns.each.of-the-prefects.near-the-market	sg	opposite	lives	Each of the prefects ___ near the market.
+indefinite-pronouns.each.of-the-prefects.in-the-front-row	sg	opposite	sits	Each of the prefects ___ in the front row.
+indefinite-pronouns.each.of-the-prefects.early-on-mondays	sg	opposite	arrives	Each of the prefects ___ early on Mondays.
+indefinite-pronouns.every-one.of-the-students.in-the-hall	sg	opposite	is	Every one of the students ___ in the hall.
+indefinite-pronouns.every-one.of-the-students.ready-for-the-test	sg	opposite	is	Every one of the students ___ ready for the test.
+indefinite-pronouns.every-one.of-the-students.finished-the-project	sg	opposite	has	Every one of the students ___ finished the project.
+indefinite-pronouns.every-one.of-the-students.to-school-every-morning	sg	opposite	walks	Every one of the students ___ to school every morning.
+indefinite-pronouns.every-one.of-the-students.near-the-market	sg	opposite	lives	Every one of the students ___ near the market.
+indefinite-pronouns.every-one.of-the-students.in-the-front-row	sg	opposite	sits	Every one of the students ___ in the front row.
+indefinite-pronouns.every-one.of-the-students.early-on-mondays	sg	opposite	arrives	Every one of the students ___ early on Mondays.
+indefinite-pronouns.every-one.of-the-players.in-the-hall	sg	opposite	is	Every one of the players ___ in the hall.
+indefinite-pronouns.every-one.of-the-players.ready-for-the-test	sg	opposite	is	Every one of the players ___ ready for the test.
+indefinite-pronouns.every-one.of-the-players.finished-the-project	sg	opposite	has	Every one of the players ___ finished the project.
+indefinite-pronouns.every-one.of-the-players.to-school-every-morning	sg	opposite	walks	Every one of the players ___ to school every morning.
+indefinite-pronouns.every-one.of-the-players.near-the-market	sg	opposite	lives	Every one of the players ___ near the market.
+indefinite-pronouns.every-one.of-the-players.in-the-front-row	sg	opposite	sits	Every one of the players ___ in the front row.
+indefinite-pronouns.every-one.of-the-players.early-on-mondays	sg	opposite	arrives	Every one of the players ___ early on Mondays.
+indefinite-pronouns.every-one.of-the-prefects.in-the-hall	sg	opposite	is	Every one of the prefects ___ in the hall.
+indefinite-pronouns.every-one.of-the-prefects.ready-for-the-test	sg	opposite	is	Every one of the prefects ___ ready for the test.
+indefinite-pronouns.every-one.of-the-prefects.finished-the-project	sg	opposite	has	Every one of the prefects ___ finished the project.
+indefinite-pronouns.every-one.of-the-prefects.to-school-every-morning	sg	opposite	walks	Every one of the prefects ___ to school every morning.
+indefinite-pronouns.every-one.of-the-prefects.near-the-market	sg	opposite	lives	Every one of the prefects ___ near the market.
+indefinite-pronouns.every-one.of-the-prefects.in-the-front-row	sg	opposite	sits	Every one of the prefects ___ in the front row.
+indefinite-pronouns.every-one.of-the-prefects.early-on-mondays	sg	opposite	arrives	Every one of the prefects ___ early on Mondays.
+indefinite-pronouns.either.of-the-twins.in-the-hall	sg	opposite	is	Either of the twins ___ in the hall.
+indefinite-pronouns.either.of-the-twins.ready-for-the-test	sg	opposite	is	Either of the twins ___ ready for the test.
+indefinite-pronouns.either.of-the-twins.finished-the-project	sg	opposite	has	Either of the twins ___ finished the project.
+indefinite-pronouns.either.of-the-twins.to-school-every-morning	sg	opposite	walks	Either of the twins ___ to school every morning.
+indefinite-pronouns.either.of-the-twins.near-the-market	sg	opposite	lives	Either of the twins ___ near the market.
+indefinite-pronouns.either.of-the-twins.in-the-front-row	sg	opposite	sits	Either of the twins ___ in the front row.
+indefinite-pronouns.either.of-the-twins.early-on-mondays	sg	opposite	arrives	Either of the twins ___ early on Mondays.
+indefinite-pronouns.either.of-the-captains.in-the-hall	sg	opposite	is	Either of the captains ___ in the hall.
+indefinite-pronouns.either.of-the-captains.ready-for-the-test	sg	opposite	is	Either of the captains ___ ready for the test.
+indefinite-pronouns.either.of-the-captains.finished-the-project	sg	opposite	has	Either of the captains ___ finished the project.
+indefinite-pronouns.either.of-the-captains.to-school-every-morning	sg	opposite	walks	Either of the captains ___ to school every morning.
+indefinite-pronouns.either.of-the-captains.near-the-market	sg	opposite	lives	Either of the captains ___ near the market.
+indefinite-pronouns.either.of-the-captains.in-the-front-row	sg	opposite	sits	Either of the captains ___ in the front row.
+indefinite-pronouns.either.of-the-captains.early-on-mondays	sg	opposite	arrives	Either of the captains ___ early on Mondays.
+indefinite-pronouns.neither.of-the-twins.in-the-hall	sg	opposite	is	Neither of the twins ___ in the hall.
+indefinite-pronouns.neither.of-the-twins.ready-for-the-test	sg	opposite	is	Neither of the twins ___ ready for the test.
+indefinite-pronouns.neither.of-the-twins.finished-the-project	sg	opposite	has	Neither of the twins ___ finished the project.
+indefinite-pronouns.neither.of-the-twins.to-school-every-morning	sg	opposite	walks	Neither of the twins ___ to school every morning.
+indefinite-pronouns.neither.of-the-twins.near-the-market	sg	opposite	lives	Neither of the twins ___ near the market.
+indefinite-pronouns.neither.of-the-twins.in-the-front-row	sg	opposite	sits	Neither of the twins ___ in the front row.
+indefinite-pronouns.neither.of-the-twins.early-on-mondays	sg	opposite	arrives	Neither of the twins ___ early on Mondays.
+indefinite-pronouns.neither.of-the-captains.in-the-hall	sg	opposite	is	Neither of the captains ___ in the hall.
+indefinite-pronouns.neither.of-the-captains.ready-for-the-test	sg	opposite	is	Neither of the captains ___ ready for the test.
+indefinite-pronouns.neither.of-the-captains.finished-the-project	sg	opposite	has	Neither of the captains ___ finished the project.
+indefinite-pronouns.neither.of-the-captains.to-school-every-morning	sg	opposite	walks	Neither of the captains ___ to school every morning.
+indefinite-pronouns.neither.of-the-captains.near-the-market	sg	opposite	lives	Neither of the captains ___ near the market.
+indefinite-pronouns.neither.of-the-captains.in-the-front-row	sg	opposite	sits	Neither of the captains ___ in the front row.
+indefinite-pronouns.neither.of-the-captains.early-on-mondays	sg	opposite	arrives	Neither of the captains ___ early on Mondays.
+indefinite-pronouns.everyone.in-the-class.in-the-hall	sg	same	is	Everyone in the class ___ in the hall.
+indefinite-pronouns.everyone.in-the-class.ready-for-the-test	sg	same	is	Everyone in the class ___ ready for the test.
+indefinite-pronouns.everyone.in-the-class.finished-the-project	sg	same	has	Everyone in the class ___ finished the project.
+indefinite-pronouns.everyone.in-the-class.to-school-every-morning	sg	same	walks	Everyone in the class ___ to school every morning.
+indefinite-pronouns.everyone.in-the-class.near-the-market	sg	same	lives	Everyone in the class ___ near the market.
+indefinite-pronouns.everyone.in-the-class.in-the-front-row	sg	same	sits	Everyone in the class ___ in the front row.
+indefinite-pronouns.everyone.in-the-class.early-on-mondays	sg	same	arrives	Everyone in the class ___ early on Mondays.
+indefinite-pronouns.everyone.on-the-team.in-the-hall	sg	same	is	Everyone on the team ___ in the hall.
+indefinite-pronouns.everyone.on-the-team.ready-for-the-test	sg	same	is	Everyone on the team ___ ready for the test.
+indefinite-pronouns.everyone.on-the-team.finished-the-project	sg	same	has	Everyone on the team ___ finished the project.
+indefinite-pronouns.everyone.on-the-team.to-school-every-morning	sg	same	walks	Everyone on the team ___ to school every morning.
+indefinite-pronouns.everyone.on-the-team.near-the-market	sg	same	lives	Everyone on the team ___ near the market.
+indefinite-pronouns.everyone.on-the-team.in-the-front-row	sg	same	sits	Everyone on the team ___ in the front row.
+indefinite-pronouns.everyone.on-the-team.early-on-mondays	sg	same	arrives	Everyone on the team ___ early on Mondays.
+indefinite-pronouns.everyone.in-our-street.in-the-hall	sg	same	is	Everyone in our street ___ in the hall.
+indefinite-pronouns.everyone.in-our-street.ready-for-the-test	sg	same	is	Everyone in our street ___ ready for the test.
+indefinite-pronouns.everyone.in-our-street.finished-the-project	sg	same	has	Everyone in our street ___ finished the project.
+indefinite-pronouns.everyone.in-our-street.to-school-every-morning	sg	same	walks	Everyone in our street ___ to school every morning.
+indefinite-pronouns.everyone.in-our-street.near-the-market	sg	same	lives	Everyone in our street ___ near the market.
+indefinite-pronouns.everyone.in-our-street.in-the-front-row	sg	same	sits	Everyone in our street ___ in the front row.
+indefinite-pronouns.everyone.in-our-street.early-on-mondays	sg	same	arrives	Everyone in our street ___ early on Mondays.
+indefinite-pronouns.nobody.in-the-class.in-the-hall	sg	same	is	Nobody in the class ___ in the hall.
+indefinite-pronouns.nobody.in-the-class.ready-for-the-test	sg	same	is	Nobody in the class ___ ready for the test.
+indefinite-pronouns.nobody.in-the-class.finished-the-project	sg	same	has	Nobody in the class ___ finished the project.
+indefinite-pronouns.nobody.in-the-class.to-school-every-morning	sg	same	walks	Nobody in the class ___ to school every morning.
+indefinite-pronouns.nobody.in-the-class.near-the-market	sg	same	lives	Nobody in the class ___ near the market.
+indefinite-pronouns.nobody.in-the-class.in-the-front-row	sg	same	sits	Nobody in the class ___ in the front row.
+indefinite-pronouns.nobody.in-the-class.early-on-mondays	sg	same	arrives	Nobody in the class ___ early on Mondays.
+indefinite-pronouns.nobody.on-the-team.in-the-hall	sg	same	is	Nobody on the team ___ in the hall.
+indefinite-pronouns.nobody.on-the-team.ready-for-the-test	sg	same	is	Nobody on the team ___ ready for the test.
+indefinite-pronouns.nobody.on-the-team.finished-the-project	sg	same	has	Nobody on the team ___ finished the project.
+indefinite-pronouns.nobody.on-the-team.to-school-every-morning	sg	same	walks	Nobody on the team ___ to school every morning.
+indefinite-pronouns.nobody.on-the-team.near-the-market	sg	same	lives	Nobody on the team ___ near the market.
+indefinite-pronouns.nobody.on-the-team.in-the-front-row	sg	same	sits	Nobody on the team ___ in the front row.
+indefinite-pronouns.nobody.on-the-team.early-on-mondays	sg	same	arrives	Nobody on the team ___ early on Mondays.
+indefinite-pronouns.nobody.in-our-street.in-the-hall	sg	same	is	Nobody in our street ___ in the hall.
+indefinite-pronouns.nobody.in-our-street.ready-for-the-test	sg	same	is	Nobody in our street ___ ready for the test.
+indefinite-pronouns.nobody.in-our-street.finished-the-project	sg	same	has	Nobody in our street ___ finished the project.
+indefinite-pronouns.nobody.in-our-street.to-school-every-morning	sg	same	walks	Nobody in our street ___ to school every morning.
+indefinite-pronouns.nobody.in-our-street.near-the-market	sg	same	lives	Nobody in our street ___ near the market.
+indefinite-pronouns.nobody.in-our-street.in-the-front-row	sg	same	sits	Nobody in our street ___ in the front row.
+indefinite-pronouns.nobody.in-our-street.early-on-mondays	sg	same	arrives	Nobody in our street ___ early on Mondays.
+indefinite-pronouns.no-one.in-the-class.in-the-hall	sg	same	is	No one in the class ___ in the hall.
+indefinite-pronouns.no-one.in-the-class.ready-for-the-test	sg	same	is	No one in the class ___ ready for the test.
+indefinite-pronouns.no-one.in-the-class.finished-the-project	sg	same	has	No one in the class ___ finished the project.
+indefinite-pronouns.no-one.in-the-class.to-school-every-morning	sg	same	walks	No one in the class ___ to school every morning.
+indefinite-pronouns.no-one.in-the-class.near-the-market	sg	same	lives	No one in the class ___ near the market.
+indefinite-pronouns.no-one.in-the-class.in-the-front-row	sg	same	sits	No one in the class ___ in the front row.
+indefinite-pronouns.no-one.in-the-class.early-on-mondays	sg	same	arrives	No one in the class ___ early on Mondays.
+indefinite-pronouns.no-one.on-the-team.in-the-hall	sg	same	is	No one on the team ___ in the hall.
+indefinite-pronouns.no-one.on-the-team.ready-for-the-test	sg	same	is	No one on the team ___ ready for the test.
+indefinite-pronouns.no-one.on-the-team.finished-the-project	sg	same	has	No one on the team ___ finished the project.
+indefinite-pronouns.no-one.on-the-team.to-school-every-morning	sg	same	walks	No one on the team ___ to school every morning.
+indefinite-pronouns.no-one.on-the-team.near-the-market	sg	same	lives	No one on the team ___ near the market.
+indefinite-pronouns.no-one.on-the-team.in-the-front-row	sg	same	sits	No one on the team ___ in the front row.
+indefinite-pronouns.no-one.on-the-team.early-on-mondays	sg	same	arrives	No one on the team ___ early on Mondays.
+indefinite-pronouns.no-one.in-our-street.in-the-hall	sg	same	is	No one in our street ___ in the hall.
+indefinite-pronouns.no-one.in-our-street.ready-for-the-test	sg	same	is	No one in our street ___ ready for the test.
+indefinite-pronouns.no-one.in-our-street.finished-the-project	sg	same	has	No one in our street ___ finished the project.
+indefinite-pronouns.no-one.in-our-street.to-school-every-morning	sg	same	walks	No one in our street ___ to school every morning.
+indefinite-pronouns.no-one.in-our-street.near-the-market	sg	same	lives	No one in our street ___ near the market.
+indefinite-pronouns.no-one.in-our-street.in-the-front-row	sg	same	sits	No one in our street ___ in the front row.
+indefinite-pronouns.no-one.in-our-street.early-on-mondays	sg	same	arrives	No one in our street ___ early on Mondays.
+indefinite-pronouns.both.of-the-twins.in-the-hall	pl	same	are	Both of the twins ___ in the hall.
+indefinite-pronouns.both.of-the-twins.ready-for-the-test	pl	same	are	Both of the twins ___ ready for the test.
+indefinite-pronouns.both.of-the-twins.finished-the-project	pl	same	have	Both of the twins ___ finished the project.
+indefinite-pronouns.both.of-the-twins.to-school-every-morning	pl	same	walk	Both of the twins ___ to school every morning.
+indefinite-pronouns.both.of-the-twins.near-the-market	pl	same	live	Both of the twins ___ near the market.
+indefinite-pronouns.both.of-the-twins.in-the-front-row	pl	same	sit	Both of the twins ___ in the front row.
+indefinite-pronouns.both.of-the-twins.early-on-mondays	pl	same	arrive	Both of the twins ___ early on Mondays.
+indefinite-pronouns.both.of-the-captains.in-the-hall	pl	same	are	Both of the captains ___ in the hall.
+indefinite-pronouns.both.of-the-captains.ready-for-the-test	pl	same	are	Both of the captains ___ ready for the test.
+indefinite-pronouns.both.of-the-captains.finished-the-project	pl	same	have	Both of the captains ___ finished the project.
+indefinite-pronouns.both.of-the-captains.to-school-every-morning	pl	same	walk	Both of the captains ___ to school every morning.
+indefinite-pronouns.both.of-the-captains.near-the-market	pl	same	live	Both of the captains ___ near the market.
+indefinite-pronouns.both.of-the-captains.in-the-front-row	pl	same	sit	Both of the captains ___ in the front row.
+indefinite-pronouns.both.of-the-captains.early-on-mondays	pl	same	arrive	Both of the captains ___ early on Mondays.
+indefinite-pronouns.many.of-the-students.in-the-hall	pl	same	are	Many of the students ___ in the hall.
+indefinite-pronouns.many.of-the-students.ready-for-the-test	pl	same	are	Many of the students ___ ready for the test.
+indefinite-pronouns.many.of-the-students.finished-the-project	pl	same	have	Many of the students ___ finished the project.
+indefinite-pronouns.many.of-the-students.to-school-every-morning	pl	same	walk	Many of the students ___ to school every morning.
+indefinite-pronouns.many.of-the-students.near-the-market	pl	same	live	Many of the students ___ near the market.
+indefinite-pronouns.many.of-the-students.in-the-front-row	pl	same	sit	Many of the students ___ in the front row.
+indefinite-pronouns.many.of-the-students.early-on-mondays	pl	same	arrive	Many of the students ___ early on Mondays.
+indefinite-pronouns.many.of-the-players.in-the-hall	pl	same	are	Many of the players ___ in the hall.
+indefinite-pronouns.many.of-the-players.ready-for-the-test	pl	same	are	Many of the players ___ ready for the test.
+indefinite-pronouns.many.of-the-players.finished-the-project	pl	same	have	Many of the players ___ finished the project.
+indefinite-pronouns.many.of-the-players.to-school-every-morning	pl	same	walk	Many of the players ___ to school every morning.
+indefinite-pronouns.many.of-the-players.near-the-market	pl	same	live	Many of the players ___ near the market.
+indefinite-pronouns.many.of-the-players.in-the-front-row	pl	same	sit	Many of the players ___ in the front row.
+indefinite-pronouns.many.of-the-players.early-on-mondays	pl	same	arrive	Many of the players ___ early on Mondays.
+indefinite-pronouns.many.of-the-prefects.in-the-hall	pl	same	are	Many of the prefects ___ in the hall.
+indefinite-pronouns.many.of-the-prefects.ready-for-the-test	pl	same	are	Many of the prefects ___ ready for the test.
+indefinite-pronouns.many.of-the-prefects.finished-the-project	pl	same	have	Many of the prefects ___ finished the project.
+indefinite-pronouns.many.of-the-prefects.to-school-every-morning	pl	same	walk	Many of the prefects ___ to school every morning.
+indefinite-pronouns.many.of-the-prefects.near-the-market	pl	same	live	Many of the prefects ___ near the market.
+indefinite-pronouns.many.of-the-prefects.in-the-front-row	pl	same	sit	Many of the prefects ___ in the front row.
+indefinite-pronouns.many.of-the-prefects.early-on-mondays	pl	same	arrive	Many of the prefects ___ early on Mondays.
+indefinite-pronouns.many.in-the-class.in-the-hall	pl	opposite	are	Many in the class ___ in the hall.
+indefinite-pronouns.many.in-the-class.ready-for-the-test	pl	opposite	are	Many in the class ___ ready for the test.
+indefinite-pronouns.many.in-the-class.finished-the-project	pl	opposite	have	Many in the class ___ finished the project.
+indefinite-pronouns.many.in-the-class.to-school-every-morning	pl	opposite	walk	Many in the class ___ to school every morning.
+indefinite-pronouns.many.in-the-class.near-the-market	pl	opposite	live	Many in the class ___ near the market.
+indefinite-pronouns.many.in-the-class.in-the-front-row	pl	opposite	sit	Many in the class ___ in the front row.
+indefinite-pronouns.many.in-the-class.early-on-mondays	pl	opposite	arrive	Many in the class ___ early on Mondays.
+indefinite-pronouns.many.on-the-team.in-the-hall	pl	opposite	are	Many on the team ___ in the hall.
+indefinite-pronouns.many.on-the-team.ready-for-the-test	pl	opposite	are	Many on the team ___ ready for the test.
+indefinite-pronouns.many.on-the-team.finished-the-project	pl	opposite	have	Many on the team ___ finished the project.
+indefinite-pronouns.many.on-the-team.to-school-every-morning	pl	opposite	walk	Many on the team ___ to school every morning.
+indefinite-pronouns.many.on-the-team.near-the-market	pl	opposite	live	Many on the team ___ near the market.
+indefinite-pronouns.many.on-the-team.in-the-front-row	pl	opposite	sit	Many on the team ___ in the front row.
+indefinite-pronouns.many.on-the-team.early-on-mondays	pl	opposite	arrive	Many on the team ___ early on Mondays.
+indefinite-pronouns.many.in-our-street.in-the-hall	pl	opposite	are	Many in our street ___ in the hall.
+indefinite-pronouns.many.in-our-street.ready-for-the-test	pl	opposite	are	Many in our street ___ ready for the test.
+indefinite-pronouns.many.in-our-street.finished-the-project	pl	opposite	have	Many in our street ___ finished the project.
+indefinite-pronouns.many.in-our-street.to-school-every-morning	pl	opposite	walk	Many in our street ___ to school every morning.
+indefinite-pronouns.many.in-our-street.near-the-market	pl	opposite	live	Many in our street ___ near the market.
+indefinite-pronouns.many.in-our-street.in-the-front-row	pl	opposite	sit	Many in our street ___ in the front row.
+indefinite-pronouns.many.in-our-street.early-on-mondays	pl	opposite	arrive	Many in our street ___ early on Mondays.
+indefinite-pronouns.several.of-the-students.in-the-hall	pl	same	are	Several of the students ___ in the hall.
+indefinite-pronouns.several.of-the-students.ready-for-the-test	pl	same	are	Several of the students ___ ready for the test.
+indefinite-pronouns.several.of-the-students.finished-the-project	pl	same	have	Several of the students ___ finished the project.
+indefinite-pronouns.several.of-the-students.to-school-every-morning	pl	same	walk	Several of the students ___ to school every morning.
+indefinite-pronouns.several.of-the-students.near-the-market	pl	same	live	Several of the students ___ near the market.
+indefinite-pronouns.several.of-the-students.in-the-front-row	pl	same	sit	Several of the students ___ in the front row.
+indefinite-pronouns.several.of-the-students.early-on-mondays	pl	same	arrive	Several of the students ___ early on Mondays.
+indefinite-pronouns.several.of-the-players.in-the-hall	pl	same	are	Several of the players ___ in the hall.
+indefinite-pronouns.several.of-the-players.ready-for-the-test	pl	same	are	Several of the players ___ ready for the test.
+indefinite-pronouns.several.of-the-players.finished-the-project	pl	same	have	Several of the players ___ finished the project.
+indefinite-pronouns.several.of-the-players.to-school-every-morning	pl	same	walk	Several of the players ___ to school every morning.
+indefinite-pronouns.several.of-the-players.near-the-market	pl	same	live	Several of the players ___ near the market.
+indefinite-pronouns.several.of-the-players.in-the-front-row	pl	same	sit	Several of the players ___ in the front row.
+indefinite-pronouns.several.of-the-players.early-on-mondays	pl	same	arrive	Several of the players ___ early on Mondays.
+indefinite-pronouns.several.of-the-prefects.in-the-hall	pl	same	are	Several of the prefects ___ in the hall.
+indefinite-pronouns.several.of-the-prefects.ready-for-the-test	pl	same	are	Several of the prefects ___ ready for the test.
+indefinite-pronouns.several.of-the-prefects.finished-the-project	pl	same	have	Several of the prefects ___ finished the project.
+indefinite-pronouns.several.of-the-prefects.to-school-every-morning	pl	same	walk	Several of the prefects ___ to school every morning.
+indefinite-pronouns.several.of-the-prefects.near-the-market	pl	same	live	Several of the prefects ___ near the market.
+indefinite-pronouns.several.of-the-prefects.in-the-front-row	pl	same	sit	Several of the prefects ___ in the front row.
+indefinite-pronouns.several.of-the-prefects.early-on-mondays	pl	same	arrive	Several of the prefects ___ early on Mondays.
+indefinite-pronouns.several.in-the-class.in-the-hall	pl	opposite	are	Several in the class ___ in the hall.
+indefinite-pronouns.several.in-the-class.ready-for-the-test	pl	opposite	are	Several in the class ___ ready for the test.
+indefinite-pronouns.several.in-the-class.finished-the-project	pl	opposite	have	Several in the class ___ finished the project.
+indefinite-pronouns.several.in-the-class.to-school-every-morning	pl	opposite	walk	Several in the class ___ to school every morning.
+indefinite-pronouns.several.in-the-class.near-the-market	pl	opposite	live	Several in the class ___ near the market.
+indefinite-pronouns.several.in-the-class.in-the-front-row	pl	opposite	sit	Several in the class ___ in the front row.
+indefinite-pronouns.several.in-the-class.early-on-mondays	pl	opposite	arrive	Several in the class ___ early on Mondays.
+indefinite-pronouns.several.on-the-team.in-the-hall	pl	opposite	are	Several on the team ___ in the hall.
+indefinite-pronouns.several.on-the-team.ready-for-the-test	pl	opposite	are	Several on the team ___ ready for the test.
+indefinite-pronouns.several.on-the-team.finished-the-project	pl	opposite	have	Several on the team ___ finished the project.
+indefinite-pronouns.several.on-the-team.to-school-every-morning	pl	opposite	walk	Several on the team ___ to school every morning.
+indefinite-pronouns.several.on-the-team.near-the-market	pl	opposite	live	Several on the team ___ near the market.
+indefinite-pronouns.several.on-the-team.in-the-front-row	pl	opposite	sit	Several on the team ___ in the front row.
+indefinite-pronouns.several.on-the-team.early-on-mondays	pl	opposite	arrive	Several on the team ___ early on Mondays.
+indefinite-pronouns.several.in-our-street.in-the-hall	pl	opposite	are	Several in our street ___ in the hall.
+indefinite-pronouns.several.in-our-street.ready-for-the-test	pl	opposite	are	Several in our street ___ ready for the test.
+indefinite-pronouns.several.in-our-street.finished-the-project	pl	opposite	have	Several in our street ___ finished the project.
+indefinite-pronouns.several.in-our-street.to-school-every-morning	pl	opposite	walk	Several in our street ___ to school every morning.
+indefinite-pronouns.several.in-our-street.near-the-market	pl	opposite	live	Several in our street ___ near the market.
+indefinite-pronouns.several.in-our-street.in-the-front-row	pl	opposite	sit	Several in our street ___ in the front row.
+indefinite-pronouns.several.in-our-street.early-on-mondays	pl	opposite	arrive	Several in our street ___ early on Mondays.
+indefinite-pronouns.few.of-the-students.in-the-hall	pl	same	are	Few of the students ___ in the hall.
+indefinite-pronouns.few.of-the-students.ready-for-the-test	pl	same	are	Few of the students ___ ready for the test.
+indefinite-pronouns.few.of-the-students.finished-the-project	pl	same	have	Few of the students ___ finished the project.
+indefinite-pronouns.few.of-the-students.to-school-every-morning	pl	same	walk	Few of the students ___ to school every morning.
+indefinite-pronouns.few.of-the-students.near-the-market	pl	same	live	Few of the students ___ near the market.
+indefinite-pronouns.few.of-the-students.in-the-front-row	pl	same	sit	Few of the students ___ in the front row.
+indefinite-pronouns.few.of-the-students.early-on-mondays	pl	same	arrive	Few of the students ___ early on Mondays.
+indefinite-pronouns.few.of-the-players.in-the-hall	pl	same	are	Few of the players ___ in the hall.
+indefinite-pronouns.few.of-the-players.ready-for-the-test	pl	same	are	Few of the players ___ ready for the test.
+indefinite-pronouns.few.of-the-players.finished-the-project	pl	same	have	Few of the players ___ finished the project.
+indefinite-pronouns.few.of-the-players.to-school-every-morning	pl	same	walk	Few of the players ___ to school every morning.
+indefinite-pronouns.few.of-the-players.near-the-market	pl	same	live	Few of the players ___ near the market.
+indefinite-pronouns.few.of-the-players.in-the-front-row	pl	same	sit	Few of the players ___ in the front row.
+indefinite-pronouns.few.of-the-players.early-on-mondays	pl	same	arrive	Few of the players ___ early on Mondays.
+indefinite-pronouns.few.of-the-prefects.in-the-hall	pl	same	are	Few of the prefects ___ in the hall.
+indefinite-pronouns.few.of-the-prefects.ready-for-the-test	pl	same	are	Few of the prefects ___ ready for the test.
+indefinite-pronouns.few.of-the-prefects.finished-the-project	pl	same	have	Few of the prefects ___ finished the project.
+indefinite-pronouns.few.of-the-prefects.to-school-every-morning	pl	same	walk	Few of the prefects ___ to school every morning.
+indefinite-pronouns.few.of-the-prefects.near-the-market	pl	same	live	Few of the prefects ___ near the market.
+indefinite-pronouns.few.of-the-prefects.in-the-front-row	pl	same	sit	Few of the prefects ___ in the front row.
+indefinite-pronouns.few.of-the-prefects.early-on-mondays	pl	same	arrive	Few of the prefects ___ early on Mondays.
+indefinite-pronouns.few.in-the-class.in-the-hall	pl	opposite	are	Few in the class ___ in the hall.
+indefinite-pronouns.few.in-the-class.ready-for-the-test	pl	opposite	are	Few in the class ___ ready for the test.
+indefinite-pronouns.few.in-the-class.finished-the-project	pl	opposite	have	Few in the class ___ finished the project.
+indefinite-pronouns.few.in-the-class.to-school-every-morning	pl	opposite	walk	Few in the class ___ to school every morning.
+indefinite-pronouns.few.in-the-class.near-the-market	pl	opposite	live	Few in the class ___ near the market.
+indefinite-pronouns.few.in-the-class.in-the-front-row	pl	opposite	sit	Few in the class ___ in the front row.
+indefinite-pronouns.few.in-the-class.early-on-mondays	pl	opposite	arrive	Few in the class ___ early on Mondays.
+indefinite-pronouns.few.on-the-team.in-the-hall	pl	opposite	are	Few on the team ___ in the hall.
+indefinite-pronouns.few.on-the-team.ready-for-the-test	pl	opposite	are	Few on the team ___ ready for the test.
+indefinite-pronouns.few.on-the-team.finished-the-project	pl	opposite	have	Few on the team ___ finished the project.
+indefinite-pronouns.few.on-the-team.to-school-every-morning	pl	opposite	walk	Few on the team ___ to school every morning.
+indefinite-pronouns.few.on-the-team.near-the-market	pl	opposite	live	Few on the team ___ near the market.
+indefinite-pronouns.few.on-the-team.in-the-front-row	pl	opposite	sit	Few on the team ___ in the front row.
+indefinite-pronouns.few.on-the-team.early-on-mondays	pl	opposite	arrive	Few on the team ___ early on Mondays.
+indefinite-pronouns.few.in-our-street.in-the-hall	pl	opposite	are	Few in our street ___ in the hall.
+indefinite-pronouns.few.in-our-street.ready-for-the-test	pl	opposite	are	Few in our street ___ ready for the test.
+indefinite-pronouns.few.in-our-street.finished-the-project	pl	opposite	have	Few in our street ___ finished the project.
+indefinite-pronouns.few.in-our-street.to-school-every-morning	pl	opposite	walk	Few in our street ___ to school every morning.
+indefinite-pronouns.few.in-our-street.near-the-market	pl	opposite	live	Few in our street ___ near the market.
+indefinite-pronouns.few.in-our-street.in-the-front-row	pl	opposite	sit	Few in our street ___ in the front row.
+indefinite-pronouns.few.in-our-street.early-on-mondays	pl	opposite	arrive	Few in our street ___ early on Mondays.
+indefinite-pronouns.none.of-the-food.left	sg	same	is	None of the food ___ left.
+indefinite-pronouns.none.of-the-food.ready	sg	same	is	None of the food ___ ready.
+indefinite-pronouns.none.of-the-water.left	sg	same	is	None of the water ___ left.
+indefinite-pronouns.none.of-the-water.clean	sg	same	is	None of the water ___ clean.
+indefinite-pronouns.none.of-the-money.left	sg	same	is	None of the money ___ left.
+indefinite-pronouns.none.of-the-money.missing	sg	same	is	None of the money ___ missing.
