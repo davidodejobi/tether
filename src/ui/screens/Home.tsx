@@ -1,3 +1,4 @@
+import { useState } from "preact/hooks";
 import { readiness } from "../../rules/practice.ts";
 import { proofStatus } from "../../rules/proof.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
@@ -16,6 +17,7 @@ import "../home/home.css";
 
 export function Home() {
   const { store } = useProgress();
+  const [more, setMore] = useState(false);
   const p = store.progress;
   const { dots } = readiness(attemptsOf(p), runStartsOf(p));
   const cycle = p.cycles.get("strip-disguise") ?? null;
@@ -28,31 +30,40 @@ export function Home() {
     : state === "proved" || state === "held" ? "Your proof is holding. Practise to keep it sharp."
     : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone.";
   return (
-    <main class="page hm">
+    <main class={`page hm${more ? " hm-more-open" : ""}`}>
       <div class="hm-main">
         <header class="hm-head">
           <h1>Tether</h1>
+          {p.learner && <Identity learner={p.learner} />}
           <a class="hm-settings" href="/settings"><Icon name="settings" /> Settings</a>
         </header>
-        {p.learner && <Identity learner={p.learner} />}
-        <div class="hm-status"><OfflineCues /></div>
-        <CoachBubble mode={coach}>{coachLine}</CoachBubble>
-        <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
-        <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
-        <ProofCard />
-        <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>
-        <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>
-        <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
-        {/* Spec section 8: the latest saved solo decides; without a practice score it shows alone and how to get a first gap. */}
-        {!solo ? (
-          <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>
-        ) : solo.gap === null ? (
-          <p class="hm-gap hm-gap-none"><strong>Alone: {solo.alone} of 10</strong> on {when(solo.at)}. Answer ten practice questions, then take another solo check, to see your first gap.</p>
-        ) : (
-          <p class="hm-gap"><strong>{solo.raw! <= 0 ? "No help gap on your latest solo check" : `Latest gap: ${solo.gap}`}</strong> (with help {solo.practice}, alone {solo.alone}) on {when(solo.at)}</p>
-        )}
+        <div class="hm-top">
+          <div class="hm-status"><OfflineCues /></div>
+          <CoachBubble mode={coach}>{coachLine}</CoachBubble>
+        </div>
+        <div class="hm-act">
+          <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
+          <ProofCard />
+          <div class="hm-row">
+            <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>
+            <button class="btn btn-tertiary hm-morebtn" type="button" aria-expanded={more} onClick={() => setMore(!more)}>{more ? "Less" : "More"}</button>
+          </div>
+          {/* Spec section 8: the latest saved solo decides; without a practice score it shows alone and how to get a first gap. */}
+          {!solo ? (
+            <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>
+          ) : solo.gap === null ? (
+            <p class="hm-gap hm-gap-none"><strong>Alone: {solo.alone} of 10</strong> on {when(solo.at)}. Answer ten practice questions, then take another solo check, to see your first gap.</p>
+          ) : (
+            <p class="hm-gap"><strong>{solo.raw! <= 0 ? "No help gap on your latest solo check" : `Latest gap: ${solo.gap}`}</strong> (with help {solo.practice}, alone {solo.alone}) on {when(solo.at)}</p>
+          )}
+          <div class="hm-more">
+            <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
+            <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>
+            <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
+          </div>
+        </div>
       </div>
-      <HomeMap state={state} due={due} />
+      <HomeMap state={state} due={due} coach={coach} />
     </main>
   );
 }

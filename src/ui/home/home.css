@@ -1,24 +1,62 @@
-.hm { display: grid; gap: var(--spacing-md); align-content: start; }
-.hm > * { min-width: 0; }
-.hm-head { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); }
-.hm-head h1 { margin: 0; font: var(--type-headline-l); }
-.page a.hm-settings { display: inline-flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); margin: 0; }
-/* Step 16 puts the "Ready offline" line and the install hint here. */
+/* Home: the journey map is the hero. Phone: header, status and coach, the map filling the screen, then the action sheet.
+   From 768 px: a side panel beside a full-height map (the left rail joins from 1280 px). */
+.page.hm { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100dvh; max-width: none; margin: 0; padding: 0; overflow-y: auto; background: var(--bg-page); }
+.hm-main { display: contents; }
+.hm-main > *, .page.hm > * { min-width: 0; }
+.hm-head { grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs) var(--spacing-md); padding: var(--spacing-xs) var(--spacing-md); }
+.page.hm .hm-head h1 { margin: 0; font: var(--type-headline-m); }
+.hm-head .identity { margin-left: auto; }
+.page a.hm-settings { display: inline-flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
+.hm-top { grid-row: 2; display: grid; gap: var(--spacing-xs); padding: 0 var(--spacing-md) var(--spacing-xs); }
 .hm-status:empty { display: none; }
-.hm-main { display: grid; gap: var(--spacing-md); align-content: start; }
-.hm-ready { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-md); margin: 0; }
-.hm-gap { margin: 0; padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-gap-container); color: var(--text-on-gap-container); border: 2px solid var(--border-gap); border-radius: var(--radius-md); }
+.hm-top .oc { gap: var(--spacing-xs); }
+.hm-top .oc-install { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: var(--spacing-xs) var(--spacing-sm); gap: 0 var(--spacing-xs); border: 2px solid var(--border-subtle); }
+.hm-top .oc-title { grid-column: 1 / -1; font: var(--type-label-l); }
+.hm-top .oc-install .oc-line { font: var(--type-body-s); }
+.hm-top .oc-install .oc-row { grid-column: 2; grid-row: 2; }
+.hm-top .coach-body { padding: var(--spacing-xs) var(--spacing-sm); font: var(--type-body-m); }
+.hm-mapwrap { grid-row: 3; }
+.hm-act {
+  grid-row: 4; display: grid; gap: var(--spacing-xs); max-height: 52dvh; overflow-y: auto; padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  background: var(--bg-surface); border-top: 2px solid var(--border-subtle); border-radius: var(--radius-xl) var(--radius-xl) 0 0; box-shadow: 0 -4px 12px rgb(0 0 0 / .12);
+}
+.hm-act > * { min-width: 0; }
+.hm-act .pc { padding: 0; border: 0; background: none; gap: var(--spacing-xs); }
+.hm-act .pc-stamp { gap: var(--spacing-sm); }
+.page p.hm-move { margin: 0; font: var(--type-label-m); color: var(--text-secondary); }
+.page a.btn.hm-solo { display: flex; margin: 0; text-decoration: none; }
+.hm-gap { margin: 0; padding: var(--spacing-xs) var(--spacing-sm); background: var(--bg-gap-container); color: var(--text-on-gap-container); border: 2px solid var(--border-gap); border-radius: var(--radius-md); font: var(--type-body-m); }
+.page p.hm-gap { font: var(--type-body-m); }
 .hm-gap-none { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-subtle); }
-.page a.btn.hm-solo { display: flex; margin: 0; }
+.hm-more { display: none; gap: var(--spacing-xs); }
+.hm-more-open .hm-more { display: grid; }
+.hm-row { display: flex; gap: var(--spacing-xs); }
+.hm-row .hm-solo { flex: 1; }
+.hm-morebtn { min-height: var(--size-touch-target); padding: 0 var(--spacing-md); }
 .page a.btn.hm-course { display: flex; justify-content: flex-start; margin: 0; padding: 0 var(--spacing-xs); text-align: left; text-decoration: none; }
 .hm-solo-note { margin: 0; font: var(--type-body-m); color: var(--text-secondary); }
-@media (min-width: 1280px) {
-  .page.hm { max-width: none; grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); column-gap: var(--spacing-xxxl); }
-  .hm-main { display: grid; gap: var(--spacing-md); align-content: start; }
-  .page.hm a.hm-settings { display: none; } /* the rail has Settings from here */
+.hm-ready { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-md); margin: 0; }
+
+@media (min-width: 768px) {
+  .page.hm { grid-template-rows: none; grid-template-columns: minmax(20rem, 23rem) minmax(0, 1fr); overflow: hidden; }
+  .hm-main {
+    display: flex; flex-direction: column; gap: var(--spacing-md); height: 100dvh; overflow-y: auto; padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-xl);
+    background: var(--bg-page); border-right: 2px solid var(--border-subtle);
+  }
+  .hm-head, .hm-top, .hm-act { padding: 0; }
+  .hm-head { flex-direction: column; align-items: flex-start; }
+  .hm-head .identity { margin-left: 0; }
+  .hm-top { gap: var(--spacing-md); }
+  .hm-top .oc { gap: var(--spacing-sm); }
+  .hm-act { gap: var(--spacing-md); max-height: none; overflow: visible; background: none; border: 0; border-radius: 0; box-shadow: none; }
+  .hm-act .pc { padding: var(--spacing-md); border: 2px solid var(--border-subtle); background: var(--bg-surface); gap: var(--spacing-md); }
+  .hm-more { display: grid; gap: var(--spacing-md); }
+  .hm-top .oc-install { display: flex; flex-direction: column; padding: var(--spacing-md); gap: var(--spacing-sm); }
+  .hm-top .oc-install .oc-line { font: var(--type-body-l); }
+  .hm-morebtn { display: none; }
+  .hm-mapwrap { grid-row: auto; height: 100dvh; }
+  .page.hm .hm-head h1 { font: var(--type-headline-l); }
 }
-/* Phone: shell.css pads pages from 768 px; below that the page needs its own gutter. */
-@media (max-width: 767px) { .page.hm, .page.st { padding: var(--spacing-md); } }
-.page a.hm-settings { color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
-.page a.btn.hm-solo { text-decoration: none; }
-.page p.hm-move { margin: 0; font: var(--type-label-l); color: var(--text-secondary); }
+@media (min-width: 1280px) { .page.hm a.hm-settings { display: none; } /* the rail has Settings from here */ }
+/* Settings shares the phone gutter; shell.css pads pages from 768 px. */
+@media (max-width: 767px) { .page.st { padding: var(--spacing-md); } }
