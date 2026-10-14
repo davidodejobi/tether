@@ -42,7 +42,10 @@ export function Home() {
           <CoachBubble mode={coach}>{coachLine}</CoachBubble>
         </div>
         <div class="hm-act">
-          <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
+          <div class="hm-line">
+            <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
+            <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
+          </div>
           <ProofCard />
           <div class="hm-row">
             <a class="btn btn-secondary hm-solo" href="/solo-entry">Solo check</a>
@@ -59,7 +62,6 @@ export function Home() {
           <div class="hm-more">
             <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
             <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>
-            <p class="hm-ready"><Dots filled={dots as 0 | 1 | 2 | 3} /></p>
           </div>
         </div>
       </div>

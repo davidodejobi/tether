@@ -35,6 +35,7 @@
 .hm-morebtn { min-height: var(--size-touch-target); padding: 0 var(--spacing-md); }
 .page a.btn.hm-course { display: flex; justify-content: flex-start; margin: 0; padding: 0 var(--spacing-xs); text-align: left; text-decoration: none; }
 .hm-solo-note { margin: 0; font: var(--type-body-m); color: var(--text-secondary); }
+.hm-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--spacing-sm); }
 .hm-ready { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-md); margin: 0; }
 
 @media (min-width: 768px) {

@@ -330,7 +330,7 @@ test("Home map: stage 1 is the only link, Coming soon nodes cannot be focused, a
   const soon = await map.locator(".hm-pos.hm-soon").evaluateAll((els) => els.map((e) => ({ tag: e.tagName, tabindex: e.getAttribute("tabindex"), role: e.getAttribute("role"), focusable: !!e.querySelector("a, button, [tabindex]"), name: e.querySelector(".sr-only")?.textContent })));
   expect(soon).toHaveLength(49);
   for (const n of soon) expect(n).toMatchObject({ tag: "LI", tabindex: null, role: null, focusable: false });
-  expect(soon[6]!.name).toBe("Stage 7: There is, there are. Coming soon");
+  expect(soon[5]!.name).toBe("Stage 7: There is, there are. Coming soon");
   // Tabbing through the page never lands on a Coming soon node; the map itself is one scrollable stop, then stage 1.
   const stops = await tabStops(page, 60);
   expect(stops.filter((s) => /Coming soon|Stage [2-9]/.test(s.label))).toEqual([]);

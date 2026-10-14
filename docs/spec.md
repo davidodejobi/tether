@@ -339,8 +339,8 @@ also provides Try anyway. Move 1 always has a visible solo entry, independent of
 dots. Show offline/readiness status and the latest saved gap when available.
 
 Map states: Current, Proved, Held, Fading and Coming soon; Due is an extra badge.
-Nodes are accessible HTML controls above decorative art. Use bounded, interactive
-map pages with Previous/Next when needed, rather than a long scrolling stage map.
+Nodes are accessible HTML controls above decorative art. Owner decision 14 Oct 2026 (docs/decisions.md): a long scrollable
+trail of all 50 stages replaces bounded Previous/Next pages; the accessibility safeguards stay.
 Use clear words/icons and an accessible list view; keep actions usable with large text.
 Future exam-day art is decorative, not a working mock exam or proof claim.
 
