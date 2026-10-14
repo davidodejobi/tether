@@ -105,3 +105,26 @@ test("leaving and returning mid-save, then Retry, never brings back an older val
   expect(await learner(page)).toMatchObject({ coach: "text", lang: "pcm" });
   await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
 });
+
+test("subjects: English is fixed, the limit is 3, changes persist, and a failed save offers Retry", async ({ page }) => {
+  await seedRecords(page, [], "/settings");
+  await expect(page.getByRole("checkbox", { name: /Use of English/ })).toBeDisabled();
+  await expect(page.getByRole("checkbox", { name: /Biology/ })).not.toBeChecked(); // absent subjects means English only
+  for (const n of ["Biology", "Chemistry", "Physics"]) {
+    await page.getByRole("checkbox", { name: new RegExp(n) }).click();
+    await expect(page.getByRole("checkbox", { name: new RegExp(n) })).toBeChecked();
+  }
+  await expect(page.getByRole("checkbox", { name: /Mathematics/ })).toBeDisabled();
+  await expect.poll(async () => (await learner(page)).subjects).toEqual(["english", "biology", "chemistry", "physics"]);
+  await page.reload();
+  await expect(page.getByRole("checkbox", { name: /Chemistry/ })).toBeChecked();
+
+  await failWrites(page, true);
+  await page.getByRole("checkbox", { name: /Physics/ }).click();
+  await expect(alert(page)).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: /Physics/ })).toBeChecked(); // old value stays
+  await failWrites(page, false);
+  await page.getByRole("button", { name: "Retry" }).click();
+  await expect(alert(page)).toHaveCount(0);
+  expect((await learner(page)).subjects).toEqual(["english", "biology", "chemistry"]);
+});

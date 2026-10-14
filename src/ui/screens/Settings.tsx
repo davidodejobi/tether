@@ -2,10 +2,12 @@
 // save keeps the old value and offers Retry, which repeats the same change. Controls stay disabled while saving.
 import { useState } from "preact/hooks";
 import { cue, setSoundsOn, unlockSound } from "../../platform/sound.ts";
+import { extrasOf, SUBJECT_SOURCE, withEnglish } from "../../content/subjects.ts";
 import { cleanNickname, type Learner } from "../../storage/progress.ts";
 import { Identity } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { Icon } from "../components/Icon";
+import { SubjectPicker } from "../onboarding/SubjectPicker";
 import { useProgress } from "../progress";
 import "./settings.css";
 
@@ -88,6 +90,12 @@ export function Settings() {
         {choice("lang", "pcm", "Pidgin", "Unreviewed")}
         <small>Coming next: Français. More languages later.</small>
         <small>Exam questions stay in English whatever you choose.</small>
+      </fieldset>
+
+      <fieldset class="st-group">
+        <legend>Subjects</legend>
+        <SubjectPicker value={extrasOf(learner)} disabled={busy} onChange={(next) => change({ subjects: withEnglish(next) })} />
+        <small>{SUBJECT_SOURCE}. A preference, not advice on what you can take.</small>
       </fieldset>
 
       <div class="st-group">

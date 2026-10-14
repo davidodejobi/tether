@@ -75,9 +75,14 @@ for (const [w, h] of SIZES)
       test("onboarding and lesson", async ({ page }) => {
         await page.goto("/");
         await page.getByRole("button", { name: "Start" }).click();
+        await expect(page.getByRole("heading", { name: "Pick your subjects" })).toBeFocused();
         await scan(page);
+        await page.getByRole("button", { name: "Continue" }).click();
         await page.getByLabel("Nickname").fill("Amaka");
         await page.getByRole("button", { name: "Continue" }).click();
+        await expect(page.getByRole("heading", { name: "Your English course" })).toBeFocused();
+        await scan(page);
+        await page.getByRole("button", { name: "Start Move 1" }).click();
         await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
         await scan(page);
       });
@@ -215,9 +220,13 @@ for (const [w, h] of SIZES)
     await page.setViewportSize({ width: w, height: h });
     await page.goto("/");
     await page.getByRole("button", { name: "Start" }).click();
-    expect(await sizes(page), "onboarding").toEqual([]);
+    await page.getByRole("button", { name: "Continue" }).click();
+    expect(await sizes(page), "subjects").toEqual([]);
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.getByLabel("Nickname").fill("Amaka");
     await page.getByRole("button", { name: "Continue" }).click();
+    expect(await sizes(page), "course").toEqual([]);
+    await page.getByRole("button", { name: "Start Move 1" }).click();
     await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeFocused();
     expect(await sizes(page), "lesson").toEqual([]);
   });
@@ -255,6 +264,7 @@ test("choices are a radio group: 1-4 and arrows select, the blank is filled, Ent
 test("shortcuts are ignored while typing", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Start" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: /What should we call you/ })).toBeFocused();
   await page.getByLabel("Nickname").click();
   await page.getByLabel("Nickname").pressSequentially("Srsr", { delay: 60 });

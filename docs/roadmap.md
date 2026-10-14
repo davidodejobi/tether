@@ -126,7 +126,7 @@ finishing the pilot is not a prerequisite for planning the course.
   another pack. Migrate existing learner/proof/reading fields idempotently.
   Done: the catalogue has sourced metadata and honest totals; old records and
   day-3/7/14 schedules survive, and moves cannot mix scores or dots.
-- [ ] **22. Add subject-first onboarding.** English preselected, optional other
+- [x] **22. Add subject-first onboarding.** English preselected, optional other
   subjects marked Coming soon, course map and recommended Concord start.
   Done: subject preferences persist; existing learners retain their progress and
   new learners finish the original lesson/tutorial without a diagnostic.

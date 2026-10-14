@@ -1,5 +1,7 @@
 import { useRef, useState } from "preact/hooks";
 import { requestPersistentStorage } from "../../platform/storage.ts";
+import { english, sectionById, topicById, availability } from "../../content/catalogue.ts";
+import { extrasOf, SUBJECT_SOURCE, withEnglish } from "../../content/subjects.ts";
 import { cleanNickname, newLearner, type Learner } from "../../storage/progress.ts";
 import { Bo } from "../components/Bo";
 import { Button } from "../components/Button";
@@ -9,6 +11,7 @@ import { useProgress } from "../progress";
 import { Lesson } from "./Lesson";
 import { ErrorText, Screen, StepHeading, useAction } from "./parts";
 import { resumeStep, type Step } from "./resume.ts";
+import { SubjectPicker } from "./SubjectPicker";
 import { TutorialQuestions } from "./TutorialQuestions";
 
 function Welcome({ onStart }: { onStart: () => void }) {
@@ -28,7 +31,47 @@ function Welcome({ onStart }: { onStart: () => void }) {
   );
 }
 
-function Nickname({ onBack, onSaved }: { onBack: () => void; onSaved: () => void }) {
+function Subjects({ value, onChange, onBack, onNext }: { value: string[]; onChange: (v: string[]) => void; onBack: () => void; onNext: () => void }) {
+  return (
+    <>
+      <div class="ob-body">
+        <button type="button" class="ob-back" onClick={onBack} aria-label="Back"><Icon name="back" /></button>
+        <StepHeading>Pick your subjects</StepHeading>
+        <p class="ob-lead">Use of English is ready now. The others are on the way.</p>
+        <SubjectPicker value={value} onChange={onChange} />
+        <p class="ob-note">{SUBJECT_SOURCE}. This is your preference, not advice on what you can take.</p>
+      </div>
+      <div class="ob-actions ob-sticky"><Button onClick={onNext}>Continue</Button></div>
+    </>
+  );
+}
+
+/** The English course at a glance, read from the catalogue, then the first stage. */
+function CourseMap({ onStart }: { onStart: () => void }) {
+  const section = sectionById("lexis-and-structure")!;
+  const topic = topicById(section, "concord")!;
+  const stage = topic.stages[0]!;
+  return (
+    <>
+      <div class="ob-body">
+        <StepHeading>Your English course</StepHeading>
+        <p class="ob-lead">Three official sections. Start where it helps most.</p>
+        <ul class="crs">
+          {english.sections.map((s) => (
+            <li key={s.id} class={s.id === section.id ? "start" : ""}>
+              <strong>{s.letter}. {s.name}</strong>
+              <span>{availability(s)}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="crs-route"><strong>Start here:</strong> {section.name} → {topic.name} → Move 1: {stage.title}</p>
+      </div>
+      <div class="ob-actions"><Button onClick={onStart}>Start Move 1</Button></div>
+    </>
+  );
+}
+
+function Nickname({ subjects, onBack, onSaved }: { subjects: string[]; onBack: () => void; onSaved: () => void }) {
   const { save } = useProgress();
   const [value, setValue] = useState("");
   const [invalid, setInvalid] = useState(false);
@@ -40,7 +83,7 @@ function Nickname({ onBack, onSaved }: { onBack: () => void; onSaved: () => void
     setInvalid(!name);
     if (!name) return;
     run(async () => {
-      base.current ??= newLearner(name);
+      base.current ??= { ...newLearner(name), subjects: withEnglish(subjects) };
       await save({ learner: { ...base.current, nickname: name } });
       void requestPersistentStorage(); // after the save, never blocking
       onSaved();
@@ -174,19 +217,22 @@ function Preferences({ learner, onFinish, onBack }: { learner: Learner; onFinish
   );
 }
 
-/** Welcome → Nickname → Learn the move → tutorial questions → First win → Make Tether yours. Finishing saves `onboarded`. */
+/** Welcome → Pick your subjects → Nickname → Your English course → Learn the move → tutorial questions → First win → Make Tether yours. Finishing saves `onboarded`. */
 export function Onboarding() {
   const { store, save } = useProgress();
   const learner = store.progress.learner;
   const [step, setStep] = useState<Step>(() => resumeStep(learner));
+  const [extras, setExtras] = useState<string[]>(() => extrasOf(learner));
   const { error, busy, run } = useAction();
   const saveLearner = (next: Learner) => save({ learner: next });
   const finish = (next: Learner) => saveLearner({ ...next, onboarded: true }); // the gate then shows Home
 
   // The learner exists from the nickname step on.
-  if (step === "welcome") return <Screen kind="welcome"><Welcome onStart={() => setStep("nickname")} /></Screen>;
+  if (step === "welcome") return <Screen kind="welcome"><Welcome onStart={() => setStep("subjects")} /></Screen>;
+  if (step === "subjects") return <Screen><Subjects value={extras} onChange={setExtras} onBack={() => setStep("welcome")} onNext={() => setStep("nickname")} /></Screen>;
   if (step === "nickname" || !learner)
-    return <Screen><Nickname onBack={() => setStep("welcome")} onSaved={() => setStep("lesson")} /></Screen>;
+    return <Screen><Nickname subjects={extras} onBack={() => setStep("subjects")} onSaved={() => setStep("course")} /></Screen>;
+  if (step === "course") return <Screen><CourseMap onStart={() => setStep("lesson")} /></Screen>;
   if (step === "lesson")
     return (
       <Screen kind="lesson">

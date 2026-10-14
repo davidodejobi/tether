@@ -98,8 +98,12 @@ test("the whole loop starts offline after one load: onboarding, practice, solo",
   await page.reload();
 
   await page.getByRole("button", { name: "Start" }).click();
+
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Nickname").fill("Amaka");
   await page.getByRole("button", { name: "Continue" }).click();
+
+  await page.getByRole("button", { name: "Start Move 1" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: /Got it/ }).click();

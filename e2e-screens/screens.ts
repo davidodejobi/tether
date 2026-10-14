@@ -225,11 +225,19 @@ const to = (...steps: ((page: Page) => Promise<void>)[]) => async (page: Page) =
   for (const step of steps) await step(page);
   await page.waitForTimeout(700); // let entry animations finish
 };
+const subjects = async (page: Page) => {
+  await click("Start")(page);
+};
+const pickThree = async (page: Page) => {
+  for (const n of ["Biology", "Chemistry", "Physics"]) await page.getByRole("checkbox", { name: new RegExp(n) }).check();
+};
 const nickname = async (page: Page) => {
   await click("Start")(page);
+  await click("Continue")(page);
   await page.getByLabel("Nickname").fill("Amaka");
 };
-const lesson = [nickname, click("Continue")];
+const course = [nickname, click("Continue")];
+const lesson = [...course, click("Start Move 1")];
 const win = [...lesson, click("Next"), click("Next"), click(/Got it/), answerTutorials];
 const choices = [...win, click("Make Tether yours")];
 
@@ -237,7 +245,14 @@ SCREENS.push(
   { name: "onboarding-welcome", path: "/" },
   { name: "onboarding-welcome-768", path: "/", width: 768, height: 1024 },
   { name: "onboarding-welcome-1366", path: "/", width: 1366, height: 768 },
+  { name: "onboarding-subjects", path: "/", actions: to(subjects) },
+  { name: "onboarding-subjects-768", path: "/", width: 768, height: 1024, actions: to(subjects) },
+  { name: "onboarding-subjects-1366", path: "/", width: 1366, height: 768, actions: to(subjects) },
+  { name: "onboarding-subjects-full", path: "/", actions: to(subjects, pickThree) },
   { name: "onboarding-nickname", path: "/", actions: to(nickname) },
+  { name: "onboarding-course", path: "/", actions: to(...course) },
+  { name: "onboarding-course-768", path: "/", width: 768, height: 1024, actions: to(...course) },
+  { name: "onboarding-course-1366", path: "/", width: 1366, height: 768, actions: to(...course) },
   { name: "onboarding-lesson-1", path: "/", actions: to(...lesson) },
   { name: "onboarding-lesson-1-768", path: "/", width: 768, height: 1024, actions: to(...lesson) },
   { name: "onboarding-lesson-1-1366", path: "/", width: 1366, height: 768, actions: to(...lesson) },
