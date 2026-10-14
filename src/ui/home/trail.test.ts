@@ -24,8 +24,8 @@ describe("trail geometry", () => {
 
   it("parks the bus on the road just below a stage, and the Start gate drive follows the road", () => {
     const park = at(parkAt(1));
-    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeGreaterThan(30);
-    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeLessThan(50);
+    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeGreaterThan(50);
+    expect(Math.hypot(park.x - nodes[0]!.x, park.y - nodes[0]!.y)).toBeLessThan(70);
     const drive = along(parkAt(0), parkAt(1));
     expect(drive[0]).toMatchObject({ x: gate.x, y: gate.y });
     expect(drive.length).toBeGreaterThan(10);

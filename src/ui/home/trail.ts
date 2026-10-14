@@ -7,9 +7,9 @@ export const CX = W / 2;
 const SP = 120; // vertical space between stages
 const EXTRA = 90; // extra space where a region changes (it holds the banner)
 const AMP = 95; // how far the road swings from the middle
-const TOP = 470; // y of stage 50; the JAMB Day hall sits above it
+const TOP = 560; // y of stage 50; the JAMB Day hall sits above it
 /** The road passes this far below a stage before the bus rests on it. */
-export const PARK = 44;
+export const PARK = 62;
 
 export interface Region { id: SectionId; name: string; first: number; last: number; bannerY: number; scene: "village" | "river" | "city" }
 const REGIONS: [SectionId, string, Region["scene"]][] = [
@@ -37,7 +37,7 @@ export const countLabel = (n: number) => `Stage ${positionInSection(blueprint[n 
 
 type P = { x: number; y: number };
 /** Road waypoints: the gate (index 0), stages 1..50, then the hall door. */
-const pts: P[] = [gate, ...nodes, { x: hall.x, y: hall.y + 70 }];
+const pts: P[] = [gate, ...nodes, { x: hall.x, y: hall.y + 80 }];
 
 // Catmull-Rom through the waypoints, as cubic Bezier segments, so the road is smooth and the bus can sample it directly.
 const segs = pts.slice(0, -1).map((p1, i) => {
