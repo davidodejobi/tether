@@ -36,11 +36,12 @@ export function OfflineCues() {
 function InstallCard() {
   const [, tick] = useState(0);
   const [hidden, setHidden] = useState(false);
+  const [how, setHow] = useState(false); // phone: the full instructions open on tap
   useEffect(() => onInstallChange(() => tick((n) => n + 1)), []);
   if (hidden || isInstalled()) return null;
   const prompt = canPromptInstall();
   return (
-    <div class="oc-install">
+    <div class={`oc-install${how ? " oc-how" : ""}`}>
       <p class="oc-title"><Icon name="tether" size={20} />Add Tether to your home screen</p>
       <p class="oc-line">
         {prompt
@@ -50,7 +51,7 @@ function InstallCard() {
             : "In your browser menu, choose Install app or Add to Home screen."}
       </p>
       <div class="oc-row">
-        {prompt && <Button onClick={() => void promptInstall()}>Add</Button>}
+        {prompt ? <Button onClick={() => void promptInstall()}>Add</Button> : <Button variant="secondary" onClick={() => setHow(!how)}>{how ? "Hide" : "How"}</Button>}
         <Button variant="tertiary" onClick={() => setHidden(true)}>Not now</Button>
       </div>
     </div>

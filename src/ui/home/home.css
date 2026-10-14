@@ -3,24 +3,36 @@
 .page.hm { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100dvh; max-width: none; margin: 0; padding: 0; overflow-y: auto; background: var(--bg-page); }
 .hm-main { display: contents; }
 .hm-main > *, .page.hm > * { min-width: 0; }
-.hm-head { grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs) var(--spacing-md); padding: var(--spacing-xs) var(--spacing-md); }
+.hm-head { grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs) var(--spacing-md); padding: 0 var(--spacing-md); }
 .page.hm .hm-head h1 { margin: 0; font: var(--type-headline-m); }
 .hm-head .identity { margin-left: auto; }
 .page a.hm-settings { display: inline-flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
 .hm-top { grid-row: 2; display: grid; gap: var(--spacing-xs); padding: 0 var(--spacing-md) var(--spacing-xs); }
 .hm-status:empty { display: none; }
 .hm-top .oc { gap: var(--spacing-xs); }
-.hm-top .oc-install { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: var(--spacing-xs) var(--spacing-sm); gap: 0 var(--spacing-xs); border: 2px solid var(--border-subtle); }
-.hm-top .oc-title { grid-column: 1 / -1; font: var(--type-label-l); }
-.hm-top .oc-install .oc-line { font: var(--type-body-s); }
-.hm-top .oc-install .oc-row { grid-column: 2; grid-row: 2; }
-.hm-top .coach-body { padding: var(--spacing-xs) var(--spacing-sm); font: var(--type-body-m); }
-.hm-mapwrap { grid-row: 3; }
+@media (max-width: 767px) {
+  /* Phone install card: one line (title, Add or How, Not now); the full instructions open on tap of How. */
+  .hm-top .oc-install { display: grid; grid-template-columns: 1fr auto auto; align-items: center; padding: 0 0 0 var(--spacing-sm); gap: 0 var(--spacing-xxs); border: 2px solid var(--border-subtle); }
+  .hm-top .oc-title { grid-column: 1; grid-row: 1; font: var(--type-label-m); }
+  .hm-top .oc-title .icon { display: none; }
+  .hm-top .oc-install .oc-line { display: none; grid-column: 1 / -1; grid-row: 2; padding-bottom: var(--spacing-xs); font: var(--type-body-s); }
+  .hm-top .oc-how .oc-line { display: block; }
+  .hm-top .oc-install .oc-row { display: contents; }
+  .hm-top .oc-install .btn { grid-row: 1; min-height: var(--size-touch-target); padding: 0 var(--spacing-xs); font: var(--type-label-m); box-shadow: none; border-width: 0; background: transparent; color: var(--text-brand); }
+  .hm-top .coach { align-items: center; gap: var(--spacing-xs); }
+  .hm-top .coach .bo, .hm-top .coach img { width: 32px; height: 32px; }
+  .hm-top .coach-body { padding: var(--spacing-xxs) var(--spacing-sm); font: var(--type-body-s); }
+}
+.hm-mapwrap { grid-row: 3; min-height: 160px; } /* at very large text the page scrolls instead of the map vanishing */
 .hm-act {
-  grid-row: 4; display: grid; gap: var(--spacing-xs); max-height: 52dvh; overflow-y: auto; padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  grid-row: 4; display: grid; grid-template-columns: 1fr auto auto; gap: var(--spacing-xxs) var(--spacing-xs); max-height: 45dvh; overflow-y: auto; padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs);
   background: var(--bg-surface); border-top: 2px solid var(--border-subtle); border-radius: var(--radius-xl) var(--radius-xl) 0 0; box-shadow: 0 -4px 12px rgb(0 0 0 / .12);
 }
-.hm-act > * { min-width: 0; }
+.hm-act > * { grid-column: 1 / -1; min-width: 0; }
+/* Phone sheet rows: the move line, the primary action, then Solo check | readiness | More; the lines below follow. */
+.hm-line, .hm-row { display: contents; }
+.hm-move { grid-row: 1; grid-column: 1 / -1; } .hm-act .pc { grid-row: 2; }
+.hm-solo { grid-row: 3; grid-column: 1; } .hm-ready { grid-row: 3; grid-column: 2; } .hm-morebtn { grid-row: 3; grid-column: 3; }
 .hm-act .pc { padding: 0; border: 0; background: none; gap: var(--spacing-xs); }
 .hm-act .pc-stamp { gap: var(--spacing-sm); }
 .page p.hm-move { margin: 0; font: var(--type-label-m); color: var(--text-secondary); }
@@ -30,13 +42,14 @@
 .hm-gap-none { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-subtle); }
 .hm-more { display: none; gap: var(--spacing-xs); }
 .hm-more-open .hm-more { display: grid; }
-.hm-row { display: flex; gap: var(--spacing-xs); }
-.hm-row .hm-solo { flex: 1; }
 .hm-morebtn { min-height: var(--size-touch-target); padding: 0 var(--spacing-md); }
 .page a.btn.hm-course { display: flex; justify-content: flex-start; margin: 0; padding: 0 var(--spacing-xs); text-align: left; text-decoration: none; }
 .hm-solo-note { margin: 0; font: var(--type-body-m); color: var(--text-secondary); }
-.hm-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--spacing-sm); }
-.hm-ready { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-md); margin: 0; }
+.hm-ready { display: flex; align-items: center; margin: 0; }
+.hm-act .dots-word { display: none; }
+.hm-act .cp { gap: var(--spacing-xxs); }
+.hm-act .cp-text { font: var(--type-label-m); }
+.hm-act .cp-bar { height: 6px; }
 
 @media (min-width: 768px) {
   .page.hm { grid-template-rows: none; grid-template-columns: minmax(20rem, 23rem) minmax(0, 1fr); overflow: hidden; }
@@ -51,6 +64,15 @@
   .hm-top .oc { gap: var(--spacing-sm); }
   .hm-act { gap: var(--spacing-md); max-height: none; overflow: visible; background: none; border: 0; border-radius: 0; box-shadow: none; }
   .hm-act .pc { padding: var(--spacing-md); border: 2px solid var(--border-subtle); background: var(--bg-surface); gap: var(--spacing-md); }
+  .hm-act { grid-template-columns: 1fr; }
+  .hm-move, .hm-act .pc, .hm-solo, .hm-ready, .hm-morebtn { grid-row: auto; grid-column: auto; }
+  .hm-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--spacing-sm); }
+  .hm-row { display: flex; gap: var(--spacing-xs); }
+  .hm-row .hm-solo { flex: 1; }
+  .hm-act .dots-word { display: inline; }
+  .hm-act .cp { gap: var(--spacing-xs); }
+  .hm-act .cp-text { font: var(--type-label-l); }
+  .hm-act .cp-bar { height: 8px; }
   .hm-more { display: grid; gap: var(--spacing-md); }
   .hm-top .oc-install { display: flex; flex-direction: column; padding: var(--spacing-md); gap: var(--spacing-sm); }
   .hm-top .oc-install .oc-line { font: var(--type-body-l); }

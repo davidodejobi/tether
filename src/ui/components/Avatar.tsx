@@ -20,10 +20,10 @@ export function Avatar({ learner, size = 48 }: { learner: Pick<Learner, "nicknam
 }
 
 /** Avatar beside the visible nickname (Home and Settings). */
-export function Identity({ learner }: { learner: Learner }) {
+export function Identity({ learner, size }: { learner: Learner; size?: number }) {
   return (
     <p class="identity">
-      <Avatar learner={learner} />
+      <Avatar learner={learner} size={size} />
       <span class="identity-name">{learner.nickname}</span>
     </p>
   );

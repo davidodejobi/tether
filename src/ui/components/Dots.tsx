@@ -12,7 +12,7 @@ export function Dots({ filled, hero }: { filled: 0 | 1 | 2 | 3; hero?: boolean }
           {hero && i === 2 && filled === 3 && <span class="dot-ring" />}
         </span>
       ))}
-      <span class="dots-label" aria-hidden="true">Readiness {filled}/3</span>
+      <span class="dots-label" aria-hidden="true"><span class="dots-word">Readiness </span>{filled}/3</span>
     </span>
   );
 }

@@ -26,16 +26,16 @@ export function Home() {
   const solo = latestSolo(p);
   const coach = p.learner?.coach ?? "character";
   // Same state as the primary action in ProofCard, so the bubble never contradicts the button.
-  const coachLine = due && state !== "fading" ? "Your recheck is ready. Five questions, no help."
+  const coachLine = due && state !== "fading" ? "Recheck ready: five questions, no help."
     : state === "fading" ? "Your proof needs a quick restore."
-    : state === "proved" || state === "held" ? "Your proof is holding. Practise to keep it sharp."
+    : state === "proved" || state === "held" ? "Proof holding. Practise to stay sharp."
     : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone.";
   return (
     <main class={`page hm${more ? " hm-more-open" : ""}`}>
       <div class="hm-main">
         <header class="hm-head">
           <h1>Tether</h1>
-          {p.learner && <Identity learner={p.learner} />}
+          {p.learner && <Identity learner={p.learner} size={32} />}
           <a class="hm-settings" href="/settings"><Icon name="settings" /> Settings</a>
         </header>
         <div class="hm-top">
@@ -53,15 +53,15 @@ export function Home() {
             <button class="btn btn-tertiary hm-morebtn" type="button" aria-expanded={more} onClick={() => setMore(!more)}>{more ? "Less" : "More"}</button>
           </div>
           {/* Spec section 8: the latest saved solo decides; without a practice score it shows alone and how to get a first gap. */}
-          {!solo ? (
-            <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>
-          ) : solo.gap === null ? (
+          {solo && (solo.gap === null ? (
             <p class="hm-gap hm-gap-none"><strong>Alone: {solo.alone} of 10</strong> on {when(solo.at)}. Answer ten practice questions, then take another solo check, to see your first gap.</p>
           ) : (
             <p class="hm-gap"><strong>{solo.raw! <= 0 ? "No help gap on your latest solo check" : `Latest gap: ${solo.gap}`}</strong> (with help {solo.practice}, alone {solo.alone}) on {when(solo.at)}</p>
-          )}
+          ))}
+          {/* Measurable progress is never behind More (spec section 10). */}
+          <CourseProgress link={false} />
           <div class="hm-more">
-            <CourseProgress />
+            {!solo && <p class="hm-gap hm-gap-none">No gap yet. Take your first solo check.</p>}
             <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
             <p class="hm-solo-note">Ten questions on your own. Always open, whatever your dots say.</p>
           </div>
