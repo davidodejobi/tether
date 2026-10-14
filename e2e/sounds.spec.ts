@@ -52,12 +52,25 @@ const writeLearner = (page: Page, learner: object) =>
   );
 
 const SOUNDS_ON = { ...LEARNER, sounds: true, avatarSeed: "fixedseed0001", avatarGen: 2 };
+const SOUNDS_OFF = { ...SOUNDS_ON, sounds: false };
 const sounds = (page: Page) => page.getByRole("checkbox", { name: "Sounds" });
 const pickRight = async (page: Page) => tile(page, (await current(page)).answer).click();
 const check = (page: Page) => page.getByRole("button", { name: "Check" }).click();
 
-test("Sounds is off by default, switches by keyboard, saves at once, and plays tile, outcome and nothing else", async ({ page }) => {
-  await seed(page);
+test("Sounds is on by default and an explicit off stays off after a reload", async ({ page }) => {
+  await seed(page); // a record that never set the preference
+  await page.goto("/settings");
+  await expect(sounds(page)).toBeChecked();
+  await sounds(page).focus();
+  await page.keyboard.press("Space");
+  await expect(sounds(page)).not.toBeChecked();
+  expect((await stored(page)).sounds).toBe(false);
+  await page.reload();
+  await expect(sounds(page)).not.toBeChecked();
+});
+
+test("Sounds switches on by keyboard, saves at once, and plays tile, outcome and nothing else", async ({ page }) => {
+  await seed(page, SOUNDS_OFF);
   await page.goto("/settings");
   await expect(sounds(page)).not.toBeChecked();
   await sounds(page).focus();
@@ -125,7 +138,7 @@ test("a wrong answer plays try-again after its save", async ({ page }) => {
 });
 
 test("the Sounds toggle keeps the UI unchanged on a failed save and Retry applies it", async ({ page }) => {
-  await seed(page);
+  await seed(page, SOUNDS_OFF);
   await page.goto("/settings");
   await expect(sounds(page)).toBeVisible();
   await set(page, "__failWrites", true);
@@ -200,7 +213,7 @@ for (const variant of ["missing", "throwing"] as const) {
       w.AudioContext = v === "missing" ? undefined : function () { throw new Error("blocked"); };
       w.webkitAudioContext = w.AudioContext;
     }, variant);
-    await seed(page);
+    await seed(page, SOUNDS_OFF);
     await page.goto("/settings");
     await sounds(page).focus();
     await page.keyboard.press("Space");
@@ -220,7 +233,7 @@ test("an older learner record is backfilled once with every setting kept, and th
   await page.goto("/");
   await expect(page.locator(".identity .avatar svg")).toBeVisible();
   const first = await stored(page);
-  expect(first).toMatchObject({ ...old, sounds: false, avatarGen: 2 });
+  expect(first).toMatchObject({ ...old, sounds: true, avatarGen: 2 });
   expect(first.avatarSeed).toMatch(/^[0-9a-f]{24}$/);
   const art = await page.locator(".identity .avatar").innerHTML();
 
@@ -264,7 +277,7 @@ test("with every external request blocked, the toggle, the avatar and a saved an
     const u = new URL(r.url());
     if (u.origin !== own && u.protocol.startsWith("http")) external.push(r.url());
   });
-  await seed(page);
+  await seed(page, SOUNDS_OFF);
   await page.goto("/settings");
   await expect(page.locator(".identity .avatar svg")).toBeVisible();
   await sounds(page).focus();

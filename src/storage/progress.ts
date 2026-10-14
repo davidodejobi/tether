@@ -25,7 +25,7 @@ export interface Learner {
   partner: { name?: string; phone?: string } | null;
   /** The honesty rule was shown once in regular practice (spec section 4). Absent on older records, so no migration. */
   honestyIntroSeen?: boolean;
-  /** Interaction sounds (spec section 14a). Absent on older records, read as off. */
+  /** Interaction sounds (spec section 14a). Absent on older records, read as on. */
   sounds?: boolean;
   /** Light or dark appearance. Absent (or "system") follows the device setting. */
   theme?: "system" | "light" | "dark";
@@ -85,7 +85,7 @@ export function cleanNickname(input: string): string | null {
 
 /** The defaults used when setup is skipped. */
 export function newLearner(nickname: string): Learner {
-  return { nickname, lessonDone: false, onboarded: false, coach: "character", lang: "en", readAloud: false, partner: null, sounds: false, avatarSeed: newSeed(), avatarGen: AVATAR_GEN, schemaVersion: SCHEMA_VERSION };
+  return { nickname, lessonDone: false, onboarded: false, coach: "character", lang: "en", readAloud: false, partner: null, sounds: true, avatarSeed: newSeed(), avatarGen: AVATAR_GEN, schemaVersion: SCHEMA_VERSION };
 }
 
 // Key prefixes are part of the stored format. Never rename them; add a migration instead.
@@ -253,7 +253,7 @@ export class ProgressStore {
   private fill(l: Learner): Learner {
     if (l.avatarSeed && l.avatarGen) return l;
     const old = this.state.learner;
-    return { ...l, sounds: l.sounds ?? false, avatarSeed: l.avatarSeed ?? old?.avatarSeed ?? this.seed, avatarGen: l.avatarGen ?? old?.avatarGen ?? AVATAR_GEN };
+    return { ...l, sounds: l.sounds ?? true, avatarSeed: l.avatarSeed ?? old?.avatarSeed ?? this.seed, avatarGen: l.avatarGen ?? old?.avatarGen ?? AVATAR_GEN };
   }
 
   private async write(raw: Batch): Promise<void> {

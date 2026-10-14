@@ -46,7 +46,7 @@ function Interactive() {
 function Panel({ theme }: { theme: "light" | "dark" }) {
   return (
     <div class="kit-panel" data-theme={theme}>
-      <h2>{theme === "light" ? "Light: Naija Green" : "Dark: Adire Night"}</h2>
+      <h2>{theme === "light" ? "Light: Naija Green" : "Dark: Forest Night"}</h2>
 
       <Group title="Button">
         <div class="kit-row">

@@ -82,12 +82,20 @@ describe("sounds and avatar fields", () => {
     return { ...rest, lang: "pcm" as const, readAloud: true, coach: "text" as const, partner: { name: "Ife" }, honestyIntroSeen: true };
   };
 
-  test("a new learner has sounds off and a random seed unrelated to the nickname", () => {
+  test("a new learner has sounds on and a random seed unrelated to the nickname", () => {
     const a = newLearner("Amaka");
     const b = newLearner("Amaka");
-    expect(a).toMatchObject({ sounds: false, avatarGen: AVATAR_GEN });
+    expect(a).toMatchObject({ sounds: true, avatarGen: AVATAR_GEN });
     expect(a.avatarSeed).toMatch(/^[0-9a-f]{24}$/);
     expect(a.avatarSeed).not.toBe(b.avatarSeed);
+  });
+
+  test("an explicit sounds off survives the backfill", async () => {
+    const kv = memoryKV();
+    await kv.setMany([["learner", { ...old(), sounds: false }]]);
+    const store = await reopen(kv);
+    await store.backfill();
+    expect(store.progress.learner!.sounds).toBe(false);
   });
 
   test("an older record is backfilled once, keeping every setting and record", async () => {
@@ -99,7 +107,7 @@ describe("sounds and avatar fields", () => {
     expect(store.progress.learner!.avatarSeed).toBeUndefined();
     await store.backfill();
     const filled = store.progress.learner!;
-    expect(filled).toMatchObject({ nickname: "Amaka", lang: "pcm", readAloud: true, coach: "text", partner: { name: "Ife" }, honestyIntroSeen: true, sounds: false, avatarGen: AVATAR_GEN });
+    expect(filled).toMatchObject({ nickname: "Amaka", lang: "pcm", readAloud: true, coach: "text", partner: { name: "Ife" }, honestyIntroSeen: true, sounds: true, avatarGen: AVATAR_GEN });
     expect(filled.avatarSeed).toBeTruthy();
     expect(store.progress.attempts.size).toBe(1);
     const again = await reopen(kv);

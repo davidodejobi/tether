@@ -1,4 +1,4 @@
-/* Art palette (--map-*): Naija Green by day, Adire Night by night, switched like the tokens. Art only; UI colours are tokens. */
+/* Art palette (--map-*): Naija Green by day, Forest Night by night, switched like the tokens. Art only; UI colours are tokens. */
 :root {
   --map-sky1: #7FD3FF; --map-sky2: #D9F4FF; --map-sun: #FFD23F; --map-hill: #5DBB63; --map-stars: 0;
   --map-land1: #8BD65A; --map-land2: #4CAF50; --map-sav1: #D9D27B; --map-city1: #94CF8C;
@@ -13,25 +13,25 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --map-sky1: #0B1233; --map-sky2: #2A3A7A; --map-sun: #FFF3C4; --map-hill: #1D2B66; --map-stars: 1;
-    --map-land1: #25407A; --map-land2: #132552; --map-sav1: #3A4A66; --map-city1: #1F3466;
-    --map-water1: #2E7BD8; --map-water2: #173F8C; --map-leaf1: #2C7A6A; --map-leaf2: #1A5249;
-    --map-mud: #8E5A3A; --map-mudDark: #5E3A22; --map-roof: #B98A3A; --map-roofDark: #7E5C22; --map-rock: #5A6690;
-    --map-zuma: #141C45; --map-zumaLine: #3A4A8A;
+    --map-sky1: #07110C; --map-sky2: #163125; --map-sun: #FFF3C4; --map-hill: #15301F; --map-stars: 1;
+    --map-land1: #15301F; --map-land2: #0E2416; --map-sav1: #4A4A2A; --map-city1: #1A3A26;
+    --map-water1: #1E5A6B; --map-water2: #123A48; --map-leaf1: #2C7A5A; --map-leaf2: #1A5238;
+    --map-mud: #8E5A3A; --map-mudDark: #5E3A22; --map-roof: #B98A3A; --map-roofDark: #7E5C22; --map-rock: #56645A;
+    --map-zuma: #101C15; --map-zumaLine: #3A5A46;
     --map-road: #C98E4A; --map-roadEdge: #7A5226; --map-roadLine: #FFE0A3;
-    --map-hall: #D9D2F0; --map-hallRoof: #5B3FA0; --map-hallRoofHi: #9F86E8; --map-bossBanner: #FFC233; --map-bossText: #0E1638;
-    --map-cloud: #5C6FB4; --map-birdc: #C9D3F5; --map-bld1: #2B3A70; --map-bld2: #34457F; --map-win: #FFE08A;
+    --map-hall: #E0D6C2; --map-hallRoof: #8A3A1E; --map-hallRoofHi: #D98A52; --map-bossBanner: #FFC233; --map-bossText: #0B1210;
+    --map-cloud: #4F6358; --map-birdc: #C4D6CA; --map-bld1: #1E3A2C; --map-bld2: #274A38; --map-win: #FFE08A;
   }
 }
 [data-theme="dark"] {
-  --map-sky1: #0B1233; --map-sky2: #2A3A7A; --map-sun: #FFF3C4; --map-hill: #1D2B66; --map-stars: 1;
-  --map-land1: #25407A; --map-land2: #132552; --map-sav1: #3A4A66; --map-city1: #1F3466;
-  --map-water1: #2E7BD8; --map-water2: #173F8C; --map-leaf1: #2C7A6A; --map-leaf2: #1A5249;
-  --map-mud: #8E5A3A; --map-mudDark: #5E3A22; --map-roof: #B98A3A; --map-roofDark: #7E5C22; --map-rock: #5A6690;
-  --map-zuma: #141C45; --map-zumaLine: #3A4A8A;
+  --map-sky1: #07110C; --map-sky2: #163125; --map-sun: #FFF3C4; --map-hill: #15301F; --map-stars: 1;
+  --map-land1: #15301F; --map-land2: #0E2416; --map-sav1: #4A4A2A; --map-city1: #1A3A26;
+  --map-water1: #1E5A6B; --map-water2: #123A48; --map-leaf1: #2C7A5A; --map-leaf2: #1A5238;
+  --map-mud: #8E5A3A; --map-mudDark: #5E3A22; --map-roof: #B98A3A; --map-roofDark: #7E5C22; --map-rock: #56645A;
+  --map-zuma: #101C15; --map-zumaLine: #3A5A46;
   --map-road: #C98E4A; --map-roadEdge: #7A5226; --map-roadLine: #FFE0A3;
-  --map-hall: #D9D2F0; --map-hallRoof: #5B3FA0; --map-hallRoofHi: #9F86E8; --map-bossBanner: #FFC233; --map-bossText: #0E1638;
-  --map-cloud: #5C6FB4; --map-birdc: #C9D3F5; --map-bld1: #2B3A70; --map-bld2: #34457F; --map-win: #FFE08A;
+  --map-hall: #E0D6C2; --map-hallRoof: #8A3A1E; --map-hallRoofHi: #D98A52; --map-bossBanner: #FFC233; --map-bossText: #0B1210;
+  --map-cloud: #4F6358; --map-birdc: #C4D6CA; --map-bld1: #1E3A2C; --map-bld2: #274A38; --map-win: #FFE08A;
 }
 
 /* The map column: a scroller filling its space, with the controls floating over it (outside the Journey map region). */
