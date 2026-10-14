@@ -45,20 +45,20 @@ P={
  'amber': ramp('#B26A00'),
  'blue': ramp('#3B5B85'),
 }
-# ---- Tether v2 · Light = "Naija Green · Day", Dark = "Adire Night" ----
+# ---- Tether v2 · Light = "Naija Green · Day", Dark = "Forest Night" ----
 # Meaning is the same in both modes: green = action, gold = proof/stamp, coral = gap, red = wrong.
 P={
  'green': ramp('#00804D'),   # Nigerian flag green: action
- 'mint':  ramp('#2ED3A0'),   # action in dark (Adire)
+ 'mint':  ramp('#2ED3A0'),   # action in dark (Forest Night)
  'gold':  ramp('#FFB800'),   # proof / stamps / crown
  'coral': ramp('#F07A1A'),   # gap: orange (hue ~52), well clear of wrong red (hue ~27); was #E5482B, which matched red
  'red':   ramp('#C62828'),   # wrong answer
  'coach': ramp('#FFB547'),
 }
-# neutrals: leaf (green-tinted, light) and night (indigo, dark)
+# neutrals: leaf (green-tinted, light) and night (green-tinted charcoal, dark)
 P['leaf']={s:mk(l,0.014,150) for s,l in zip(STEPS,[.985,.965,.92,.86,.74,.60,.50,.42,.34,.26,.20])}
-P['night']={s:mk(l,c,268) for s,l,c in zip(STEPS,[.97,.93,.86,.76,.64,.52,.42,.36,.30,.24,.19],[.01,.02,.03,.05,.07,.08,.08,.08,.08,.08,.075])}
-P['gold'][300]='#FFC233'  # exact Adire/Naija gold for stamps
+P['night']={s:mk(l,c,155) for s,l,c in zip(STEPS,[.97,.92,.85,.74,.62,.50,.40,.309,.255,.211,.174],[.006,.008,.01,.014,.018,.02,.022,.027,.02,.017,.012])}
+P['gold'][300]='#FFC233'  # exact Naija gold for stamps
 P['base']={'white':'#FFFFFF'}
 def g(ref): f,s=ref.split('/'); return P[f][s if f=='base' else int(s)]
 SEM=[

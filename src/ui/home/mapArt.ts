@@ -1,5 +1,5 @@
 // Decorative art for Home's journey trail, generated from code (no image files) and loaded lazily after first paint.
-// Style from the planning map: Naija Green by day, Adire Night by night; village and market, river and savanna with baobabs,
+// Style from the planning map: Naija Green by day, Forest Night by night; village and market, river and savanna with baobabs,
 // Zuma Rock and a city skyline, then the JAMB Day hall. Colours are CSS variables (--map-*) defined in map.css,
 // so the theme switches with no script. Still art lives in `ground` and `tiles`; everything that moves is `ambient`,
 // small separate elements so only they animate (transforms and opacity only).

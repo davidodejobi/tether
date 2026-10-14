@@ -52,8 +52,8 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
   }, []);
 
   useEffect(() => open(), [open]);
-  // Sounds follow the saved setting (default off); every save re-renders this, so a change applies at once.
-  useEffect(() => setSoundsOn(state.status === "ready" && state.store.progress.learner?.sounds === true), [state]);
+  // Sounds follow the saved setting (default on); every save re-renders this, so a change applies at once.
+  useEffect(() => setSoundsOn(state.status === "ready" && !!state.store.progress.learner && state.store.progress.learner.sounds !== false), [state]);
   // Appearance follows the saved learner once there is one; before onboarding the early (localStorage) choice stays.
   useEffect(() => {
     const learner = state.status === "ready" ? state.store.progress.learner : null;

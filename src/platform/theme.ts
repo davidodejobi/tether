@@ -1,11 +1,11 @@
-// Light, dark or the device's own setting (spec section 14: Naija Green by day, Adire Night by night).
+// Light, dark or the device's own setting (spec section 14: Naija Green by day, Forest Night by night).
 // tokens.css already honours data-theme on <html>; "system" removes it so the OS preference decides.
 export type Theme = "system" | "light" | "dark";
 
 // A copy in localStorage lets the first paint use the choice before saved progress opens. The saved learner decides.
 const KEY = "tether:theme";
 // The browser chrome colour per theme; these match --bg-page in tokens.css and the theme-color metas in index.html.
-const CHROME = { light: "#F4FDF5", dark: "#060F35" } as const;
+const CHROME = { light: "#F4FDF5", dark: "#0C120E" } as const;
 
 export function applyTheme(theme: Theme) {
   const root = document.documentElement;

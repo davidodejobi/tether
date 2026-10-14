@@ -21,7 +21,7 @@ export function Settings() {
   const [name, setName] = useState<string | null>(null); // unsaved nickname edit
   const [partner, setPartner] = useState<{ name: string; phone: string } | null>(null); // unsaved partner edit
   if (!learner) return <main />;
-  const sounds = learner.sounds === true;
+  const sounds = learner.sounds !== false;
   const savedPartner = { name: learner.partner?.name ?? "", phone: learner.partner?.phone ?? "" };
 
   // The saved value decides what shows; `hooks` are the Sounds toggle's audio side effects.

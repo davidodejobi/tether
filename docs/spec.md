@@ -432,7 +432,7 @@ tablet from 768–1279 px, laptop from 1280 px. Avoid horizontal scrolling at th
 target widths; keep short laptop screens usable. Solo/rechecks use focus layouts
 without navigation or help panels. Do not double-scale map labels on tablets.
 
-- Day theme: Naija Green; Night: Adire Night. Green/mint actions and dots,
+- Day theme: Naija Green; Night: Forest Night (green-tinted charcoal). Green/mint actions and dots,
   gold stamps, gap colour visibly distinct from wrong red. Every state also
   has words/icons; proof cards remain light in either theme.
 - Use Atkinson Hyperlegible Next locally. Minimum text 12 px, inputs 16 px,
@@ -455,7 +455,8 @@ is synthesized locally; avatars render locally. No hosted scripts, audio files,
 avatar endpoints, accounts, photo uploads or identity requests are needed.
 Preserve required third-party licence notices and pin the selected package versions.
 
-- Sounds are optional, default off for new and existing learners. A keyboard-
+- Sounds are optional, default on for new learners and for records that never set the
+  preference; an explicit off stays off. A keyboard-
   accessible Sounds toggle in Settings persists immediately through the guarded
   progress save, with unchanged UI and Retry on failure. Use a quiet fixed volume
   around 20%; automatic read-aloud remains a separate preference.
