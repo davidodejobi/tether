@@ -43,6 +43,14 @@ export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean;
     return () => ro.disconnect();
   }, []);
 
+  // Resizing the panel changes the scale: keep whatever sat at the middle of the view (the current stage, usually) there.
+  const shown = useRef(1);
+  useLayoutEffect(() => {
+    const el = scroll.current!;
+    if (shown.current !== s) el.scrollTop = (el.scrollTop + el.clientHeight / 2) * (s / shown.current) - el.clientHeight / 2;
+    shown.current = s;
+  }, [s]);
+
   const centre = (smooth = false) => {
     const el = scroll.current;
     if (el) el.scrollTo({ top: Math.max(0, cur.y * scale.current - el.clientHeight / 2), behavior: smooth && !reduced() ? "smooth" : "auto" });

@@ -52,7 +52,12 @@
 .hm-act .cp-bar { height: 6px; }
 
 @media (min-width: 768px) {
-  .page.hm { grid-template-rows: none; grid-template-columns: minmax(20rem, 23rem) minmax(0, 1fr); overflow: hidden; }
+  .page.hm { grid-template-rows: none; position: relative; grid-template-columns: var(--hm-panel-w, minmax(20rem, 23rem)) minmax(0, 1fr); overflow: hidden; }
+  .page.hm > .hm-split { position: absolute; top: 0; bottom: 0; width: 16px; margin-left: -8px; z-index: 5; cursor: col-resize; touch-action: none; user-select: none; }
+  .hm-split::after { content: ""; position: absolute; top: 0; bottom: 0; left: 7px; width: 2px; background: transparent; transition: background .12s; }
+  .hm-split:hover::after, .hm-split-on::after { background: var(--border-focus); }
+  .hm-split:focus-visible { outline: 3px solid var(--border-focus); outline-offset: -3px; }
+  .page.hm:has(.hm-split-on) { user-select: none; cursor: col-resize; }
   .hm-main {
     display: flex; flex-direction: column; gap: var(--spacing-md); height: 100dvh; overflow-y: auto; padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-xl);
     background: var(--bg-page); border-right: 2px solid var(--border-subtle);

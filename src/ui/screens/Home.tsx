@@ -8,6 +8,7 @@ import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { CourseProgress } from "../course/CourseProgress";
 import { HomeMap } from "../home/HomeMap";
+import { Splitter } from "../home/Splitter";
 import { latestSolo, moveOne } from "../home/view.ts";
 import { OfflineCues } from "../offline/OfflineCues";
 import { ProofCard } from "../proof/ProofCard";
@@ -68,6 +69,7 @@ export function Home() {
         </div>
       </div>
       <HomeMap state={state} due={due} coach={coach} />
+      <Splitter />
     </main>
   );
 }
