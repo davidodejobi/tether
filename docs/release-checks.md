@@ -22,9 +22,9 @@ First deploy:
 
 The deployed shell includes steps 17a and 22 plus the Home portion of 23:
 subject selection, browsable course/section/topic destinations, 50 planned stages,
-one available stage, first-solo completion counts and the scrolling trail/list.
+five available stages (2–5 Unreviewed), first-solo completion counts and the scrolling trail/list.
 Review evidence and open findings are in `reviews/course-release-2026-10-14.md`.
-Learn pages and move-scoped records remain future work; the pilot is unchanged.
+Learn pages remain future work (move-scoped records are done); the pilot is unchanged.
 
 ## Run these
 

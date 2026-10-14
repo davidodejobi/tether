@@ -2,7 +2,7 @@
 
 These decisions override conflicting text in `requirements.txt`.
 
-- Scope: JAMB English concord, Move 1 only; other moves are Coming soon.
+- Scope: JAMB English concord, Move 1 only; other moves are Coming soon. (Superseded 14 Oct 2026: Moves 1–5 are playable, see "Five playable concord stages".)
   Ship learn → practise → help → solo → gap → optional sharing → recheck,
   with local progress, offline installation, Settings and usable phone/tablet/laptop layouts.
 - Learn-first onboarding: three tutorial questions earn no scores or dots.
@@ -272,3 +272,19 @@ These decisions override conflicting text in `requirements.txt`.
 - Danfo bus: sits on the road just below the current stage. On Home load it drives from where it last rested (`tether.map.bus` in localStorage, try/catch; a first visit starts at the Start gate) to the current stage along the road curve, then hops. Tapping the available stage makes it hop onto the stage, then navigates.
 - Layout: phone is a compact header, a one-line install card and coach, the map filling at least 55% of a 360x800 screen, and a bottom action sheet (primary action, Solo check, readiness dots, course progress, a saved gap line; More shows the empty-gap placeholder, course link and solo note). On phone the 49 Coming soon nodes show number and lock only (full title in their name and in List view); the floating List and Jump controls sit in a 56 px right gutter the trail never enters. From 768 px a side panel (offline cues, coach, action card, Solo check, gap, readiness, course link) sits beside a full-height map; from 1280 px the AppShell rail joins it.
 - The old `day.svg` and `night.svg` map assets were removed.
+
+## Five playable concord stages (owner request, 14 Oct 2026)
+
+- The owner asked for at least five stages to work like stage 1. Stages 2–5 of the approved blueprint are now moves: `nearest-subject`, `collective-nouns`, `indefinite-pronouns`, `one-of-the` (`src/content/moves.ts` lists all five in journey order).
+- Content stays rule-generated and human-reviewed: each move file holds word lists and a rule that decides every answer; `validateMove` and `src/content/moves.test.ts` check the question space, run shapes and copy. The new moves are Unreviewed until a named reviewer signs `docs/content/moves-2-5-review.md`; English and Pidgin copy then show the Unreviewed tag. Online AI help is not offered for them, because the AI function serves approved packs only.
+- One generalised sentence shape: the words before the blank are ordered parts (subject, covered, plain). Move 1 questions, including every saved one, have no parts field and keep the "subject, covered," layout, so no stored record changes.
+- Records are scoped per move without a migration: attempts and runs already store the question's `moveId`, so dots, rounds, the with-help score, the resume point, gaps, course counts and proof cycles filter by it. This completes roadmap step 21's move-scoped records.
+- Move flows carry `?move=<id>` (`/practice`, `/solo-entry`, `/run/solo`, `/run/recheck`, `/recheck-entry`); absent means Move 1, so Move 1 links are unchanged. Results and Share take the move from the saved run.
+- Home shows one focus move: `?move=` if given, else a move with a recheck due, else the most recently practised move, else Move 1. On the map, stages 1–5 are links with their own state; an available move with no proof yet is "Available". Nothing is locked; the recommended order is the journey order.
+- A first visit to Moves 2–5 opens a short Show me on the move's example before the first question; it records nothing.
+
+## Desktop panel resize and early theme (14 Oct 2026)
+
+- Owner request: from 768 px the Home info panel and the map are split by a draggable separator (pointer, keyboard, double-click or Enter resets). The width is a per-device convenience in localStorage (`tether:panelWidth`), clamped so the map keeps at least 45% or 420 px.
+- Codex P3: a few lines in `index.html` apply the saved Light or Dark choice before the app's code loads, so a slow load never flashes the device theme.
+

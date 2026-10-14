@@ -16,12 +16,12 @@ The course shell is deployed at https://tether-4cg.pages.dev. Review baseline:
 4. Record actual phone install/offline/share/voice and VoiceOver/TalkBack checks
    in `docs/release-checks.md`, or retain their explicit untested status.
 
-Submit the working demo with honest claims: 50 planned English stages, one live
-reviewed move; online AI explains, fixed rules grade, core study works offline.
+Submit the working demo with honest claims: 50 planned English stages, five live
+concord stages (Move 1 reviewed, Moves 2–5 Unreviewed until signed); online AI explains, fixed rules grade, core study works offline.
 The long scrolling Home trail is an approved owner decision. Keep its list view,
 keyboard access and reduced-motion fallback. Preserve the solo-speech diagnostic.
 
-For later expansion, finish move-scoped records/migration before publishing a
+For later expansion (move-scoped records are done), review Moves 2–5 before publishing a
 second move, then implement reviewed Learn pages and further packs. Keep step 20
 as a real elapsed-day pilot. Use small focused commits and coordinate shared
 files when delegating work.
