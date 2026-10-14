@@ -74,7 +74,7 @@ for (const [w, h] of SIZES)
 
       test("onboarding and lesson", async ({ page }) => {
         await page.goto("/");
-        await page.getByRole("button", { name: "Continue" }).click();
+        await page.getByRole("button", { name: "Start" }).click();
         await expect(page.getByRole("heading", { name: "Pick your subjects" })).toBeFocused();
         await scan(page);
         await page.getByRole("button", { name: "Continue" }).click();
