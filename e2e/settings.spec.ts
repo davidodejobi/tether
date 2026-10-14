@@ -174,8 +174,8 @@ test("Appearance: a failed save keeps the old look, and Retry applies the new on
 
 test("Appearance: a saved Light or Dark choice applies before the app's code loads", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("tether:theme", "dark"));
-  await page.route(/\/assets\/index-.*\.js$/, () => {}); // the bundle never arrives
-  await page.goto("/", { waitUntil: "commit" });
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
+  await page.route(/\/assets\/index-.*\.js$/, (route) => route.fulfill({ contentType: "text/javascript", body: "" })); // the app's code never runs
+  await page.goto("/");
+  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
   expect(await page.locator("#app").innerHTML()).toBe(""); // so the app's own code really did not run
 });
