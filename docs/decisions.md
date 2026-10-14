@@ -301,3 +301,9 @@ These decisions override conflicting text in `requirements.txt`.
 - The owner asked for no "Unreviewed" label anywhere. Learners no longer see the tag on coach copy, Show me, Go deeper, The move sheet, lessons, results, share cards, the Pidgin choice in Settings or the onboarding Pidgin note. This supersedes the earlier decisions that showed it.
 - The review itself is unchanged and still open. Moves 2–5, the Learn lessons and Pidgin keep `review.status: "unreviewed"` in their data until the owner signs `docs/content/moves-2-5-review.md`. Online AI help stays limited to approved packs (Move 1), because the AI function only serves those.
 
+
+## Stages unlock in order (owner decision, 14 Oct 2026)
+
+- Stages are played in journey order. Move 1 is always open; a later move opens once the previous move has a proof cycle (its solo check was passed, Fading included). `unlocked()` in `src/ui/home/view.ts` is the one rule.
+- A move the learner already began (any attempt, run or cycle) stays open; nobody is locked out of what they started. A locked stage is not a link on the map, the list or the course page, and its practice, learn, solo, recheck and run screens show "Move N is locked" with a way back to Home. A `?move=` naming a locked move is ignored by Home.
+- This supersedes "Nothing is locked" in the five-stages section above.

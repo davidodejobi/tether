@@ -15,11 +15,13 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   await expect(page.getByRole("link", { name: "Practise Move 1" })).toHaveAttribute("href", "/practice");
   await expect(page.getByRole("link", { name: "Solo check" })).toHaveAttribute("href", "/solo-entry");
   await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
-  // The long trail: 50 stage nodes, stages 1 to 5 links, the other 45 plain Coming soon markers.
+  // The long trail: 50 stage nodes. Stages play in order, so only stage 1 is a link; 2 to 5 are Locked, the other 45 Coming soon.
   const map = page.getByRole("region", { name: "Journey map" });
   await expect(map.locator(".hm-pos")).toHaveCount(50);
-  await expect(map.getByRole("link")).toHaveCount(5);
+  await expect(map.getByRole("link")).toHaveCount(1);
   await expect(map.getByRole("button")).toHaveCount(0);
+  await expect(map.locator(".hm-locked")).toHaveCount(4);
+  await expect(map.getByText("Stage 2, Move 2: Either…or, neither…nor: the nearest subject. Locked. Pass Move 1 first.")).toHaveCount(1);
   await expect(map.getByText("Coming soon")).toHaveCount(45);
   await expect(map.getByText("Stage 7: There is, there are. Coming soon")).toHaveCount(1);
   await expect(map.getByText("Current")).toBeVisible();
@@ -72,7 +74,8 @@ test("List view shows all 50 stages as an ordered list, and Map view brings the 
   const map = page.getByRole("region", { name: "Journey map" });
   await page.getByRole("button", { name: "List view" }).click();
   await expect(map.locator(".hm-listview ol > li")).toHaveCount(50);
-  await expect(map.getByRole("link")).toHaveCount(5);
+  await expect(map.getByRole("link")).toHaveCount(1);
+  await expect(map.locator(".hm-listview").getByText("Stage 2, Move 2: Either…or, neither…nor: the nearest subject. Locked.")).toBeVisible();
   await expect(map.getByText("Stage 7: There is, there are. Coming soon.")).toBeVisible();
   await expect(map.getByText("Stage 50: Emphatic stress. Coming soon.")).toHaveCount(1);
   await page.getByRole("button", { name: "Map view" }).click();

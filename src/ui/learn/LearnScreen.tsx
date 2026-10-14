@@ -1,11 +1,15 @@
 // /learn?move=<id>: the lesson again, as a focus screen. It reads and writes nothing; Practise this move goes to practice.
 import { useLocation } from "preact-iso";
 import { Button } from "../components/Button";
-import { useMove, withMove } from "../move.ts";
+import { LockedMove, useMove, useMoveGate, withMove } from "../move.ts";
 import { useProgressState } from "../progress";
 import { Learn } from "./Learn";
 
 export function LearnScreen() {
+  return useMoveGate().locked ? <LockedMove /> : <LearnInner />;
+}
+
+function LearnInner() {
   const state = useProgressState();
   const { route } = useLocation();
   const move = useMove();

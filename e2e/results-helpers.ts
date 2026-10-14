@@ -32,6 +32,14 @@ export function cycle(state: "proved" | "held" | "fading", firstRunId: string, a
   };
 }
 
+const JOURNEY = ["strip-disguise", "nearest-subject", "collective-nouns", "indefinite-pronouns", "one-of-the"];
+/** Held proofs (nothing due) for every move before Move `n`: stages play in order, so this unlocks stage `n`. */
+export const unlockedTo = (n: number) =>
+  JOURNEY.slice(0, n - 1).map((id) => {
+    const c = cycle("held", `g-${id}`, "2026-10-12", "2099-01-01");
+    return { key: `cycle:${id}`, value: { ...c.value, moveId: id } };
+  });
+
 /** Writes the learner and the given records straight into IndexedDB, then opens `path`. */
 export async function seedRecords(page: Page, records: { key: string; value: unknown }[], path: string) {
   await page.goto("/");

@@ -15,7 +15,7 @@ import { Icon } from "../components/Icon";
 import { useProgress, useProgressState } from "../progress";
 import { HelpedQuestion } from "../help/HelpedQuestion";
 import { Learn } from "../learn/Learn";
-import { useMove, withMove } from "../move.ts";
+import { LockedMove, useMove, useMoveGate, withMove } from "../move.ts";
 import { Honesty } from "./Honesty";
 import { SoloEntry } from "../solo/SoloEntry";
 import "./Practice.css";
@@ -38,6 +38,10 @@ function begin(store: ProgressStore, pack: Move): Step {
 }
 
 export function Practice() {
+  return useMoveGate().locked ? <LockedMove /> : <PracticeInner />;
+}
+
+function PracticeInner() {
   const state = useProgressState();
   if (state.status === "opening") return <main class="pr-note"><p>Opening your progress…</p></main>;
   if (state.status === "couldNotOpen")

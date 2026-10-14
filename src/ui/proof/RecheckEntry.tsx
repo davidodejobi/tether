@@ -2,7 +2,7 @@
 import { recheckAvailable } from "../../rules/proof.ts";
 import { Dots } from "../components/Dots";
 import { Icon, type IconName } from "../components/Icon";
-import { useMove, withMove } from "../move.ts";
+import { LockedMove, useMove, useMoveGate, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { appNow, simulatedDate } from "./simulate";
 import "../components/Button.css";
@@ -17,6 +17,10 @@ const FACTS: { icon: IconName; text: string }[] = [
 ];
 
 export function RecheckEntry() {
+  return useMoveGate().locked ? <LockedMove /> : <RecheckInner />;
+}
+
+function RecheckInner() {
   const { store } = useProgress();
   const move = useMove();
   const cycle = store.progress.cycles.get(move.moveId) ?? null;

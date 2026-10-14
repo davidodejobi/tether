@@ -83,6 +83,9 @@
 .hm-available .hm-disc { background: var(--bg-surface); color: var(--text-brand); border-color: var(--bg-primary); box-shadow: 0 var(--size-edge) 0 var(--bg-primary-edge); }
 .hm-available:hover .hm-disc { background: var(--bg-primary-container); }
 .hm-soon .hm-disc { background: var(--bg-sunken); color: var(--text-secondary); font: var(--type-title-l); }
+/* Locked: played in order, so not a link; the number sits on a plain disc with a strong ring and the lock badge. */
+.hm-locked { pointer-events: none; }
+.hm-locked .hm-disc { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-strong); font: var(--type-title-l); }
 .hm-lock { position: absolute; right: -8px; top: -8px; display: grid; place-items: center; width: 24px; height: 24px; background: var(--bg-surface); color: var(--text-secondary); border: 2px solid var(--border-strong); border-radius: var(--radius-full); }
 .hm-current .hm-disc::after { content: ""; position: absolute; inset: -4px; border: 4px solid var(--bg-primary); border-radius: var(--radius-full); animation: hm-pulse 1.8s ease-out infinite; }
 @keyframes hm-pulse { from { transform: scale(1); opacity: .7; } to { transform: scale(1.7); opacity: 0; } }

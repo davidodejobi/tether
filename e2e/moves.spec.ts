@@ -1,7 +1,7 @@
 import { finishLesson } from "./learn-helpers";
 import { expect, test } from "@playwright/test";
 import { answerRight, current, lastAttempt, next, records } from "./practice-helpers";
-import { cycle, finishedRun, seedRecords } from "./results-helpers";
+import { cycle, finishedRun, seedRecords, unlockedTo } from "./results-helpers";
 import { activeRun, answer, idb, runs } from "./run-helpers";
 
 // Stages 2 to 5 play like stage 1, with progress kept apart per move.
@@ -38,8 +38,8 @@ const noOverflow = (page: import("@playwright/test").Page) => page.evaluate(() =
 for (const [id, n, title] of MOVES)
   for (const from of ["the Concord page", "the map"] as const)
     test(`Move ${n} opens from ${from} with an intro, then a question of its own move`, async ({ page }) => {
-      await seedRecords(page, [], from === "the map" ? "/" : TOPIC);
-      if (from === "the map") await page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: new RegExp(`^Stage ${n}, Move ${n}:.*Available`) }).click();
+      await seedRecords(page, unlockedTo(n), from === "the map" ? "/" : TOPIC);
+      if (from === "the map") await page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: new RegExp(`^Stage ${n}, Move ${n}:.*(Available|Current)`) }).click();
       else await page.getByRole("link", { name: `Practise Move ${n}` }).click();
       await expect(page).toHaveURL(new RegExp(`/practice\\?move=${id}$`));
       // The intro is Learn the move; it records nothing.
@@ -83,7 +83,7 @@ test("dots and rounds are per move", async ({ page }) => {
 
 test("an unfinished question comes back in its own move only", async ({ page }) => {
   const m1 = attempt("strip-disguise", 1);
-  await seedRecords(page, [m1], "/practice?move=nearest-subject");
+  await seedRecords(page, [m1, ...unlockedTo(2)], "/practice?move=nearest-subject");
   await finishLesson(page);
   await page.getByRole("button", { name: "Start practising" }).click();
   await current(page);
@@ -103,7 +103,7 @@ test("an unfinished question comes back in its own move only", async ({ page }) 
 });
 
 test("a solo check of Move 3 is all Move 3, earns its own proof and leaves Move 1 alone", async ({ page }) => {
-  await seedRecords(page, [], "/solo-entry?move=collective-nouns");
+  await seedRecords(page, unlockedTo(3), "/solo-entry?move=collective-nouns");
   await expect(page.getByRole("heading", { name: "You're not solo-ready yet." })).toBeVisible();
   await page.getByRole("button", { name: "Try anyway" }).click();
   await expect(page).toHaveURL(/\/run\/solo\?move=collective-nouns$/);
@@ -114,7 +114,7 @@ test("a solo check of Move 3 is all Move 3, earns its own proof and leaves Move 
   expect(done.questions.every((q: any) => q.moveId === "collective-nouns")).toBe(true);
   expect(done.run.result.passed).toBe(true);
   const keys = await idb(page, (rows) => rows.map(([k]) => String(k)).filter((k) => k.startsWith("cycle:")));
-  expect(keys).toEqual(["cycle:collective-nouns"]);
+  expect(keys.sort()).toEqual(["cycle:collective-nouns", "cycle:nearest-subject", "cycle:strip-disguise"]); // the two seeded earlier proofs plus Move 3's own
   await expect(page.getByText("Move 3: Collective nouns")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Passed. You are Proved." })).toBeVisible();
 
@@ -130,7 +130,7 @@ test("a solo check of Move 3 is all Move 3, earns its own proof and leaves Move 
   const map = page.getByRole("region", { name: "Journey map" });
   await expect(map.getByRole("link", { name: /^Stage 3, Move 3: Collective nouns\. Proved\./ })).toBeVisible();
   await expect(map.getByRole("link", { name: /^Stage 4, Move 4: .*Current\./ })).toBeVisible();
-  await expect(map.getByRole("link", { name: /^Stage 1, Move 1: .*Available\./ })).toBeVisible();
+  await expect(map.getByRole("link", { name: /^Stage 1, Move 1: .*Held\./ })).toBeVisible();
   await expect(page.getByRole("link", { name: "Practise Move 4" })).toHaveAttribute("href", "/practice?move=indefinite-pronouns");
   await page.goto("/?move=strip-disguise");
   await expect(page.getByText("JAMB English concord. Move 1: Strip the Disguise.")).toBeVisible();
@@ -141,8 +141,8 @@ test("a solo check of Move 3 is all Move 3, earns its own proof and leaves Move 
   await page.goto(TOPIC);
   await expect(page.getByText("Move 3: Collective nouns. Proved.")).toBeVisible();
   await expect(page.getByText("Move 1: Strip the Disguise. Current.")).toHaveCount(0);
-  await expect(page.getByText("Completed", { exact: true })).toHaveCount(1);
-  await expect(page.getByText("Concord: 8 planned stages · 5 available · 1 completed")).toBeVisible();
+  await expect(page.getByText("Completed", { exact: true })).toHaveCount(3);
+  await expect(page.getByText("Concord: 8 planned stages · 5 available · 3 completed")).toBeVisible();
 });
 
 test("a recheck due for Move 4 is offered on Home and asks only Move 4 questions", async ({ page }) => {
@@ -183,25 +183,48 @@ test("course counts treat each move's pass once", async ({ page }) => {
   await expect(page.getByText("Lexis and Structure: 33 planned stages · 5 available · 2 completed")).toBeVisible();
 });
 
-test("the map's stages 1 to 5 are links with their own states, 6 to 50 stay Coming soon", async ({ page }) => {
+test("the map's open stages are links with their own states, a stage whose predecessor has no proof is Locked, 6 to 50 stay Coming soon", async ({ page }) => {
   await seedRecords(page, [attempt("one-of-the", 1), dueCycle("collective-nouns", "2099-01-01")], "/");
   const map = page.getByRole("region", { name: "Journey map" });
-  await expect(map.getByRole("link")).toHaveCount(5);
+  await expect(map.getByRole("link")).toHaveCount(4);
   await expect(map.getByText("Coming soon")).toHaveCount(45);
   await expect(map.getByRole("link", { name: /^Stage 5, Move 5: .*Current\. Open practice\.$/ })).toHaveAttribute("href", "/practice?move=one-of-the");
   await expect(map.getByRole("link", { name: /^Stage 3, Move 3: Collective nouns\. Held\./ })).toHaveAttribute("href", "/practice?move=collective-nouns");
-  await expect(map.getByRole("link", { name: /^Stage 2, Move 2: .*Available\./ })).toHaveAttribute("href", "/practice?move=nearest-subject");
+  await expect(map.getByRole("link", { name: /^Stage 4, Move 4: .*Available\./ })).toHaveAttribute("href", "/practice?move=indefinite-pronouns");
+  await expect(map.getByRole("link", { name: /^Stage 2/ })).toHaveCount(0);
+  await expect(map.getByText("Stage 2, Move 2: Either…or, neither…nor: the nearest subject. Locked. Pass Move 1 first.")).toHaveCount(1);
   await expect(map.getByRole("link", { name: /^Stage 1, Move 1: .*Available\./ })).toHaveAttribute("href", "/practice");
   await page.getByRole("button", { name: "List view" }).click();
-  await expect(page.getByRole("link", { name: /^Stage 2, Move 2: .*Available\.$/ })).toHaveAttribute("href", "/practice?move=nearest-subject");
+  await expect(page.getByRole("link", { name: /^Stage 4, Move 4: .*Available\.$/ })).toHaveAttribute("href", "/practice?move=indefinite-pronouns");
+  await expect(page.locator(".hm-listview").getByText("Stage 2, Move 2: Either…or, neither…nor: the nearest subject. Locked.")).toBeVisible();
   await expect(page.getByRole("list").filter({ hasText: "Stage 6: Plural-looking singulars. Coming soon." })).toBeVisible();
   // Tapping a stage on the map goes to that move's practice (its intro, the first time).
   await page.getByRole("button", { name: "Map view" }).click();
-  await map.getByRole("link", { name: /^Stage 2, Move 2:/ }).click();
-  await expect(page).toHaveURL(/\/practice\?move=nearest-subject$/);
+  await map.getByRole("link", { name: /^Stage 4, Move 4:/ }).click();
+  await expect(page).toHaveURL(/\/practice\?move=indefinite-pronouns$/);
   // The intro is Learn the move; its last card has the button.
   await finishLesson(page);
   await expect(page.getByRole("button", { name: "Start practising" })).toBeVisible();
+});
+
+test("a locked move cannot be entered: every flow shows Move N is locked and saves nothing", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  for (const path of ["/practice", "/learn", "/solo-entry", "/recheck-entry", "/run/solo", "/run/recheck"]) {
+    await page.goto(`${path}?move=nearest-subject`);
+    await expect(page.getByRole("heading", { name: "Move 2 is locked" }), path).toBeVisible();
+    await expect(page.getByText("Pass Move 1's solo check first.")).toBeVisible();
+  }
+  await page.getByRole("link", { name: "Back to Home" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  // A ?move= naming a locked move is ignored by Home, and the course page offers no actions for it.
+  await page.goto("/?move=one-of-the");
+  await expect(page.getByText("JAMB English concord. Move 1:")).toBeVisible();
+  await page.goto(TOPIC);
+  await expect(page.getByText("Locked. Pass Move 1 first.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Practise Move 2" })).toHaveCount(0);
+  await expect(page.getByText("Move 2: Either…or, neither…nor: the nearest subject. Locked.")).toBeVisible();
+  expect(await runs(page)).toHaveLength(0);
+  expect(await records(page)).toHaveLength(0);
 });
 
 for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const)

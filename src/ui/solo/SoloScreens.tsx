@@ -2,11 +2,15 @@
 import { useLocation } from "preact-iso";
 import { readiness } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
-import { useMove, withMove } from "../move.ts";
+import { LockedMove, useMove, useMoveGate, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { SoloEntry } from "./SoloEntry";
 
 export function SoloEntryScreen() {
+  return useMoveGate().locked ? <LockedMove /> : <SoloEntryInner />;
+}
+
+function SoloEntryInner() {
   const { store } = useProgress();
   const { route } = useLocation();
   const pack = useMove();

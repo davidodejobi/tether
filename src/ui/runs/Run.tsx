@@ -17,7 +17,7 @@ import { Icon } from "../components/Icon";
 import { SentenceCard } from "../components/SentenceCard";
 import { targetTile } from "../components/answerKeys";
 import { NotFound } from "../screens/NotFound";
-import { useMove, withMove } from "../move.ts";
+import { LockedMove, useMove, useMoveGate, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { planRun } from "./plan.ts";
 import "../practice/QuestionView.css";
@@ -42,7 +42,9 @@ const clock = (ms: number) => {
 
 export function RunScreen({ kind }: { kind?: string }) {
   // Keyed by kind and move, so a redirect to a recovered run of another kind or move starts the runner afresh.
-  const moveId = useMove().moveId;
+  const { move, locked } = useMoveGate();
+  const moveId = move.moveId;
+  if (locked) return <LockedMove />;
   return kind === "solo" || kind === "recheck" ? <Runner key={`${kind}:${moveId}`} kind={kind} /> : <NotFound />;
 }
 

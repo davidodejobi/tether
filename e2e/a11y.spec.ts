@@ -332,19 +332,22 @@ for (const [name, open] of SCREENS)
       expect(stops.filter((s) => !s.inOrder || s.positive).map((s) => s.label), "tab order").toEqual([]);
     });
 
-test("Home map: stages 1 to 5 are the links, Coming soon nodes cannot be focused, and the art is decorative", async ({ page }) => {
+test("Home map: only the unlocked stage is a link, Locked and Coming soon nodes cannot be focused, and the art is decorative", async ({ page }) => {
   await seedRecords(page, [], "/");
   await homeReady(page);
   const map = page.getByRole("region", { name: "Journey map" });
-  await expect(map.getByRole("link")).toHaveCount(5);
+  await expect(map.getByRole("link")).toHaveCount(1);
   await expect(map.getByRole("link").first()).toHaveAttribute("href", "/practice");
-  await expect(map.getByRole("link").nth(1)).toHaveAttribute("href", "/practice?move=nearest-subject");
   await expect(map.getByRole("button")).toHaveCount(0);
+  const locked = await map.locator(".hm-pos:has(.hm-locked)").evaluateAll((els) => els.map((e) => ({ tag: e.tagName, tabindex: e.getAttribute("tabindex"), focusable: !!e.querySelector("a, button, [tabindex]"), name: e.querySelector(".sr-only")?.textContent })));
+  expect(locked).toHaveLength(4);
+  for (const n of locked) expect(n).toMatchObject({ tag: "LI", tabindex: null, focusable: false });
+  expect(locked[0]!.name).toBe("Stage 2, Move 2: Either…or, neither…nor: the nearest subject. Locked. Pass Move 1 first.");
   const soon = await map.locator(".hm-pos.hm-soon").evaluateAll((els) => els.map((e) => ({ tag: e.tagName, tabindex: e.getAttribute("tabindex"), role: e.getAttribute("role"), focusable: !!e.querySelector("a, button, [tabindex]"), name: e.querySelector(".sr-only")?.textContent })));
   expect(soon).toHaveLength(45);
   for (const n of soon) expect(n).toMatchObject({ tag: "LI", tabindex: null, role: null, focusable: false });
   expect(soon[1]!.name).toBe("Stage 7: There is, there are. Coming soon");
-  // Tabbing through the page never lands on a Coming soon node; the map itself is one scrollable stop, then stages 1 to 5.
+  // Tabbing through the page never lands on a Coming soon node; the map itself is one scrollable stop, then stage 1.
   const stops = await tabStops(page, 60);
   expect(stops.filter((s) => /Coming soon|Stage (?:[6-9]|\d\d)/.test(s.label))).toEqual([]);
   expect(stops.some((s) => /Move 1: Strip/.test(s.label) || /Stage 1/.test(s.label))).toBe(true);

@@ -5,7 +5,7 @@ import { allStages, availableIn, english, plannedIn, sectionById, source, topicB
 import { countStages, groupLine, overviewLine } from "../../rules/course-counts.ts";
 import { moveById, moveNumber } from "../../content/moves.ts";
 import { recheckAvailable } from "../../rules/proof.ts";
-import { focusMove, moveState } from "../home/view.ts";
+import { focusMove, moveState, unlocked } from "../home/view.ts";
 import { withMove } from "../move.ts";
 import { appNow } from "../proof/simulate";
 import { useProgress } from "../progress";
@@ -14,7 +14,7 @@ import { CourseProgress, useCounts } from "./CourseProgress";
 import "../components/Button.css";
 import "./course.css";
 
-const WORD = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", available: "Available", soon: "Coming soon" } as const;
+const WORD = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", available: "Available", locked: "Locked", soon: "Coming soon" } as const;
 
 function Crumbs({ section, topic }: { section?: Section; topic?: Topic }) {
   return (
@@ -140,6 +140,7 @@ export function CourseTopic({ section: sid, topic: tid }: { section?: string; to
 /** One available stage's actions, each carrying the move. Start recheck appears while a recheck is due or proof is Fading. */
 function Actions({ moveId }: { moveId: string }) {
   const { store } = useProgress();
+  if (!unlocked(store.progress, moveId)) return <span class="cs-tag">Locked. Pass Move {moveNumber(moveById(moveId)!) - 1} first.</span>;
   const cycle = store.progress.cycles.get(moveId) ?? null;
   const recheck = recheckAvailable(cycle, appNow(cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone));
   return (

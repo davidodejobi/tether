@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Progress, SavedRun } from "../../storage/progress.ts";
 import type { ProofCycle } from "../../rules/proof.ts";
 import { startAttempt } from "../../rules/practice.ts";
-import { focusMove, latestSolo, movedOnFrom, moveOne, moveState } from "./view.ts";
+import { focusMove, latestSolo, movedOnFrom, moveOne, moveState, unlocked } from "./view.ts";
 import { moveById } from "../../content/moves.ts";
 
 const solo = (id: string, seq: number, score: number, practice: number | null, moveId = "strip-disguise"): [string, SavedRun] => [
@@ -50,12 +50,31 @@ describe("latestSolo per move", () => {
   });
 });
 
+describe("unlocked", () => {
+  it("opens Move 1 always, and a move once the previous move has a proof cycle", () => {
+    const none = withCycles([]);
+    expect(unlocked(none, "strip-disguise")).toBe(true);
+    expect(unlocked(none, "nearest-subject")).toBe(false);
+    const fading = withCycles([cycle("strip-disguise", "fading", "2026-10-01")]);
+    expect(unlocked(fading, "nearest-subject")).toBe(true);
+    expect(unlocked(fading, "collective-nouns")).toBe(false);
+  });
+  it("never locks a move the learner began (attempt, run or cycle)", () => {
+    expect(unlocked(withCycles([], [attempt("one-of-the", 1)]), "one-of-the")).toBe(true);
+    expect(unlocked(withCycles([], [], [solo("r", 1, 5, null, "collective-nouns")]), "collective-nouns")).toBe(true);
+    expect(unlocked(withCycles([cycle("indefinite-pronouns", "held", "2026-10-30")]), "indefinite-pronouns")).toBe(true);
+  });
+});
+
 describe("moveState", () => {
+  it("is Locked, never Current or Available, while the previous move has no proof", () => {
+    expect(moveState(withCycles([]), "nearest-subject", "nearest-subject", nowIn)).toEqual({ state: "locked", due: false });
+  });
   it("is the proof state if there is a cycle, else Current for the focus move and Available for the rest", () => {
-    const p = withCycles([cycle("collective-nouns", "held", "2026-10-30")]);
+    const p = withCycles([cycle("strip-disguise", "held", "2026-10-30"), cycle("collective-nouns", "held", "2026-10-30")]);
     expect(moveState(p, "collective-nouns", "strip-disguise", nowIn)).toEqual({ state: "held", due: false });
     expect(moveState(p, "nearest-subject", "strip-disguise", nowIn)).toEqual({ state: "available", due: false });
-    expect(moveState(p, "strip-disguise", "strip-disguise", nowIn)).toEqual({ state: "current", due: false });
+    expect(moveState(withCycles([]), "strip-disguise", "strip-disguise", nowIn)).toEqual({ state: "current", due: false });
     expect(moveState(withCycles([cycle("one-of-the", "proved", "2026-10-01")]), "one-of-the", "strip-disguise", nowIn)).toEqual({ state: "proved", due: true });
   });
 });
@@ -63,9 +82,12 @@ describe("moveState", () => {
 describe("focusMove", () => {
   it("is move 1 with no records", () => expect(focusMove(withCycles([]), nowIn).moveId).toBe("strip-disguise"));
   it("takes a valid ?move first, and ignores an unknown one", () => {
-    const p = withCycles([cycle("one-of-the", "held", "2026-10-01")]);
-    expect(focusMove(p, nowIn, "collective-nouns").moveId).toBe("collective-nouns");
+    const p = withCycles([cycle("strip-disguise", "held", "2026-10-30"), cycle("one-of-the", "held", "2026-10-01")]);
+    expect(focusMove(p, nowIn, "nearest-subject").moveId).toBe("nearest-subject");
     expect(focusMove(p, nowIn, "nope").moveId).toBe("one-of-the");
+  });
+  it("ignores a ?move that names a locked move", () => {
+    expect(focusMove(withCycles([]), nowIn, "one-of-the").moveId).toBe("strip-disguise");
   });
   it("then the move whose recheck has waited longest", () => {
     const p = withCycles([cycle("indefinite-pronouns", "held", "2026-10-18"), cycle("one-of-the", "held", "2026-10-15"), cycle("collective-nouns", "held", "2026-10-30")], [attempt("nearest-subject", 50)]);

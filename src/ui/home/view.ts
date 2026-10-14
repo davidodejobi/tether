@@ -4,9 +4,9 @@ import { moveById, moves, stripDisguiseMove } from "../../content/moves.ts";
 import { snapshotOf, type Snapshot } from "../../rules/gap.ts";
 import { inOrder } from "../../rules/moment.ts";
 import { dueEntries, proofStatus, recheckAvailable, type ProofState } from "../../rules/proof.ts";
-import { runsOf, type Progress } from "../../storage/progress.ts";
+import { attemptsOf, runsOf, type Progress } from "../../storage/progress.ts";
 
-export type NodeState = "current" | ProofState | "available" | "soon";
+export type NodeState = "current" | ProofState | "available" | "locked" | "soon";
 
 /** "Now" for a cycle's time zone; the screens pass the demo-aware clock. */
 export type NowIn = (timeZone: string) => number;
@@ -18,10 +18,20 @@ export function moveOne(status: ReturnType<typeof proofStatus>): { state: NodeSt
 }
 
 /**
- * One move's map state: its proof state once it has a cycle; else Current if it is the focus move; else Available.
+ * Stages are played in journey order (owner decision 14 Oct 2026): Move 1 is open; any other opens when the previous
+ * move has a proof cycle (its solo check was passed, Fading included). A move already begun never locks again.
+ */
+export function unlocked(p: Progress, moveId: string): boolean {
+  const prev = moves[moves.findIndex((m) => m.moveId === moveId) - 1];
+  return !prev || p.cycles.has(prev.moveId) || p.cycles.has(moveId) || attemptsOf(p, moveId).length > 0 || runsOf(p, moveId).length > 0;
+}
+
+/**
+ * One move's map state: Locked until it unlocks; then its proof state once it has a cycle; else Current if it is the focus move; else Available.
  * Due is an extra badge.
  */
 export function moveState(p: Progress, moveId: string, focusId: string, nowIn: NowIn): { state: NodeState; due: boolean } {
+  if (!unlocked(p, moveId)) return { state: "locked", due: false };
   const cycle = p.cycles.get(moveId) ?? null;
   const status = proofStatus(cycle, nowIn(cycle?.timeZone ?? localZone()));
   return !status && moveId !== focusId ? { state: "available", due: false } : moveOne(status);
@@ -34,7 +44,7 @@ export function moveState(p: Progress, moveId: string, focusId: string, nowIn: N
  */
 export function focusMove(p: Progress, nowIn: NowIn, param?: string | null): Move {
   const given = moveById(param);
-  if (given) return given;
+  if (given && unlocked(p, given.moveId)) return given;
   let due: { move: Move; on: string } | null = null;
   for (const move of moves) {
     const c = p.cycles.get(move.moveId);

@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { answerOf, lessons } from "../src/content/learn.ts";
 import { advanceTo, finishLesson, kindOf, step, tryFor, whys } from "./learn-helpers";
 import { current, read } from "./practice-helpers";
-import { seedRecords } from "./results-helpers";
+import { seedRecords, unlockedTo } from "./results-helpers";
 
 const MOVES = [
   ["nearest-subject", 2],
@@ -48,7 +48,7 @@ const lesson = (id: string) => lessons.find((l) => l.moveId === id)!;
 
 for (const [id, n] of MOVES)
   test(`Move ${n}: the lesson can be completed from its first practice visit`, async ({ page }) => {
-    await seedRecords(page, [], `/practice?move=${id}`);
+    await seedRecords(page, unlockedTo(n), `/practice?move=${id}`);
     await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
     await expect(page.getByText(lesson(id).intro)).toBeVisible();
     await finishLesson(page);
@@ -71,7 +71,7 @@ test("Move 1: the lesson can be completed from onboarding", async ({ page }) => 
 });
 
 test("a returning learner can skip the basics", async ({ page }) => {
-  await seedRecords(page, [attempt], "/practice?move=nearest-subject");
+  await seedRecords(page, [attempt, ...unlockedTo(2)], "/practice?move=nearest-subject");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "The subject" })).toBeFocused();
   await page.getByRole("button", { name: "I know the basics" }).click();
@@ -82,7 +82,7 @@ test("a returning learner can skip the basics", async ({ page }) => {
 });
 
 test("a new learner is not offered to skip the basics", async ({ page }) => {
-  await seedRecords(page, [], "/practice?move=nearest-subject");
+  await seedRecords(page, unlockedTo(2), "/practice?move=nearest-subject");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "The subject" })).toBeVisible();
   await expect(page.getByRole("button", { name: "I know the basics" })).toHaveCount(0);
@@ -148,7 +148,7 @@ test("try: another word says to look for who or what the sentence is about", asy
 });
 
 test("the lesson writes nothing to the learning records", async ({ page }) => {
-  await seedRecords(page, [attempt], "/learn?move=nearest-subject");
+  await seedRecords(page, [attempt, ...unlockedTo(2)], "/learn?move=nearest-subject");
   const before = await learningRecords(page);
   expect(before).toContain("attempt:seed-1");
   await finishLesson(page);
@@ -174,7 +174,7 @@ test("Learn the move again from the move sheet returns to the same unfinished qu
 });
 
 test("the Concord page links each stage to its lesson; Practise this move goes to practice", async ({ page }) => {
-  await seedRecords(page, [], "/course/lexis-and-structure/concord");
+  await seedRecords(page, unlockedTo(5), "/course/lexis-and-structure/concord");
   await expect(page.getByRole("link", { name: "Learn the move" })).toHaveCount(5);
   await page.getByRole("link", { name: "Learn the move" }).nth(2).click();
   await expect(page).toHaveURL(/\/learn\?move=collective-nouns$/);
@@ -206,7 +206,7 @@ test.describe("reduced motion", () => {
 });
 
 test("the keyboard alone can finish a lesson; Esc closes", async ({ page }) => {
-  await seedRecords(page, [], "/learn?move=nearest-subject");
+  await seedRecords(page, unlockedTo(2), "/learn?move=nearest-subject");
   for (let i = 0; i < 30 && (await kindOf(page)) !== "summary"; i++) {
     const k = await kindOf(page);
     if (k === "why") {

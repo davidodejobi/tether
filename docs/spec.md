@@ -349,7 +349,7 @@ if due → Practise to recover if Fading → Continue/start practice. Recovery e
 also provides Try anyway. Move 1 always has a visible solo entry, independent of
 dots. Show offline/readiness status and the latest saved gap when available.
 
-Map states: Current, Available, Proved, Held, Fading and Coming soon; Due is an extra badge.
+Map states: Current, Locked, Available, Proved, Held, Fading and Coming soon; Due is an extra badge. A stage is Locked until the previous stage's solo check has passed (any time, Fading included); a stage the learner has already begun stays open.
 Nodes are accessible HTML controls above decorative art. Owner decision 14 Oct 2026 (docs/decisions.md): a long scrollable
 trail of all 50 stages replaces bounded Previous/Next pages; the accessibility safeguards stay.
 Use clear words/icons and an accessible list view; keep actions usable with large text.

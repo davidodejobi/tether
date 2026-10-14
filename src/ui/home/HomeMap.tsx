@@ -15,8 +15,8 @@ import { CX, H, W, countLabel, gate, labelSide, nodes, regionOf, regions, roadD 
 import "../components/Button.css";
 import "./map.css";
 
-const WORD: Record<NodeState, string> = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", available: "Available", soon: "Coming soon" };
-const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", available: "play", soon: "lock" };
+const WORD: Record<NodeState, string> = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", available: "Available", locked: "Locked", soon: "Coming soon" };
+const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", available: "play", locked: "lock", soon: "lock" };
 type Status = { state: NodeState; due: boolean };
 
 /** Every available stage is a link to its own practice; the focus move is the one the learner is on (Home picks it). */
@@ -152,6 +152,20 @@ export function HomeMap({ focus, states, coach }: { focus: Move; states: Record<
                   );
                 const { state, due } = states[st.moveId]!;
                 const href = hrefOf(st.moveId);
+                if (state === "locked")
+                  return (
+                    <li key={st.id} class="hm-pos" style={pos}>
+                      <span class="sr-only">Stage {st.n}, Move {st.n}: {st.title}. Locked. Pass Move {st.n - 1} first.</span>
+                      <span class="hm-node hm-locked" aria-hidden="true">
+                        <span class="hm-disc">{st.n}</span>
+                        <span class="hm-lock"><Icon name="lock" size={14} /></span>
+                        <span class={`hm-side-${n.x > CX ? "l" : "r"}`}>
+                          <span class="hm-lab">{st.title}</span>
+                          <span class="hm-tags"><span class="hm-tag"><Icon name="lock" size={16} /> Locked</span></span>
+                        </span>
+                      </span>
+                    </li>
+                  );
                 return (
                   <li key={st.id} class="hm-pos" style={pos} ref={st.n === CURRENT ? here : undefined}>
                     <a class={`hm-node hm-${state}`} href={href} aria-label={label(st, { state, due })} onClick={(e) => go(e, st.n, href)}>
@@ -192,7 +206,9 @@ function StageList({ states, hrefOf }: { states: Record<string, Status>; hrefOf(
           <ol start={r.first}>
             {blueprint.filter((st) => regionOf(st.n) === r).map((st) => (
               <li key={st.id}>
-                {st.moveId
+                {st.moveId && states[st.moveId]!.state === "locked"
+                  ? <>Stage {st.n}, Move {st.n}: {st.title}. Locked.</>
+                  : st.moveId
                   ? <a href={hrefOf(st.moveId)}>Stage {st.n}, Move {st.n}: {st.title}. {WORD[states[st.moveId]!.state]}{states[st.moveId]!.due ? ", due" : ""}.</a>
                   : <>Stage {st.n}: {st.title}. Coming soon.</>}
               </li>
