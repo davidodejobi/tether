@@ -23,9 +23,10 @@ export function completedMoves({ cycles, runs }: CountInput): Set<string> {
 
 /** Counts for any set of planned stages. A Fading move stays completed and also needs review. */
 export function countStages(stages: readonly { moveId?: string }[], input: CountInput): Counts {
-  const done = completedMoves(input);
+  const cycles = [...input.cycles]; // iterators from Map.values() can be read once
+  const done = completedMoves({ cycles, runs: input.runs });
   const fading = new Set<string>();
-  for (const c of input.cycles) if (c.state === "fading") fading.add(c.moveId);
+  for (const c of cycles) if (c.state === "fading") fading.add(c.moveId);
   const avail = stages.filter((s) => s.moveId).map((s) => s.moveId!);
   return {
     planned: stages.length,

@@ -24,3 +24,11 @@
 .page a.btn.cs-solo { display: flex; margin: 0; text-decoration: none; }
 @media (min-width: 1280px) { .page.cs { max-width: 40rem; } }
 @media (max-width: 767px) { .page.cs { padding: var(--spacing-md); padding-bottom: var(--spacing-xxl); } }
+.cp { display: grid; gap: var(--spacing-xs); }
+.cp-text { margin: 0; font: var(--type-label-l); color: var(--text-primary); overflow-wrap: anywhere; }
+.cp-bar { position: relative; height: 8px; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); overflow: hidden; }
+.cp-bar span { position: absolute; inset: 0 auto 0 0; }
+.cp-avail { background: var(--bg-primary-container); min-width: 4px; }
+.cp-done { background: var(--bg-primary); }
+.page a.cp-link { display: inline-flex; align-items: center; min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); }
+.page a.cp-link:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }

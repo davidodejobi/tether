@@ -10,6 +10,10 @@ const solo = (id: string, passed: boolean, status: Run["status"] = "completed"):
 });
 const cycle = (state: ProofCycle["state"]): ProofCycle => ({ moveId: "m1", timeZone: "UTC", state, earnedOn: "d", anchor: "d", entries: [], history: [{ runId: "a", kind: "solo", on: "d", passed: true, entryIds: [] }] });
 const count = (i: Partial<CountInput>) => countStages(stages, { cycles: [], runs: [], ...i });
+it("reads one-shot iterators (Map.values) correctly", () => {
+  const m = new Map([["m1", cycle("fading")]]);
+  expect(countStages(stages, { cycles: m.values(), runs: [].values() })).toMatchObject({ completed: 1, needsReview: 1 });
+});
 
 describe("course counts", () => {
   it("starts at 50 planned, 1 available, 0 completed", () => {
