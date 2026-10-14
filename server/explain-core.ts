@@ -65,3 +65,10 @@ export function checkOutput(text: unknown, p: Pack = pack): string | null {
   if (/\b(the answer is|answer is|correct (?:option|answer|choice)|right (?:option|answer|choice)|choose|you (?:should|must|need to) (?:pick|choose|select)|you are (?:right|wrong|correct)|well done|you got)\b/i.test(t)) return "answer-giving or grading";
   return null;
 }
+
+// OpenRouter (OpenAI-compatible) chat completion -> accepted text, or null when the reply is unusable.
+export function parseCompletion(body: unknown): string | null {
+  const choice = (body as { choices?: { finish_reason?: unknown; message?: { content?: unknown } }[] } | null)?.choices?.[0];
+  if (choice?.finish_reason !== "stop" || typeof choice.message?.content !== "string") return null;
+  return choice.message.content.trim() || null;
+}

@@ -1,21 +1,20 @@
-// Cloudflare Pages Function: POST /api/explain (spec section 5a). The provider key stays here (env.ANTHROPIC_API_KEY).
+// Cloudflare Pages Function: POST /api/explain (spec section 5a). The provider key stays here (env.OPENROUTER_API_KEY).
 // The request holds only { moveId, contentVersion, style }; the reviewed rule is loaded server-side.
 // Nothing about the learner is received, logged or sent on. Provider errors are never returned.
-import Anthropic from "@anthropic-ai/sdk";
-import { buildPrompt, checkOutput, parseRequest, type ExplainResponse, type Failure } from "../../server/explain-core.ts";
+import { buildPrompt, checkOutput, parseCompletion, parseRequest, type ExplainResponse, type Failure } from "../../server/explain-core.ts";
 
 interface Env {
-  ANTHROPIC_API_KEY?: string;
+  OPENROUTER_API_KEY?: string;
   AI_MODEL?: string;
 }
 
-const DEFAULT_MODEL = "claude-haiku-5-5";
+const DEFAULT_MODEL = "google/gemini-3.5-flash-lite";
 const LIMIT = 10;
 const WINDOW_MS = 60_000;
 const TIMEOUT_MS = 15_000;
 
 // ponytail: Pages Functions do not support the Workers Rate Limiting binding, so this is a per-isolate sliding window.
-// Isolates are not shared across locations, so it is best-effort; the Anthropic Console spend limit is the hard cap.
+// Isolates are not shared across locations, so it is best-effort; the credit limit set on the OpenRouter key is the hard cap.
 const hits = new Map<string, number[]>();
 export function limited(key: string, now: number): boolean {
   const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
@@ -44,23 +43,36 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   }
   const req = parseRequest(body);
   if (!req) return fail("bad_request");
-  if (!env.ANTHROPIC_API_KEY) return fail("unavailable");
+  if (!env.OPENROUTER_API_KEY) return fail("unavailable");
 
   const { system, user } = buildPrompt(req.style);
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   try {
-    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 0, timeout: TIMEOUT_MS });
-    const msg = await client.messages.create({
-      model: env.AI_MODEL || DEFAULT_MODEL,
-      max_tokens: 220,
-      thinking: { type: "disabled" },
-      system,
-      messages: [{ role: "user", content: user }],
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      signal: ctl.signal,
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
+        "HTTP-Referer": new URL(request.url).origin,
+        "X-Title": "Tether",
+      },
+      body: JSON.stringify({
+        model: env.AI_MODEL || DEFAULT_MODEL,
+        messages: [{ role: "system", content: system }, { role: "user", content: user }],
+        max_tokens: 220,
+        temperature: 0.4,
+      }),
     });
-    const text = msg.content.map((b) => (b.type === "text" ? b.text : "")).join("").trim();
-    if (msg.stop_reason !== "end_turn" || checkOutput(text)) return fail("invalid");
+    if (!res.ok) return fail("unavailable");
+    const text = parseCompletion(await res.json());
+    if (!text || checkOutput(text)) return fail("invalid");
     return reply({ ok: true, text });
   } catch (e) {
-    return fail(e instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "unavailable");
+    return fail(ctl.signal.aborted || (e instanceof Error && e.name === "AbortError") ? "timeout" : "unavailable");
+  } finally {
+    clearTimeout(timer);
   }
 };
 

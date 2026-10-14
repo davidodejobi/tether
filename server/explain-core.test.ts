@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { stripDisguise as pack } from "../src/content/strip-disguise.ts";
-import { buildPrompt, checkOutput, parseRequest } from "./explain-core.ts";
+import { buildPrompt, checkOutput, parseCompletion, parseRequest } from "./explain-core.ts";
 import { limited } from "../functions/api/explain.ts";
 
 const good = { moveId: pack.moveId, contentVersion: pack.version, style: "plain" };
@@ -74,5 +74,17 @@ describe("limited", () => {
     expect(limited("a", 1100)).toBe(true);
     expect(limited("b", 1100)).toBe(false);
     expect(limited("a", 62_000)).toBe(false);
+  });
+});
+
+describe("parseCompletion", () => {
+  const body = (finish_reason: string, content: unknown) => ({ choices: [{ finish_reason, message: { content } }] });
+  it("accepts a finished reply, trimmed", () => expect(parseCompletion(body("stop", "  Hi. \n"))).toBe("Hi."));
+  it("rejects a cut-off reply", () => expect(parseCompletion(body("length", "Hi."))).toBeNull());
+  it("rejects empty, missing or non-text content", () => {
+    expect(parseCompletion(body("stop", "   "))).toBeNull();
+    expect(parseCompletion(body("stop", null))).toBeNull();
+    expect(parseCompletion({ choices: [] })).toBeNull();
+    expect(parseCompletion(null)).toBeNull();
   });
 });
