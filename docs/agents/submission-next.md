@@ -21,7 +21,7 @@ concord stages (Move 1 reviewed, Moves 2–5 Unreviewed until signed); online AI
 The long scrolling Home trail is an approved owner decision. Keep its list view,
 keyboard access and reduced-motion fallback. Preserve the solo-speech diagnostic.
 
-For later expansion (move-scoped records are done), review Moves 2–5 before publishing a
-second move, then implement reviewed Learn pages and further packs. Keep step 20
+For later expansion (move-scoped records are done), get the named review of Moves 2–5,
+then implement reviewed Learn pages and further packs. Keep step 20
 as a real elapsed-day pilot. Use small focused commits and coordinate shared
 files when delegating work.
