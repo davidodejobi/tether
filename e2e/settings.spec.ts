@@ -111,7 +111,7 @@ test("subjects: English is fixed, the limit is 3, changes persist, and a failed 
   await expect(page.getByRole("checkbox", { name: /Use of English/ })).toBeDisabled();
   await expect(page.getByRole("checkbox", { name: /Biology/ })).not.toBeChecked(); // absent subjects means English only
   for (const n of ["Biology", "Chemistry", "Physics"]) {
-    await page.getByRole("checkbox", { name: new RegExp(n) }).check();
+    await page.getByRole("checkbox", { name: new RegExp(n) }).click();
     await expect(page.getByRole("checkbox", { name: new RegExp(n) })).toBeChecked();
   }
   await expect(page.getByRole("checkbox", { name: /Mathematics/ })).toBeDisabled();
@@ -120,7 +120,7 @@ test("subjects: English is fixed, the limit is 3, changes persist, and a failed 
   await expect(page.getByRole("checkbox", { name: /Chemistry/ })).toBeChecked();
 
   await failWrites(page, true);
-  await page.getByRole("checkbox", { name: /Physics/ }).uncheck();
+  await page.getByRole("checkbox", { name: /Physics/ }).click();
   await expect(alert(page)).toBeVisible();
   await expect(page.getByRole("checkbox", { name: /Physics/ })).toBeChecked(); // old value stays
   await failWrites(page, false);
