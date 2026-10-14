@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CX, H, W, along, at, countLabel, gate, labelClearance, labelSide, nodes, parkAt, regions, roadX } from "./trail.ts";
+import { CX, H, W, along, at, countLabel, gate, heading, labelClearance, labelSide, nodes, parkAt, regions, roadX } from "./trail.ts";
 
 describe("trail geometry", () => {
   it("has 50 stages climbing from the Start gate, inside the screen", () => {
@@ -39,5 +39,17 @@ describe("trail geometry", () => {
       expect(side === "r" ? n.x + 36 + 104 : n.x - 36 - 104).toBeGreaterThan(0);
       expect(side === "r" ? n.x + 36 + 104 : n.x - 36 - 104).toBeLessThan(W);
     }
+  });
+
+  it("turns the bus with the road: up on a straight climb, smoothly through curves, the other way going down", () => {
+    const wrap = (a: number) => ((a + 540) % 360) - 180;
+    const up = along(parkAt(1), parkAt(50));
+    for (let i = 1; i < up.length; i++) expect(Math.abs(up[i]!.a - up[i - 1]!.a)).toBeLessThan(30);
+    expect(Math.max(...up.map((p) => Math.abs(wrap(p.a))))).toBeLessThan(80); // always pointing up the screen
+    expect(Math.abs(heading(parkAt(0)))).toBeLessThan(45);
+    const down = along(parkAt(50), parkAt(1));
+    for (let i = 1; i < down.length; i++) expect(Math.abs(down[i]!.a - down[i - 1]!.a)).toBeLessThan(30);
+    expect(Math.min(...down.map((p) => Math.abs(wrap(p.a))))).toBeGreaterThan(100); // pointing down the screen
+    expect(Math.abs(wrap(down[0]!.a - up.at(-1)!.a))).toBeCloseTo(180, 0);
   });
 });

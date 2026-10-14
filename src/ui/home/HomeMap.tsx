@@ -204,18 +204,25 @@ function StageList({ states, hrefOf }: { states: Record<string, Status>; hrefOf(
   );
 }
 
-/** A small yellow danfo minibus, drawn in code (side view, facing right). */
+/** A small yellow danfo minibus seen from above, nose up; the map turns it to follow the road. */
 function Danfo() {
   return (
-    <svg width="64" height="40" viewBox="0 0 64 40" aria-hidden="true" focusable="false">
-      <ellipse cx="32" cy="38" rx="30" ry="3" fill="#000" opacity=".18" />
-      <path d="M2 34V12Q2 6 8 6H46Q58 6 62 20V34Z" fill="#FFC107" />
-      <path d="M2 22H62V25H2Z M2 28H62V29.5H2Z" fill="#1B1D26" />
-      {[6, 18, 30].map((x) => <rect key={x} x={x} y="9" width="10" height="9" rx="2" fill="#BFE6FF" />)}
-      <path d="M44 9H49Q55 11 58 19H44Z" fill="#BFE6FF" />
-      <rect x="61" y="26" width="3" height="5" rx="1" fill="#FFF3C4" />
-      <g class="wheel"><circle cx="14" cy="34" r="6" fill="#1B1D26" /><circle cx="14" cy="34" r="2.4" fill="#9AA0A6" /><path d="M14 30V38M10 34H18" stroke="#9AA0A6" stroke-width="1" /></g>
-      <g class="wheel"><circle cx="48" cy="34" r="6" fill="#1B1D26" /><circle cx="48" cy="34" r="2.4" fill="#9AA0A6" /><path d="M48 30V38M44 34H52" stroke="#9AA0A6" stroke-width="1" /></g>
+    <svg width="30" height="56" viewBox="0 0 30 56" aria-hidden="true" focusable="false">
+      <rect x="1" y="4" width="28" height="54" rx="9" fill="#000" opacity=".18" />
+      {[10, 42].map((y) => [0, 26].map((x) => <rect key={`${x}${y}`} x={x} y={y} width="4" height="10" rx="1.5" fill="#1B1D26" />))}
+      <rect x="-1" y="21" width="3" height="4" rx="1.5" fill="#FFC107" stroke="#1B1D26" stroke-width=".8" />
+      <rect x="28" y="21" width="3" height="4" rx="1.5" fill="#FFC107" stroke="#1B1D26" stroke-width=".8" />
+      <rect x="2" y="1" width="26" height="52" rx="8" fill="#FFC107" />
+      <rect x="4.5" y="27" width="21" height="2.4" fill="#1B1D26" />
+      <rect x="4.5" y="33" width="21" height="1.2" fill="#1B1D26" />
+      <path d="M6 14Q15 9 24 14L25 21H5Z" fill="#BFE6FF" />
+      <rect x="7" y="45" width="16" height="4" rx="1.5" fill="#BFE6FF" />
+      <rect x="6" y="22.5" width="18" height="21" rx="4" fill="#FFD54F" />
+      <rect x="8" y="24.5" width="9" height="6" rx="3" fill="#fff" opacity=".35" />
+      <circle cx="6" cy="3.6" r="1.8" fill="#FFF3C4" />
+      <circle cx="24" cy="3.6" r="1.8" fill="#FFF3C4" />
+      <rect x="6" y="51" width="3" height="1.6" rx=".8" fill="#E53935" />
+      <rect x="21" y="51" width="3" height="1.6" rx=".8" fill="#E53935" />
     </svg>
   );
 }
