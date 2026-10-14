@@ -15,14 +15,18 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   await expect(page.getByRole("link", { name: "Practise Move 1" })).toHaveAttribute("href", "/practice");
   await expect(page.getByRole("link", { name: "Solo check" })).toHaveAttribute("href", "/solo-entry");
   await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
-  // Move 1 is the only working node; the other four moves and exam day are plain text.
-  const map = page.getByRole("region", { name: "Journey map, scrollable" });
+  // Move 1 is the only working node; later moves and exam day are plain text on bounded pages.
+  const map = page.getByRole("region", { name: "Journey map" });
   await expect(map.getByRole("link")).toHaveCount(1);
   await expect(map.getByRole("button")).toHaveCount(0);
-  await expect(map.getByText("Coming soon")).toHaveCount(5);
+  await expect(map.getByText("Coming soon")).toHaveCount(2);
   await expect(map.getByText("Current")).toBeVisible();
-  // Centred on Move 1: the scroll box has moved down towards the bottom of the art.
-  expect(await map.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+  // Bounded: nothing scrolls, Move 1 is inside the box, and Next shows the rest.
+  expect(await map.evaluate((el) => el.scrollHeight <= el.clientHeight)).toBe(true);
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByText("Page 2 of 2")).toBeVisible();
+  await expect(map.getByText("Coming soon")).toHaveCount(3);
+  await expect(map.getByRole("link")).toHaveCount(0);
   await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible();
 });
 

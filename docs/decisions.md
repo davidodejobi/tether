@@ -237,3 +237,12 @@ These decisions override conflicting text in `requirements.txt`.
 - Known limitation: a question bank built with an older content version is rejected by the explain function (`contentVersion` must equal the approved pack's), so AI help falls back to The move for stale stored questions. No code change before submission.
 - Output check also rejects `correct verb`, `verb should/must be` and `is/are/was/were/has/have correct`, and does not count `Mr.`, `Mrs.`, `Dr.`, `e.g.`, `i.e.` as sentence ends.
 - Session log (`meta:sessions`): writes are applied in order and the list is capped at 500; time before the page loaded never counts as active time.
+
+
+## 2026-10-14 - English destination preview (step 17a)
+
+- Routes: `/course` (overview), `/course/:section`, `/course/:section/:topic`, inside the app shell and the onboarding gate. Only Lexis and Structure and Concord are reachable; Coming soon sections and topics are plain text, and their URLs show Page not found.
+- `src/content/catalogue.ts` (version 1) holds stable IDs for English, three sections and their topics. Section counts (A 25, B 25, C 10) and category counts (comprehension 5, summary 5, cloze 10, reading text 5; sentence interpretation 5, antonyms 5, synonyms 5; oral forms 2 each) come from JAMB's IBASS syllabus. Concord is a separate topic with no question count, so it never inherits Basic grammar's 10. Stage counts are computed (`1 stage available · more Coming soon`) and are Tether units, not exam weights.
+- Source: https://ibass.jamb.gov.ng/static/media/Use-of-English.885e843b1f51e6a3d062.pdf, read 2026-10-14, SHA-256 `f2b6bc4f2c30fc19ecf57bc14778100ce0deca59445beff9f7e10f34cbf7da18` (matches the checksum in Move 1's source). The PDF prints no exam year; the file is dated July 2025.
+- The topic view reuses `ProofCard` (Practise/Continue, recheck, recovery) and the Solo check link. It writes nothing; a test compares saved runs and cycles before and after browsing.
+- Home's map is now bounded: three nodes per page with Previous/Next, art cropped to fit, and a List view (`details`) with every node. With one available stage there is no paging on the course views; add Previous/Next there when a list outgrows a screen.

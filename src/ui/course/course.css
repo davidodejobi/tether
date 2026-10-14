@@ -1,0 +1,24 @@
+.cs { display: grid; gap: var(--spacing-md); align-content: start; }
+.cs > * { min-width: 0; }
+.cs h1 { margin: 0; font: var(--type-headline-l); }
+.cs h2 { margin: 0; font: var(--type-title-l); }
+.cs-sub, .cs-source { margin: 0; font: var(--type-body-m); color: var(--text-secondary); }
+.cs-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; font: var(--type-label-l); }
+.cs-crumbs li { display: flex; align-items: center; }
+.cs-crumbs li + li::before { content: "/"; margin-right: var(--spacing-xs); color: var(--text-secondary); }
+.page .cs-crumbs a { display: inline-flex; align-items: center; min-width: var(--size-touch-target); min-height: var(--size-touch-target); color: var(--text-brand); text-decoration: none; }
+.cs-crumbs [aria-current] { color: var(--text-secondary); }
+.cs-route { display: grid; gap: var(--spacing-xs); margin: 0; padding: var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.cs-route div { display: grid; gap: var(--spacing-xxs); }
+.cs-route dt { font: var(--type-label-m); color: var(--text-secondary); }
+.cs-route dd { margin: 0; font: var(--type-body-l); }
+.cs-list { display: grid; gap: var(--spacing-sm); margin: 0; padding: 0; list-style: none; }
+.cs-item { display: grid; gap: var(--spacing-xxs); justify-items: start; padding: var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.cs-name { font: var(--type-title-m); overflow-wrap: anywhere; }
+.page a.cs-name { display: inline-flex; align-items: center; min-height: var(--size-touch-target); color: var(--text-brand); }
+.page a.cs-name:focus-visible, .page a.cs-solo:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
+.cs-meta { font: var(--type-body-m); color: var(--text-secondary); }
+.cs-tag { padding: 0 var(--spacing-xs); border: 2px solid var(--border-gap); border-radius: var(--radius-full); background: var(--bg-gap-container); color: var(--text-on-gap-container); font: var(--type-label-m); }
+.page a.btn.cs-solo { display: flex; margin: 0; text-decoration: none; }
+@media (min-width: 1280px) { .page.cs { max-width: 40rem; } }
+@media (max-width: 767px) { .page.cs { padding: var(--spacing-md); padding-bottom: var(--spacing-xxl); } }

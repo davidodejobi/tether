@@ -1,6 +1,6 @@
-// Home's journey map: accessible HTML nodes over decorative art (spec section 10). The nodes are a plain ordered
-// list, so the screen works with no art. Only Move 1 works; later moves and exam day are labelled Coming soon.
-import { useEffect, useRef } from "preact/hooks";
+// Home's journey map: accessible HTML nodes over decorative art, shown three at a time with Previous/Next (spec section 10).
+// A list view holds every node, so the screen works with no art. Only Move 1 works; later moves and exam day are Coming soon.
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Icon, type IconName } from "../components/Icon";
 import type { NodeState } from "./view.ts";
 import "./map.css";
@@ -8,17 +8,17 @@ import "./map.css";
 // Lazy, so the art is fetched only when Home shows (never during the first lesson), and only the active theme's file.
 const art = import.meta.glob<string>("../../assets/map/*.svg", { query: "?url", import: "default" });
 
-/** Node centres in the art's 360 x 1100 space (design/map/map-svg.js). */
-const NODES = [
-  { x: 96, y: 1010 },
-  { x: 262, y: 880 },
-  { x: 104, y: 742 },
-  { x: 258, y: 596 },
-  { x: 98, y: 448 },
+/** Three node slots per page, in the art box's 360 x 400 space. The art is decorative and only cropped to fit. */
+const SLOTS = [
+  { x: 96, y: 320 },
+  { x: 262, y: 200 },
+  { x: 104, y: 80 },
 ];
-const EXAM = { x: 184, y: 170 };
 const W = 360;
-const H = 1100;
+const H = 400;
+/** Moves 1 to 5, then exam day, three to a page: bounded pages, not a long trail. */
+const ITEMS = ["Move 1", "Move 2", "Move 3", "Move 4", "Move 5", "Exam day"];
+const PAGES = ITEMS.length / SLOTS.length;
 
 const WORD: Record<NodeState, string> = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", soon: "Coming soon" };
 const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", soon: "lock-open" };
@@ -26,15 +26,8 @@ const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", 
 const at = (p: { x: number; y: number }) => `left:${(p.x / W) * 100}%;top:${(p.y / H) * 100}%`;
 
 export function HomeMap({ state, due }: { state: NodeState; due: boolean }) {
-  const scroller = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLOListElement>(null);
-
-  // Start centred on Move 1.
-  useEffect(() => {
-    const s = scroller.current;
-    const c = canvas.current;
-    if (s && c) s.scrollTop = (NODES[0]!.y / H) * c.offsetHeight - s.clientHeight / 2;
-  }, []);
+  const [page, setPage] = useState(0);
 
   // Art arrives after first paint; each theme's file is fetched only if its CSS rule applies.
   useEffect(() => {
@@ -43,35 +36,47 @@ export function HomeMap({ state, due }: { state: NodeState; due: boolean }) {
     for (const [path, load] of Object.entries(art)) void load().then((url) => c.style.setProperty(path.includes("night") ? "--art-night" : "--art-day", `url("${url}")`));
   }, []);
 
+  const shown = ITEMS.slice(page * SLOTS.length, (page + 1) * SLOTS.length);
   return (
     <section class="hm-map" aria-labelledby="hm-map-h">
       <h2 id="hm-map-h" class="hm-map-h">Your journey</h2>
-      <div class="hm-scroll" ref={scroller} tabIndex={0} role="region" aria-label="Journey map, scrollable">
-        <ol class="hm-canvas" ref={canvas}>
-          {NODES.map((p, i) => (
-            <li key={i} class="hm-pos" style={at(p)}>
-              {i === 0 ? (
-                <a class={`hm-node hm-${state}`} href="/practice" aria-label={`Move 1: Strip the Disguise. ${WORD[state]}${due ? ", due" : ""}. Open practice.`}>
-                  <span class="hm-disc" aria-hidden="true">1</span>
-                  <Tags state={state} due={due} />
-                </a>
-              ) : (
-                <div class="hm-node hm-soon">
-                  <span class="hm-disc" aria-hidden="true">{i + 1}</span>
-                  <span class="sr-only">Move {i + 1}.</span>
-                  <Tags state="soon" due={false} />
-                </div>
-              )}
-            </li>
-          ))}
-          <li class="hm-pos" style={at(EXAM)}>
-            <div class="hm-node hm-soon hm-exam">
-              <span class="sr-only">Exam day.</span>
-              <Tags state="soon" due={false} />
-            </div>
-          </li>
+      <div class="hm-box" role="region" aria-label="Journey map">
+        <ol class="hm-canvas" ref={canvas} data-page={page}>
+          {shown.map((name, i) => {
+            const n = page * SLOTS.length + i;
+            const exam = n === ITEMS.length - 1;
+            return (
+              <li key={name} class="hm-pos" style={at(SLOTS[i]!)}>
+                {n === 0 ? (
+                  <a class={`hm-node hm-${state}`} href="/practice" aria-label={`Move 1: Strip the Disguise. ${WORD[state]}${due ? ", due" : ""}. Open practice.`}>
+                    <span class="hm-disc" aria-hidden="true">1</span>
+                    <Tags state={state} due={due} />
+                  </a>
+                ) : (
+                  <div class={`hm-node hm-soon${exam ? " hm-exam" : ""}`}>
+                    {!exam && <span class="hm-disc" aria-hidden="true">{n + 1}</span>}
+                    <span class="sr-only">{name}.</span>
+                    {exam && <span class="hm-label" aria-hidden="true">Exam day</span>}
+                    <Tags state="soon" due={false} />
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </div>
+      <div class="hm-pager">
+        <button class="btn btn-secondary" type="button" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button>
+        <p class="hm-page" aria-live="polite">Page {page + 1} of {PAGES}</p>
+        <button class="btn btn-secondary" type="button" disabled={page === PAGES - 1} onClick={() => setPage(page + 1)}>Next</button>
+      </div>
+      <details class="hm-list">
+        <summary>List view</summary>
+        <ol>
+          <li><a href="/practice">Move 1: Strip the Disguise. {WORD[state]}{due ? ", due" : ""}.</a></li>
+          {ITEMS.slice(1).map((name) => <li key={name}>{name}. Coming soon.</li>)}
+        </ol>
+      </details>
     </section>
   );
 }
