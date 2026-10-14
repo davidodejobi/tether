@@ -23,6 +23,11 @@ The only working content is JAMB Use of English concord, Move 1,
 Teach `as well as`, `along with`, `together with` and `in addition to` constructions.
 Other moves are labelled Coming soon and have no working assessment controls.
 Proof is for this move, never for all English or a predicted JAMB score.
+Owner decision 14 Oct 2026: concord stages 2–5 (nearest subject, collective nouns,
+each/everyone/none, one of the … who/that) are also playable, with the same lesson,
+practice, help, solo and rechecks. Their rule-generated content is Unreviewed until
+signed off (`docs/content/moves-2-5-review.md`), shown with an Unreviewed tag and
+without online AI help. Every score, dot and proof cycle is per move.
 
 Include onboarding, the lesson, five-question practice, the help ladder,
 honesty/readiness, solo checks, results, rechecks/recovery, Home, Settings,
@@ -96,7 +101,7 @@ skippable Make Tether yours → Home. No diagnostic or target score.
 English is required; choose up to three optional Coming soon subjects. Settings
 can change these preferences. Older learners without a subjects field default to
 English and retain their saved progress without repeating onboarding. The course
-screen distinguishes 50 planned stages (33/9/8 by section) from one live stage;
+screen distinguishes 50 planned stages (33/9/8 by section) from five live stages;
 `course-journey.md` defines the catalogue and completion contract.
 
 Nickname is trimmed, non-empty and at most 30 characters; it stays editable.
@@ -344,7 +349,7 @@ if due → Practise to recover if Fading → Continue/start practice. Recovery e
 also provides Try anyway. Move 1 always has a visible solo entry, independent of
 dots. Show offline/readiness status and the latest saved gap when available.
 
-Map states: Current, Proved, Held, Fading and Coming soon; Due is an extra badge.
+Map states: Current, Available, Proved, Held, Fading and Coming soon; Due is an extra badge.
 Nodes are accessible HTML controls above decorative art. Owner decision 14 Oct 2026 (docs/decisions.md): a long scrollable
 trail of all 50 stages replaces bounded Previous/Next pages; the accessibility safeguards stay.
 Use clear words/icons and an accessible list view; keep actions usable with large text.
@@ -487,7 +492,7 @@ References: [Cuelume](https://github.com/danielwh2/cuelume),
 Implement roadmap step 17a using the contract in `course-journey.md`. Add a
 reachable English course overview with official section names, the recommended
 Lexis and Structure → Concord → Strip the Disguise route, and honest stage counts.
-One stage is one move; only the reviewed Move 1 is currently available. Future
+One stage is one move; Moves 1–5 are available (Move 1 reviewed, 2–5 awaiting review). Future
 content is Coming soon. Reuse the working lesson, practice, solo and rechecks;
 this preview creates no new scores, proof claims or learning-record migrations.
 Keep Home's main-action priority, saved scores, solo entry and due rechecks intact.
@@ -577,7 +582,7 @@ override the agreed scope. Step numbers refer to `roadmap.md`.
 | FR11 onboarding | Required | 4 | 7 |
 | FR12 Settings | Required, without deferred profile/export controls | 10 | 14 |
 | FR13 Home | Required | 10 | 14 |
-| FR14 map | Required for Move 1 states; other moves Coming soon | 10 | 14 |
+| FR14 map | Required for Moves 1–5 states; other moves Coming soon | 10 | 14 |
 | FR15 rechecks | Required | 7, 9 | 4, 13 |
 | FR16 Pidgin | Required with visible review status | 3, 10 | 3, 14 |
 | FR17 read-aloud | Required where available, with text fallback | 13–14 | 14, 17 |

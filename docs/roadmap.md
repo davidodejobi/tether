@@ -120,7 +120,7 @@ export/restore, Coach Auto, Proof history and additional working moves/subjects.
 Use `course-journey.md`. Step 20 stays unchanged and runs alongside this work;
 finishing the pilot is not a prerequisite for planning the course.
 
-- [ ] **21. Catalogue the syllabus and migrate safely.** (Catalogue and honest counts done, 14 Oct 2026; move-scoped records and migration remain.) Verify subjects,
+- [ ] **21. Catalogue the syllabus and migrate safely.** (Catalogue and honest counts done, 14 Oct 2026. Move-scoped records done the same day by filtering on the saved question's moveId, so no migration was needed; concord stages 2–5 are playable and await named review in `docs/content/moves-2-5-review.md`.) Verify subjects,
   sections, topics and source weights; define reviewed stage identities, order,
   planned/available totals and stable IDs. Scope records by move before adding
   another pack. Migrate existing learner/proof/reading fields idempotently.

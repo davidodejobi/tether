@@ -2,7 +2,7 @@
 
 Live demo: https://tether-4cg.pages.dev (installable; works offline after the first load). Learners pick their JAMB
 subjects (English is ready; others are Coming soon) and follow a game-style map of a 50-stage English course built
-on JAMB's official syllabus. Stage 1 is live and fully working; the other 49 are planned and marked Coming soon.
+on JAMB's official syllabus. Stages 1–5 (concord) are live and fully working; stage 1 is reviewed and stages 2–5 are marked Unreviewed until a named review. The other 45 are planned and marked Coming soon.
 
 Track: 2, Engagement & Staying in the Learning Journey (with parts of Tracks 1 and 3).
 
