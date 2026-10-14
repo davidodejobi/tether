@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { seedRecords } from "./results-helpers";
+import { openRow } from "./settings-helpers";
 
 // IndexedDB writes fail while window.__failWrites is true (see save-failure.spec.ts).
 test.beforeEach(async ({ page }) => {
@@ -29,15 +30,21 @@ test("every change saves at once and survives a reload; the avatar seed stays", 
   const seed = (await learner(page)).avatarSeed;
   expect(seed).toBeTruthy();
 
-  await page.getByLabel("Nickname").fill("Chidi");
+  await openRow(page, "Nickname");
+  await page.getByRole("textbox", { name: "Nickname" }).fill("Chidi");
   await page.getByRole("button", { name: "Save nickname" }).click();
   await expect(page.getByRole("button", { name: "Save nickname" })).toBeDisabled(); // saved: nothing left to save
+  await openRow(page, "Coach style");
   await page.getByRole("radio", { name: "Text only" }).click();
   await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
+  await openRow(page, "Language");
   await page.getByRole("radio", { name: /Pidgin/ }).click();
   await expect(page.getByRole("radio", { name: /Pidgin/ })).toBeChecked();
+  await openRow(page, "Read coach words out");
   await page.getByRole("checkbox", { name: "Read-aloud" }).click();
   await expect(page.getByRole("checkbox", { name: "Read-aloud" })).toBeChecked();
+  await expect(page.getByRole("button", { name: "Read coach words out, On" })).toBeVisible();
+  await openRow(page, "Partner");
   await page.getByLabel("Partner name").fill("Ife");
   await page.getByLabel("Partner phone").fill("0801 234 5678");
   await page.getByRole("button", { name: "Save partner" }).click();
@@ -45,10 +52,15 @@ test("every change saves at once and survives a reload; the avatar seed stays", 
   await expect(page.getByRole("button", { name: "Save partner" })).toBeDisabled(); // saved, nothing left to save
 
   await page.reload();
-  await expect(page.getByLabel("Nickname")).toHaveValue("Chidi");
+  await openRow(page, "Nickname");
+  await expect(page.getByRole("textbox", { name: "Nickname" })).toHaveValue("Chidi");
+  await openRow(page, "Coach style");
   await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
+  await openRow(page, "Language");
   await expect(page.getByRole("radio", { name: /Pidgin/ })).toBeChecked();
+  await openRow(page, "Read coach words out");
   await expect(page.getByRole("checkbox", { name: "Read-aloud" })).toBeChecked();
+  await openRow(page, "Partner");
   await expect(page.getByLabel("Partner name")).toHaveValue("Ife");
   await expect(page.getByLabel("Partner phone")).toHaveValue("0801 234 5678");
   expect(await learner(page)).toMatchObject({ nickname: "Chidi", coach: "text", lang: "pcm", readAloud: true, partner: { name: "Ife", phone: "0801 234 5678" }, avatarSeed: seed });
@@ -62,15 +74,18 @@ test("every change saves at once and survives a reload; the avatar seed stays", 
 
 test("language offers Pidgin with no review label and lists Français as not selectable", async ({ page }) => {
   await seedRecords(page, [], "/settings");
+  await openRow(page, "Language");
   await expect(page.getByRole("radio", { name: "Pidgin" })).toBeVisible();
   await expect(page.getByText("Unreviewed")).toHaveCount(0);
   await expect(page.getByText("Coming next: Français. More languages later.")).toBeVisible();
   await expect(page.getByRole("radio", { name: /Fran/ })).toHaveCount(0);
+  await openRow(page, "Read coach words out");
   await expect(page.getByRole("checkbox", { name: "Read-aloud" })).not.toBeChecked();
 });
 
 test("a failed save keeps the old value and Retry repeats the same change", async ({ page }) => {
   await seedRecords(page, [], "/settings");
+  await openRow(page, "Coach style");
   await expect(page.getByRole("radio", { name: "Character" })).toBeChecked();
   await failWrites(page, true);
   await page.getByRole("radio", { name: "Text only" }).click();
@@ -78,7 +93,8 @@ test("a failed save keeps the old value and Retry repeats the same change", asyn
   await expect(page.getByRole("radio", { name: "Character" })).toBeChecked(); // old value stays
   await expect(page.getByRole("radio", { name: "Text only" })).not.toBeChecked();
 
-  await page.getByLabel("Nickname").fill("Nneka");
+  await openRow(page, "Nickname");
+  await page.getByRole("textbox", { name: "Nickname" }).fill("Nneka");
   await page.getByRole("button", { name: "Save nickname" }).click();
   await expect(alert(page)).toBeVisible();
   expect((await learner(page)).nickname).toBe("Amaka");
@@ -91,6 +107,7 @@ test("a failed save keeps the old value and Retry repeats the same change", asyn
 
 test("leaving and returning mid-save, then Retry, never brings back an older value", async ({ page }) => {
   await seedRecords(page, [], "/settings");
+  await openRow(page, "Coach style");
   await expect(page.getByRole("radio", { name: "Character" })).toBeChecked();
   await page.evaluate(() => ((window as any).__slowWrites = 800));
   await page.getByRole("radio", { name: "Text only" }).click();
@@ -98,17 +115,21 @@ test("leaving and returning mid-save, then Retry, never brings back an older val
   await page.getByRole("link", { name: "Settings" }).click();
   await page.evaluate(() => ((window as any).__slowWrites = 0));
   await failWrites(page, true);
+  await openRow(page, "Language");
   await page.getByRole("radio", { name: /Pidgin/ }).click(); // applied once the earlier save has landed
   await expect(alert(page)).toBeVisible();
   await failWrites(page, false);
   await page.getByRole("button", { name: "Retry" }).click();
   await expect(alert(page)).toHaveCount(0);
   expect(await learner(page)).toMatchObject({ coach: "text", lang: "pcm" });
+  await openRow(page, "Coach style");
   await expect(page.getByRole("radio", { name: "Text only" })).toBeChecked();
 });
 
 test("subjects: English is fixed, the limit is 3, changes persist, and a failed save offers Retry", async ({ page }) => {
   await seedRecords(page, [], "/settings");
+  await expect(page.getByRole("button", { name: "Subjects, English" })).toBeVisible();
+  await openRow(page, "Subjects");
   await expect(page.getByRole("checkbox", { name: /Use of English/ })).toBeDisabled();
   await expect(page.getByRole("checkbox", { name: /Biology/ })).not.toBeChecked(); // absent subjects means English only
   for (const n of ["Biology", "Chemistry", "Physics"]) {
@@ -117,7 +138,9 @@ test("subjects: English is fixed, the limit is 3, changes persist, and a failed 
   }
   await expect(page.getByRole("checkbox", { name: /Mathematics/ })).toBeDisabled();
   await expect.poll(async () => (await learner(page)).subjects).toEqual(["english", "biology", "chemistry", "physics"]);
+  await expect(page.getByRole("button", { name: "Subjects, English + 3" })).toBeVisible();
   await page.reload();
+  await openRow(page, "Subjects");
   await expect(page.getByRole("checkbox", { name: /Chemistry/ })).toBeChecked();
 
   await failWrites(page, true);
@@ -133,6 +156,7 @@ test("subjects: English is fixed, the limit is 3, changes persist, and a failed 
 test("Appearance: Light or Dark overrides the device, survives a reload, and Match my device hands back to it", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await seedRecords(page, [], "/settings");
+  await openRow(page, "Appearance");
   const theme = () => page.evaluate(() => document.documentElement.dataset.theme ?? "system");
   const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await expect(page.getByRole("radio", { name: "Match my device" })).toBeChecked();
@@ -144,6 +168,7 @@ test("Appearance: Light or Dark overrides the device, survives a reload, and Mat
   await expect.poll(bg).not.toBe(deviceDark);
   expect((await learner(page)).theme).toBe("light");
   await page.reload();
+  await openRow(page, "Appearance");
   await expect(page.getByRole("radio", { name: "Light" })).toBeChecked();
   await expect.poll(theme).toBe("light"); // applied just after the save re-renders
 
@@ -161,6 +186,7 @@ test("Appearance: Light or Dark overrides the device, survives a reload, and Mat
 
 test("Appearance: a failed save keeps the old look, and Retry applies the new one", async ({ page }) => {
   await seedRecords(page, [], "/settings");
+  await openRow(page, "Appearance");
   await expect(page.getByRole("radio", { name: "Match my device" })).toBeChecked(); // storage is open before writes fail
   await failWrites(page, true);
   await page.getByRole("radio", { name: "Dark" }).click();

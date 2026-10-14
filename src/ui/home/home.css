@@ -6,7 +6,7 @@
 .hm-head { grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs) var(--spacing-md); padding: 0 var(--spacing-md); }
 .page.hm .hm-head h1 { margin: 0; font: var(--type-headline-m); }
 .hm-head .identity { margin-left: auto; }
-.page a.hm-settings { display: inline-flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
+.page a.hm-settings { display: inline-flex; align-items: center; justify-content: center; width: var(--size-touch-target); height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-primary); text-decoration: none; }
 .hm-top { grid-row: 2; display: grid; gap: var(--spacing-xs); padding: 0 var(--spacing-md) var(--spacing-xs); }
 .hm-status:empty { display: none; }
 .hm-top .oc { gap: var(--spacing-xs); }

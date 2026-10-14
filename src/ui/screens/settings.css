@@ -1,17 +1,28 @@
 .st { display: grid; gap: var(--spacing-md); align-content: start; }
 .st h1, .st h2 { margin: 0; }
-.st h2 { font: var(--type-title-l); }
-.st-group { display: grid; gap: var(--spacing-xs); min-width: 0; margin: 0; padding: var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
-.st-group legend { padding: 0 var(--spacing-xs); font: var(--type-title-m); }
-.st-group label:not(.st-choice) { font: var(--type-label-l); }
-.st-group small { font: var(--type-body-s); color: var(--text-secondary); }
-.st-group input:not([type="radio"]):not([type="checkbox"]) { min-height: var(--size-touch-target); padding: 0 var(--spacing-sm); border: 2px solid var(--border-strong); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary); }
-.st-group input:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+.st-head { display: flex; align-items: center; gap: var(--spacing-xs); }
+.st-head h1 { font: var(--type-title-l); }
+.st-sec { display: grid; gap: var(--spacing-xs); }
+.st .st-cap { font: var(--type-label-s); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+.st-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; }
+.st-row { position: relative; display: flex; align-items: center; gap: var(--spacing-xs); width: 100%; min-height: calc(var(--size-touch-target) + var(--spacing-xs)); padding: 0 var(--spacing-md); border: 0; background: none; color: var(--text-primary); text-align: start; cursor: pointer; font: var(--type-body-l); }
+.st-label { flex: 1; min-width: 0; }
+.st-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; color: var(--text-secondary); font: var(--type-label-m); }
+.st-row .icon { flex: none; color: var(--text-secondary); transition: transform 0.15s; }
+.st-open .st-row .icon { transform: rotate(90deg); }
+.st-row:focus-visible { outline: 3px solid var(--border-focus); outline-offset: -3px; }
+.st-panel { padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md); border-top: 1px solid var(--border-subtle); }
+.st-fields { display: grid; gap: var(--spacing-xs); min-width: 0; margin: 0; padding: 0; border: 0; }
+.st-fields legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.st-fields label:not(.st-choice) { font: var(--type-label-l); }
+.st-fields small { font: var(--type-body-s); color: var(--text-secondary); }
+.st-fields input:not([type="radio"]):not([type="checkbox"]) { min-height: var(--size-touch-target); padding: 0 var(--spacing-sm); border: 2px solid var(--border-strong); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary); }
+.st-fields input:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
 .st-choice { display: flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); font: var(--type-body-l); }
 .st-choice input { width: var(--spacing-xl); height: var(--spacing-xl); accent-color: var(--bg-primary); }
 .st-tag { padding: 0 var(--spacing-xs); border: 2px solid var(--border-gap); border-radius: var(--radius-full); background: var(--bg-gap-container); color: var(--text-on-gap-container); font: var(--type-label-m); }
 .st-alert { margin: 0; padding: var(--spacing-sm); background: var(--bg-wrong-container); color: var(--text-on-wrong-container); border: 2px solid var(--border-wrong); border-radius: var(--radius-md); }
 @media (min-width: 1280px) { .page.st { max-width: 40rem; } }
 @media (max-width: 767px) { .page.st { padding-bottom: var(--spacing-xxl); } }
-.page a.st-back { display: inline-flex; align-items: center; gap: var(--spacing-xs); justify-self: start; min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); font: var(--type-label-l); text-decoration: none; }
+.page a.st-back { display: inline-flex; align-items: center; justify-content: center; width: var(--size-touch-target); height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-primary); text-decoration: none; }
 @media (min-width: 1280px) { .page a.st-back { display: none; } } /* the rail has Home from here */

@@ -307,7 +307,6 @@ These decisions override conflicting text in `requirements.txt`.
 - Stages are played in journey order. Move 1 is always open; a later move opens once the previous move has a proof cycle (its solo check was passed, Fading included). `unlocked()` in `src/ui/home/view.ts` is the one rule.
 - A move the learner already began (any attempt, run or cycle) stays open; nobody is locked out of what they started. A locked stage is not a link on the map, the list or the course page, and its practice, learn, solo, recheck and run screens show "Move N is locked" with a way back to Home. A `?move=` naming a locked move is ignored by Home.
 - This supersedes "Nothing is locked" in the five-stages section above.
-||||||| ae2a694
 
 ## Forest Night dark theme (owner decision, 14 Oct 2026)
 
@@ -317,3 +316,6 @@ These decisions override conflicting text in `requirements.txt`.
 ## Sounds on by default (owner decision, 14 Oct 2026)
 
 - New learners start with sounds on, and older records that never set the preference read as on. An explicit off stays off. This overrides the earlier default-off rule in spec 14a.
+## Settings as rows (owner request, 14 Oct 2026)
+
+Settings now follows Figma S14a's row list, grouped Study / People. Each row (label, current value, chevron) expands in place to the same controls and save behaviour as before; one row is open at a time. Home's Settings link is the icon from Figma's greeting card (accessible name still "Settings"). The Figma "What a JAMB score opens", Export & restore and Profiles rows are still not built (spec sections 10 and 12).
