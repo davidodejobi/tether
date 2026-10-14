@@ -21,7 +21,7 @@ const gapRun = finishedRun("g1", "solo", 8, { n: 1, practice: 10 });
 
 const homeReady = async (page: Page) => {
   await expect(page.getByRole("heading", { name: "Tether" })).toBeVisible();
-  await expect(page.getByRole("region", { name: "Journey map, scrollable" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Journey map" })).toBeVisible();
 };
 
 /** Every screen from the Step 17 list, seeded and waited for. `cues` are Home's offline and install cues. */
@@ -29,6 +29,9 @@ const SCREENS: [string, (page: Page) => Promise<void>][] = [
   ["home new", async (p) => (await seedRecords(p, [], "/"), await homeReady(p))],
   ["home held and due", async (p) => (await seedRecords(p, [gapRun, cyc("held", "2026-10-04")], "/"), await homeReady(p), await expect(p.getByRole("link", { name: "Start recheck" })).toBeVisible())],
   ["home fading with a gap", async (p) => (await seedRecords(p, [gapRun, cyc("fading", "2026-10-04", "paused")], "/"), await homeReady(p), await expect(p.getByText("Latest gap: 2")).toBeVisible())],
+  ["course overview", async (p) => (await seedRecords(p, [], "/course"), await expect(p.getByRole("heading", { name: "English course" })).toBeVisible())],
+  ["course section", async (p) => (await seedRecords(p, [], "/course/lexis-and-structure"), await expect(p.getByRole("heading", { name: "Lexis and Structure" })).toBeVisible())],
+  ["course topic with a due recheck", async (p) => (await seedRecords(p, [gapRun, cyc("held", "2026-10-04")], "/course/lexis-and-structure/concord"), await expect(p.getByRole("link", { name: "Start recheck" })).toBeVisible())],
   ["settings", async (p) => (await seedRecords(p, [], "/settings"), await expect(p.getByRole("heading", { name: "Settings" })).toBeVisible())],
   ["share preview", async (p) => (await seedRecords(p, [finishedRun("a", "solo", 9, { n: 1, practice: 9 }), proofCycle("proved", "a", "2026-10-13", "2026-10-16")], "/share/a?kind=proof"), await expect(p.locator("img.sh-card")).toBeVisible())],
   ["offline cues", async (p) => (await seedRecords(p, [], "/"), await expect(p.getByText("Ready offline")).toBeVisible(), await expect(p.getByText("Add Tether to your home screen")).toBeVisible())],
@@ -320,12 +323,12 @@ for (const [name, open] of SCREENS)
 test("Home map: Move 1 is the only link, Coming soon nodes cannot be focused, and the art is decorative", async ({ page }) => {
   await seedRecords(page, [], "/");
   await homeReady(page);
-  const map = page.getByRole("region", { name: "Journey map, scrollable" });
+  const map = page.getByRole("region", { name: "Journey map" });
   await expect(map.getByRole("link")).toHaveCount(1);
   await expect(map.getByRole("link")).toHaveAttribute("href", "/practice");
   await expect(map.getByRole("button")).toHaveCount(0);
   const soon = await map.locator(".hm-soon").evaluateAll((els) => els.map((e) => ({ tag: e.tagName, tabindex: e.getAttribute("tabindex"), role: e.getAttribute("role"), focusable: !!e.querySelector("a, button, [tabindex]") })));
-  expect(soon).toHaveLength(5);
+  expect(soon).toHaveLength(2);
   for (const n of soon) expect(n).toEqual({ tag: "DIV", tabindex: null, role: null, focusable: false });
   // Tabbing through the map never lands on a Coming soon node.
   const stops = await tabStops(page);

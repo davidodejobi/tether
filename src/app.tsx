@@ -7,6 +7,7 @@ import { RunScreen } from "./ui/runs/Run";
 import { RecheckEntry } from "./ui/proof/RecheckEntry";
 import { Result } from "./ui/results/Result";
 import { Share } from "./ui/share/Share";
+import { CourseOverview, CourseSection, CourseTopic } from "./ui/course/Course";
 import { NotFound } from "./ui/screens/NotFound";
 import { ProgressProvider } from "./ui/progress";
 import { Gate } from "./ui/onboarding/Gate";
@@ -27,6 +28,9 @@ const gated = (Screen: () => preact.JSX.Element, shell = false) => () => (
 const GatedHome = gated(Home, true);
 const GatedSettings = gated(Settings, true);
 const GatedPractice = gated(Practice, true);
+const GatedCourse = gated(CourseOverview, true);
+const GatedCourseSection = ({ section }: { section?: string }) => <Gate><AppShell><CourseSection section={section} /></AppShell></Gate>;
+const GatedCourseTopic = ({ section, topic }: { section?: string; topic?: string }) => <Gate><AppShell><CourseTopic section={section} topic={topic} /></AppShell></Gate>;
 const GatedSoloEntry = gated(SoloEntryScreen);
 // /run/solo and /run/recheck: focus layout, no shell (step 13 links to /run/recheck).
 const GatedRun = ({ kind }: { kind?: string }) => <Gate><RunScreen kind={kind} /></Gate>;
@@ -41,6 +45,9 @@ export function App() {
         <Router>
           <Route path="/" component={GatedHome} />
           <Route path="/practice" component={GatedPractice} />
+          <Route path="/course" component={GatedCourse} />
+          <Route path="/course/:section" component={GatedCourseSection} />
+          <Route path="/course/:section/:topic" component={GatedCourseTopic} />
           <Route path="/solo-entry" component={GatedSoloEntry} />
           <Route path="/run/:kind" component={GatedRun} />
           <Route path="/recheck-entry" component={GatedRecheckEntry} />

@@ -9,12 +9,12 @@
 .hm-gap { margin: 0; padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-gap-container); color: var(--text-on-gap-container); border: 2px solid var(--border-gap); border-radius: var(--radius-md); }
 .hm-gap-none { background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-subtle); }
 .page a.btn.hm-solo { display: flex; margin: 0; }
+.page a.btn.hm-course { display: flex; justify-content: flex-start; margin: 0; padding: 0 var(--spacing-xs); text-align: left; text-decoration: none; }
 .hm-solo-note { margin: 0; font: var(--type-body-m); color: var(--text-secondary); }
 @media (min-width: 1280px) {
   .page.hm { max-width: none; grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); column-gap: var(--spacing-xxxl); }
   .hm-main { display: grid; gap: var(--spacing-md); align-content: start; }
   .page.hm a.hm-settings { display: none; } /* the rail has Settings from here */
-  .hm .hm-scroll { height: calc(100dvh - var(--spacing-xxxl) * 2 - var(--spacing-xxl)); }
 }
 /* Phone: shell.css pads pages from 768 px; below that the page needs its own gutter. */
 @media (max-width: 767px) { .page.hm, .page.st { padding: var(--spacing-md); } }
