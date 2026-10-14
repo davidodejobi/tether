@@ -9,6 +9,10 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>Tether</title>
+    <script>
+      // The last Light or Dark choice, before the app's code loads (src/platform/theme.ts keeps this copy).
+      try { var t = localStorage.getItem("tether:theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="app"></div>
