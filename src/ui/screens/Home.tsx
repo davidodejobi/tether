@@ -22,6 +22,11 @@ export function Home() {
   const { state, due } = moveOne(proofStatus(cycle, appNow(cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)));
   const solo = latestSolo(p);
   const coach = p.learner?.coach ?? "character";
+  // Same state as the primary action in ProofCard, so the bubble never contradicts the button.
+  const coachLine = due && state !== "fading" ? "Your recheck is ready. Five questions, no help."
+    : state === "fading" ? "Your proof needs a quick restore."
+    : state === "proved" || state === "held" ? "Your proof is holding. Practise to keep it sharp."
+    : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone.";
   return (
     <main class="page hm">
       <div class="hm-main">
@@ -31,7 +36,7 @@ export function Home() {
         </header>
         {p.learner && <Identity learner={p.learner} />}
         <div class="hm-status"><OfflineCues /></div>
-        <CoachBubble mode={coach}>{state === "fading" ? "Your proof needs a quick restore." : dots < 3 ? "Start with Move 1." : "You are ready to try Move 1 alone."}</CoachBubble>
+        <CoachBubble mode={coach}>{coachLine}</CoachBubble>
         <p class="hm-move">JAMB English concord. Move 1: Strip the Disguise.</p>
         <a class="btn btn-tertiary hm-course" href="/course">English course: Lexis and Structure → Concord</a>
         <ProofCard />
