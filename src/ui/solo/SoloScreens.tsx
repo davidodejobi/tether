@@ -2,12 +2,14 @@
 import { useLocation } from "preact-iso";
 import { readiness } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf } from "../../storage/progress.ts";
+import { useMove, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { SoloEntry } from "./SoloEntry";
 
 export function SoloEntryScreen() {
   const { store } = useProgress();
   const { route } = useLocation();
-  const { dots } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
-  return <SoloEntry dots={dots as 0 | 1 | 2 | 3} onStart={() => route("/run/solo")} onPractise={() => route("/practice")} />;
+  const pack = useMove();
+  const { dots } = readiness(attemptsOf(store.progress, pack.moveId), runStartsOf(store.progress, pack.moveId));
+  return <SoloEntry pack={pack} dots={dots as 0 | 1 | 2 | 3} onStart={() => route(withMove("/run/solo", pack.moveId))} onPractise={() => route(withMove("/practice", pack.moveId))} />;
 }

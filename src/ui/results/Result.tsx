@@ -3,12 +3,14 @@
 import { useState } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
 import { sentence } from "../../content/generate.ts";
+import { moveOrFirst, stripDisguiseMove } from "../../content/moves.ts";
 import { startAttempt } from "../../rules/practice.ts";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
 import { Stamp } from "../components/Stamp";
 import { AddToCalendar } from "../offline/AddToCalendar";
 import { ShowMe } from "../help/ShowMe";
+import { moveLabel, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { day, when } from "./dates.ts";
 import { resultView, type ResultView } from "./view.ts";
@@ -83,9 +85,11 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
   const { route } = useLocation();
   const p = v.proof;
   const s = v.gap?.snapshot;
+  const move = moveOrFirst(v.saved.questions[0]?.moveId);
   return (
     <main class="rs">
       <div class="rs-card pin-light">
+        {move !== stripDisguiseMove && <p class="rs-move">{moveLabel(move)}</p>}
         <Headline v={v} />
         {p && (
           <div class="rs-stamp">
@@ -114,14 +118,14 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
             {k === "proof" ? "Share proof" : "Share progress"}
           </Button>
         ))}
-        {p && <AddToCalendar />}
+        {p && <AddToCalendar move={move} />}
         {v.misses.length > 0 && <Button variant="secondary" onClick={onMisses}>See your misses</Button>}
         {v.passed ? (
           <Button onClick={() => route("/")}>Back to Home</Button>
         ) : (
           <>
-            <Button onClick={() => route("/practice")}>Practise again</Button>
-            <Button variant="tertiary" onClick={() => route(v.kind === "solo" ? "/solo-entry" : "/run/recheck")}>Try anyway</Button>
+            <Button onClick={() => route(withMove("/practice", move.moveId))}>Practise again</Button>
+            <Button variant="tertiary" onClick={() => route(withMove(v.kind === "solo" ? "/solo-entry" : "/run/recheck", move.moveId))}>Try anyway</Button>
             <Button variant="tertiary" onClick={() => route("/")}>Back to Home</Button>
           </>
         )}

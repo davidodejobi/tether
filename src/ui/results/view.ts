@@ -4,7 +4,7 @@ import { inOrder } from "../../rules/moment.ts";
 import { proofStatus, type ProofState } from "../../rules/proof.ts";
 import { RUN_RULES } from "../../rules/runs.ts";
 import type { Question } from "../../content/generate.ts";
-import type { Progress, SavedRun } from "../../storage/progress.ts";
+import { runMove, runsOf, type Progress, type SavedRun } from "../../storage/progress.ts";
 
 export type ShareKind = "proof" | "progress";
 
@@ -52,8 +52,8 @@ export function resultView(p: Progress, runId: string, now: number): ResultView 
 
   let gap: ResultView["gap"] = null;
   if (kind === "solo") {
-    // Only results up to this run, so an older result page never shows a later comparison.
-    const upTo = [...p.runs.values()]
+    // Only this move's results up to this run, so an older result page never shows a later comparison.
+    const upTo = runsOf(p, runMove(saved))
       .map((s) => snapshotOf(s.run))
       .filter((s): s is Snapshot => s !== null && s.order.seq <= run.started.seq)
       .sort((x, y) => inOrder(x.order, y.order));
@@ -61,7 +61,7 @@ export function resultView(p: Progress, runId: string, now: number): ResultView 
     if (snapshot) gap = { comparison: compare(upTo), snapshot, noGap: snapshot.raw !== null && snapshot.raw <= 0 };
   }
 
-  const moveId = saved.questions[0]?.moveId;
+  const moveId = runMove(saved);
   const cycle = moveId ? (p.cycles.get(moveId) ?? null) : null;
   let proof: Proof | null = null;
   if (cycle) {

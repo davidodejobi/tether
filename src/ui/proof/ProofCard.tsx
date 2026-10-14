@@ -1,27 +1,30 @@
 // Home's proof stamp, due/recovery card and primary action (spec sections 9 and 10).
 import { useLocation } from "preact-iso";
+import type { Move } from "../../content/generate.ts";
+import { moveNumber } from "../../content/moves.ts";
 import { homeAction, proofStatus } from "../../rules/proof.ts";
 import { resumePoint } from "../../storage/progress.ts";
 import "../components/Button.css";
 import { Stamp } from "../components/Stamp";
 import { day } from "../results/dates.ts";
 import { AddToCalendar } from "../offline/AddToCalendar";
+import { withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { appNow, demoOn, demoQuery, simulatedDate } from "./simulate";
 import "./proof.css";
 
-const MOVE_ID = "strip-disguise";
-
-export function ProofCard() {
+export function ProofCard({ move }: { move: Move }) {
   const { store } = useProgress();
   const { route } = useLocation();
-  const cycle = store.progress.cycles.get(MOVE_ID) ?? null;
+  const cycle = store.progress.cycles.get(move.moveId) ?? null;
   const zone = cycle?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
   const now = appNow(zone);
   const status = proofStatus(cycle, now);
-  const action = homeAction(cycle, now, resumePoint(store.progress) !== null);
+  const action = homeAction(cycle, now, resumePoint(store.progress, move.moveId) !== null);
   const q = demoQuery();
   const sim = simulatedDate();
+  const practise = withMove("/practice", move.moveId);
+  const recheck = withMove(`/recheck-entry${q}`, move.moveId);
 
   return (
     <section class="pc" aria-label="Your proof">
@@ -37,7 +40,7 @@ export function ProofCard() {
           </div>
         </div>
       )}
-      <AddToCalendar />
+      <AddToCalendar move={move} />
       <div class="pc-actions">
         {sim && (action === "recheck" || action === "recover") ? (
           // Read-only preview: nothing here starts a run, so a simulated day cannot change saved progress.
@@ -48,17 +51,17 @@ export function ProofCard() {
           </>
         ) : (
           <>
-            {action === "recheck" && <a class="btn btn-primary" href={`/recheck-entry${q}`}>Start recheck</a>}
+            {action === "recheck" && <a class="btn btn-primary" href={recheck}>Start recheck</a>}
             {action === "recover" && (
               <>
-                <a class="btn btn-primary" href="/practice">Practise to recover</a>
-                <a class="btn btn-secondary" href={`/recheck-entry${q}`}>Try anyway</a>
+                <a class="btn btn-primary" href={practise}>Practise to recover</a>
+                <a class="btn btn-secondary" href={recheck}>Try anyway</a>
               </>
             )}
           </>
         )}
-        {action === "practice" && <a class="btn btn-primary" href="/practice">Practise Move 1</a>}
-        {action === "continue" && <a class="btn btn-primary" href="/practice">Continue where you stopped</a>}
+        {action === "practice" && <a class="btn btn-primary" href={practise}>Practise Move {moveNumber(move)}</a>}
+        {action === "continue" && <a class="btn btn-primary" href={practise}>Continue where you stopped</a>}
       </div>
       {demoOn() && (
         <form class="pc-demo" onSubmit={(e) => {

@@ -17,6 +17,7 @@ import { Icon } from "../components/Icon";
 import { SentenceCard } from "../components/SentenceCard";
 import { targetTile } from "../components/answerKeys";
 import { NotFound } from "../screens/NotFound";
+import { useMove, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { planRun } from "./plan.ts";
 import "../practice/QuestionView.css";
@@ -46,9 +47,12 @@ export function RunScreen({ kind }: { kind?: string }) {
 function Runner({ kind }: { kind: RunKind }) {
   const { store, save, idle } = useProgress();
   const { route } = useLocation();
+  const pack = useMove();
   const hasLearner = !!store.progress.learner;
   const [view, setView] = useState<View>({ t: "loading" });
   const [saved, setSavedState] = useState<SavedRun | null>(null);
+  // Links go to the move of the run on screen (a recovered run may belong to another move than the URL names).
+  const moveId = saved?.questions[0]?.moveId ?? pack.moveId;
   const [now, setNow] = useState(Date.now());
   const [failed, setFailed] = useState<(() => void) | null>(null);
   const [pending, setPending] = useState(0);
@@ -145,7 +149,7 @@ function Runner({ kind }: { kind: RunKind }) {
     ended.current = false;
     setView({ t: "loading" });
     const t = Date.now();
-    const plan = planRun(store.progress, kind, t, newId(), () => store.moment(t), Math.random);
+    const plan = planRun(store.progress, pack, kind, t, newId(), () => store.moment(t), Math.random);
     if (!plan) return setView({ t: "refused" });
     setView({ t: "starting" });
     const first: SavedRun = plan;
@@ -165,7 +169,7 @@ function Runner({ kind }: { kind: RunKind }) {
       const r = recoverRun(store.progress, t, zone());
       if (!r) return begin();
       if (r.outcome === "continue") {
-        if (r.saved.run.kind !== kind) return route(`/run/${r.saved.run.kind}`, true);
+        if (r.saved.run.kind !== kind || r.saved.questions[0]!.moveId !== pack.moveId) return route(withMove(`/run/${r.saved.run.kind}`, r.saved.questions[0]!.moveId), true);
         setSaved(seen(r.saved.run, t) === r.saved.run ? r.saved : { ...r.saved, run: seen(r.saved.run, t) });
         setToast(true);
         return setView({ t: "play" });
@@ -279,7 +283,7 @@ function Runner({ kind }: { kind: RunKind }) {
         <h1>No recheck is due</h1>
         <p>Nothing is waiting for a recheck yet. Keep practising, or try a solo check.</p>
         <div class="run-actions">
-          <Button onClick={() => route("/practice")}>Keep practising</Button>
+          <Button onClick={() => route(withMove("/practice", moveId))}>Keep practising</Button>
           <Button variant="secondary" onClick={() => route("/")}>Back to Home</Button>
         </div>
       </main>
@@ -312,7 +316,7 @@ function Runner({ kind }: { kind: RunKind }) {
         </p>
         <div class="run-actions">
           <Button onClick={begin}>Start a fresh {kind === "solo" ? "solo run" : "recheck"}</Button>
-          {left > 0 && <Button variant="secondary" onClick={() => route("/practice")}>Practise the rest</Button>}
+          {left > 0 && <Button variant="secondary" onClick={() => route(withMove("/practice", moveId))}>Practise the rest</Button>}
           <Button variant="tertiary" onClick={() => route("/")}>Back to Home</Button>
         </div>
       </main>

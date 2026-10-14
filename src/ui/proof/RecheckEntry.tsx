@@ -2,6 +2,7 @@
 import { recheckAvailable } from "../../rules/proof.ts";
 import { Dots } from "../components/Dots";
 import { Icon, type IconName } from "../components/Icon";
+import { useMove, withMove } from "../move.ts";
 import { useProgress } from "../progress";
 import { appNow, simulatedDate } from "./simulate";
 import "../components/Button.css";
@@ -17,7 +18,8 @@ const FACTS: { icon: IconName; text: string }[] = [
 
 export function RecheckEntry() {
   const { store } = useProgress();
-  const cycle = store.progress.cycles.get("strip-disguise") ?? null;
+  const move = useMove();
+  const cycle = store.progress.cycles.get(move.moveId) ?? null;
   const avail = recheckAvailable(cycle, cycle ? appNow(cycle.timeZone) : Date.now());
   const sim = simulatedDate();
   return (
@@ -40,9 +42,9 @@ export function RecheckEntry() {
           // Read-only preview: the runner always uses the real date and real records.
           <><button class="btn btn-primary" type="button" disabled>Start recheck (demo preview)</button><p class="so-lead">Return to the real date to start.</p></>
         ) : (
-          <a class="btn btn-primary" href="/run/recheck">Start recheck</a>
+          <a class="btn btn-primary" href={withMove("/run/recheck", move.moveId)}>Start recheck</a>
         ))}
-        <a class="btn btn-tertiary" href={avail ? "/practice" : "/"}>{avail ? "Keep practising" : "Back to Home"}</a>
+        <a class="btn btn-tertiary" href={avail ? withMove("/practice", move.moveId) : "/"}>{avail ? "Keep practising" : "Back to Home"}</a>
       </div>
     </main>
   );

@@ -2,8 +2,8 @@
 import { useEffect, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { cue } from "../../platform/sound.ts";
-import { stripDisguiseMove as pack } from "../../content/moves.ts";
-import { nextPracticeQuestion, type Question } from "../../content/generate.ts";
+import { stripDisguiseMove } from "../../content/moves.ts";
+import { buildQuestion, nextPracticeQuestion, type Move, type Question } from "../../content/generate.ts";
 import { inOrder } from "../../rules/moment.ts";
 import { readiness, type PracticeAttempt } from "../../rules/practice.ts";
 import { ROUND_SIZE, doneInRound, firstTry, lastRound } from "../../rules/round.ts";
@@ -14,23 +14,25 @@ import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { useProgress, useProgressState } from "../progress";
 import { HelpedQuestion } from "../help/HelpedQuestion";
+import { ShowMe } from "../help/ShowMe";
+import { useMove, withMove } from "../move.ts";
 import { Honesty } from "./Honesty";
 import { SoloEntry } from "../solo/SoloEntry";
 import "./Practice.css";
 
-type Step = { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" } | { kind: "ready" };
+type Step = { kind: "intro"; question: Question } | { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" } | { kind: "ready" };
 
 // An unfinished practice question comes back as it was; otherwise a fresh one, never the same as the last.
-function begin(store: ProgressStore): Step {
+function begin(store: ProgressStore, pack: Move): Step {
   const p = store.progress;
-  const n = doneInRound(attemptsOf(p)) + 1;
-  const point = resumePoint(p);
+  const n = doneInRound(attemptsOf(p, pack.moveId)) + 1;
+  const point = resumePoint(p, pack.moveId);
   if (point?.kind === "question" && point.saved.attempt.origin === "practice")
     return { kind: "question", question: point.saved.question, resume: point.saved, n, key: point.saved.attempt.id };
   // A pending How did you know or verification: the question is already scored, so it is the one just finished.
   if (point && point.kind !== "question")
     return { kind: "question", question: point.saved.question, resume: point.saved, n: n === 1 ? ROUND_SIZE : n - 1, key: point.saved.attempt.id };
-  const last = attemptsOf(p).filter((a) => a.origin === "practice").sort((x, y) => inOrder(x.startedAt, y.startedAt)).at(-1);
+  const last = attemptsOf(p, pack.moveId).filter((a) => a.origin === "practice").sort((x, y) => inOrder(x.startedAt, y.startedAt)).at(-1);
   const question = nextPracticeQuestion(pack, Math.random, last?.questionId);
   return { kind: "question", question, n, key: question.id + Math.random() };
 }
@@ -51,32 +53,41 @@ export function Practice() {
 function Round() {
   const { store, idle } = useProgress();
   const { route } = useLocation();
+  const pack = useMove();
   const hasLearner = !!store.progress.learner;
   const [step, setStep] = useState<Step | null>(null);
   useEffect(() => {
     if (!hasLearner) return route("/", true);
     // A save from the screen the learner just closed may still be landing; resume from what it saved.
     let live = true;
-    idle().then(() => live && setStep(begin(store)));
+    idle().then(() => {
+      if (!live) return;
+      // First visit to a later move: show its example before the first question. Nothing is saved; any attempt skips it.
+      const first = pack !== stripDisguiseMove && attemptsOf(store.progress, pack.moveId).length === 0;
+      setStep(first ? { kind: "intro", question: buildQuestion(pack, pack.example, Math.random) } : begin(store, pack));
+    });
     return () => void (live = false);
-  }, [hasLearner]);
+  }, [hasLearner, pack.moveId]);
   if (!step || !hasLearner) return null;
 
   // The round's last answer is already saved when this runs from Next; the celebration belongs to that action.
   const after = () => {
-    const roundDone = doneInRound(attemptsOf(store.progress)) === 0;
+    const roundDone = doneInRound(attemptsOf(store.progress, pack.moveId)) === 0;
     if (roundDone) cue("celebrate");
-    setStep(roundDone ? { kind: "summary" } : begin(store));
+    setStep(roundDone ? { kind: "summary" } : begin(store, pack));
   };
   // The third dot earned by this answer shows the Solo-ready card before the next step; "Keep practising" carries on.
   const earnedThird = (a: PracticeAttempt) => {
-    const dotsNow = (all: readonly PracticeAttempt[]) => readiness(all, runStartsOf(store.progress)).dots;
-    const others = attemptsOf(store.progress).filter((x) => x.id !== a.id);
+    const dotsNow = (all: readonly PracticeAttempt[]) => readiness(all, runStartsOf(store.progress, pack.moveId)).dots;
+    const others = attemptsOf(store.progress, pack.moveId).filter((x) => x.id !== a.id);
     return dotsNow([...others, a]) === 3 && dotsNow(others) < 3;
   };
 
-  if (step.kind === "summary") return <Summary onAnother={() => setStep(begin(store))} onDone={() => (store.endSession().catch(() => {}), route("/"))} />;
-  if (step.kind === "ready") return <SoloEntry dots={3} onStart={() => route("/run/solo")} onPractise={after} />;
+  const learner = store.progress.learner!;
+  if (step.kind === "intro")
+    return <ShowMe question={step.question} lang={learner.lang} coach={learner.coach} doneLabel="Start practising" note={null} onDone={() => setStep(begin(store, pack))} />;
+  if (step.kind === "summary") return <Summary pack={pack} onAnother={() => setStep(begin(store, pack))} onDone={() => (store.endSession().catch(() => {}), route("/"))} />;
+  if (step.kind === "ready") return <SoloEntry pack={pack} dots={3} onStart={() => route(withMove("/run/solo", pack.moveId))} onPractise={after} />;
   return (
     <HelpedQuestion
       key={step.key}
@@ -91,11 +102,11 @@ function Round() {
   );
 }
 
-function Summary({ onAnother, onDone }: { onAnother(): void; onDone(): void }) {
+function Summary({ pack, onAnother, onDone }: { pack: Move; onAnother(): void; onDone(): void }) {
   const { store } = useProgress();
-  const round: PracticeAttempt[] = lastRound(attemptsOf(store.progress));
+  const round: PracticeAttempt[] = lastRound(attemptsOf(store.progress, pack.moveId));
   const right = round.filter(firstTry).length;
-  const { dots } = readiness(attemptsOf(store.progress), runStartsOf(store.progress));
+  const { dots } = readiness(attemptsOf(store.progress, pack.moveId), runStartsOf(store.progress, pack.moveId));
   return (
     <main class="pr-summary">
       <div class="pr-hero">
@@ -119,7 +130,7 @@ function Summary({ onAnother, onDone }: { onAnother(): void; onDone(): void }) {
         <div class="pr-actions">
           <Button onClick={onAnother}>Another 5</Button>
           <Button variant="secondary" onClick={onDone}>Done for today</Button>
-          <a class="pr-solo" href="/solo-entry">Solo check</a>
+          <a class="pr-solo" href={withMove("/solo-entry", pack.moveId)}>Solo check</a>
         </div>
       </div>
     </main>

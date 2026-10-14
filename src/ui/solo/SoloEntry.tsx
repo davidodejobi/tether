@@ -1,6 +1,6 @@
 // The solo check's entry card (spec sections 6, 7 and 10). Ready or not, it never blocks: "Try anyway" starts it.
 // No Bo here: Bo is absent from solo (spec section 7).
-import { stripDisguise as pack } from "../../content/strip-disguise.ts";
+import type { Move } from "../../content/generate.ts";
 import { Button } from "../components/Button";
 import { Dots } from "../components/Dots";
 import { Icon, type IconName } from "../components/Icon";
@@ -13,7 +13,7 @@ const FACTS: { icon: IconName; text: string }[] = [
   { icon: "warning", text: "Away for 10 seconds or more turns it into practice. A short call is fine." },
 ];
 
-export function SoloEntry({ dots, onStart, onPractise }: { dots: 0 | 1 | 2 | 3; onStart(): void; onPractise(): void }) {
+export function SoloEntry({ pack, dots, onStart, onPractise }: { pack: Move; dots: 0 | 1 | 2 | 3; onStart(): void; onPractise(): void }) {
   const ready = dots === 3;
   return (
     <main class="so">

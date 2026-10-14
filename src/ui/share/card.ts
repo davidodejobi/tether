@@ -1,9 +1,10 @@
 // What a share card says (spec section 11). Pure text: the canvas draws it, the preview and the message reuse it.
 // No Bo here. A gap appears only when the saved result holds both practice and alone scores.
-import { stripDisguise as pack } from "../../content/strip-disguise.ts";
+import { moveOrFirst } from "../../content/moves.ts";
+import { moveLabel } from "../move.ts";
 import { snapshotOf, type Snapshot } from "../../rules/gap.ts";
 import { inOrder } from "../../rules/moment.ts";
-import type { Learner, Progress } from "../../storage/progress.ts";
+import { runMove, runsOf, type Learner, type Progress } from "../../storage/progress.ts";
 import { when } from "../results/dates.ts";
 import type { ResultView, ShareKind } from "../results/view.ts";
 
@@ -31,10 +32,11 @@ const gapLine = (s: Snapshot) =>
 export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: Learner): CardModel | null {
   if (!v.shares.includes(kind)) return null;
   const run = v.saved.run;
+  const pack = moveOrFirst(runMove(v.saved));
   const date = when(run.endedAt ?? run.started.at);
   const name = learner.partner?.name?.trim();
   const base = {
-    kind, nickname: learner.nickname, exam: `JAMB English · ${pack.title}`, date, source: `Source: ${pack.source.line}`,
+    kind, nickname: learner.nickname, exam: `JAMB English · ${moveLabel(pack)}`, date, source: `Source: ${pack.source.line}`,
     support: name ? `Ask ${name} how it went` : "One move at a time. Small steps hold.",
   };
   const hi = name ? `Hi ${name}, ` : "";
@@ -62,7 +64,7 @@ export function cardModel(p: Progress, v: ResultView, kind: ShareKind, learner: 
     };
   }
   // A recheck is today's five questions only; an older solo and gap keep their own score and date.
-  const prior = [...p.runs.values()].map((r) => snapshotOf(r.run))
+  const prior = runsOf(p, pack.moveId).map((r) => snapshotOf(r.run))
     .filter((x): x is Snapshot => x !== null && inOrder(x.order, run.started) < 0)
     .sort((x, y) => inOrder(x.order, y.order)).at(-1);
   const priorGap = prior && gapLine(prior);
