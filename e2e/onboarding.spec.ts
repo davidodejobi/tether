@@ -146,7 +146,7 @@ test("no more than 3 other subjects; choices and the course map persist across r
   await page.reload();
   await expect(page.getByRole("heading", { name: "Your English course" })).toBeVisible(); // resumes at the course map
   await page.getByRole("button", { name: "Start Move 1" }).click();
-  await expect(page.getByRole("heading", { name: /Cover the side phrase/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Strip the Disguise" })).toBeVisible();
 });
 
 test("a reload at the subjects step starts over, because nothing is saved before the nickname", async ({ page }) => {

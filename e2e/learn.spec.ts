@@ -258,7 +258,7 @@ for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const)
         });
       };
       for (let i = 0; i < 30; i++) {
-        expect(await over(), `card ${i}`).toBe("");
+        await expect.poll(over, { message: `card ${i}` }).toBe("");
         if ((await kindOf(page)) === "summary") break;
         await step(page);
       }
