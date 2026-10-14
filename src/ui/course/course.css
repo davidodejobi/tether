@@ -3,7 +3,8 @@
 .cs h1 { margin: 0; font: var(--type-headline-l); }
 .cs h2 { margin: 0; font: var(--type-title-l); }
 .cs-sub, .cs-source { margin: 0; font: var(--type-body-m); color: var(--text-secondary); }
-.cs-crumbs ol { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; font: var(--type-label-l); }
+.cs-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; font: var(--type-label-l); }
+.cs-crumbs li { display: flex; align-items: center; }
 .cs-crumbs li + li::before { content: "/"; margin-right: var(--spacing-xs); color: var(--text-secondary); }
 .page .cs-crumbs a { display: inline-flex; align-items: center; min-width: var(--size-touch-target); min-height: var(--size-touch-target); color: var(--text-brand); text-decoration: none; }
 .cs-crumbs [aria-current] { color: var(--text-secondary); }

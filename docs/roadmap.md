@@ -89,7 +89,7 @@ contract. Bring supporting files into this repository only when needed.
   48 px targets, contrast, large text, reduced motion and read-aloud with fallbacks.
   Keep download/rendering costs small; inspect real-device behaviour.
   Done: the core loop works on target devices without clipping or inaccessible controls.
-- [ ] **17a. Add the English destination preview.** Follow spec §14b and
+- [x] **17a. Add the English destination preview.** Follow spec §14b and
   `course-journey.md`: a bounded course/section/topic/stage view, honest counts,
   finish destinations and a list view. Only reviewed Move 1 is available.
   Done: the preview works across devices/offline and preserves every learning record;
