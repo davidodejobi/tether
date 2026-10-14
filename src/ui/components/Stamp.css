@@ -1,4 +1,4 @@
-.stamp-wrap { position: relative; display: inline-block; }
+.stamp-wrap { display: inline-flex; flex-direction: column; align-items: center; }
 .stamp {
   width: var(--stamp-size);
   height: var(--stamp-size);
@@ -29,9 +29,8 @@
 .stamp-fading { border: 3px dashed var(--border-gap); background: var(--bg-gap-container); color: var(--text-on-gap-container); }
 .stamp-fading .icon { opacity: 0.6; }
 .stamp-due {
-  position: absolute;
-  right: calc(-1 * var(--spacing-xs));
-  bottom: calc(-1 * var(--spacing-xs));
+  /* Below the ring, tucked under its edge, so it never covers the word inside. */
+  margin-top: calc(-1 * var(--spacing-xs));
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
