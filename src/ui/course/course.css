@@ -6,7 +6,9 @@
 .cs-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-xs); margin: 0; padding: 0; list-style: none; font: var(--type-label-l); }
 .cs-crumbs li { display: flex; align-items: center; }
 .cs-crumbs li + li::before { content: "/"; margin-right: var(--spacing-xs); color: var(--text-secondary); }
-.page .cs-crumbs a { display: inline-flex; align-items: center; min-width: var(--size-touch-target); min-height: var(--size-touch-target); color: var(--text-brand); text-decoration: none; }
+/* Beats the shell's `.page a:not(.btn)` padding/margin so links and the "/" separators share one baseline. */
+.page .cs-crumbs li a { display: inline-flex; align-items: center; min-width: var(--size-touch-target); min-height: var(--size-touch-target); margin: 0; padding: 0; color: var(--text-brand); text-decoration: none; }
+.cs-crumbs li { min-height: var(--size-touch-target); }
 .cs-crumbs [aria-current] { color: var(--text-secondary); }
 .cs-route { display: grid; gap: var(--spacing-xs); margin: 0; padding: var(--spacing-md); background: var(--bg-surface); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); }
 .cs-route div { display: grid; gap: var(--spacing-xxs); }
