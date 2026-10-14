@@ -10,7 +10,7 @@ import { Icon } from "../components/Icon";
 import { CourseProgress } from "../course/CourseProgress";
 import { HomeMap } from "../home/HomeMap";
 import { Splitter } from "../home/Splitter";
-import { focusMove, latestSolo, moveState } from "../home/view.ts";
+import { focusMove, latestSolo, movedOnFrom, moveState } from "../home/view.ts";
 import { withMove } from "../move.ts";
 import { OfflineCues } from "../offline/OfflineCues";
 import { ProofCard } from "../proof/ProofCard";
@@ -32,7 +32,10 @@ export function Home() {
   const solo = latestSolo(p, focus.moveId);
   const coach = p.learner?.coach ?? "character";
   // Same state as the primary action in ProofCard, so the bubble never contradicts the button.
-  const coachLine = due && state !== "fading" ? "Recheck ready: five questions, no help."
+  // Just driven on from a finished stage: say so, like a game unlocking its next level.
+  const from = attemptsOf(p, focus.moveId).length ? null : movedOnFrom(p, focus, appNow);
+  const coachLine = from ? `Move ${moveNumber(from)} done. On to Move ${n}!`
+    : due && state !== "fading" ? "Recheck ready: five questions, no help."
     : state === "fading" ? "Your proof needs a quick restore."
     : state === "proved" || state === "held" ? "Proof holding. Practise to stay sharp."
     : dots < 3 ? `Start with Move ${n}.` : `You are ready to try Move ${n} alone.`;

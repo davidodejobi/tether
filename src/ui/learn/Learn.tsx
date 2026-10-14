@@ -462,8 +462,14 @@ export function Learn({ move, lang, coach, doneLabel, onDone, onClose, skippable
           <Heading>{titleOf(item, move)}</Heading>
           {item.k === "intro" && (
             <>
-              {coach === "character" && <div class="ln-hero"><Bo pose="wave" size={160} /></div>}
-              <CoachBubble mode={coach} pose="idle" speaks={false}>{lesson.intro}</CoachBubble>
+              {coach === "character" ? (
+                <>
+                  <div class="ln-hero"><Bo pose="wave" size={160} /></div>
+                  <p class="ln-text">{lesson.intro}</p>
+                </>
+              ) : (
+                <CoachBubble mode="text" pose="idle" speaks={false}>{lesson.intro}</CoachBubble>
+              )}
               {lang === "pcm" && <p class="ln-note">Lesson in English</p>}
               <p class="ln-note">About two minutes. Nothing here is scored.</p>
             </>

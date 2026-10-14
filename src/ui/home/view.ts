@@ -29,7 +29,8 @@ export function moveState(p: Progress, moveId: string, focusId: string, nowIn: N
 
 /**
  * The move Home shows: a valid ?move, else the move whose recheck has waited longest, else the move of the most
- * recent attempt or run, else move 1.
+ * recent attempt or run, else move 1. Like a game level, a move whose proof holds (Proved or Held) hands over to the
+ * next move not yet completed, so the bus drives on to it as soon as the learner is back on Home.
  */
 export function focusMove(p: Progress, nowIn: NowIn, param?: string | null): Move {
   const given = moveById(param);
@@ -46,7 +47,21 @@ export function focusMove(p: Progress, nowIn: NowIn, param?: string | null): Mov
   const note = (id: string | undefined, seq: number) => id && seqs.set(id, Math.max(seqs.get(id) ?? 0, seq));
   for (const { attempt: a, question } of p.attempts.values()) note(question.moveId, Math.max(a.startedAt.seq, a.completedAt?.seq ?? 0));
   for (const r of p.runs.values()) note(r.questions[0]?.moveId, r.run.started.seq);
-  return moves.filter((m) => seqs.has(m.moveId)).sort((a, b) => seqs.get(b.moveId)! - seqs.get(a.moveId)!)[0] ?? stripDisguiseMove;
+  const recent = moves.filter((m) => seqs.has(m.moveId)).sort((a, b) => seqs.get(b.moveId)! - seqs.get(a.moveId)!)[0] ?? stripDisguiseMove;
+  return completed(p, recent, nowIn) ? (moves.slice(moves.indexOf(recent) + 1).find((m) => !p.cycles.has(m.moveId)) ?? recent) : recent;
+}
+
+/** A first solo pass earned this move a proof that still holds (not Fading). */
+function completed(p: Progress, move: Move, nowIn: NowIn): boolean {
+  const c = p.cycles.get(move.moveId);
+  const status = c ? proofStatus(c, nowIn(c.timeZone)) : null;
+  return !!status && status.state !== "fading";
+}
+
+/** The move just before `move` in the journey when it holds a proof: the stage Home has just driven on from. */
+export function movedOnFrom(p: Progress, move: Move, nowIn: NowIn): Move | null {
+  const prev = moves[moves.indexOf(move) - 1];
+  return prev && !p.cycles.has(move.moveId) && completed(p, prev, nowIn) ? prev : null;
 }
 
 /** The most recent completed solo, with or without a practice score (spec section 8: never skip back to an older gap), or null. Pass `moveId` for one move's. */

@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { Progress, SavedRun } from "../../storage/progress.ts";
 import type { ProofCycle } from "../../rules/proof.ts";
 import { startAttempt } from "../../rules/practice.ts";
-import { focusMove, latestSolo, moveOne, moveState } from "./view.ts";
+import { focusMove, latestSolo, movedOnFrom, moveOne, moveState } from "./view.ts";
+import { moveById } from "../../content/moves.ts";
 
 const solo = (id: string, seq: number, score: number, practice: number | null, moveId = "strip-disguise"): [string, SavedRun] => [
   id,
@@ -75,5 +76,16 @@ describe("focusMove", () => {
     expect(focusMove(p, nowIn).moveId).toBe("collective-nouns");
     const q = withCycles([], [attempt("strip-disguise", 10)], [solo("r", 20, 5, null, "one-of-the")]);
     expect(focusMove(q, nowIn).moveId).toBe("one-of-the");
+  });
+  it("moves on, like a game level, from a stage whose proof holds to the next stage not yet completed", () => {
+    const one = withCycles([cycle("strip-disguise", "held", "2026-10-30")], [attempt("strip-disguise", 10)]);
+    expect(focusMove(one, nowIn).moveId).toBe("nearest-subject");
+    expect(movedOnFrom(one, moveById("nearest-subject")!, nowIn)?.moveId).toBe("strip-disguise");
+    const skip = withCycles([cycle("strip-disguise", "held", "2026-10-30"), cycle("nearest-subject", "held", "2026-10-30")], [attempt("strip-disguise", 10)]);
+    expect(focusMove(skip, nowIn).moveId).toBe("collective-nouns");
+    const last = withCycles([cycle("one-of-the", "held", "2026-10-30")], [attempt("one-of-the", 10)]);
+    expect(focusMove(last, nowIn).moveId).toBe("one-of-the"); // nothing after stage 5 is playable yet
+    const started = withCycles([cycle("strip-disguise", "held", "2026-10-30")], [attempt("strip-disguise", 10), attempt("nearest-subject", 20)]);
+    expect(focusMove(started, nowIn).moveId).toBe("nearest-subject");
   });
 });
