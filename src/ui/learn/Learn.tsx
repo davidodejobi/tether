@@ -67,6 +67,17 @@ function Heading({ children }: { children: string }) {
   return <h1 class="ln-h" id="ln-h" ref={ref} tabIndex={-1}>{children}</h1>;
 }
 
+/** Feedback, announced politely and scrolled into view above the Continue bar. */
+function Live({ msg }: { msg: { ok: boolean; text: string } | null }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  useEffect(() => ref.current?.scrollIntoView?.({ block: "nearest" }), [msg]);
+  return (
+    <div class="ln-live" aria-live="polite">
+      {msg && <p ref={ref} class={`ln-fb ${msg.ok ? "ln-fb-ok" : "ln-fb-bad"}`}>{msg.text}</p>}
+    </div>
+  );
+}
+
 type CardProps = { reduced: boolean; solved(): void };
 
 /* ---------- define ---------- */
@@ -283,9 +294,7 @@ function Why({ card, solved }: { card: Extract<LessonCard, { kind: "why" }> } & 
           );
         })}
       </div>
-      <div class="ln-live" aria-live="polite">
-        {msg && <p class={`ln-fb ${msg.ok ? "ln-fb-ok" : "ln-fb-bad"}`}>{msg.text}</p>}
-      </div>
+      <Live msg={msg} />
     </>
   );
 }
@@ -317,13 +326,13 @@ function Try({ card, reduced, solved }: { card: Extract<LessonCard, { kind: "try
     if (stage !== "subject") return;
     if (w.kind === "subject") {
       cue("select");
-      toVerb(`Yes: ${name} is the subject. It is ${one(s)}.`);
+      toVerb(`Yes: ${name} is the subject. It counts as ${one(s)}.`);
       return;
     }
     const n = chipMiss + 1;
     setChipMiss(n);
     if (n >= 2) {
-      toVerb(`The subject is ${name}. It is ${one(s)}.`);
+      toVerb(`The subject is ${name}. It counts as ${one(s)}.`);
       return;
     }
     cue("tryAgain");
@@ -334,7 +343,7 @@ function Try({ card, reduced, solved }: { card: Extract<LessonCard, { kind: "try
     if (labels[i] === a) {
       cue("correct");
       setCorrect(i);
-      setMsg({ ok: true, text: `Yes. ${name} is ${one(s)}, so ${a}.` });
+      setMsg({ ok: true, text: `Yes. ${name}: ${one(s)}, so ${a}.` });
       solved();
       return;
     }
@@ -381,9 +390,7 @@ function Try({ card, reduced, solved }: { card: Extract<LessonCard, { kind: "try
           <AnswerTiles tiles={labels.map((label, i) => ({ label, struck: struck.includes(i) && correct !== i }))} value={null} correct={correct} onSelect={choose} />
         </div>
       )}
-      <div class="ln-live" aria-live="polite">
-        {msg && <p class={`ln-fb ${msg.ok ? "ln-fb-ok" : "ln-fb-bad"}`}>{msg.text}</p>}
-      </div>
+      <Live msg={msg} />
     </>
   );
 }
