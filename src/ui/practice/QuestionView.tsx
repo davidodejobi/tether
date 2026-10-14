@@ -21,6 +21,7 @@ import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { cue } from "../../platform/sound.ts";
 import { speak, useCanSpeak, useVoiceNote } from "../../platform/speech.ts";
+import { withMove } from "../move.ts";
 import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
 import { before, sentence, type Question } from "../../content/generate.ts";
 import { check, openMoveSheet, startAttempt, useHelp, readiness, type AnswerHelp, type Origin, type PracticeAttempt } from "../../rules/practice.ts";
@@ -366,6 +367,7 @@ export function QuestionView(props: QuestionViewProps) {
         </p>
         <p class="qv-source">Rule source: {move.source.line}</p>
         <Button onClick={closeSheet}>Got it</Button>
+        <a class="btn btn-tertiary" href={withMove("/learn", move.moveId)}>Learn the move again</a>
         {canSpeak && <Button variant="secondary" onClick={() => speak(`${coach.rule} ${coach.explanation}`, lang)}>Read it to me</Button>}
         {canSpeak && voiceNote && <p class="qv-source">{voiceNote}</p>}
       </dialog>

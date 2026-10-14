@@ -8,7 +8,8 @@ import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
 import { Icon } from "../components/Icon";
 import { useProgress } from "../progress";
-import { Lesson } from "./Lesson";
+import { Learn } from "../learn/Learn";
+import { stripDisguiseMove } from "../../content/moves.ts";
 import { ErrorText, Screen, StepHeading, useAction } from "./parts";
 import { resumeStep, type Step } from "./resume.ts";
 import { SubjectPicker } from "./SubjectPicker";
@@ -235,9 +236,15 @@ export function Onboarding() {
   if (step === "course") return <Screen><CourseMap onStart={() => setStep("lesson")} /></Screen>;
   if (step === "lesson")
     return (
-      <Screen kind="lesson">
-        <Lesson coach={learner.coach} lang={learner.lang} onDone={async () => (await saveLearner({ ...learner, lessonDone: true }), setStep("questions"))} />
-      </Screen>
+      <main>
+        <Learn
+          move={stripDisguiseMove}
+          coach={learner.coach}
+          lang={learner.lang}
+          doneLabel="Got it — try 3 questions"
+          onDone={async () => (await saveLearner({ ...learner, lessonDone: true }), setStep("questions"))}
+        />
+      </main>
     );
   if (step === "questions") return <TutorialQuestions onDone={() => setStep("win")} />;
   if (step === "win")

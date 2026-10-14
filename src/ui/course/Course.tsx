@@ -145,6 +145,7 @@ function Actions({ moveId }: { moveId: string }) {
   return (
     <div class="cs-actions">
       <a class="btn btn-primary cs-act" href={withMove("/practice", moveId)}>Practise Move {moveNumber(moveById(moveId)!)}</a>
+      <a class="btn btn-secondary cs-act" href={withMove("/learn", moveId)}>Learn the move</a>
       <a class="btn btn-secondary cs-act" href={withMove("/solo-entry", moveId)}>Solo check</a>
       {recheck && <a class="btn btn-secondary cs-act" href={withMove("/recheck-entry", moveId)}>Start recheck</a>}
     </div>

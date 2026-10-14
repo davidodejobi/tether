@@ -2,8 +2,8 @@
 import { useEffect, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { cue } from "../../platform/sound.ts";
-import { stripDisguiseMove } from "../../content/moves.ts";
-import { buildQuestion, nextPracticeQuestion, type Move, type Question } from "../../content/generate.ts";
+import { moves, stripDisguiseMove } from "../../content/moves.ts";
+import { nextPracticeQuestion, type Move, type Question } from "../../content/generate.ts";
 import { inOrder } from "../../rules/moment.ts";
 import { readiness, type PracticeAttempt } from "../../rules/practice.ts";
 import { ROUND_SIZE, doneInRound, firstTry, lastRound } from "../../rules/round.ts";
@@ -14,13 +14,13 @@ import { Dots } from "../components/Dots";
 import { Icon } from "../components/Icon";
 import { useProgress, useProgressState } from "../progress";
 import { HelpedQuestion } from "../help/HelpedQuestion";
-import { ShowMe } from "../help/ShowMe";
+import { Learn } from "../learn/Learn";
 import { useMove, withMove } from "../move.ts";
 import { Honesty } from "./Honesty";
 import { SoloEntry } from "../solo/SoloEntry";
 import "./Practice.css";
 
-type Step = { kind: "intro"; question: Question } | { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" } | { kind: "ready" };
+type Step = { kind: "intro" } | { kind: "question"; question: Question; resume?: SavedAttempt; n: number; key: string } | { kind: "summary" } | { kind: "ready" };
 
 // An unfinished practice question comes back as it was; otherwise a fresh one, never the same as the last.
 function begin(store: ProgressStore, pack: Move): Step {
@@ -62,9 +62,9 @@ function Round() {
     let live = true;
     idle().then(() => {
       if (!live) return;
-      // First visit to a later move: show its example before the first question. Nothing is saved; any attempt skips it.
+      // First visit to a later move: Learn the move before the first question. Nothing is saved; any attempt skips it.
       const first = pack !== stripDisguiseMove && attemptsOf(store.progress, pack.moveId).length === 0;
-      setStep(first ? { kind: "intro", question: buildQuestion(pack, pack.example, Math.random) } : begin(store, pack));
+      setStep(first ? { kind: "intro" } : begin(store, pack));
     });
     return () => void (live = false);
   }, [hasLearner, pack.moveId]);
@@ -85,7 +85,17 @@ function Round() {
 
   const learner = store.progress.learner!;
   if (step.kind === "intro")
-    return <ShowMe question={step.question} lang={learner.lang} coach={learner.coach} doneLabel="Start practising" note={null} onDone={() => setStep(begin(store, pack))} />;
+    return (
+      <Learn
+        move={pack}
+        lang={learner.lang}
+        coach={learner.coach}
+        doneLabel="Start practising"
+        skippableBasics={moves.some((m) => attemptsOf(store.progress, m.moveId).length > 0)}
+        onDone={() => setStep(begin(store, pack))}
+        onClose={() => setStep(begin(store, pack))}
+      />
+    );
   if (step.kind === "summary") return <Summary pack={pack} onAnother={() => setStep(begin(store, pack))} onDone={() => (store.endSession().catch(() => {}), route("/"))} />;
   if (step.kind === "ready") return <SoloEntry pack={pack} dots={3} onStart={() => route(withMove("/run/solo", pack.moveId))} onPractise={after} />;
   return (
