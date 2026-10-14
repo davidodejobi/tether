@@ -167,33 +167,29 @@ test("S opens Show me before any miss; pause and replay work by keyboard; the mo
   expect(s.attempt.resets).toHaveLength(1);
 });
 
-test("Pidgin help keeps the Unreviewed tag on Go deeper and Show me", async ({ page }) => {
+test("Pidgin help shows its own copy on Go deeper and Show me, with no review label", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await seed(page, { ...LEARNER, lang: "pcm" });
-  const tag = page.locator(".hp").getByText("Unreviewed").first();
   for (let n = 0; n < 3; n++) {
     await miss(page, n);
-    if (n === 0) await expect(tag).toBeVisible(); // the nudge
+    if (n === 0) await expect(page.getByText(pack.coach.pcm.nudge)).toBeVisible();
     if (n < 2) await page.getByRole("button", { name: "Try again" }).click();
   }
-  // Go deeper: tagged from its first prompt, with no wrong step needed.
   const q = (await saved(page, (x) => x.attempt.checks === 3)).question;
   await expect(page.getByRole("heading", { name: pack.coach.pcm.goDeeper.subject })).toBeVisible();
-  await expect(tag).toBeVisible();
   await page.locator(".hp-chip").first().click();
   await expect(page.getByRole("heading", { name: pack.coach.pcm.goDeeper.count })).toBeVisible();
-  await expect(tag).toBeVisible();
   await page.getByRole("button", { name: q.number === "sg" ? "One" : "Many" }).click();
   await expect(page.getByRole("heading", { name: pack.coach.pcm.goDeeper.verb })).toBeVisible();
-  await expect(tag).toBeVisible();
+  await expect(page.getByText("Unreviewed")).toHaveCount(0); // owner decision: no review labels
 });
 
-test("Show me captions in Pidgin carry the Unreviewed tag", async ({ page }) => {
+test("Show me captions in Pidgin carry no review label", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await seed(page, { ...LEARNER, lang: "pcm" });
   await saved(page, () => true);
   await page.keyboard.press("s");
   const dialog = page.getByRole("dialog", { name: "Show me" });
-  await expect(dialog.locator(".sm-body > section .coach-tag")).toBeVisible();
-  await expect(dialog.locator(".ls-rule .coach-tag")).toBeVisible();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText("Unreviewed")).toHaveCount(0);
 });

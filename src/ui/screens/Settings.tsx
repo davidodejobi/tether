@@ -95,7 +95,7 @@ export function Settings() {
       <fieldset class="st-group">
         <legend>Language</legend>
         {choice("lang", "en", "English")}
-        {choice("lang", "pcm", "Pidgin", "Unreviewed")}
+        {choice("lang", "pcm", "Pidgin")}
         <small>Coming next: Français. More languages later.</small>
         <small>Exam questions stay in English whatever you choose.</small>
       </fieldset>

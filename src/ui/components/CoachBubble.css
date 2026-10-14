@@ -14,17 +14,5 @@
 .coach-character .coach-body { animation: bubble-rise var(--dur-medium) var(--ease-emphasized); }
 .coach-text { align-items: flex-start; padding: var(--spacing-sm) var(--spacing-md); background: var(--bg-sunken); border-radius: var(--radius-lg); color: var(--icon-brand); }
 .coach-text .coach-body { padding: 0; background: none; color: var(--text-primary); }
-.coach-tag {
-  display: inline-block;
-  margin-bottom: var(--spacing-xxs);
-  padding: 0 var(--spacing-xs);
-  border-radius: var(--radius-sm);
-  background: var(--bg-gap-container);
-  color: var(--text-on-gap-container);
-  border: 1px solid var(--border-gap);
-  font: var(--type-label-s);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
 @keyframes bubble-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .coach-character .coach-body { animation: none; } }

@@ -3,7 +3,7 @@
 // elimination cannot reveal the answer. onFinish() is where the caller records help("goDeeper"); onAi(then) records help("ai").
 import { useEffect, useRef, useState } from "preact/hooks";
 import { sentence, type Question } from "../../content/generate.ts";
-import { moveOrFirst, stripDisguiseMove, unreviewed as isUnreviewed } from "../../content/moves.ts";
+import { moveOrFirst, stripDisguiseMove } from "../../content/moves.ts";
 import type { Lang } from "../../content/types.ts";
 import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
@@ -23,7 +23,6 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: 
   const heading = useRef<HTMLHeadingElement>(null);
   const move = moveOrFirst(q.moveId);
   const c = move.coach[lang].goDeeper;
-  const unreviewed = isUnreviewed(move, lang);
   useEffect(() => heading.current?.focus({ preventScroll: true }), [step]);
 
   const go = (ok: boolean, wrong: string, to: 2 | 3 | 4) => (ok ? (setHint(""), setStep(to)) : setHint(wrong));
@@ -51,7 +50,6 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: 
         ))}
         <li class="ls-steps-text">Step {step} of 3</li>
       </ol>
-      {unreviewed && <span class="coach-tag">Unreviewed</span>}
       <h2 class="hp-prompt" ref={heading} tabIndex={-1} key={step}>{step === 1 ? c.subject : step === 2 ? c.count : c.verb}</h2>
       {step === 1 && (
         <div class="hp-chips" role="group" aria-label="Words in the sentence">
@@ -74,7 +72,7 @@ export function GoDeeper({ question: q, lang, coach, blocked, onFinish, onAi }: 
         </div>
       )}
       <div role="status" aria-live="polite">
-        {hint && <CoachBubble mode={coach} pose="concerned" unreviewed={unreviewed}>{hint}</CoachBubble>}
+        {hint && <CoachBubble mode={coach} pose="concerned">{hint}</CoachBubble>}
       </div>
       {move.review.en.status === "approved" && <StillStuck question={q} lang={lang} blocked={blocked} onAccepted={onAi} />}
     </div>

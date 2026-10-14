@@ -17,7 +17,7 @@ The course shell is deployed at https://tether-4cg.pages.dev. Review baseline:
    in `docs/release-checks.md`, or retain their explicit untested status.
 
 Submit the working demo with honest claims: 50 planned English stages, five live
-concord stages (Move 1 reviewed, Moves 2–5 Unreviewed until signed); online AI explains, fixed rules grade, core study works offline.
+concord stages (Move 1 reviewed; Moves 2–5 await the owner's line-by-line review, with no labels shown); online AI explains, fixed rules grade, core study works offline.
 The long scrolling Home trail is an approved owner decision. Keep its list view,
 keyboard access and reduced-motion fallback. Preserve the solo-speech diagnostic.
 

@@ -14,7 +14,7 @@
 // advances by itself: beats are static cards revealed by Next. It records nothing; the caller owns help marking.
 import { useEffect, useRef, useState } from "preact/hooks";
 import { partsOf, type Question } from "../../content/generate.ts";
-import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
+import { moveOrFirst } from "../../content/moves.ts";
 import type { Lang } from "../../content/types.ts";
 import { autoLine, speak, speechOk, useCanSpeak } from "../../platform/speech.ts";
 import { Button } from "../components/Button";
@@ -123,7 +123,6 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
     return () => window.removeEventListener("keydown", h);
   }, []);
   const pose = beat < 3 ? "thinking" : "pleased";
-  const unreviewed = isUnreviewed(move, lang);
 
   const inner = (
     <>
@@ -134,7 +133,7 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
         </button>
       </header>
       <div class="sm-body">
-        <CoachBubble mode={coach} pose={pose} unreviewed={unreviewed} speaks={false}>
+        <CoachBubble mode={coach} pose={pose} speaks={false}>
           {beat < 3 ? "Watch your own sentence." : "That is the verb."}
         </CoachBubble>
         <ol class="ls-steps" aria-label="Steps">
@@ -148,7 +147,6 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
             <section class="ls-card sm-card" key={n}>
               <Sentence q={q} beat={n as Beat} />
               <p class="sr-only">{plain(q, n as Beat)}</p>
-              {unreviewed && <span class="coach-tag">Unreviewed</span>}
               {n === beat ? <h3 class="sm-caption" ref={caption} tabIndex={-1}>{captions[n - 1]}</h3> : <p class="sm-caption">{captions[n - 1]}</p>}
             </section>
           ))
@@ -160,7 +158,6 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
         )}
         {!reduced && (
           <div>
-            {unreviewed && <span class="coach-tag">Unreviewed</span>}
             <p class="sm-caption" role="status" aria-live="polite">{captions[beat - 1]}</p>
           </div>
         )}
@@ -168,7 +165,6 @@ export function ShowMe({ question: q, lang, coach, onDone, page, doneLabel = "Pu
         {note && <p class="sm-chip">{note}</p>}
         <aside class="ls-rule">
           <Icon name="lightbulb" size={20} /> <strong>{move.title}</strong>
-          {unreviewed && <span class="coach-tag">Unreviewed</span>}
           <p>{move.coach[lang].rule}</p>
         </aside>
       </div>

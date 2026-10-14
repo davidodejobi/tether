@@ -426,7 +426,6 @@ export function Learn({ move, lang, coach, doneLabel, onDone, onClose, skippable
   const last = i === deck.length - 1;
   const go = (n: number) => (setI(n), setOk(false));
   const advance = () => canNext && !last && go(i + 1);
-  const unreviewed = lesson.review.status !== "approved";
   const firstBasics = item.k === "card" && item.basics && deck[i - 1]?.k === "intro";
   const solved = () => setOk(true);
 
@@ -454,7 +453,6 @@ export function Learn({ move, lang, coach, doneLabel, onDone, onClose, skippable
         <div class="ln-progress" role="progressbar" aria-label="Lesson progress" aria-valuemin={1} aria-valuemax={deck.length} aria-valuenow={i + 1}>
           <span style={`transform:scaleX(${(i + 1) / deck.length})`} />
         </div>
-        {unreviewed && <span class="coach-tag ln-tag">Unreviewed</span>}
       </header>
       <div class="ln-scroll">
         <section class={`ln-card ln-${item.k === "card" ? item.card.kind : item.k}`} key={i} aria-labelledby="ln-h">

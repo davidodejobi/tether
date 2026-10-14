@@ -4,7 +4,7 @@
 //   Show me (button or S): records help("showMe"), plays ShowMe, then "Put it in yourself" returns to the question.
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Question } from "../../content/generate.ts";
-import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
+import { moveOrFirst } from "../../content/moves.ts";
 import type { PracticeAttempt } from "../../rules/practice.ts";
 import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
@@ -55,7 +55,6 @@ function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; que
   const { attempt, misses, retry, help, blocked } = ctx;
   const move = moveOrFirst(question.moveId);
   const copy = move.coach[lang];
-  const unreviewed = isUnreviewed(move, lang);
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => first.current?.focus({ preventScroll: true }), [helped(attempt), misses >= 3]);
 
@@ -82,7 +81,7 @@ function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; que
     );
   return (
     <div class="hp">
-      <CoachBubble mode={coach} pose={misses === 1 ? "nudge" : "concerned"} unreviewed={unreviewed}>{copy.nudge}</CoachBubble>
+      <CoachBubble mode={coach} pose={misses === 1 ? "nudge" : "concerned"}>{copy.nudge}</CoachBubble>
       <div class="hp-actions">
         {misses >= 2 ? (
           <>

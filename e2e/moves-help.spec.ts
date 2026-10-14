@@ -48,14 +48,14 @@ const coveredCount = (q: Question) => partsOf(q).filter((p) => p.role === "cover
 
 for (const { move, q } of CASES) {
   test.describe(`${move.title}`, () => {
-    test("shows its sentence shape, the Unreviewed tag and no AI help", async ({ page }) => {
+    test("shows its sentence shape, no review label and no AI help", async ({ page }) => {
       const requests: string[] = [];
       await page.route("**/api/explain", (r) => (requests.push(r.request().url()), r.abort()));
       await seedQuestion(page, q);
       await expect(page.locator(".qv-sentence")).toContainText(before(q));
       await miss(page, q, 0);
       await expect(page.getByText(move.coach.en.nudge)).toBeVisible();
-      await expect(page.locator(".coach-tag", { hasText: "Unreviewed" }).first()).toBeVisible();
+      await expect(page.getByText("Unreviewed")).toHaveCount(0); // owner decision: no review labels
       await page.getByRole("button", { name: "Try again" }).click();
       await miss(page, q, 1);
       await page.getByRole("button", { name: "Try again" }).click();
@@ -74,7 +74,7 @@ for (const { move, q } of CASES) {
       await expect(sheet).toContainText(move.coach.en.rule);
       await expect(sheet).toContainText(move.source.line);
       await expect(sheet.locator(".qv-example")).toContainText(before(move.example));
-      await expect(sheet.locator(".coach-tag", { hasText: "Unreviewed" })).toBeVisible();
+      await expect(sheet.getByText("Unreviewed")).toHaveCount(0);
     });
 
     test("Show me strikes the covered parts and badges the subject", async ({ page }) => {
@@ -86,7 +86,7 @@ for (const { move, q } of CASES) {
       await page.getByRole("button", { name: "Show me" }).first().click();
       const dialog = page.getByRole("dialog", { name: "Show me" });
       await expect(dialog).toBeVisible();
-      await expect(dialog.locator(".coach-tag", { hasText: "Unreviewed" }).first()).toBeVisible();
+      await expect(dialog.getByText("Unreviewed")).toHaveCount(0);
       await expect(dialog.getByRole("heading", { level: 3 })).toContainText(fill(move, move.coach.en.showMe[0], q, "en"));
       await expect(dialog.locator(".ls-covered.on")).toHaveCount(coveredCount(q));
       await expect(dialog.locator(".ls-badge")).toHaveCount(0);

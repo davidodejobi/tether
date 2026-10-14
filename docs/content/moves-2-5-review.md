@@ -2,14 +2,13 @@
 
 Written 14 October 2026 at the owner's request ("make at least five stages work").
 The rule in each move file generates every question and its answer. No AI writes or
-grades them. The moves are **Unreviewed** until a named reviewer signs them off here.
-Until then learners see an Unreviewed tag on their coach copy, results page and share
-card. Online AI help is off for them, because the AI function only serves approved
+grades them. They await a named reviewer's sign-off here. The owner decided on
+14 October 2026 that learners see no "Unreviewed" label anywhere, on these moves,
+the lessons or Pidgin, while that review is pending. Online AI help is off for them, because the AI function only serves approved
 packs.
 
 Owner-delegated decision (14 October 2026): these moves can still earn a real
-Proved stamp, so the five stages work like stage 1. The Unreviewed label stays on
-that proof until sign-off.
+Proved stamp, so the five stages work like stage 1.
 
 Each move uses the same JAMB syllabus line as Move 1: Section B (Lexis and
 Structure), (e) agreement/concord. Full question lists are in
@@ -100,7 +99,7 @@ animated lesson. It has one idea per screen and nothing in it is scored:
 
 Lesson sentences never repeat a practice or proof question
 (`src/content/learn.test.ts`). The lesson text is English only, and all five lessons,
-Move 1's included, are Unreviewed until signed here.
+Move 1's included, await sign-off here; no label is shown meanwhile.
 
 | Lesson | Reviewer | Date | Verdict and changes asked for |
 | --- | --- | --- | --- |

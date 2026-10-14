@@ -60,9 +60,10 @@ test("every change saves at once and survives a reload; the avatar seed stays", 
   await expect.poll(async () => (await learner(page)).partner).toBeNull();
 });
 
-test("language labels Pidgin unreviewed and lists Français as not selectable", async ({ page }) => {
+test("language offers Pidgin with no review label and lists Français as not selectable", async ({ page }) => {
   await seedRecords(page, [], "/settings");
-  await expect(page.getByText("Unreviewed")).toBeVisible();
+  await expect(page.getByRole("radio", { name: "Pidgin" })).toBeVisible();
+  await expect(page.getByText("Unreviewed")).toHaveCount(0);
   await expect(page.getByText("Coming next: Français. More languages later.")).toBeVisible();
   await expect(page.getByRole("radio", { name: /Fran/ })).toHaveCount(0);
   await expect(page.getByRole("checkbox", { name: "Read-aloud" })).not.toBeChecked();

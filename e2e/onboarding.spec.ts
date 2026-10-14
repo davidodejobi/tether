@@ -39,7 +39,7 @@ test("a new learner reaches Home with their choices saved", async ({ page }) => 
   await page.getByRole("button", { name: "Make Tether yours" }).click();
   await page.getByText("Text only").click();
   await page.getByText("Pidgin").click();
-  await expect(page.getByText("Unreviewed")).toBeVisible();
+  await expect(page.getByText("Unreviewed")).toHaveCount(0); // owner decision: no review labels
   await page.getByRole("button", { name: /Someone to see your wins/ }).click();
   await page.getByLabel(/Their name/).fill("Mrs Okafor");
   await page.getByRole("button", { name: "Done" }).click();

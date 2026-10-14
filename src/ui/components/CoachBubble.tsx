@@ -10,13 +10,12 @@ type Props = {
   /** "text" keeps the same words in a quiet card without the character. */
   mode?: "character" | "text";
   pose?: Pose;
-  unreviewed?: boolean;
   /** False when the screen speaks its own lines instead (Show me reads its captions): one speech owner per screen. */
   speaks?: boolean;
   children: ComponentChildren;
 };
 
-export function CoachBubble({ mode = "character", pose = "idle", unreviewed, speaks = true, children }: Props) {
+export function CoachBubble({ mode = "character", pose = "idle", speaks = true, children }: Props) {
   const progress = useProgressState();
   const learner = progress.status === "ready" ? progress.store.progress.learner : null;
   const canSpeak = useCanSpeak();
@@ -28,7 +27,6 @@ export function CoachBubble({ mode = "character", pose = "idle", unreviewed, spe
     <div class={`coach coach-${mode}`}>
       {mode === "character" ? <Bo pose={pose} size={48} /> : <Icon name="tether" size={24} />}
       <div class="coach-body">
-        {unreviewed && <span class="coach-tag">Unreviewed</span>}
         <p ref={line}>{children}</p>
         {on && voiceNote && <p class="coach-note">{voiceNote}</p>}
       </div>

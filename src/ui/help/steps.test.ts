@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { moves, stripDisguiseMove as pack, unreviewed } from "../../content/moves.ts";
+import { moves, stripDisguiseMove as pack } from "../../content/moves.ts";
 import { buildQuestion } from "../../content/generate.ts";
 import { chips, countOk, fill, verbOk } from "./steps.ts";
 
@@ -45,9 +45,5 @@ describe("help steps", () => {
     expect(chips(q5).before.map((x) => `${x.text}:${x.kind}`)).toEqual([
       "Tunde:side", "is:side", "one:side", "of:side", "the:subject", "students:subject", "from:side", "our:side", "school:side", "who:other",
     ]);
-  });
-  it("unreviewed tags every non-approved move copy", () => {
-    expect(unreviewed(pack, "en")).toBe(false);
-    for (const m of moves.slice(1)) expect(unreviewed(m, "en")).toBe(true);
   });
 });

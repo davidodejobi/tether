@@ -110,7 +110,7 @@ function Panel({ theme }: { theme: "light" | "dark" }) {
           {POSES.map((p) => <figure key={p}><Bo pose={p} /><figcaption>{p}</figcaption></figure>)}
         </div>
         <CoachBubble pose="nudge">Cover the side phrase and read it again.</CoachBubble>
-        <CoachBubble pose="nudge" unreviewed>Cover di side phrase, read am again.</CoachBubble>
+        <CoachBubble pose="nudge">Cover di side phrase, read am again.</CoachBubble>
         <CoachBubble mode="text">Cover the side phrase and read it again.</CoachBubble>
       </Group>
 

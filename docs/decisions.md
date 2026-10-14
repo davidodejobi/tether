@@ -296,3 +296,8 @@ These decisions override conflicting text in `requirements.txt`.
 - The danfo bus on the Home map is drawn from above and turns to follow the road as it drives between stages, instead of sitting side-on across the road.
 - Like a game level (owner request), a stage whose proof holds hands over to the next stage not yet completed. Back on Home, the focus moves on and the bus drives there by itself. The coach says "Move N done. On to Move N+1!", and the finished stage's stamp, recheck dates, Add to calendar and gap stay in view until the new stage is started. A due recheck still takes priority.
 
+## No review labels (owner decision, 14 Oct 2026)
+
+- The owner asked for no "Unreviewed" label anywhere. Learners no longer see the tag on coach copy, Show me, Go deeper, The move sheet, lessons, results, share cards, the Pidgin choice in Settings or the onboarding Pidgin note. This supersedes the earlier decisions that showed it.
+- The review itself is unchanged and still open. Moves 2–5, the Learn lessons and Pidgin keep `review.status: "unreviewed"` in their data until the owner signs `docs/content/moves-2-5-review.md`. Online AI help stays limited to approved packs (Move 1), because the AI function only serves those.
+

@@ -25,8 +25,8 @@ Other moves are labelled Coming soon and have no working assessment controls.
 Proof is for this move, never for all English or a predicted JAMB score.
 Owner decision 14 Oct 2026: concord stages 2–5 (nearest subject, collective nouns,
 each/everyone/none, one of the … who/that) are also playable, with the same lesson,
-practice, help, solo and rechecks. Their rule-generated content is Unreviewed until
-signed off (`docs/content/moves-2-5-review.md`), shown with an Unreviewed tag and
+practice, help, solo and rechecks. Their rule-generated content awaits the owner's
+line-by-line review (`docs/content/moves-2-5-review.md`). It shows no review label (owner decision, 14 Oct 2026) and runs
 without online AI help. Every score, dot and proof cycle is per move.
 
 Include onboarding, the lesson, five-question practice, the help ladder,

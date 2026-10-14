@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { cue } from "../../platform/sound.ts";
 import { speak, useCanSpeak, useVoiceNote } from "../../platform/speech.ts";
 import { withMove } from "../move.ts";
-import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
+import { moveOrFirst } from "../../content/moves.ts";
 import { before, sentence, type Question } from "../../content/generate.ts";
 import { check, openMoveSheet, startAttempt, useHelp, readiness, type AnswerHelp, type Origin, type PracticeAttempt } from "../../rules/practice.ts";
 import { attemptsOf, runStartsOf, type Batch, type Learner, type SavedAttempt } from "../../storage/progress.ts";
@@ -358,7 +358,7 @@ export function QuestionView(props: QuestionViewProps) {
       <dialog ref={dialog} class="qv-sheet" aria-labelledby="qv-sheet-title" onClose={() => moveBtn.current?.focus()}>
         <Icon name="lightbulb" size={32} />
         <h2 id="qv-sheet-title">The move: {move.title}</h2>
-        <CoachBubble mode={learner.coach} pose="idle" unreviewed={isUnreviewed(move, lang)}>
+        <CoachBubble mode={learner.coach} pose="idle">
           {coach.rule}
         </CoachBubble>
         <p>{coach.explanation} Opening this is not help.</p>

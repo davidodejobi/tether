@@ -3,7 +3,7 @@
 import { useState } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
 import { sentence } from "../../content/generate.ts";
-import { moveOrFirst, stripDisguiseMove, unreviewed } from "../../content/moves.ts";
+import { moveOrFirst, stripDisguiseMove } from "../../content/moves.ts";
 import { startAttempt } from "../../rules/practice.ts";
 import { Button } from "../components/Button";
 import { Score } from "../components/Score";
@@ -89,7 +89,7 @@ function Card({ v, onMisses }: { v: ResultView; onMisses(): void }) {
   return (
     <main class="rs">
       <div class="rs-card pin-light">
-        {move !== stripDisguiseMove && <p class="rs-move">{moveLabel(move)}{unreviewed(move, "en") && <> <span class="coach-tag">Unreviewed</span></>}</p>}
+        {move !== stripDisguiseMove && <p class="rs-move">{moveLabel(move)}</p>}
         <Headline v={v} />
         {p && (
           <div class="rs-stamp">

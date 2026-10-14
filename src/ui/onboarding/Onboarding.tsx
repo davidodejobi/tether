@@ -199,7 +199,6 @@ function Preferences({ learner, onFinish, onBack }: { learner: Learner; onFinish
         <p class="ob-lead">All optional. You can change any of it later in Settings.</p>
         <Choice legend="Coach style" name="coach" value={coach} onChange={setCoach} options={[["character", "Character"], ["text", "Text only"]]} />
         <Choice legend="Coach language" name="lang" value={lang} onChange={setLang} options={[["en", "English"], ["pcm", "Pidgin"]]} />
-        {lang === "pcm" && <p class="ob-note"><span class="coach-tag">Unreviewed</span> Pidgin coaching is new and not yet reviewed.</p>}
         <p class="ob-note">Coming next: Français. More languages later.</p>
         <button type="button" class="ob-link-card" onClick={() => setPart("partner")}>
           <span>
