@@ -301,3 +301,7 @@ These decisions override conflicting text in `requirements.txt`.
 - The owner asked for no "Unreviewed" label anywhere. Learners no longer see the tag on coach copy, Show me, Go deeper, The move sheet, lessons, results, share cards, the Pidgin choice in Settings or the onboarding Pidgin note. This supersedes the earlier decisions that showed it.
 - The review itself is unchanged and still open. Moves 2–5, the Learn lessons and Pidgin keep `review.status: "unreviewed"` in their data until the owner signs `docs/content/moves-2-5-review.md`. Online AI help stays limited to approved packs (Move 1), because the AI function only serves those.
 
+
+## Settings as rows (owner request, 14 Oct 2026)
+
+Settings now follows Figma S14a's row list, grouped Study / People. Each row (label, current value, chevron) expands in place to the same controls and save behaviour as before; one row is open at a time. Home's Settings link is the icon from Figma's greeting card (accessible name still "Settings"). The Figma "What a JAMB score opens", Export & restore and Profiles rows are still not built (spec sections 10 and 12).

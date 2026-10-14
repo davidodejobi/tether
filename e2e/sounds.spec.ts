@@ -1,3 +1,4 @@
+import { openRow } from "./settings-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { answerRight, current, LEARNER, leave, seed, tile } from "./practice-helpers";
 
@@ -59,6 +60,7 @@ const check = (page: Page) => page.getByRole("button", { name: "Check" }).click(
 test("Sounds is off by default, switches by keyboard, saves at once, and plays tile, outcome and nothing else", async ({ page }) => {
   await seed(page);
   await page.goto("/settings");
+  await openRow(page, "Sounds");
   await expect(sounds(page)).not.toBeChecked();
   await sounds(page).focus();
   await page.keyboard.press("Space");
@@ -84,6 +86,7 @@ test("Sounds is off by default, switches by keyboard, saves at once, and plays t
 
   // Off: persisted at once and silent.
   await page.goto("/settings");
+  await openRow(page, "Sounds");
   await sounds(page).focus();
   await page.keyboard.press("Space");
   await expect(sounds(page)).not.toBeChecked();
@@ -127,6 +130,7 @@ test("a wrong answer plays try-again after its save", async ({ page }) => {
 test("the Sounds toggle keeps the UI unchanged on a failed save and Retry applies it", async ({ page }) => {
   await seed(page);
   await page.goto("/settings");
+  await openRow(page, "Sounds");
   await expect(sounds(page)).toBeVisible();
   await set(page, "__failWrites", true);
   await sounds(page).click();
@@ -202,6 +206,7 @@ for (const variant of ["missing", "throwing"] as const) {
     }, variant);
     await seed(page);
     await page.goto("/settings");
+    await openRow(page, "Sounds");
     await sounds(page).focus();
     await page.keyboard.press("Space");
     await expect(sounds(page)).toBeChecked();
@@ -245,6 +250,7 @@ test("the avatar is decorative, falls back to initials, and stays out of practic
   await seed(page, { ...SOUNDS_ON, avatarGen: 99 });
   await expect(page.locator(".avatar")).toHaveCount(0); // not in teaching or practice
   await page.goto("/settings");
+  await openRow(page, "Sounds");
   const avatar = page.locator(".identity .avatar");
   await expect(avatar).toHaveAttribute("aria-hidden", "true");
   await expect(avatar).toHaveText("A");
@@ -266,6 +272,7 @@ test("with every external request blocked, the toggle, the avatar and a saved an
   });
   await seed(page);
   await page.goto("/settings");
+  await openRow(page, "Sounds");
   await expect(page.locator(".identity .avatar svg")).toBeVisible();
   await sounds(page).focus();
   await page.keyboard.press("Space");

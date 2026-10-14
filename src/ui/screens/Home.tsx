@@ -45,7 +45,7 @@ export function Home() {
         <header class="hm-head">
           <h1>Tether</h1>
           {p.learner && <Identity learner={p.learner} size={32} />}
-          <a class="hm-settings" href="/settings"><Icon name="settings" /> Settings</a>
+          <a class="hm-settings" href="/settings" aria-label="Settings"><Icon name="settings" /></a>
         </header>
         <div class="hm-top">
           <div class="hm-status"><OfflineCues /></div>
