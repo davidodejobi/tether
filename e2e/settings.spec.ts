@@ -160,6 +160,7 @@ test("Appearance: Light or Dark overrides the device, survives a reload, and Mat
 
 test("Appearance: a failed save keeps the old look, and Retry applies the new one", async ({ page }) => {
   await seedRecords(page, [], "/settings");
+  await expect(page.getByRole("radio", { name: "Match my device" })).toBeChecked(); // storage is open before writes fail
   await failWrites(page, true);
   await page.getByRole("radio", { name: "Dark" }).click();
   await expect(alert(page)).toBeVisible();
