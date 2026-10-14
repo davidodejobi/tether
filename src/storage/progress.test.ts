@@ -376,6 +376,24 @@ describe("sessions (spec section 15)", () => {
     await (await reopen(kv, false)).recordActivity(T0 + 99);
     expect((await reopen(kv)).sessionLog).toHaveLength(2);
   });
+
+  test("overlapping calls all land: Done for today is not lost to a stale list", async () => {
+    const kv = idbKV(freshDb());
+    const store = await reopen(kv);
+    await Promise.all([store.recordActivity(T0), store.recordActivity(T0 + 1000), store.endSession(), store.recordActivity(T0 + 2000)]);
+    const want = [
+      { start: T0, last: T0 + 1000, activeMs: 1000, end: "done" },
+      { start: T0 + 2000, last: T0 + 2000, activeMs: 0 },
+    ];
+    expect(store.sessionLog).toEqual(want);
+    expect((await reopen(kv)).sessionLog).toEqual(want);
+  });
+
+  test("the log keeps only the latest 500 sessions", async () => {
+    const store = await reopen(idbKV(freshDb()));
+    for (let i = 0; i < 502; i++) await store.recordActivity(T0 + i * 3_600_000);
+    expect(store.sessionLog).toHaveLength(500);
+  });
 });
 
 describe("AI help uses (spec section 5a)", () => {

@@ -57,6 +57,7 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
   useEffect(() => {
     if (state.status !== "ready") return;
     const { store } = state;
+    const loadedAt = Date.now();
     let hiddenAt: number | null = null;
     let hiddenMs = 0;
     const onVisibility = () => {
@@ -66,7 +67,7 @@ export function ProgressProvider({ children }: { children: ComponentChildren }) 
     const onTouch = () => {
       const h = hiddenMs;
       hiddenMs = 0;
-      store.recordActivity(Date.now(), h).catch(() => {}); // ponytail: a metric, not a promise
+      store.recordActivity(Date.now(), h, loadedAt).catch(() => {}); // ponytail: a metric, not a promise
     };
     document.addEventListener("visibilitychange", onVisibility);
     addEventListener("pointerdown", onTouch, true);

@@ -19,3 +19,8 @@ test("Done for today ends the session; the next touch starts a new one", () => {
   expect(touch(done, 5)).toHaveLength(2);
   expect(endSession(done)).toEqual(done);
 });
+
+test("time before the page loaded (app closed) is not active time", () => {
+  const s = touch(touch([], 0), 20 * 60_000, 0, 19 * 60_000);
+  expect(s).toEqual([{ start: 0, last: 20 * 60_000, activeMs: 60_000 }]);
+});

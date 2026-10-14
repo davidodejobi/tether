@@ -185,19 +185,24 @@ export class ProgressStore {
   }
 
   /** An interaction happened. Best effort: a failure never blocks the learner. */
-  async recordActivity(at: number, hiddenMs = 0): Promise<void> {
-    await this.saveSessions(touch(this.sessions, at, hiddenMs));
+  async recordActivity(at: number, hiddenMs = 0, loadedAt = 0): Promise<void> {
+    await this.saveSessions((list) => touch(list, at, hiddenMs, loadedAt));
   }
 
   /** Done for today. */
   async endSession(): Promise<void> {
-    await this.saveSessions(endSession(this.sessions));
+    await this.saveSessions(endSession);
   }
 
-  private async saveSessions(next: Session[]): Promise<void> {
-    if (this.readOnly) return;
-    await this.kv.setMany([[KEY.sessions, next]]);
+  // Calls are applied in order: each builds on the list the previous one left, even before its write finishes.
+  private sessionWrites: Promise<unknown> = Promise.resolve();
+  private saveSessions(change: (list: Session[]) => Session[]): Promise<void> {
+    if (this.readOnly) return Promise.resolve();
+    const next = change(this.sessions).slice(-500);
     this.sessions = next;
+    const write = this.sessionWrites.then(() => this.kv.setMany([[KEY.sessions, next]]));
+    this.sessionWrites = write.catch(() => {});
+    return write.then(() => {});
   }
 
   /** Online AI help requests and how each ended: a local pilot metric, learner-independent, never uploaded (spec section 5a). */

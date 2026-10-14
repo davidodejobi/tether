@@ -10,11 +10,12 @@ export interface Session {
 
 export const IDLE_MS = 30 * 60_000;
 
-/** An interaction at `now`; `hiddenMs` is how much of the gap since the last touch the page was hidden. */
-export function touch(list: readonly Session[], now: number, hiddenMs = 0): Session[] {
+/** An interaction at `now`; `hiddenMs` is how much of the gap since the last touch the page was hidden.
+ *  `loadedAt` is when this page load began: time before it (the app was closed) is never active time. */
+export function touch(list: readonly Session[], now: number, hiddenMs = 0, loadedAt = 0): Session[] {
   const cur = list.at(-1);
   if (cur && !cur.end && now - cur.last < IDLE_MS)
-    return [...list.slice(0, -1), { ...cur, last: now, activeMs: cur.activeMs + Math.max(0, now - cur.last - hiddenMs) }];
+    return [...list.slice(0, -1), { ...cur, last: now, activeMs: cur.activeMs + Math.max(0, now - Math.max(cur.last, loadedAt) - hiddenMs) }];
   const closed = cur && !cur.end ? [...list.slice(0, -1), { ...cur, end: "idle" as const }] : [...list];
   return [...closed, { start: now, last: now, activeMs: 0 }];
 }
