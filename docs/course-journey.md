@@ -59,15 +59,16 @@ may say “2 of 4 available stages completed; 8 more planned.”
 
 ## Interaction and accessibility
 
-Stage maps are bounded views, not a vertically scrolling trail or a drag-only
-canvas. Larger sections have chapters/pages with Previous/Next and named links
+Owner decision 14 Oct 2026 (docs/decisions.md): Home's map is a long vertically
+scrolling trail of all 50 stages, with a list view and keyboard-reachable nodes;
+it is never drag-only. Course and section views below stay bounded views, not a
+drag-only canvas. Larger sections have chapters/pages with Previous/Next and named links
 back to the course and section. Show current location, available next destination
 and finish explicitly; preserve position on return without resetting a run.
 
 Use semantic HTML controls above decorative art, an accessible list view, visible
 focus and concise page-change feedback. Meet spec §14's target sizes, contrast,
-phone/tablet/laptop, keyboard and reduced-motion requirements. The map itself is
-bounded; surrounding reading/settings and enlarged text may scroll to preserve
+phone/tablet/laptop, keyboard and reduced-motion requirements. Surrounding reading/settings and enlarged text may scroll to preserve
 readability. Never shrink labels or hide actions just to fit a viewport.
 
 ## Full onboarding and Learn layer

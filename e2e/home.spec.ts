@@ -15,19 +15,82 @@ test("a new learner's Home offers practice, solo and Settings, and Coming soon n
   await expect(page.getByRole("link", { name: "Practise Move 1" })).toHaveAttribute("href", "/practice");
   await expect(page.getByRole("link", { name: "Solo check" })).toHaveAttribute("href", "/solo-entry");
   await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
-  // Move 1 is the only working node; later moves and exam day are plain text on bounded pages.
+  // The long trail: 50 stage nodes, stage 1 the only link, the other 49 plain Coming soon markers.
   const map = page.getByRole("region", { name: "Journey map" });
+  await expect(map.locator(".hm-pos")).toHaveCount(50);
   await expect(map.getByRole("link")).toHaveCount(1);
   await expect(map.getByRole("button")).toHaveCount(0);
-  await expect(map.getByText("Coming soon")).toHaveCount(2);
+  await expect(map.getByText("Coming soon")).toHaveCount(49);
+  await expect(map.getByText("Stage 7: There is, there are. Coming soon")).toHaveCount(1);
   await expect(map.getByText("Current")).toBeVisible();
-  // Bounded: nothing scrolls, Move 1 is inside the box, and Next shows the rest.
-  expect(await map.evaluate((el) => el.scrollHeight <= el.clientHeight)).toBe(true);
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByText("Page 2 of 2")).toBeVisible();
-  await expect(map.getByText("Coming soon")).toHaveCount(3);
-  await expect(map.getByRole("link")).toHaveCount(0);
+  // Three regions with banners and counts from the blueprint.
+  for (const name of ["Lexis and Structure", "Comprehension and Summary", "Oral Forms"]) await expect(map.getByRole("heading", { name })).toBeVisible();
+  await expect(map.getByText("Stage 1 of 33")).toBeVisible();
+  // A real long trail that scrolls inside the map, with the current stage in view on load.
+  expect(await map.evaluate((el) => el.scrollHeight > el.clientHeight * 4)).toBe(true);
+  await expect(map.getByRole("link", { name: /Move 1: Strip/ })).toBeInViewport();
   await expect(page.getByText("No gap yet. Take your first solo check.")).toBeVisible();
+});
+
+test("List view shows all 50 stages as an ordered list, and Map view brings the trail back", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  const map = page.getByRole("region", { name: "Journey map" });
+  await page.getByRole("button", { name: "List view" }).click();
+  await expect(map.locator(".hm-listview ol > li")).toHaveCount(50);
+  await expect(map.getByRole("link")).toHaveCount(1);
+  await expect(map.getByText("Stage 7: There is, there are. Coming soon.")).toBeVisible();
+  await expect(map.getByText("Stage 50: Emphatic stress. Coming soon.")).toHaveCount(1);
+  await page.getByRole("button", { name: "Map view" }).click();
+  await expect(map.locator(".hm-pos")).toHaveCount(50);
+  await expect(map.getByRole("link", { name: /Move 1: Strip/ })).toBeInViewport();
+});
+
+test("Jump to my stage appears when the current stage is off screen", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  const map = page.getByRole("region", { name: "Journey map" });
+  const jump = page.getByRole("button", { name: "Jump to my stage" });
+  await expect(map.getByRole("link", { name: /Move 1: Strip/ })).toBeInViewport();
+  await expect(jump).toHaveCount(0);
+  await map.evaluate((el) => el.scrollTo(0, 0));
+  await expect(jump).toBeVisible();
+  await jump.click();
+  await expect(map.getByRole("link", { name: /Move 1: Strip/ })).toBeInViewport();
+  await expect(jump).toHaveCount(0);
+});
+
+test("the bus ends beside the current stage once it has driven there", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  const node = page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: /Move 1: Strip/ });
+  // The drive and the hop take a couple of seconds; poll until the bus has come to rest beside the stage.
+  const gap = async () => {
+    const [bus, n] = await Promise.all([page.locator(".hm-bus").boundingBox(), node.boundingBox()]);
+    return Math.hypot(bus!.x + bus!.width / 2 - (n!.x + n!.width / 2), bus!.y + bus!.height / 2 - (n!.y + n!.height / 2));
+  };
+  await expect.poll(gap, { timeout: 8000 }).toBeLessThan(100);
+  await page.waitForFunction(() => document.getAnimations().every((a) => a.effect?.getComputedTiming().endTime === Infinity || a.playState === "finished"));
+  expect(await gap()).toBeLessThan(100);
+  const [bus, n] = await Promise.all([page.locator(".hm-bus").boundingBox(), node.boundingBox()]);
+  // It sits below the stage's disc, on the road, never covering the number.
+  expect(bus!.y).toBeGreaterThan(n!.y + n!.height / 2);
+});
+
+test("with reduced motion the bus is placed, and nothing animates", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await seedRecords(page, [], "/");
+  const node = page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: /Move 1: Strip/ });
+  await expect(node).toBeVisible();
+  await page.waitForTimeout(400);
+  const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running" && (a.effect?.getComputedTiming().duration as number) > 1).length);
+  expect(running).toBe(0);
+  await expect(page.locator(".hm-bus")).not.toHaveAttribute("data-driving", "");
+  const [bus, n] = await Promise.all([page.locator(".hm-bus").boundingBox(), node.boundingBox()]);
+  expect(Math.hypot(bus!.x + bus!.width / 2 - (n!.x + n!.width / 2), bus!.y + bus!.height / 2 - (n!.y + n!.height / 2))).toBeLessThan(100);
+});
+
+test("tapping stage 1 hops the bus onto it, then opens practice", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  await page.getByRole("region", { name: "Journey map" }).getByRole("link", { name: /Move 1: Strip/ }).click();
+  await expect(page).toHaveURL(/\/practice$/);
 });
 
 test("a solo without a practice score shows the alone score and how to get a first gap", async ({ page }) => {
@@ -37,17 +100,32 @@ test("a solo without a practice score shows the alone score and how to get a fir
   await expect(page.getByText("No gap yet")).toHaveCount(0);
 });
 
+// A service worker would answer from its cache and skip the route below.
+test.describe("art blocked", () => {
+test.use({ serviceWorkers: "block" });
 test("the map art loads lazily and the screen works without it", async ({ page }) => {
+  // The art is its own chunk (mapArt-*.js); blocking it leaves the plain colour, the road, the nodes and the bus.
+  await page.route(/mapArt.*\.js/, (r) => r.abort());
   await page.route("**/*.svg", (r) => (r.request().url().includes("/map/") || /day|night/.test(r.request().url()) ? r.abort() : r.continue()));
   await seedRecords(page, [], "/");
   await expect(page.getByRole("link", { name: "Practise Move 1" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Move 1: Strip/ })).toBeVisible();
+  await expect(page.locator(".hm-pos")).toHaveCount(50);
+  await expect(page.locator(".hm-art svg")).toHaveCount(0);
+  await expect(page.locator(".hm-bus")).toBeVisible();
+});
+});
+
+test("the map art arrives after first paint, as decoration only", async ({ page }) => {
+  await seedRecords(page, [], "/");
+  await expect(page.locator(".hm-art svg").first()).toBeAttached();
+  expect(await page.locator(".hm-art, .hm-amb").evaluateAll((els) => els.every((e) => e.getAttribute("aria-hidden") === "true"))).toBe(true);
 });
 
 test("a due recheck is the primary action, shown as Held with a Due badge and dated like the result page", async ({ page }) => {
   await seedRecords(page, [finishedRun("s1", "solo", 6, { n: 1, practice: 10 }), cycle("held", "2026-10-04")], "/");
   await expect(page.getByRole("link", { name: "Start recheck" })).toHaveAttribute("href", "/recheck-entry");
-  await expect(page.getByRole("link", { name: /Move 1.*Held, due/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Move 1.*Held, due/ }).first()).toBeVisible();
   await expect(page.getByText("Latest gap: 4")).toBeVisible();
   await expect(page.getByRole("link", { name: "Solo check" })).toBeVisible();
   await page.goto("/?demo=2026-10-02");

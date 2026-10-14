@@ -1,40 +1,145 @@
-/* The map: a scrollable box holding a canvas with the art's 360 x 1100 proportions. Nodes sit at percentages of it. */
-.hm-map-h { margin: 0 0 var(--spacing-xs); font: var(--type-title-l); }
-.hm-box { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--bg-primary-container); overflow: hidden; }
-.hm-canvas {
-  --art-day: none; --art-night: none;
-  position: relative; width: 100%; max-width: 30rem; margin: 0 auto; padding: 0; list-style: none; aspect-ratio: 360 / 400;
-  background: var(--art-day) bottom / cover no-repeat, linear-gradient(var(--bg-primary-container), var(--bg-sunken));
+/* Art palette (--map-*): Naija Green by day, Adire Night by night, switched like the tokens. Art only; UI colours are tokens. */
+:root {
+  --map-sky1: #7FD3FF; --map-sky2: #D9F4FF; --map-sun: #FFD23F; --map-hill: #5DBB63; --map-stars: 0;
+  --map-land1: #8BD65A; --map-land2: #4CAF50; --map-sav1: #D9D27B; --map-city1: #94CF8C;
+  --map-water1: #4FC3F7; --map-water2: #1E88E5; --map-leaf1: #2E9E44; --map-leaf2: #1B7A35;
+  --map-trunk: #7A4A2A; --map-trunkHi: #A87449; --map-wood: #B9773F; --map-rock: #B8A68E; --map-flower: #FF5A8A;
+  --map-mud: #C8763E; --map-mudDark: #8E4E22; --map-roof: #E9B949; --map-roofDark: #B98A22;
+  --map-accent1: #FFB800; --map-accent2: #FF5A3C; --map-zuma: #8E7F72; --map-zumaLine: #5E5248;
+  --map-road: #D9783B; --map-roadEdge: #A9542A; --map-roadLine: #F7B27A;
+  --map-hall: #F6EBD9; --map-hallRoof: #C2410C; --map-hallRoofHi: #FDBA74; --map-hallPillar: #FFFFFF; --map-hallDoor: #6B3B1B;
+  --map-crown: #FFC233; --map-crownEdge: #C98E00; --map-bossBanner: #008751; --map-bossText: #FFFFFF;
+  --map-cloud: #FFFFFF; --map-birdc: #3A4A63; --map-bld1: #7E93BD; --map-bld2: #9AABCC; --map-win: #FFFFFF;
 }
-.hm-canvas[data-page="1"] { background-position: top; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hm-canvas { background-image: var(--art-night), linear-gradient(var(--bg-primary-container), var(--bg-sunken)); } }
-[data-theme="dark"] .hm-canvas { background-image: var(--art-night), linear-gradient(var(--bg-primary-container), var(--bg-sunken)); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --map-sky1: #0B1233; --map-sky2: #2A3A7A; --map-sun: #FFF3C4; --map-hill: #1D2B66; --map-stars: 1;
+    --map-land1: #25407A; --map-land2: #132552; --map-sav1: #3A4A66; --map-city1: #1F3466;
+    --map-water1: #2E7BD8; --map-water2: #173F8C; --map-leaf1: #2C7A6A; --map-leaf2: #1A5249;
+    --map-mud: #8E5A3A; --map-mudDark: #5E3A22; --map-roof: #B98A3A; --map-roofDark: #7E5C22; --map-rock: #5A6690;
+    --map-zuma: #141C45; --map-zumaLine: #3A4A8A;
+    --map-road: #C98E4A; --map-roadEdge: #7A5226; --map-roadLine: #FFE0A3;
+    --map-hall: #D9D2F0; --map-hallRoof: #5B3FA0; --map-hallRoofHi: #9F86E8; --map-bossBanner: #FFC233; --map-bossText: #0E1638;
+    --map-cloud: #5C6FB4; --map-birdc: #C9D3F5; --map-bld1: #2B3A70; --map-bld2: #34457F; --map-win: #FFE08A;
+  }
+}
+[data-theme="dark"] {
+  --map-sky1: #0B1233; --map-sky2: #2A3A7A; --map-sun: #FFF3C4; --map-hill: #1D2B66; --map-stars: 1;
+  --map-land1: #25407A; --map-land2: #132552; --map-sav1: #3A4A66; --map-city1: #1F3466;
+  --map-water1: #2E7BD8; --map-water2: #173F8C; --map-leaf1: #2C7A6A; --map-leaf2: #1A5249;
+  --map-mud: #8E5A3A; --map-mudDark: #5E3A22; --map-roof: #B98A3A; --map-roofDark: #7E5C22; --map-rock: #5A6690;
+  --map-zuma: #141C45; --map-zumaLine: #3A4A8A;
+  --map-road: #C98E4A; --map-roadEdge: #7A5226; --map-roadLine: #FFE0A3;
+  --map-hall: #D9D2F0; --map-hallRoof: #5B3FA0; --map-hallRoofHi: #9F86E8; --map-bossBanner: #FFC233; --map-bossText: #0E1638;
+  --map-cloud: #5C6FB4; --map-birdc: #C9D3F5; --map-bld1: #2B3A70; --map-bld2: #34457F; --map-win: #FFE08A;
+}
 
-.hm-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
-.hm-pager .btn { min-width: 0; padding: 0 var(--spacing-sm); }
-.hm-page { margin: 0; font: var(--type-label-l); color: var(--text-secondary); }
-.hm-list { margin-top: var(--spacing-sm); font: var(--type-body-l); }
-.hm-list summary { display: flex; align-items: center; min-height: var(--size-touch-target); font: var(--type-label-l); color: var(--text-brand); cursor: pointer; }
-.hm-list summary:focus-visible, .hm-list a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
-.hm-list a { display: inline-flex; align-items: center; min-height: var(--size-touch-target); }
-.hm-list ol { display: grid; gap: var(--spacing-xs); margin: 0; padding-left: var(--spacing-xl); }
-.hm-label { padding: 0 var(--spacing-xs); background: var(--bg-surface); border: 2px solid var(--border-strong); border-radius: var(--radius-md); font: var(--type-title-m); }
+/* The map column: a scroller filling its space, with the controls floating over it (outside the Journey map region). */
+.hm-mapwrap { position: relative; min-width: 0; min-height: 0; background: var(--map-land1); }
+.hm-mapwrap [hidden] { display: none !important; }
+.hm-scroll { height: 100%; overflow: hidden auto; overscroll-behavior: contain; background: var(--map-land1); scroll-behavior: auto; }
+.hm-scroll:focus-visible { outline: 3px solid var(--border-focus); outline-offset: -3px; }
+.hm-sizer { position: relative; overflow: hidden; width: 100%; height: calc(var(--h) * var(--s) * 1px); }
+.hm-trail { position: absolute; top: 0; left: 50%; width: 720px; height: calc(var(--h) * 1px); margin-left: -360px; transform: scale(var(--s)); transform-origin: 50% 0; }
+.hm-trail > * { position: absolute; }
+.hm-art, .hm-art > svg, .hm-road { top: 0; left: 0; }
+.hm-art > svg { position: absolute; overflow: visible; }
+.hm-art, .hm-amb { pointer-events: none; }
+.hm-art, .hm-amb, .hm-road { width: 720px; height: calc(var(--h) * 1px); }
+.hm-road path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.hm-road .edge { stroke: var(--map-roadEdge); stroke-width: 50; }
+.hm-road .surf { stroke: var(--map-road); stroke-width: 40; }
+.hm-road .line { stroke: var(--map-roadLine); stroke-width: 3; stroke-dasharray: 10 16; }
 
-.hm-pos { position: absolute; transform: translate(-50%, -50%); }
-.hm-node { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-xxs); color: var(--text-primary); text-decoration: none; }
-.page a.hm-node { display: flex; margin: 0; padding: 0; }
-.hm-node:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 4px; border-radius: var(--radius-lg); }
+.hm-banner {
+  left: 50%; transform: translate(-50%, -50%); width: max-content; max-width: 330px; padding: var(--spacing-xs) var(--spacing-xl); text-align: center;
+  background: var(--bg-primary); color: var(--text-on-primary); border: 3px solid var(--bg-surface); border-radius: var(--radius-xl); box-shadow: 0 var(--size-edge) 0 var(--bg-primary-edge);
+}
+.hm-banner h3 { margin: 0; font: var(--type-title-l); }
+.hm-banner p { margin: 0; font: var(--type-label-m); }
+.hm-gate {
+  left: 50%; transform: translate(-50%, -50%); padding: var(--spacing-xs) var(--spacing-xl); font: var(--type-title-l); letter-spacing: .08em;
+  background: var(--bg-proof); color: var(--text-on-proof); border: 3px solid var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 var(--size-edge) 0 var(--bg-proof-edge);
+}
+.hm-gate::before, .hm-gate::after { content: ""; position: absolute; top: 100%; width: 6px; height: 34px; background: var(--map-trunk); }
+.hm-gate::before { left: 12px; } .hm-gate::after { right: 12px; }
+
+.hm-nodes { inset: 0; margin: 0; padding: 0; list-style: none; pointer-events: none; }
+.hm-pos { position: absolute; left: calc(var(--x) * 1px); top: calc(var(--y) * 1px); width: 56px; height: 56px; margin: -28px 0 0 -28px; }
+.hm-node { position: relative; display: block; width: 56px; height: 56px; color: var(--text-primary); text-decoration: none; pointer-events: auto; border-radius: var(--radius-full); }
+.hm-soon { pointer-events: none; }
+.page a.hm-node { display: block; margin: 0; padding: 0; }
+.hm-node:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 5px; }
 .hm-disc {
-  display: grid; place-items: center; width: calc(var(--size-touch-target) * 1.25); height: calc(var(--size-touch-target) * 1.25);
-  border: 3px solid var(--bg-surface); border-radius: var(--radius-full); box-shadow: 0 var(--size-edge) 0 var(--border-edge);
+  position: relative; display: grid; place-items: center; width: 100%; height: 100%;
+  border: 4px solid var(--bg-surface); border-radius: var(--radius-full); box-shadow: 0 var(--size-edge) 0 var(--border-edge);
   font: var(--type-headline-m); background: var(--bg-primary); color: var(--text-on-primary);
 }
 .hm-proved .hm-disc, .hm-held .hm-disc { background: var(--bg-proof); color: var(--text-on-proof); }
 .hm-fading .hm-disc { background: var(--bg-gap); color: var(--text-on-gap); }
-.hm-soon .hm-disc { background: var(--bg-sunken); color: var(--text-secondary); }
-.hm-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--spacing-xxs); }
+.hm-soon .hm-disc { background: var(--bg-sunken); color: var(--text-secondary); font: var(--type-title-l); }
+.hm-lock { position: absolute; right: -8px; top: -8px; display: grid; place-items: center; width: 24px; height: 24px; background: var(--bg-surface); color: var(--text-secondary); border: 2px solid var(--border-strong); border-radius: var(--radius-full); }
+.hm-current .hm-disc::after { content: ""; position: absolute; inset: -4px; border: 4px solid var(--bg-primary); border-radius: var(--radius-full); animation: hm-pulse 1.8s ease-out infinite; }
+@keyframes hm-pulse { from { transform: scale(1); opacity: .7; } to { transform: scale(1.7); opacity: 0; } }
+
+.hm-lab {
+  position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 148px; padding: 1px var(--spacing-xs); text-align: center;
+  background: var(--bg-surface); color: var(--text-secondary); border: 2px solid var(--border-subtle); border-radius: var(--radius-md); font: var(--type-label-m);
+}
+/* The available stage keeps its title and badges beside the disc, on the side facing the middle, so the bus can park below it. */
+.hm-side-l, .hm-side-r { position: absolute; top: 50%; transform: translateY(-50%); display: grid; gap: var(--spacing-xxs); width: max-content; max-width: 170px; pointer-events: none; }
+.hm-side-l { right: calc(100% + 14px); justify-items: end; text-align: right; }
+.hm-side-r { left: calc(100% + 14px); justify-items: start; }
+.hm-side-l .hm-lab, .hm-side-r .hm-lab { position: static; transform: none; color: var(--text-primary); border-color: var(--border-strong); }
+.hm-tags { display: flex; flex-wrap: wrap; gap: var(--spacing-xxs); justify-content: inherit; }
 .hm-tag {
   display: inline-flex; align-items: center; gap: var(--spacing-xxs); padding: 0 var(--spacing-xs); white-space: nowrap;
   background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--border-strong); border-radius: var(--radius-full); font: var(--type-label-m);
 }
 .hm-due { background: var(--bg-gap-container); color: var(--text-on-gap-container); border-color: var(--border-gap); }
+.hm-bo { position: absolute; top: 50%; width: 52px; height: 52px; margin-top: -26px; pointer-events: none; animation: hm-bob 2.2s ease-in-out infinite; }
+.hm-bo-r { left: calc(100% + 10px); } .hm-bo-l { right: calc(100% + 10px); }
+.hm-bo img { display: block; animation: none; }
+@keyframes hm-bob { 50% { transform: translateY(-7px); } }
+
+/* The danfo bus sits above everything and never takes taps. Its position is set from script (transform). */
+.hm-bus { top: 0; left: 0; width: 64px; height: 40px; pointer-events: none; z-index: 5; will-change: transform; }
+.hm-bus-in { width: 100%; height: 100%; }
+.hm-bus svg { display: block; overflow: visible; }
+.hm-bus .wheel { transform-box: fill-box; transform-origin: center; }
+.hm-bus[data-driving] .wheel { animation: hm-spin .35s linear infinite; }
+@keyframes hm-spin { to { transform: rotate(360deg); } }
+
+/* Ambient life: each item is one small element moved by transform only, and paused when off screen. */
+.amb { position: absolute; display: block; pointer-events: none; animation-delay: var(--d, 0s); animation-play-state: running; }
+.amb[data-off] { animation-play-state: paused; }
+.amb svg { display: block; overflow: visible; }
+.amb.cloud { animation: hm-drift 46s ease-in-out infinite alternate; opacity: .95; }
+.amb.bird { animation: hm-fly 16s linear infinite; }
+.amb.bird svg { animation: hm-flap .5s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+.amb.flag { transform-origin: 0 50%; animation: hm-wave 1.1s ease-in-out infinite alternate; }
+.amb.umbrella { transform-origin: 50% 100%; animation: hm-sway 3.2s ease-in-out infinite alternate; }
+@keyframes hm-drift { from { transform: translateX(-40px); } to { transform: translateX(70px); } }
+@keyframes hm-fly { from { transform: translate(-30px, 0); } 50% { transform: translate(120px, -26px); } to { transform: translate(260px, 6px); } }
+@keyframes hm-flap { to { transform: scaleY(.45); } }
+@keyframes hm-wave { from { transform: skewY(-7deg) scaleX(1); } to { transform: skewY(7deg) scaleX(.86); } }
+@keyframes hm-sway { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-current .hm-disc::after { display: none; }
+  .hm-bo, .amb, .amb svg, .hm-bus .wheel { animation: none !important; }
+}
+
+.hm-ctl { position: absolute; z-index: 6; display: inline-flex; align-items: center; gap: var(--spacing-xs); min-height: var(--size-touch-target); padding: 0 var(--spacing-md); box-shadow: 0 var(--size-edge) 0 var(--border-edge); }
+.hm-ctl-list { top: var(--spacing-sm); right: var(--spacing-sm); }
+.hm-ctl-jump { bottom: var(--spacing-md); right: var(--spacing-sm); }
+.hm-ctl.btn-primary { box-shadow: 0 var(--size-edge) 0 var(--bg-primary-edge); }
+
+/* List view: every stage as an ordered list, one list per region. */
+.hm-listview { padding: var(--spacing-md); padding-top: calc(var(--size-touch-target) + var(--spacing-md)); background: var(--bg-page); min-height: 100%; }
+.hm-listview section { margin-bottom: var(--spacing-lg); }
+.hm-listview h3 { margin: 0; font: var(--type-title-l); }
+.hm-listview p { margin: 0 0 var(--spacing-xs); font: var(--type-label-m); color: var(--text-secondary); }
+.hm-listview ol { display: grid; gap: var(--spacing-xs); margin: 0; padding-left: var(--spacing-xxl); font: var(--type-body-l); }
+.hm-listview a { display: inline-flex; align-items: center; min-height: var(--size-touch-target); color: var(--text-brand); font-weight: 700; }
+.hm-listview a:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }

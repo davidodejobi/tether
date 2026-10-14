@@ -1,91 +1,207 @@
-// Home's journey map: accessible HTML nodes over decorative art, shown three at a time with Previous/Next (spec section 10).
-// A list view holds every node, so the screen works with no art. Only Move 1 works; later moves and exam day are Coming soon.
-import { useEffect, useRef, useState } from "preact/hooks";
+// Home's journey map (owner decision 14 Oct 2026): a long scrollable trail of all 50 English stages, game-style.
+// Real HTML nodes sit over decorative art that loads after first paint. Only available stages are links; planned
+// stages are Coming soon markers. A danfo bus drives to the current stage; reduced motion places it instead.
+import { useLayoutEffect, useEffect, useRef, useState } from "preact/hooks";
+import { useLocation } from "preact-iso";
+import { availableStages, blueprint } from "../../content/blueprint.ts";
+import { Bo } from "../components/Bo";
 import { Icon, type IconName } from "../components/Icon";
 import type { NodeState } from "./view.ts";
+import { drive, hop, hopTo, lastStop, parked, reduced, remember } from "./bus.ts";
+import { CX, H, W, countLabel, gate, nodes, regionOf, regions, roadD } from "./trail.ts";
+import "../components/Button.css";
 import "./map.css";
 
-// Lazy, so the art is fetched only when Home shows (never during the first lesson), and only the active theme's file.
-const art = import.meta.glob<string>("../../assets/map/*.svg", { query: "?url", import: "default" });
-
-/** Three node slots per page, in the art box's 360 x 400 space. The art is decorative and only cropped to fit. */
-const SLOTS = [
-  { x: 96, y: 320 },
-  { x: 262, y: 200 },
-  { x: 104, y: 80 },
-];
-const W = 360;
-const H = 400;
-/** Moves 1 to 5, then exam day, three to a page: bounded pages, not a long trail. */
-const ITEMS = ["Move 1", "Move 2", "Move 3", "Move 4", "Move 5", "Exam day"];
-const PAGES = ITEMS.length / SLOTS.length;
-
 const WORD: Record<NodeState, string> = { current: "Current", proved: "Proved", held: "Held", fading: "Fading", soon: "Coming soon" };
-const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", soon: "lock-open" };
+const ICON: Record<NodeState, IconName> = { current: "target", proved: "check", held: "check", fading: "calendar", soon: "lock" };
+/** The stage the learner is on: the last available one (only stage 1 today). */
+const CURRENT = availableStages.at(-1)!.n;
+const HREF = "/practice";
 
-const at = (p: { x: number; y: number }) => `left:${(p.x / W) * 100}%;top:${(p.y / H) * 100}%`;
+export function HomeMap({ state, due, coach }: { state: NodeState; due: boolean; coach: "character" | "text" }) {
+  const { route } = useLocation();
+  const scroll = useRef<HTMLDivElement>(null);
+  const bus = useRef<HTMLDivElement>(null);
+  const busIn = useRef<HTMLDivElement>(null);
+  const art = useRef<HTMLDivElement>(null);
+  const amb = useRef<HTMLDivElement>(null);
+  const here = useRef<HTMLLIElement>(null);
+  const anim = useRef<Animation | null>(null);
+  const scale = useRef(1);
+  const [s, setS] = useState(1);
+  const [list, setList] = useState(false);
+  const [away, setAway] = useState(false);
+  const cur = nodes[CURRENT - 1]!;
 
-export function HomeMap({ state, due }: { state: NodeState; due: boolean }) {
-  const canvas = useRef<HTMLOListElement>(null);
-  const [page, setPage] = useState(0);
-
-  // Art arrives after first paint; each theme's file is fetched only if its CSS rule applies.
-  useEffect(() => {
-    const c = canvas.current;
-    if (!c) return;
-    for (const [path, load] of Object.entries(art)) void load().then((url) => c.style.setProperty(path.includes("night") ? "--art-night" : "--art-day", `url("${url}")`));
+  // The stage is 720 design units wide; scale it to the column (never below 1, so labels stay readable).
+  useLayoutEffect(() => {
+    const el = scroll.current!;
+    const fit = () => setS((scale.current = Math.min(1.5, Math.max(1, el.clientWidth / 360))));
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
-  const shown = ITEMS.slice(page * SLOTS.length, (page + 1) * SLOTS.length);
+  const centre = (smooth = false) => {
+    const el = scroll.current;
+    if (el) el.scrollTo({ top: Math.max(0, cur.y * scale.current - el.clientHeight / 2), behavior: smooth && !reduced() ? "smooth" : "auto" });
+  };
+
+  // On load (and on returning from the list), centre the current stage, then drive the bus there from where it last rested.
+  useEffect(() => {
+    if (list) return;
+    const id = requestAnimationFrame(() => {
+      centre();
+      const el = bus.current;
+      if (!el) return;
+      const from = lastStop();
+      remember(CURRENT);
+      if (from !== CURRENT && !reduced()) {
+        anim.current = drive(el, from, CURRENT);
+        anim.current.finished.then(() => busIn.current && hop(busIn.current), () => {});
+      }
+    });
+    return () => (cancelAnimationFrame(id), anim.current?.cancel());
+  }, [list]);
+
+  // "Jump to my stage" shows while the current stage is off screen.
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setAway(!e!.isIntersecting), { root: scroll.current });
+    io.observe(here.current!);
+    return () => io.disconnect();
+  }, []);
+
+  // The art is generated in its own chunk, after first paint; the plain colour and the road show until then.
+  useEffect(() => {
+    let io: IntersectionObserver | undefined;
+    const t = setTimeout(() => {
+      void import("./mapArt.ts").then(({ buildArt }) => {
+        if (!art.current || !amb.current) return;
+        const a = buildArt();
+        art.current.innerHTML = a.ground + a.tiles.join("");
+        amb.current.innerHTML = a.ambient;
+        // Items scrolled out of view stop animating.
+        io = new IntersectionObserver((es) => es.forEach((e) => e.target.toggleAttribute("data-off", !e.isIntersecting)), { root: scroll.current, rootMargin: "120px" });
+        amb.current.querySelectorAll(".amb").forEach((n) => io!.observe(n));
+      }).catch(() => {});
+    }, 0);
+    return () => (clearTimeout(t), io?.disconnect());
+  }, []);
+
+  // Tapping the available stage: the bus hops onto it, then we go to practice. The link works on its own without script.
+  const go = (e: MouseEvent) => {
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || reduced() || !bus.current) return;
+    e.preventDefault();
+    anim.current?.cancel();
+    const a = hopTo(bus.current, CURRENT);
+    let gone = false;
+    const leave = () => gone || ((gone = true), route(HREF));
+    a.finished.then(leave, leave);
+    setTimeout(leave, 700);
+  };
+
+  const label = (st: (typeof blueprint)[number]) => `Stage ${st.n}, Move ${st.n}: ${st.title}. ${WORD[state]}${due ? ", due" : ""}. Open practice.`;
+  const towardsMiddle = cur.x > CX ? "l" : "r";
+
   return (
-    <section class="hm-map" aria-labelledby="hm-map-h">
-      <h2 id="hm-map-h" class="hm-map-h">Your journey</h2>
-      <div class="hm-box" role="region" aria-label="Journey map">
-        <ol class="hm-canvas" ref={canvas} data-page={page}>
-          {shown.map((name, i) => {
-            const n = page * SLOTS.length + i;
-            const exam = n === ITEMS.length - 1;
-            return (
-              <li key={name} class="hm-pos" style={at(SLOTS[i]!)}>
-                {n === 0 ? (
-                  <a class={`hm-node hm-${state}`} href="/practice" aria-label={`Move 1: Strip the Disguise. ${WORD[state]}${due ? ", due" : ""}. Open practice.`}>
-                    <span class="hm-disc" aria-hidden="true">1</span>
-                    <Tags state={state} due={due} />
-                  </a>
-                ) : (
-                  <div class={`hm-node hm-soon${exam ? " hm-exam" : ""}`}>
-                    {!exam && <span class="hm-disc" aria-hidden="true">{n + 1}</span>}
-                    <span class="sr-only">{name}.</span>
-                    {exam && <span class="hm-label" aria-hidden="true">Exam day</span>}
-                    <Tags state="soon" due={false} />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ol>
+    <div class="hm-mapwrap" style={`--s:${s};--h:${H}`}>
+      <h2 class="sr-only">Your journey</h2>
+      <div class="hm-scroll" ref={scroll} role="region" aria-label="Journey map" tabIndex={0}>
+        {list && <StageList state={state} due={due} />}
+        <div class="hm-sizer" hidden={list}>
+          <div class="hm-trail">
+            <div class="hm-art" ref={art} aria-hidden="true" />
+            <svg class="hm-road" viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+              <path class="edge" d={roadD} /><path class="surf" d={roadD} /><path class="line" d={roadD} />
+            </svg>
+            <div class="hm-amb" ref={amb} aria-hidden="true" />
+            <div class="hm-gate" aria-hidden="true" style={`top:${gate.y}px`}>START</div>
+            {regions.map((r) => (
+              <div key={r.id} class="hm-banner" style={`top:${r.bannerY}px`}>
+                <h3>{r.name}</h3>
+                <p>{CURRENT >= r.first && CURRENT <= r.last ? countLabel(CURRENT) : `${r.last - r.first + 1} stages`}</p>
+              </div>
+            ))}
+            <ol class="hm-nodes">
+              {blueprint.map((st) => {
+                const n = nodes[st.n - 1]!;
+                const pos = `--x:${n.x};--y:${n.y}`;
+                if (!st.moveId)
+                  return (
+                    <li key={st.id} class="hm-pos hm-soon" style={pos}>
+                      <span class="sr-only">Stage {st.n}: {st.title}. Coming soon</span>
+                      <span class="hm-node hm-soon" aria-hidden="true">
+                        <span class="hm-disc">{st.n}</span>
+                        <span class="hm-lock"><Icon name="lock" size={14} /></span>
+                        <span class="hm-lab">{st.title}</span>
+                      </span>
+                    </li>
+                  );
+                return (
+                  <li key={st.id} class="hm-pos" style={pos} ref={st.n === CURRENT ? here : undefined}>
+                    <a class={`hm-node hm-${state}`} href={HREF} aria-label={label(st)} onClick={go}>
+                      <span class="hm-disc" aria-hidden="true">{st.n}</span>
+                      <span class={`hm-side-${towardsMiddle}`} aria-hidden="true">
+                        <span class="hm-lab">{st.title}</span>
+                        <span class="hm-tags">
+                          <span class="hm-tag"><Icon name={ICON[state]} size={16} /> {WORD[state]}</span>
+                          {due && <span class="hm-tag hm-due"><Icon name="calendar" size={16} /> Due</span>}
+                        </span>
+                      </span>
+                    </a>
+                    {coach === "character" && <span class={`hm-bo hm-bo-${towardsMiddle === "l" ? "r" : "l"}`} aria-hidden="true"><Bo pose="wave" size={52} /></span>}
+                  </li>
+                );
+              })}
+            </ol>
+            <div class="hm-bus" ref={bus} aria-hidden="true" style={`transform:${parked(CURRENT)}`} data-stop={CURRENT}>
+              <div class="hm-bus-in" ref={busIn}><Danfo /></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="hm-pager">
-        <button class="btn btn-secondary" type="button" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button>
-        <p class="hm-page" aria-live="polite">Page {page + 1} of {PAGES}</p>
-        <button class="btn btn-secondary" type="button" disabled={page === PAGES - 1} onClick={() => setPage(page + 1)}>Next</button>
-      </div>
-      <details class="hm-list">
-        <summary>List view</summary>
-        <ol>
-          <li><a href="/practice">Move 1: Strip the Disguise. {WORD[state]}{due ? ", due" : ""}.</a></li>
-          {ITEMS.slice(1).map((name) => <li key={name}>{name}. Coming soon.</li>)}
-        </ol>
-      </details>
-    </section>
+      <button class="btn btn-secondary hm-ctl hm-ctl-list" type="button" onClick={() => setList(!list)}>{list ? "Map view" : "List view"}</button>
+      {away && !list && <button class="btn btn-primary hm-ctl hm-ctl-jump" type="button" onClick={() => centre(true)}><Icon name="target" size={20} /> Jump to my stage</button>}
+    </div>
   );
 }
 
-function Tags({ state, due }: { state: NodeState; due: boolean }) {
+/** Every stage as an ordered list, one list per region. The only place the 50 stages are plain text. */
+function StageList({ state, due }: { state: NodeState; due: boolean }) {
   return (
-    <span class="hm-tags">
-      <span class="hm-tag"><Icon name={ICON[state]} size={16} /> {WORD[state]}</span>
-      {due && <span class="hm-tag hm-due"><Icon name="calendar" size={16} /> Due</span>}
-    </span>
+    <div class="hm-listview">
+      {regions.map((r) => (
+        <section key={r.id}>
+          <h3>{r.name}</h3>
+          <p>{r.last - r.first + 1} stages</p>
+          <ol start={r.first}>
+            {blueprint.filter((st) => regionOf(st.n) === r).map((st) => (
+              <li key={st.id}>
+                {st.moveId
+                  ? <a href={HREF}>Stage {st.n}, Move {st.n}: {st.title}. {WORD[state]}{due ? ", due" : ""}.</a>
+                  : <>Stage {st.n}: {st.title}. Coming soon.</>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+/** A small yellow danfo minibus, drawn in code (side view, facing right). */
+function Danfo() {
+  return (
+    <svg width="64" height="40" viewBox="0 0 64 40" aria-hidden="true" focusable="false">
+      <ellipse cx="32" cy="38" rx="30" ry="3" fill="#000" opacity=".18" />
+      <path d="M2 34V12Q2 6 8 6H46Q58 6 62 20V34Z" fill="#FFC107" />
+      <path d="M2 22H62V25H2Z M2 28H62V29.5H2Z" fill="#1B1D26" />
+      {[6, 18, 30].map((x) => <rect key={x} x={x} y="9" width="10" height="9" rx="2" fill="#BFE6FF" />)}
+      <path d="M44 9H49Q55 11 58 19H44Z" fill="#BFE6FF" />
+      <rect x="61" y="26" width="3" height="5" rx="1" fill="#FFF3C4" />
+      <g class="wheel"><circle cx="14" cy="34" r="6" fill="#1B1D26" /><circle cx="14" cy="34" r="2.4" fill="#9AA0A6" /><path d="M14 30V38M10 34H18" stroke="#9AA0A6" stroke-width="1" /></g>
+      <g class="wheel"><circle cx="48" cy="34" r="6" fill="#1B1D26" /><circle cx="48" cy="34" r="2.4" fill="#9AA0A6" /><path d="M48 30V38M44 34H52" stroke="#9AA0A6" stroke-width="1" /></g>
+    </svg>
   );
 }

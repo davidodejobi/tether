@@ -28,6 +28,8 @@ const learningRecords = (page: Page) =>
 
 test("a new learner sees the English destination and reaches Move 1 from the topic", async ({ page }) => {
   await seedRecords(page, [], "/");
+  // On a phone the course link sits under More in the action sheet.
+  await page.getByRole("button", { name: "More" }).click();
   await page.getByRole("link", { name: "English course: Lexis and Structure → Concord" }).click();
   await expect(page).toHaveURL(/\/course$/);
   await expect(page.getByRole("heading", { name: "English course" })).toBeVisible();
@@ -161,18 +163,21 @@ for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const)
   });
 
 for (const [w, h] of [[360, 800], [768, 1024], [1366, 768]] as const)
-  test(`Home's map is bounded at ${w}px and Move 1 is inside it`, async ({ page }) => {
+  test(`Home's long map fills its space at ${w}px and stage 1 is in view`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
     await seedRecords(page, [], "/");
     const map = page.getByRole("region", { name: "Journey map" });
     const node = map.getByRole("link", { name: /Move 1/ });
-    await expect(node).toBeVisible();
+    await expect(node).toBeInViewport();
     const [m, n] = await Promise.all([map.boundingBox(), node.boundingBox()]);
     expect(n!.y).toBeGreaterThanOrEqual(m!.y);
     expect(n!.y + n!.height).toBeLessThanOrEqual(m!.y + m!.height);
-    expect(await map.evaluate((el) => el.scrollHeight <= el.clientHeight)).toBe(true);
-    await page.getByText("List view").click();
-    await expect(page.getByRole("list").filter({ hasText: "Exam day. Coming soon." })).toBeVisible();
+    // From 768 px the map takes the full height and most of the width; on a phone it is the tallest block on the screen.
+    if (w >= 768) expect(m!.height).toBeGreaterThanOrEqual(h - 1);
+    if (w >= 768) expect(m!.width).toBeGreaterThan(w * 0.45);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.getByRole("button", { name: "List view" }).click();
+    await expect(page.getByRole("list").filter({ hasText: "Stage 50: Emphatic stress. Coming soon." })).toBeVisible();
   });
 
 test("the course page reloads offline once Ready offline shows", async ({ page, context }) => {
