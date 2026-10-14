@@ -5,9 +5,8 @@ The course shell is deployed at https://tether-4cg.pages.dev. Review baseline:
 `docs/course-journey.md`, `docs/roadmap.md` and
 `docs/reviews/course-release-2026-10-14.md` before release work.
 
-1. Fix the reproduced accepted-AI-reply race during another progress save.
-   Add a regression that delays The move save and delivers the AI reply before
-   it completes; help must save once and resolve, or offer a recoverable fallback.
+1. Done on `fix-ai-save-race`: the accepted-AI-reply race is fixed, with two
+   regressions in `e2e/ai.spec.ts` (one with a failed save and Retry). Not deployed yet.
 2. Complete the named human review of all 20 outputs in `docs/ai-review.md`.
    A real provider call and automated output checks do not satisfy that review.
 3. Keep the live solo-journey timeout observation in the release review visible;

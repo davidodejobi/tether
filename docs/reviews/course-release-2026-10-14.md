@@ -93,6 +93,6 @@ an official JAMB stage count. Only one stage is available.
   (step 21); Learn pages (step 24) and further reviewed packs remain future work.
   Step 20 still requires real elapsed-day pilot evidence.
 
-Review outcome: Standards has no confirmed runtime findings; Spec has one open
-P2 runtime finding. The new course shell is sound, with the AI fix and human
-review still open for complete release acceptance.
+Review outcome: Standards has no confirmed runtime findings; Spec's one P2
+runtime finding is fixed (see above). The new course shell is sound; the human
+AI review is still open for complete release acceptance.
