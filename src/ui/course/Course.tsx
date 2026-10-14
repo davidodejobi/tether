@@ -47,7 +47,8 @@ export function CourseOverview() {
   return (
     <Page crumbs={<Crumbs />}>
       <h1>English course</h1>
-      <p class="cs-sub">JAMB Use of English. {overviewLine(counts)}</p>
+      <p class="cs-sub">JAMB Use of English.</p>
+      <p class="cs-sub">{overviewLine(counts)}</p>
       <CourseProgress link={false} />
       <dl class="cs-route">
         <div><dt>Start</dt><dd>Lexis and Structure, Concord, Strip the Disguise</dd></div>

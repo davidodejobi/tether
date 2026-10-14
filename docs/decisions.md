@@ -246,3 +246,10 @@ These decisions override conflicting text in `requirements.txt`.
 - Source: https://ibass.jamb.gov.ng/static/media/Use-of-English.885e843b1f51e6a3d062.pdf, read 2026-10-14, SHA-256 `f2b6bc4f2c30fc19ecf57bc14778100ce0deca59445beff9f7e10f34cbf7da18` (matches the checksum in Move 1's source). The PDF prints no exam year; the file is dated July 2025.
 - The topic view reuses `ProofCard` (Practise/Continue, recheck, recovery) and the Solo check link. It writes nothing; a test compares saved runs and cycles before and after browsing.
 - Home's map is now bounded: three nodes per page with Previous/Next, art cropped to fit, and a List view (`details`) with every node. With one available stage there is no paging on the course views; add Previous/Next there when a list outgrows a screen.
+
+## 2026-10-14 - 50-stage English blueprint and honest counts (step 21, catalogue and counts)
+
+- Owner approved the 50-stage English blueprint on 14 Oct 2026 (`src/content/blueprint.ts`); counts are planned / available / completed. Today: 50 planned (33 Lexis and Structure, 9 Comprehension and Summary, 8 Oral Forms), 1 available, completed from saved records.
+- The catalogue is derived from the blueprint. Official categories keep their source question counts; Tether teaching groups (concord, tense and mood, question tags and so on) have none, and "Basic grammar 10" is never shown on one group. Planned stages and topics are read-only text with "Coming soon"; every topic page is reachable as section, then topic.
+- Completed = an available stage whose move has ever had a passed solo run (a proof cycle with a passed solo, or a saved passed solo run). Counted once per move; repeat passes add nothing. A Fading move stays completed and adds a "needs review" count. Nothing is called complete while unpublished stages remain. No storage schema change (`src/rules/course-counts.ts`).
+- Still needed before a second move ships: scope runs, attempts, dots and learner fields by move. Today runs and attempts carry no move ID, so completion reads the move from a run's questions and the cycle's `moveId`.
