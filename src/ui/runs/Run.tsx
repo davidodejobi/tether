@@ -4,7 +4,7 @@
 // only then setProofMode(false), celebrate on a pass, and go to /result/<runId>.
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
-import { sentence, type Question } from "../../content/generate.ts";
+import { before, sentence, type Question } from "../../content/generate.ts";
 import { clockWentBack, finish, lowTime, RUN_RULES, seen, submit, type Run as RunState, type RunKind } from "../../rules/runs.ts";
 import { onReturn } from "../../rules/runs.ts";
 import { cue, setProofMode } from "../../platform/sound.ts";
@@ -391,7 +391,7 @@ function QuestionStep({ q, n, of, busy, onSubmit }: { q: Question; n: number; of
     <>
       <h1 class="run-prompt">Question {n} of {of} · Pick the verb that fits.</h1>
       <section class="run-card">
-        <SentenceCard before={`${q.subject}, ${q.covered},`} after={q.predicate} filled={sel === null ? undefined : q.options[sel]} />
+        <SentenceCard before={before(q)} after={q.predicate} filled={sel === null ? undefined : q.options[sel]} />
         {canSpeak && (
           <button type="button" class="qv-read" onClick={() => speak(sentence(q, "blank"), "en")}>
             <Icon name="speaker" size={20} /> Read aloud

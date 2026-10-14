@@ -4,7 +4,7 @@
 //   Show me (button or S): records help("showMe"), plays ShowMe, then "Put it in yourself" returns to the question.
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Question } from "../../content/generate.ts";
-import { pack } from "./steps.ts";
+import { moveOrFirst, unreviewed as isUnreviewed } from "../../content/moves.ts";
 import type { PracticeAttempt } from "../../rules/practice.ts";
 import { Button } from "../components/Button";
 import { CoachBubble } from "../components/CoachBubble";
@@ -53,8 +53,9 @@ export function HelpedQuestion(props: QuestionViewProps) {
 
 function Block({ ctx, question, coach, lang, onShowMe }: { ctx: MissContext; question: Question; coach: "character" | "text"; lang: "en" | "pcm"; onShowMe(): void }) {
   const { attempt, misses, retry, help, blocked } = ctx;
-  const copy = pack.coach[lang];
-  const unreviewed = lang === "pcm" && pack.review.pcm.status !== "approved";
+  const move = moveOrFirst(question.moveId);
+  const copy = move.coach[lang];
+  const unreviewed = isUnreviewed(move, lang);
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => first.current?.focus({ preventScroll: true }), [helped(attempt), misses >= 3]);
 
