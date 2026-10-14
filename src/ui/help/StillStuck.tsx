@@ -29,6 +29,9 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
   const [view, setView] = useState<View>({ s: "idle" });
   const run = useRef<AbortController | null>(null);
   const live = useRef(true);
+  const accepted = useRef(onAccepted); // the save must see the attempt as it is now, not as it was when the button was pressed
+  accepted.current = onAccepted;
+  const [saving, setSaving] = useState(false); // accepted and being recorded: too late to cancel
   const gen = useRef(0); // bumped by every ask and cancel, so a save finishing after Cancel cannot show the text
   useEffect(() => {
     live.current = true;
@@ -48,6 +51,7 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
     run.current = ac;
     let timedOut = false;
     const timer = setTimeout(() => ((timedOut = true), ac.abort()), TIMEOUT_MS);
+    setSaving(false);
     setView({ s: "loading" });
     const end = (result: AiResult, next: View) => {
       if (!live.current) return;
@@ -62,11 +66,14 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
         signal: ac.signal,
       });
       const body = (await res.json().catch(() => null)) as { ok?: boolean; text?: unknown; reason?: string } | null;
-      if (ac.signal.aborted || !live.current) return;
+      if (!live.current) return;
+      if (ac.signal.aborted) return void (timedOut && end("timeout", { s: "timeout" })); // a stalled body is a timeout, a Cancel is not
       if (res.ok && body?.ok === true && typeof body.text === "string") {
         const text = body.text;
-        onAccepted(() => {
+        setSaving(true);
+        accepted.current(() => {
           if (!live.current || gen.current !== mine) return;
+          setSaving(false);
           note("genuine");
           setView({ s: "text", text });
         });
@@ -86,6 +93,7 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
   };
 
   const cancel = () => {
+    if (saving) return;
     run.current?.abort();
     run.current = null;
     gen.current++;
@@ -108,7 +116,7 @@ export function StillStuck({ question: q, lang, blocked, onAccepted }: { questio
         {view.s === "loading" && (
           <>
             <p class="hp-ai-note">Asking for an explanation. You can keep going with the steps above.</p>
-            <Button variant="tertiary" onClick={cancel}>Cancel</Button>
+            {!saving && <Button variant="tertiary" onClick={cancel}>Cancel</Button>}
           </>
         )}
         {view.s === "cancelled" && <p class="hp-ai-note">Cancelled. Nothing changed.</p>}

@@ -119,42 +119,118 @@ test("a request that never answers times out after 15 s", async ({ page }) => {
   await expect.poll(async () => (await uses(page)).map((u) => u.result)).toEqual(["timeout"]);
 });
 
-test("cancel: nothing changes, and a reply that still arrives is ignored", async ({ page }) => {
+/** A route that answers only once released, and reports whether the late reply could still be delivered. */
+function lateRoute(page: Page) {
   let release!: () => void;
   const held = new Promise<void>((r) => (release = r));
-  await page.route("**/api/explain", async (route) => {
+  let settle!: (delivered: boolean) => void;
+  const outcome = new Promise<boolean>((r) => (settle = r));
+  void page.route("**/api/explain", async (route) => {
     await held;
-    await route.fulfill({ status: 200, json: { ok: true, text: TEXT } }).catch(() => {});
+    await route.fulfill({ status: 200, json: { ok: true, text: TEXT } }).then(
+      () => settle(true),
+      () => settle(false),
+    );
   });
+  return { release, outcome };
+}
+
+test("cancel: nothing changes, and a reply that still arrives is ignored", async ({ page }) => {
+  const late = lateRoute(page);
   await seed(page);
   await goDeeper(page);
   await ask(page);
   await page.getByRole("button", { name: "Cancel" }).click();
   await expect(page.getByText("Cancelled. Nothing changed.")).toBeVisible();
-  release();
-  await page.waitForTimeout(300);
+  late.release();
+  await late.outcome; // the route has now answered (the request itself was already aborted by Cancel)
+  await page.waitForTimeout(200);
   await expect(page.getByText(TEXT)).toHaveCount(0);
+  await expect(page.getByText("Cancelled. Nothing changed.")).toBeVisible();
   expect(await aiHelped(page)).toBe(false);
   await expect.poll(async () => (await uses(page)).map((u) => u.result)).toEqual(["cancelled"]);
 });
 
 test("a late reply after leaving the question never appears or records help", async ({ page }) => {
-  let release!: () => void;
-  const held = new Promise<void>((r) => (release = r));
-  await page.route("**/api/explain", async (route) => {
-    await held;
-    await route.fulfill({ status: 200, json: { ok: true, text: TEXT } }).catch(() => {});
-  });
+  const late = lateRoute(page);
   await seed(page);
   await goDeeper(page);
   await ask(page);
   await page.getByRole("button", { name: "Close and come back later" }).click(); // client-side navigation away
-  release();
-  await page.waitForTimeout(300);
+  late.release();
+  await late.outcome;
+  await page.waitForTimeout(200);
   await expect(page.getByText(TEXT)).toHaveCount(0);
   expect(await aiHelped(page)).toBe(false);
   await page.goto("/practice");
+  await expect(page.getByRole("heading", { name: "Pick the verb that fits." })).toBeVisible(); // rendered, so the next check means something
   await expect(page.getByText(TEXT)).toHaveCount(0);
+  expect(await aiHelped(page)).toBe(false);
+});
+
+test("a late AI save keeps what the learner did meanwhile (The move stays opened)", async ({ page }) => {
+  const late = lateRoute(page);
+  await seed(page);
+  await goDeeper(page);
+  await ask(page);
+  await page.getByRole("button", { name: /^The move:/ }).click();
+  await page.getByRole("button", { name: "Got it" }).click();
+  await expect.poll(async () => (await lastAttempt(page)).attempt.moveSheetOpened).toBe(true);
+  late.release();
+  await expect(page.getByText(TEXT)).toBeVisible();
+  const a = (await lastAttempt(page, (x) => x.help.includes("ai"))).attempt;
+  expect(a.help).toContain("ai");
+  expect(a.moveSheetOpened).toBe(true);
+});
+
+test("once accepted and saving, Cancel is gone, so it never claims nothing changed", async ({ page }) => {
+  await page.route("**/api/explain", ok);
+  await seed(page);
+  await goDeeper(page);
+  await page.evaluate(() => {
+    // Hold every save's transaction open until released, so the "accepted, not yet recorded" window can be seen.
+    const w = window as unknown as { slow: boolean };
+    const put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...a) {
+      const hold = () => {
+        if (w.slow) this.get("x").onsuccess = hold;
+      };
+      hold();
+      return put.apply(this, a as never);
+    };
+    w.slow = true;
+  });
+  await ask(page);
+  await expect(page.getByText("Asking for an explanation.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0);
+  await page.evaluate(() => ((window as unknown as { slow: boolean }).slow = false));
+  await expect(page.getByText(TEXT)).toBeVisible();
+  expect(await aiHelped(page)).toBe(true);
+});
+
+test("a response body that stalls ends as a timeout, not a stuck spinner", async ({ page }) => {
+  await page.addInitScript(() => {
+    const real = window.fetch.bind(window);
+    window.fetch = (input, init) => {
+      if (!String(input instanceof Request ? input.url : input).includes("/api/explain")) return real(input, init);
+      const stream = new ReadableStream({
+        start(c) {
+          init?.signal?.addEventListener("abort", () => c.error(new DOMException("aborted", "AbortError")));
+        },
+      });
+      return Promise.resolve(new Response(stream, { status: 200, headers: { "content-type": "application/json" } })); // headers now, body never
+    };
+  });
+  await seed(page);
+  await goDeeper(page);
+  await page.clock.install();
+  await ask(page);
+  await expect(page.getByRole("button", { name: "Cancel" })).toBeVisible();
+  await page.clock.fastForward(16_000);
+  await expect(page.getByText(/took too long/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0);
+  expect(await aiHelped(page)).toBe(false);
+  await expect.poll(async () => (await uses(page)).map((u) => u.result)).toEqual(["timeout"]);
 });
 
 async function noAi(page: Page, path: string, first: RegExp, setup?: () => Promise<void>) {
